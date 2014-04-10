@@ -73,17 +73,17 @@ infestor js
 
 	global.appendIf = function (des, src, predicate, scope, reverse) {
 
-		infestor.isString(predicate)&&(predicate=[predicate]);
-	
+		infestor.isString(predicate) && (predicate = [predicate]);
+
 		var predicateArr = global.isArray(predicate) ? predicate : null;
 
 		predicate = !predicateArr ? predicate : function (name, item, src, des) {
 
-			if(reverse)
+			if (reverse)
 				return global.inArray(name, predicateArr) == -1;
-			if(!reverse)
+			if (!reverse)
 				return global.inArray(name, predicateArr) != -1;
-			
+
 			return false;
 
 		};
@@ -1022,18 +1022,18 @@ infestor js
 				this.using(clsName, null, loader);
 
 				this.block(handle, function () {
-					
+
 					var lock = false;
-					
-					infestor.isString(clsName)&&(clsName=[clsName]);
-					
-					infestor.each(clsName,function(){
-					
-						if(!infestor.mgr.classMap[clsName])
+
+					infestor.isString(clsName) && (clsName = [clsName]);
+
+					infestor.each(clsName, function () {
+
+						if (!infestor.mgr.classMap[clsName])
 							lock = true;
-					
+
 					});
-					
+
 					return !lock;
 
 				}, null, scope);
@@ -1410,7 +1410,8 @@ infestor js
 
 		load : function (handle, scope) {
 
-			var me=this, callback = function () {
+			var me = this,
+			callback = function () {
 
 				handle && handle.call(this);
 				me.delayExec();
@@ -1637,12 +1638,12 @@ infestor js
 
 	// 默认载入器
 	global.loader = new global.Loader('defaultLoader');
-	
+
 	// 载入管理器
 	global.loaders = {};
-	
+
 	global.loaders[global.loader.id] = global.loader;
-	
+
 	window[global.$$libName] = global;
 
 	alias && (window[alias] = global);

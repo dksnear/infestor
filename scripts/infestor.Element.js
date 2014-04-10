@@ -709,9 +709,9 @@ infestor.define('infestor.Element', {
 	// #return 返回最终出现位置 @pos (top|left|right|bottom|false)
 	autoPosition:function(target,pos,offset,strict){
 	
-		var css = { position:'absolute',top:'auto',left:'auto',right:'auto',bottom:'auto' },
-			clientHeight = infestor.Dom.clientHeight(),
-			clientWidth = infestor.Dom.clientWidth();
+		var css = { position:'fixed',top:'auto',left:'auto',right:'auto',bottom:'auto' },
+			clientHeight = document.body.clientHeight,
+			clientWidth = document.body.clientWidth;
 	
 		if(!this.element) return false;
 	
@@ -794,7 +794,7 @@ infestor.define('infestor.Element', {
 			
 				this.tip.setText(this.tipText);
 				this.tip.show();
-				this.tip.autoPosition(this.element,'left','6 -3',false);
+				this.tip.autoPosition(this.element,'left','12 -2',false);
 			
 			},this);
 			
