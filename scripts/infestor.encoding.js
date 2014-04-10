@@ -1,0 +1,9 @@
+
+infestor.namespace('infestor.encoding',{
+
+
+	
+
+
+
+});

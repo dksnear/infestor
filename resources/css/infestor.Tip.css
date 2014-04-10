@@ -1,0 +1,109 @@
+﻿.infestor-tip {
+
+    padding: 5px 10px;
+    display: block;
+    cursor:default;
+    font-size: 12px;
+    color: #666666;
+    white-space: normal;
+    position: absolute;
+    border: 1px solid #B3B3B3;
+    border-radius: 5px;
+    line-height: 22px; /*height: 1%;*/
+    z-index: 9999;
+    background: #ffffff;
+    outline:none;
+}
+
+.infestor-tip.content {
+
+	white-space: normal;
+	word-break: break-all;
+}
+
+.infestor-tip s {
+
+	position: absolute;
+	display: block;
+	height: 0;
+	width: 0;
+	font-size: 0;
+	line-height: 0;
+	border-style: dashed dashed solid dashed;
+	border-width: 8px;
+}
+
+.infestor-tip s i {
+	position: absolute;
+	left: -10px;
+	display: block;
+	height: 0;
+	width: 0;
+	font-size: 0;
+	line-height: 0;
+	border-style: dashed dashed solid dashed;
+	border-width: 10px;
+}
+
+.infestor-tip.arrow-bottom {
+}
+
+.infestor-tip.arrow-bottom s {
+
+	left: 8px;
+	bottom:-16px;
+	border-color: #888 transparent transparent transparent;
+}
+
+.infestor-tip.arrow-bottom s i {
+	top: -11px;
+	border-color: #fff transparent transparent transparent;
+}
+
+
+.infestor-tip.arrow-top {
+}
+
+.infestor-tip.arrow-top s {
+
+	top: -16px;
+	left: 8px;
+	border-color: transparent transparent #888 transparent;
+}
+
+.infestor-tip.arrow-top s i {
+	top: -9px;
+	border-color: transparent transparent #fff transparent;
+}
+
+
+.infestor-tip.arrow-left {
+}
+
+.infestor-tip.arrow-left s {
+	top: 8px;
+	left: -16px;
+	border-color: transparent #888 transparent transparent;
+}
+
+.infestor-tip.arrow-left s i {
+	top: -10px;
+	left: -9px;
+	border-color: transparent #fff transparent transparent;
+}
+
+
+.infestor-tip.arrow-right {
+}
+
+.infestor-tip.arrow-right s {
+	top: 8px;
+	right: -16px;
+	border-color: transparent transparent transparent #888;
+}
+
+.infestor-tip.arrow-right s i {
+	top: -10px;
+	left: -11px;
+	border-color: transparent transparent transparent #fff;
+}

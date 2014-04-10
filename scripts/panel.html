@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>panel</title>
+	<script src="infestor.js"></script>
+	<script>
+	
+		inf.mgr.cssBasePath='../resources/css';
+		
+	    inf.mgr.using('infestor.Panel');
+		
+		inf(function(){
+
+		
+			inf.create('inf.Element',{
+					
+				boxShadow:true,
+				dock:'center',
+				width:600,
+				height:300,
+				itemsOpts:{
+			
+					alias:'panel',
+					//boxShadow:true,
+					width:200,
+					height:300
+				},
+				items:[{
+					id:'1p',
+					dock:'north-west',
+					items:[{
+					    id:'1p1s',
+						dock:'center',
+						alias:'panel',
+						//width:'50%',
+						//height:'auto',
+						text:'edd',
+						width:100,
+						height:30,
+						arrangement:'horizon'
+					}]
+				},{
+					id:'2p',
+					dock:'north-east'
+				}]
+			
+			
+			}).renderTo(inf.Dom.getBody());
+		
+		
+			/*inf.create('inf.Panel',{
+			
+			    id:'1p',
+				boxShadow:true,
+				height:400,
+				width:300,
+				dock:'center'
+			
+			}).renderTo(inf.Dom.getBody());
+			
+			inf.create('inf.Panel',{
+				
+				id:'2p',
+				boxShadow:true,
+				height:400,
+				width:300,
+				dock:'west'
+			
+			}).renderTo(inf.Dom.getBody());
+		*/
+		});
+		
+	</script>
+</head>
+<body>
+	
+</body>
+</html>

@@ -1,0 +1,74 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="../../eks.js"></script>
+    <script src="eks.manipulate.Draggable.js"></script>
+    <style>
+        .drag {
+            width: 150px;
+            height: 150px;
+            background: #808080;
+        }
+
+        .h {
+            width: 150px;
+            height: 30px;
+            background: #ff6a00;
+            cursor: move;
+        }
+
+        .ct {
+            width: 400px;
+            height: 400px;
+            border: 1px solid;
+        }
+    </style>
+    <script>
+
+        eks(function () {
+
+
+            var body = eks.Dom.create(document.body),
+                ct = eks.Dom.create('div').addClass('ct').appendTo(body),
+                drag = eks.Dom.create('div').appendTo(ct).addClass('drag'),
+                h = eks.Dom.create('div').appendTo(drag).addClass('h'),
+                display = eks.Dom.create('div').appendTo(body),
+                dragable = eks.create('eks.manipulate.Draggable', {
+
+                    element: drag.element,
+
+                    handlerElement: h.element,
+                    container: ct.element,
+
+                    limit: true,
+                    //lockX: true,
+                    //lockY: true,
+
+                    events: {
+
+                        onStart: function (x, y) {
+
+                            display.text(eks.stringFormat('start:({0},{1})', x, y))
+                        },
+                        onMove: function (x, y) {
+
+                            display.text(eks.stringFormat('move:({0},{1})', x, y));
+
+                        },
+                        onStop: function (x, y) {
+
+                            display.text(eks.stringFormat('stop:({0},{1})', x, y));
+                        }
+                    }
+                });
+
+        });
+
+    </script>
+</head>
+<body>
+</body>
+</html>

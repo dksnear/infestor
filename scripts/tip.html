@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link type="text/css" rel="stylesheet" href="eks.widget.Tip.css" />
+    <script src="../../eks.js"></script>
+    <script src="eks.widget.Tip.js"></script>
+    <script>
+
+        eks(function () {
+
+            var body = eks.Dom.get(document.body),
+                container = eks.Dom.create('div').css({
+                    position: 'relative',
+                    margin: '50px',
+                    height: '300px',
+                    width: '400px'
+
+                }).appendTo(body),
+                top = 0,
+                tips = {};
+
+            tips.tipTop = eks.create('eks.widget.Tip', { arrowPosition: 'top', text: 'top' });
+            tips.tipBottom = eks.create('eks.widget.Tip', { arrowPosition: 'bottom', text: 'bottom' });
+            tips.tipLeft = eks.create('eks.widget.Tip', { arrowPosition: 'left', text: 'left' });
+            tips.tipRight = eks.create('eks.widget.Tip', { arrowPosition: 'right', text: 'right' });
+
+            eks.each(tips, function (name, inst) { top = top + 50; inst.setPosition(top + 'px'); inst.element.appendTo(container); });
+
+            window.etips = tips;
+        });
+
+
+    </script>
+</head>
+<body>
+</body>
+</html>

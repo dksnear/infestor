@@ -1,0 +1,37 @@
+
+
+.infestor-chain-menu{
+
+	width: 35px;
+
+}
+
+.infestor-chain-menu-line{
+
+	width: 35px;
+	height: 23px;
+	text-align: center;
+}
+
+.infestor-chain-menu-line span{
+
+	background-color: #1c62a3;
+	width: 6px;
+	height: 23px;
+	display: inline-block;
+
+}
+
+.infestor-chain-menu-node{
+
+	background-image: url(../images/chain-node.png);
+	height: 35px;
+	width: 35px;
+	cursor: pointer;
+
+}
+
+.infestor-chain-menu-node-hover{
+
+	background-image: url(../images/chain-node-hover.png);
+}

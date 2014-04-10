@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>eks</title>
+	<script src="eks.js"></script>
+	<script>
+	
+		eks(function(){
+		
+			var btn=document.createElement('button');
+			
+			btn.appendChild(document.createTextNode('click me!'));
+			
+			eks.addEventListener(btn,'click',function(e){
+			
+				alert('copy that!');
+			});
+			
+			document.body.appendChild(btn);
+			
+			eks.dispatchEvent(btn,'click',true,true);
+		
+		});
+	
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
