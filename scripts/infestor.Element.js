@@ -593,7 +593,15 @@ infestor.define('infestor.Element', {
 
 		});
 
+
+		this.destroyList && infestor.each(this.destroyList,function(){
+			
+			this.destroy && this.destroy(strict);
+		
+		});
+		
 		this.element && this.element.remove();
+		
 
 		// 注销实例托管
 		infestor.mgr.removeInstance(this.id);
@@ -704,12 +712,14 @@ infestor.define('infestor.Element', {
 	// 使当前元素定位在目标元素附近 
 	// @target 目标元素或坐标({ top:0,left:0,height:0,width:0})
 	// @pos 默认位置 (top|left|right|bottom)
- 	// @offset 偏移量 浮动距离和分开距离  ({ drift:0,depart:0})
+ 	// @offset 偏移量 浮动距离和分开距离  ({ drift:0,depart:0,mode:(front|middle|rear)})
 	// @strict 按照默认位置定位 不自动左右/上下切换 (true|false)
+	// @mode 定位模式 (fixed|absolute|relative|static)
 	// #return 返回最终出现位置 @pos (top|left|right|bottom|false)
-	autoPosition:function(target,pos,offset,strict){
+	autoPosition:function(target,pos,offset,mode,strict){
 	
 		var css = { position:'fixed',top:'auto',left:'auto',right:'auto',bottom:'auto' },
+			
 			clientHeight = document.body.clientHeight,
 			clientWidth = document.body.clientWidth;
 	
@@ -719,12 +729,18 @@ infestor.define('infestor.Element', {
 			target = target.element;
 		if(target instanceof infestor.Dom)
 			target = target.offset();
-			
+		
+		//处理offset参数
+		
 		if(infestor.isString(offset))
 			offset = {				
 				drift:offset.split(' ')[1] || 0,
 				depart:offset.split(' ')[0] || 0
 			};
+			
+		
+			
+		mode && (css.position = mode);
 		
 		offset = infestor.append({ drift:0,depart:0 },offset),			
 		target = infestor.append({ top:0,left:0,height:0,width:0 },target);	

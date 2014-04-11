@@ -1013,15 +1013,8 @@ infestor js
 			// 动态引入类
 			require : function (clsName, handle, scope) {
 
-				var loader = new global.Loader();
-
-				//global.loaders = global.loaders || {};
-
-				//global.loaders[loader.id] = loader;
-
-				this.using(clsName, null, loader);
-
-				this.block(handle, function () {
+				var loader,
+					predicate = function () {
 
 					var lock = false;
 
@@ -1036,15 +1029,37 @@ infestor js
 
 					return !lock;
 
-				}, null, scope);
+				};
+				
+				// 如果类已经加载则直接执行委托方法
+				if(predicate())
+					return handle.apply(scope||window),this;
+				
+				// 类未加载则创建加载器
+				loader = new global.Loader()
 
+				// 注册加载器
+				//global.loaders = global.loaders || {};
+
+				//global.loaders[loader.id] = loader;
+
+				this.using(clsName, null, loader);
+
+				// 阻塞委托方法 直到所有依赖类加载完毕再执行
+				this.block(handle, predicate, null, scope);
+
+				// 执行加载器
 				loader.using();
 
 				return this;
 
 			},
 
-			//
+			// 阻塞委托方法
+			// @method(fn) 委托方法
+			// @predicate(fn) 委托方法执行断言
+			// @args(array) 委托方法执行参数
+			// @scope(obj) 委托方法执行域 
 			block : function (method, predicate, args, scope) {
 
 				this.blockQueue.push({
@@ -1059,7 +1074,7 @@ infestor js
 
 			},
 
-			//
+			// 执行被阻塞的委托方法
 			blockFree : function () {
 
 				var len = this.blockQueue.length;
@@ -1152,7 +1167,9 @@ infestor js
 			return pre;
 		},
 
-		//创建类/继承类 from extJs extend
+		// 创建类|继承类 from extJs extend
+		// @superClass(fn):父类
+		// @option(obj):类定义列表
 		extend : function (superClass, options) {
 
 			if (!options) {
@@ -1186,11 +1203,10 @@ infestor js
 			return $instance;
 		},
 
-		//重写类中的方法
-		//@param(cls):类
-		//@param(options):需要重写的方法放在这个对象里
-		//@param(isExtend):以扩展的方式重写方法
-
+		// 重写类中的方法
+		// @cls(fn|str):类对象|类名
+		// @options(obj):重写的方法列表
+		// @isExtend(bool):以扩展的方式重写方法(先执行原方法再执行扩展方法)
 		override : function (cls, options, isExtend) {
 
 			if (global.isString(cls))
@@ -1225,11 +1241,13 @@ infestor js
 			});
 		},
 
-		//定义类
-		//@param(clsNs):类名
-		//@param(options):类的方法在这个对象里定义 见global.extend
+		// 定义类
+		// @clsNs(str):类名
+		// @options(obj):类的方法在这个对象里定义 见global.extend
+		// @callback(fn):类定义完成后的委托句柄
 		define : function (clsNs, options, callback) {
 
+			// 等待所有类加载完成后 延时定义
 			if (global.$currentLoader && global.$currentLoader.isDelay)
 				return global.$currentLoader.delayDefine.apply(global.$currentLoader, arguments);
 
@@ -1275,9 +1293,9 @@ infestor js
 
 		},
 
-		//创建类的实例
-		//@param(clsNs):类名
-		//@param(options):对象的属性在这个对象里定义
+		// 创建实例
+		// clsNs(str):类名
+		// options(obj):对象的属性在这个对象里定义
 		create : function (clsNs, options) {
 
 			var cls = global.isString(clsNs) ? global.namespace(clsNs) : clsNs;
@@ -1288,6 +1306,7 @@ infestor js
 			return new cls(options);
 		},
 
+		// 通过类的别名创建实例
 		createByAlias : function (alias, options) {
 
 			var clsName = global.mgr.aliasMap[alias];
@@ -1297,6 +1316,7 @@ infestor js
 
 	});
 
+	// 定义尺寸单位处理方法
 	global.each('px em ex percent mm cm inch rem deg rad grad'.split(' '), function () {
 
 		var methodName = String(this);
@@ -1311,10 +1331,12 @@ infestor js
 		}
 	});
 
+	// 定义浏览器类型判断相关方法
 	global.browser.$methods = {};
 
 	// 根据配置中的浏览器类型选择执行相应的方法
-	// mode=false 匹配到就停止 mode=true 则匹配所有选项
+	// @option(obj) 匹配列表 {isIE:fn,isIE6:fn,isChrome:fn....}
+	// @mode(bool)  false:匹配到就停止|true:匹配所有选项
 	global.browser.optionExec = global.boe = function (option, mode) {
 
 		var isRun = false,
@@ -1342,7 +1364,7 @@ infestor js
 
 	};
 
-	// 创建判断浏览器类型的方法系列
+	// 创建判断浏览器类型的系列方法
 	global.each('isOthersBrowser isChrome isWebkit isMozilla isOpera isIE isIE6 isIE7 isIE8 isIE9 isIE10 isIE6Plus isIE7Plus isIE8Plus isIE9Plus isIE10Plus isIE9 isIE7Minus isIE8Minus isIE9Minus isIE10Minus'.split(' '), function (idx, name) {
 
 		var match = /is(OthersBrowser|IE|Chrome|Webkit|Mozilla|Opera)(\d+)?(plus|minus)?/i.exec(name),
@@ -1386,10 +1408,11 @@ infestor js
 
 	});
 
+	// 定义加载器类
 	global.Loader = global.extend({
 
-		// true 延时创建类
-		// false 正常创建类
+		// true:延时创建类
+		// false:正常创建类
 		// 使用global.mgr.using方法引入类这自动转换为延时创建模式
 		isDelay : false,
 
@@ -1408,6 +1431,9 @@ infestor js
 
 		},
 
+		// 加载入口
+		// @handle(fn) 载入句柄
+		// @scope 载入句柄执行域
 		load : function (handle, scope) {
 
 			var me = this,
@@ -1499,7 +1525,7 @@ infestor js
 						// 创建类
 						item && !classMap[name] && (item.isDefined = true) && global.define(item.clsNs, item.options, item.callback)
 
-						// 载入样式
+						// 注册样式
 						 && global.mgr.allowLoadCss && item.options.cssUses && this.delayStyleQueue.push(item.options.cssUses);
 					}
 				}
@@ -1510,6 +1536,7 @@ infestor js
 
 		},
 
+		// 延时加载已注册样式
 		delayWriteStyle : function () {
 
 			var stylePath = null;
@@ -1540,6 +1567,10 @@ infestor js
 
 		},
 
+		// 加载声明
+		// @path(str|array) 需加载的路径列表 
+		// @path(fn) 加载完毕后委托句柄
+		// @scope(obj) 加载完成后委托句柄执行域
 		using : function (path, scope) {
 
 			this.loadList = this.loadList || [];
@@ -1564,6 +1595,8 @@ infestor js
 			return this;
 		},
 
+		// 加载请求
+		// @param (路径列表[...],加载完成后委托句柄(fn))
 		require : function () {
 
 			if (arguments.length < 1)
@@ -1594,6 +1627,7 @@ infestor js
 
 		},
 
+		// 载入句柄
 		loadHandler : function (target, callback) {
 
 			global.Loader.loadedMap = global.Loader.loadedMap || {}; //记录已经载入的文件
@@ -1620,6 +1654,7 @@ infestor js
 
 		},
 
+		// 递归载入器
 		iterateLoad : function (lst, i, handle, callback, scope) {
 
 			var me = this;
@@ -1639,7 +1674,7 @@ infestor js
 	// 默认载入器
 	global.loader = new global.Loader('defaultLoader');
 
-	// 载入管理器
+	// 载入器管理器
 	global.loaders = {};
 
 	global.loaders[global.loader.id] = global.loader;
