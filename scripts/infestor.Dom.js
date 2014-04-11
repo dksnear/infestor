@@ -22,8 +22,6 @@ infestor.define('infestor.Dom', {
 
 			this.element = this.element || new infestor.Dom();
 
-			this.element.destroy();
-
 			this.element.element = infestor.isString(id) ? document.getElementById(id) : id;
 
 			return this.element;
@@ -63,14 +61,14 @@ infestor.define('infestor.Dom', {
 
 			element.css('z-index', this.getZIndex());
 		},
-		
-		clientWidth:function(){
+
+		clientWidth : function () {
 
 			return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 		},
-	
-		clientHeight:function(){
-		
+
+		clientHeight : function () {
+
 			return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 		}
 	},
@@ -493,8 +491,9 @@ infestor.define('infestor.Dom', {
 			return null;
 
 		var top = this.element.offsetTop,
-		left = this.element.offsetLeft,
-		offsetParent = this.element.offsetParent;
+			left = this.element.offsetLeft,
+			offsetParent = this.element.offsetParent;
+
 		while (offsetParent) {
 
 			top += offsetParent.offsetTop;
@@ -523,6 +522,19 @@ infestor.define('infestor.Dom', {
 			height : this.element.scrollHeight,
 			width : this.element.scrollWidth
 		};
+	},
+
+	client : function () {
+
+		return this.element && {
+
+			top : this.element.clientTop,
+			left : this.element.clientLeft,
+			height : this.element.clientHeight,
+			width : this.element.clientWidth
+
+		}
+
 	},
 
 	appendTo : function (dom) {
@@ -574,7 +586,7 @@ infestor.define('infestor.Dom', {
 
 	remove : function () {
 
-		this.element.parentNode.removeChild(this.element);
+		this.element && this.element.parentNode && this.element.parentNode.removeChild(this.element);
 		return null;
 	},
 
@@ -662,9 +674,9 @@ infestor.define('infestor.Dom', {
 		var eventName = String(this),
 		methods = {};
 
-		methods[eventName] = function (eventHandle) {
+		methods[eventName] = function (eventHandle, scope) {
 
-			return eventHandle ? cls.prototype.addEventListener.call(this, eventName, eventHandle) : cls.prototype.emit.call(this, eventName);
+			return eventHandle ? cls.prototype.addEventListener.call(this, eventName, eventHandle, scope) : cls.prototype.emit.call(this, eventName);
 		}
 
 		infestor.override(cls, methods);

@@ -13,9 +13,18 @@ infestor.define('infestor.Tip', {
 		globalTip:null,
 		
 		init:function(){
-		
-			this.globalTip = this.globalTip || infestor.create('infestor.Tip').renderTo(infestor.Dom.getBody());
-			this.globalTip.hide();
+			
+			if(!this.globalTip){
+			
+				this.globalTip = infestor.create('infestor.Tip').renderTo(infestor.Dom.getBody());
+				this.globalTip.hide();
+				infestor.Dom.get(window).resize(infestor.throttle(function(){
+					
+					this.globalTip.hide();
+				
+				}),this);
+			
+			};
 	
 			return this.globalTip;
 		},

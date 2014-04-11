@@ -100,7 +100,7 @@ infestor js
 		return des;
 	};
 
-	//基本操作
+	//基本方法
 	global.append({
 
 		error : function (msg, thw) {
@@ -712,6 +712,61 @@ infestor js
 				return;
 
 			clearInterval(id);
+		},
+
+		// 防抖(一定间隔内没有调用时 才开始执行被调用方法)
+		// @fn(fn) 待执行方法
+		// @wait(numeric) 等待时间
+		// @asap(bool) 直接执行
+		debounce : function (fn, wait, asap) {
+
+			var timeout = null;
+
+			wait = wait || 200;
+
+			return function () {
+
+				var scope = this,
+					args = arguments;
+
+				timeout && clearTimeout(timeout);
+
+				asap && fn.apply(this, arguments);
+
+				timeout = setTimeout(function () {
+
+						!asap && fn.apply(scope, args);
+						timeout = null;
+
+					}, wait)
+
+			};
+
+		},
+
+		// 节流(屏蔽一定时间内所有的调用)
+		// @fn(fn) 待执行方法
+		// @wait(numeric) 等待时间
+		// @alt(fn) 等待时间内的替换方法
+		throttle : function (fn, wait, alt) {
+
+			var last = Date.now();
+
+			wait = wait || 200;
+
+			return function () {
+
+				var now = Date.now();
+
+				if (now - last < wait)
+					return alt && alt.apply(this, arguments);
+
+				last = now;
+
+				return fn.apply(this, arguments);
+
+			};
+
 		}
 
 	});
@@ -867,37 +922,6 @@ infestor js
 		clearSelection : function () {
 
 			window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
-		},
-
-		isScroll : function (el) {
-
-			var els = el ? [el] : [document.documentElement, document.body],
-			isScrollX = false,
-			isScrollY = false,
-			i = 0,
-			sl,
-			st;
-
-			for (; i < els.length; i++) {
-
-				el = els[i];
-
-				sl = el.scrollLeft;
-				el.scrollLeft += (sl > 0) ? -1 : 1;
-				el.scrollLeft !== sl && (isScrollX = isScrollX || true);
-				el.scrollLeft = sl;
-
-				st = el.scrollTop;
-				el.scrollTop += (st > 0) ? -1 : 1;
-				el.scrollTop !== st && (isScrollY = isScrollY || true);
-				el.scrollTop = st;
-			}
-
-			return {
-
-				x : isScrollX,
-				y : isScrollY
-			}
 		}
 
 	});
@@ -1014,7 +1038,7 @@ infestor js
 			require : function (clsName, handle, scope) {
 
 				var loader,
-					predicate = function () {
+				predicate = function () {
 
 					var lock = false;
 
@@ -1030,20 +1054,20 @@ infestor js
 					return !lock;
 
 				};
-				
+
 				// 如果类已经加载则直接执行委托方法
-				if(predicate())
-					return handle.apply(scope||window),this;
-				
+				if (predicate())
+					return handle.apply(scope || window), this;
+
 				// 类未加载则创建加载器
 				loader = new global.Loader()
 
-				// 注册加载器
-				//global.loaders = global.loaders || {};
+					// 注册加载器
+					//global.loaders = global.loaders || {};
 
-				//global.loaders[loader.id] = loader;
+					//global.loaders[loader.id] = loader;
 
-				this.using(clsName, null, loader);
+					this.using(clsName, null, loader);
 
 				// 阻塞委托方法 直到所有依赖类加载完毕再执行
 				this.block(handle, predicate, null, scope);
@@ -1059,7 +1083,7 @@ infestor js
 			// @method(fn) 委托方法
 			// @predicate(fn) 委托方法执行断言
 			// @args(array) 委托方法执行参数
-			// @scope(obj) 委托方法执行域 
+			// @scope(obj) 委托方法执行域
 			block : function (method, predicate, args, scope) {
 
 				this.blockQueue.push({
@@ -1411,265 +1435,265 @@ infestor js
 	// 定义加载器类
 	global.Loader = global.extend({
 
-		// true:延时创建类
-		// false:正常创建类
-		// 使用global.mgr.using方法引入类这自动转换为延时创建模式
-		isDelay : false,
+			// true:延时创建类
+			// false:正常创建类
+			// 使用global.mgr.using方法引入类这自动转换为延时创建模式
+			isDelay : false,
 
-		// 须延时创建的类集合
-		delayDefineSet : {},
+			// 须延时创建的类集合
+			delayDefineSet : {},
 
-		// 延时写入的样式队列
-		delayStyleQueue : [],
+			// 延时写入的样式队列
+			delayStyleQueue : [],
 
-		// 须延时执行的方法执行环境队列
-		delayExecQueue : [],
+			// 须延时执行的方法执行环境队列
+			delayExecQueue : [],
 
-		constructor : function (id) {
+			constructor : function (id) {
 
-			this.id = id || global.getId();
+				this.id = id || global.getId();
 
-		},
+			},
 
-		// 加载入口
-		// @handle(fn) 载入句柄
-		// @scope 载入句柄执行域
-		load : function (handle, scope) {
+			// 加载入口
+			// @handle(fn) 载入句柄
+			// @scope 载入句柄执行域
+			load : function (handle, scope) {
 
-			var me = this,
-			callback = function () {
+				var me = this,
+				callback = function () {
 
-				handle && handle.call(this);
-				me.delayExec();
-				global.mgr.blockFree();
-			};
+					handle && handle.call(this);
+					me.delayExec();
+					global.mgr.blockFree();
+				};
 
-			if (document.readyState == 'complete')
-				return callback.call(scope || window);
+				if (document.readyState == 'complete')
+					return callback.call(scope || window);
 
-			return global.addEventListener(window, 'load', callback);
-		},
+				return global.addEventListener(window, 'load', callback);
+			},
 
-		// 延时定义类
-		delayDefine : function (clsNs, options, callback) {
+			// 延时定义类
+			delayDefine : function (clsNs, options, callback) {
 
-			options.cssUses && global.isBoolean(options.cssUses) && (options.cssUses = clsNs);
+				options.cssUses && global.isBoolean(options.cssUses) && (options.cssUses = clsNs);
 
-			options.alias && global.mgr.addAlias(options.alias, clsNs);
+				options.alias && global.mgr.addAlias(options.alias, clsNs);
 
-			options.uses && global.mgr.using(options.uses, null, global.$currentLoader);
+				options.uses && global.mgr.using(options.uses, null, global.$currentLoader);
 
-			options.extend && global.isString(options.extend) && global.mgr.using(options.extend, null, this);
+				options.extend && global.isString(options.extend) && global.mgr.using(options.extend, null, this);
 
-			options.$delayDefine = true;
+				options.$delayDefine = true;
 
-			options.$clsName = options.$clsName || clsNs;
+				options.$clsName = options.$clsName || clsNs;
 
-			this.delayDefineSet[options.$clsName] = {
+				this.delayDefineSet[options.$clsName] = {
 
-				clsNs : options.$clsName,
-				options : options,
-				callback : callback,
-				isDefined : false
-			};
+					clsNs : options.$clsName,
+					options : options,
+					callback : callback,
+					isDefined : false
+				};
 
-			return null;
+				return null;
 
-		},
+			},
 
-		// 根据依赖关系延时加载类
-		delayLoad : function () {
+			// 根据依赖关系延时加载类
+			delayLoad : function () {
 
-			if (!this.isDelay)
-				return;
-
-			this.isDelay = false;
-
-			var classMap = global.mgr.classMap,
-			defineSet = this.delayDefineSet,
-			buffer = [],
-			search = function (item) {
-
-				var depends = [];
-
-				if (!item || !item.options)
+				if (!this.isDelay)
 					return;
 
-				item.options.uses && (depends = depends.concat(item.options.uses));
-				item.options.extend && (depends = depends.concat(item.options.extend));
+				this.isDelay = false;
 
-				global.each(depends, function (idx, name) {
+				var classMap = global.mgr.classMap,
+				defineSet = this.delayDefineSet,
+				buffer = [],
+				search = function (item) {
 
-					var index = global.inArray(name, buffer);
+					var depends = [];
 
-					if (!name || classMap[name])
-						return true;
+					if (!item || !item.options)
+						return;
 
-					(index != -1) && buffer.splice(index, 1);
-					buffer.push(name);
-					search(defineSet[name]);
+					item.options.uses && (depends = depends.concat(item.options.uses));
+					item.options.extend && (depends = depends.concat(item.options.extend));
+
+					global.each(depends, function (idx, name) {
+
+						var index = global.inArray(name, buffer);
+
+						if (!name || classMap[name])
+							return true;
+
+						(index != -1) && buffer.splice(index, 1);
+						buffer.push(name);
+						search(defineSet[name]);
+
+					});
+				};
+
+				global.each(defineSet, function (name, item) {
+
+					if (!classMap[name] && !item.isDefined) {
+
+						buffer.push(name);
+						search(item);
+						while (name = buffer.pop()) {
+
+							item = defineSet[name];
+
+							// 创建类
+							item && !classMap[name] && (item.isDefined = true) && global.define(item.clsNs, item.options, item.callback)
+
+							// 注册样式
+							 && global.mgr.allowLoadCss && item.options.cssUses && this.delayStyleQueue.push(item.options.cssUses);
+						}
+					}
+
+				}, this);
+
+				this.delayDefineSet = {};
+
+			},
+
+			// 延时加载已注册样式
+			delayWriteStyle : function () {
+
+				var stylePath = null;
+				while (stylePath = this.delayStyleQueue.shift())
+					global.mgr.using(stylePath, '.css');
+
+			},
+
+			// 注册载入完成后执行的环境
+			delayReg : function (method, args, scope) {
+
+				this.delayExecQueue.push({
+
+					method : method,
+					scope : scope || window,
+					args : args || []
 
 				});
-			};
 
-			global.each(defineSet, function (name, item) {
+			},
 
-				if (!classMap[name] && !item.isDefined) {
+			// 执行延时方法队列中的程序
+			delayExec : function () {
 
-					buffer.push(name);
-					search(item);
-					while (name = buffer.pop()) {
+				var obj;
+				while (obj = this.delayExecQueue.shift())
+					obj.method.apply(obj.scope, obj.args);
 
-						item = defineSet[name];
+			},
 
-						// 创建类
-						item && !classMap[name] && (item.isDefined = true) && global.define(item.clsNs, item.options, item.callback)
+			// 加载声明
+			// @path(str|array) 需加载的路径列表
+			// @path(fn) 加载完毕后委托句柄
+			// @scope(obj) 加载完成后委托句柄执行域
+			using : function (path, scope) {
 
-						// 注册样式
-						 && global.mgr.allowLoadCss && item.options.cssUses && this.delayStyleQueue.push(item.options.cssUses);
-					}
+				this.loadList = this.loadList || [];
+				this.loadListUniqueMap = this.loadListUniqueMap || {};
+
+				global.isString(path) && (path = [path]);
+
+				global.isArray(path) && global.each(path, function (idx, item) {
+					global.uniquePush(this.loadList, item, this.loadListUniqueMap);
+				}, this);
+
+				(!path || global.isFunction(path)) && this.iterateLoad(this.loadList, 0, this.loadHandler, function () {
+
+					this.loadList = [];
+					this.loadListUniqueMap = {};
+					this.delayLoad();
+					this.delayWriteStyle();
+					this.load(path, scope);
+
+				}, this);
+
+				return this;
+			},
+
+			// 加载请求
+			// @param (路径列表[...],加载完成后委托句柄(fn))
+			require : function () {
+
+				if (arguments.length < 1)
+					return;
+				if (arguments.length < 2)
+					arguments[0].call(window);
+
+				var me = this,
+				argLen = arguments.length,
+				callback = arguments[argLen - 1],
+				i = 0,
+				lst = [],
+				uniqueMap = {};
+
+				for (; i < argLen - 1; i++) {
+
+					if (arguments[i]instanceof Array)
+						global.each(arguments[i], function () {
+							global.uniquePush(lst, this, uniqueMap)
+						});
+
+					global.uniquePush(lst, arguments[i], uniqueMap);
 				}
 
-			}, this);
+				this.iterateLoad(lst, 0, this.loadHandler, function () {
+					this.load(callback);
+				}, this);
 
-			this.delayDefineSet = {};
+			},
 
-		},
+			// 载入句柄
+			loadHandler : function (target, callback) {
 
-		// 延时加载已注册样式
-		delayWriteStyle : function () {
+				global.Loader.loadedMap = global.Loader.loadedMap || {}; //记录已经载入的文件
 
-			var stylePath = null;
-			while (stylePath = this.delayStyleQueue.shift())
-				global.mgr.using(stylePath, '.css');
+				var isJs = /.+\.js$/.test(target),
+				isCss = /.+\.css$/.test(target),
+				doNothing = (!isJs && !isCss) || global.Loader.loadedMap[target];
 
-		},
+				if (doNothing) {
+					callback();
+					return;
+				}
 
-		// 注册载入完成后执行的环境
-		delayReg : function (method, args, scope) {
+				global.$currentLoader = this;
 
-			this.delayExecQueue.push({
+				if (!doNothing)
+					global.Loader.loadedMap[target] = true;
 
-				method : method,
-				scope : scope || window,
-				args : args || []
+				if (isJs)
+					global.loadScript(target, callback);
 
-			});
+				if (isCss)
+					global.loadStyle(target, callback);
 
-		},
+			},
 
-		// 执行延时方法队列中的程序
-		delayExec : function () {
+			// 递归载入器
+			iterateLoad : function (lst, i, handle, callback, scope) {
 
-			var obj;
-			while (obj = this.delayExecQueue.shift())
-				obj.method.apply(obj.scope, obj.args);
+				var me = this;
 
-		},
+				if (i == lst.length) {
+					callback.call(scope || me);
+					return;
+				}
 
-		// 加载声明
-		// @path(str|array) 需加载的路径列表 
-		// @path(fn) 加载完毕后委托句柄
-		// @scope(obj) 加载完成后委托句柄执行域
-		using : function (path, scope) {
-
-			this.loadList = this.loadList || [];
-			this.loadListUniqueMap = this.loadListUniqueMap || {};
-
-			global.isString(path) && (path = [path]);
-
-			global.isArray(path) && global.each(path, function (idx, item) {
-				global.uniquePush(this.loadList, item, this.loadListUniqueMap);
-			}, this);
-
-			(!path || global.isFunction(path)) && this.iterateLoad(this.loadList, 0, this.loadHandler, function () {
-
-				this.loadList = [];
-				this.loadListUniqueMap = {};
-				this.delayLoad();
-				this.delayWriteStyle();
-				this.load(path, scope);
-
-			}, this);
-
-			return this;
-		},
-
-		// 加载请求
-		// @param (路径列表[...],加载完成后委托句柄(fn))
-		require : function () {
-
-			if (arguments.length < 1)
-				return;
-			if (arguments.length < 2)
-				arguments[0].call(window);
-
-			var me = this,
-			argLen = arguments.length,
-			callback = arguments[argLen - 1],
-			i = 0,
-			lst = [],
-			uniqueMap = {};
-
-			for (; i < argLen - 1; i++) {
-
-				if (arguments[i]instanceof Array)
-					global.each(arguments[i], function () {
-						global.uniquePush(lst, this, uniqueMap)
-					});
-
-				global.uniquePush(lst, arguments[i], uniqueMap);
+				handle.call(me, lst[i], function () {
+					global.Loader.prototype.iterateLoad.call(me, lst, ++i, handle, callback, scope);
+				});
 			}
 
-			this.iterateLoad(lst, 0, this.loadHandler, function () {
-				this.load(callback);
-			}, this);
-
-		},
-
-		// 载入句柄
-		loadHandler : function (target, callback) {
-
-			global.Loader.loadedMap = global.Loader.loadedMap || {}; //记录已经载入的文件
-
-			var isJs = /.+\.js$/.test(target),
-			isCss = /.+\.css$/.test(target),
-			doNothing = (!isJs && !isCss) || global.Loader.loadedMap[target];
-
-			if (doNothing) {
-				callback();
-				return;
-			}
-
-			global.$currentLoader = this;
-
-			if (!doNothing)
-				global.Loader.loadedMap[target] = true;
-
-			if (isJs)
-				global.loadScript(target, callback);
-
-			if (isCss)
-				global.loadStyle(target, callback);
-
-		},
-
-		// 递归载入器
-		iterateLoad : function (lst, i, handle, callback, scope) {
-
-			var me = this;
-
-			if (i == lst.length) {
-				callback.call(scope || me);
-				return;
-			}
-
-			handle.call(me, lst[i], function () {
-				global.Loader.prototype.iterateLoad.call(me, lst, ++i, handle, callback, scope);
-			});
-		}
-
-	});
+		});
 
 	// 默认载入器
 	global.loader = new global.Loader('defaultLoader');

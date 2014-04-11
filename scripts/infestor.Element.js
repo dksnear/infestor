@@ -578,9 +578,7 @@ infestor.define('infestor.Element', {
 	destroy : function (strict) {
 
 		// 销毁子元素
-		this.itemsMap && infestor.each(this.itemsMap, function (id, item) {
-			item && this.removeItem(id);
-		}, this);
+		this.removeItem();
 
 		// 销毁所有Dom元素
 		strict && infestor.each(this, function (name, attr) {
@@ -712,16 +710,17 @@ infestor.define('infestor.Element', {
 	// 使当前元素定位在目标元素附近 
 	// @target 目标元素或坐标({ top:0,left:0,height:0,width:0})
 	// @pos 默认位置 (top|left|right|bottom)
- 	// @offset 偏移量 浮动距离和分开距离  ({ drift:0,depart:0,mode:(front|middle|rear)})
+ 	// @offset 偏移量 浮动距离和分开距离  ({ drift:(0|head|middle|rear),depart:0})
 	// @strict 按照默认位置定位 不自动左右/上下切换 (true|false)
 	// @mode 定位模式 (fixed|absolute|relative|static)
 	// #return 返回最终出现位置 @pos (top|left|right|bottom|false)
 	autoPosition:function(target,pos,offset,mode,strict){
 	
 		var css = { position:'fixed',top:'auto',left:'auto',right:'auto',bottom:'auto' },
-			
-			clientHeight = document.body.clientHeight,
-			clientWidth = document.body.clientWidth;
+			driftMap = { head:-17,middle:0,rear:0 },
+			defaultDepart = 7,
+			scrollHeight = document.body.scrollHeight,
+			scrollWidth = document.body.scrollWidth;
 	
 		if(!this.element) return false;
 	
@@ -729,23 +728,10 @@ infestor.define('infestor.Element', {
 			target = target.element;
 		if(target instanceof infestor.Dom)
 			target = target.offset();
-		
-		//处理offset参数
-		
-		if(infestor.isString(offset))
-			offset = {				
-				drift:offset.split(' ')[1] || 0,
-				depart:offset.split(' ')[0] || 0
-			};
-			
-		
-			
-		mode && (css.position = mode);
-		
-		offset = infestor.append({ drift:0,depart:0 },offset),			
+					
 		target = infestor.append({ top:0,left:0,height:0,width:0 },target);	
-		target.right = clientWidth - parseFloat(target.left);
-		target.bottom = clientHeight - parseFloat(target.top);
+		target.right = scrollWidth - parseFloat(target.left);
+		target.bottom = scrollHeight - parseFloat(target.top);
 		target.leftTrend = (parseFloat(target.left) + parseFloat(target.width)) > parseFloat(target.right);
 		target.topTrend = (parseFloat(target.top) + parseFloat(target.height)) > parseFloat(target.bottom);
 		
@@ -754,6 +740,32 @@ infestor.define('infestor.Element', {
 			
 		if(!strict && (pos == 'top' || pos == 'bottom'))
 			pos = target.topTrend ? 'top' : 'bottom';
+			
+			
+		//处理offset参数
+		if(infestor.isString(offset))
+			offset = {				
+				drift: offset.split(' ')[0],
+				depart: offset.split(' ')[1] || defaultDepart
+			};
+		
+		if(pos == 'left' || pos == 'right'){
+		
+			driftMap.middle = driftMap.head + Math.ceil(parseFloat(target.height) / 2);
+			driftMap.rear = driftMap.head + parseFloat(target.height);
+		}
+		
+		if(pos == 'top' || pos == 'bottom'){
+		
+			driftMap.middle = driftMap.head + Math.ceil(parseFloat(target.width) / 2);
+			driftMap.rear = driftMap.head + parseFloat(target.width);
+		}
+		
+		offset.drift = driftMap[offset.drift] || offset.drift || 0;
+		
+		offset = infestor.append({ drift:0,depart:defaultDepart },offset);
+				
+		mode && (css.position = mode);
 		
 		if(pos == 'right')
 			this.element.css(infestor.append(css,{
@@ -805,15 +817,16 @@ infestor.define('infestor.Element', {
 		infestor.mgr.require('infestor.Tip',function(){
 		
 			this.tip = infestor.Tip.init();
-			
-			this.element.on('mouseover',function(){
+						
+			this.element.on('mouseover',infestor.throttle(function(){
 			
 				this.tip.setText(this.tipText);
 				this.tip.show();
-				this.tip.autoPosition(this.element,'left','12 -2',false);
+				this.tip.autoPosition(this.element,'left','middle');
 			
-			},this);
+			}),this);
 			
+		
 			this.element.on('mouseleave',function(){
 				
 				this.tip.hide();

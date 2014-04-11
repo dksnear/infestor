@@ -2,15 +2,25 @@
 infestor.define('infestor.Draggable', {
 
 	/*
-	onStart
-	onMove
-	onStop
+	start
+	move
+	stop
 	 */
 
 	extend : 'infestor.Object',
+	
+	//拖放对象
+	element : null,
 
+	//设置触发对象（不设置则使用拖放对象）
+	elementTrigger : null,
+
+	//指定限制在容器内
+	elementContainer : null,
+	
 	posX : 0,
 	posY : 0,
+	
 	//锁定水平方向拖放
 	lockX : false,
 	//锁定垂直方向拖放
@@ -19,12 +29,6 @@ infestor.define('infestor.Draggable', {
 	lock : false,
 	//透明
 	transparent : false,
-	//设置触发对象（不设置则使用拖放对象）
-	handlerElement : null,
-	//拖放对象
-	element : null,
-	//指定限制在容器内
-	container : null,
 	//是否设置范围限制(为true时下面参数有用,可以是负数)
 	limit : false,
 	//左边限制
@@ -41,15 +45,15 @@ infestor.define('infestor.Draggable', {
 
 	isIE : infestor.browser.msie,
 
-	initialization : function () {
+	init: function () {
 
 		var me = this;
 
-		this.handlerElement = this.handlerElement || this.element;
+		this.elementTrigger = this.elementTrigger || this.element;
 
 		//记录源dom对象的position样式,用来还原
 		this.elbakPos = infestor.Dom.use(this.element).css('position');
-		this.ctbakPos = this.container && infestor.Dom.use(this.container).css('position');
+		this.ctbakPos = this.elementContainer && infestor.Dom.use(this.elementContainer).css('position');
 		this.element.style.position = 'absolute';
 
 		this.moveEventHandler = function (e) {
@@ -62,7 +66,7 @@ infestor.define('infestor.Draggable', {
 			me.start(e);
 		}
 
-		infestor.on(this.handlerElement, 'mousedown', this.startEventHandler);
+		infestor.on(this.elementTrigger, 'mousedown', this.startEventHandler);
 	},
 
 	start : function (event) {
@@ -83,8 +87,8 @@ infestor.define('infestor.Draggable', {
 
 		if (this.isIE) {
 
-			infestor.on(this.handlerElement, 'losecapture', this.stopEventHandler);
-			this.handlerElement.setCapture();
+			infestor.on(this.elementTrigger, 'losecapture', this.stopEventHandler);
+			this.elementTrigger.setCapture();
 
 		} else {
 
@@ -92,7 +96,7 @@ infestor.define('infestor.Draggable', {
 			event.preventDefault();
 		};
 
-		this.emit('onStart', [this.element.offsetTop, this.element.offsetLeft], this);
+		this.emit('start', [this.element.offsetTop, this.element.offsetLeft], this);
 	},
 
 	move : function (event) {
@@ -111,12 +115,12 @@ infestor.define('infestor.Draggable', {
 
 		if (this.limit) {
 
-			if (this.container) {
+			if (this.elementContainer) {
 
 				maxLeft = Math.max(maxLeft, 0);
 				maxTop = Math.max(maxTop, 0);
-				maxRight = Math.min(maxRight, this.container.clientWidth);
-				maxBottom = Math.min(maxBottom, this.container.clientHeight);
+				maxRight = Math.min(maxRight, this.elementContainer.clientWidth);
+				maxBottom = Math.min(maxBottom, this.elementContainer.clientHeight);
 			}
 
 			left = Math.max(Math.min(left, maxRight - this.element.offsetWidth), maxLeft);
@@ -130,7 +134,7 @@ infestor.define('infestor.Draggable', {
 		if (!this.lockY)
 			this.element.style.top = (top - this.marginTop) + 'px';
 
-		this.emit('onMove', [this.element.offsetTop, this.element.offsetLeft], this)
+		this.emit('move', [this.element.offsetTop, this.element.offsetLeft], this)
 
 	},
 
@@ -141,12 +145,12 @@ infestor.define('infestor.Draggable', {
 
 		if (this.isIE) {
 
-			infestor.un(this.handlerElement, 'losecapture', this.stopEventHandler);
-			this.handlerElement.releaseCapture();
+			infestor.un(this.elementTrigger, 'losecapture', this.stopEventHandler);
+			this.elementTrigger.releaseCapture();
 		} else
 			infestor.un(window, 'blur', this.stopEventHandler);
 
-		this.emit('onStop', [this.element.offsetTop, this.element.offsetLeft], this);
+		this.emit('stop', [this.element.offsetTop, this.element.offsetLeft], this);
 
 	},
 
@@ -158,18 +162,18 @@ infestor.define('infestor.Draggable', {
 		this.maxRight = Math.max(this.maxRight, this.maxLeft + this.element.offsetWidth);
 		this.maxBottom = Math.max(this.maxBottom, this.maxTop + this.element.offsetHeight);
 
-		var container = this.container && infestor.Dom.use(this.container);
+		var elementContainer = this.elementContainer && infestor.Dom.use(this.elementContainer);
 
-		container && (container.css('position') != 'relative' || container.css('position') != 'absolute') && container.css('position', 'relative');
+		elementContainer && (elementContainer.css('position') != 'relative' || elementContainer.css('position') != 'absolute') && elementContainer.css('position', 'relative');
 	},
 
 	destroy : function () {
 
 		this.stop();
-		infestor.un(this.handlerElement, 'mousedown', this.startEventHandler);
+		infestor.un(this.elementTrigger, 'mousedown', this.startEventHandler);
 		this.element.style.position = this.elbakPos;
-		if (this.ctbakPos && this.container)
-			this.container.style.position = this.ctbakPos;
+		if (this.ctbakPos && this.elementContainer)
+			this.elementContainer.style.position = this.ctbakPos;
 	}
 
 });
