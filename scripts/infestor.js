@@ -448,8 +448,8 @@ infestor js
 
 			var ua = navigator.userAgent.toLowerCase(),
 			result = {},
-			match = /(chrome)[ \/]([\w.]+)/.exec(ua) ||
-				/(webkit)[ \/]([\w.]+)/.exec(ua) ||
+			match = /(webkit)[ \/]([\w.]+)/.exec(ua) ||
+				/(chrome)[ \/]([\w.]+)/.exec(ua) ||
 				/(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
 				/(msie) ([\w.]+)/.exec(ua) ||
 				ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
@@ -1406,7 +1406,7 @@ infestor js
 
 			// 须延时执行的方法执行环境队列
 			delayExecQueue : [],
-			
+
 			// 阻塞方法队列
 			blockQueue : [],
 
@@ -1520,7 +1520,7 @@ infestor js
 				this.delayDefineSet = {};
 
 			},
-			
+
 			// 阻塞委托方法
 			// @method(fn) 委托方法
 			// @predicate(fn) 委托方法执行断言

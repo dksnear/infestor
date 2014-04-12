@@ -89,6 +89,8 @@ infestor.define('infestor.Resize', {
 				limit : true,
 				events : {
 
+					start : function () {},
+
 					move : function (top, left) {
 
 						me.currentHeight = top - me.offset.top + me.triggerHeight;
@@ -106,8 +108,8 @@ infestor.define('infestor.Resize', {
 
 						infestor.Dom.use(me.element).css({
 
-							height : infestor.px(me.currentHeight - me.targetBorderHeight + me.triggerBorder),
-							width : infestor.px(me.currentWidth - me.targetBorderWidth + me.triggerBorder)
+							height : infestor.px(me.currentHeight - me.targetBorderHeight + (!infestor.isWebkit() ? 0 : 2 * me.triggerBorder)),
+							width : infestor.px(me.currentWidth - me.targetBorderWidth + (!infestor.isWebkit() ? 0 : 2 * me.triggerBorder))
 
 						});
 
