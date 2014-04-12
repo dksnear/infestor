@@ -1425,8 +1425,8 @@ infestor js
 				callback = function () {
 
 					handle && handle.call(this);
-					me.delayExec();
 					me.blockFree();
+					me.delayExec();
 				};
 
 				if (document.readyState == 'complete')

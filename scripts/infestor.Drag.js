@@ -118,7 +118,7 @@ infestor.define('infestor.Drag', {
 		var left = event.clientX - this.posX,
 		top = event.clientY - this.posY,
 		maxLeft = this.maxLeft,
-		maxTop = this.marginTop,
+		maxTop = this.maxTop,
 		maxRight = this.maxRight,
 		maxBottom = this.maxBottom;
 

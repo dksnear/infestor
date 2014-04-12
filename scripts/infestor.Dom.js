@@ -565,7 +565,7 @@ infestor.define('infestor.Dom', {
 	zIndex : function (index) {
 
 		if (arguments.length < 1)
-			return infestor.Dom.setZIndex(this.element), this;
+			return infestor.Dom.setZIndex(this), this;
 
 		return this.css('z-index', index);
 

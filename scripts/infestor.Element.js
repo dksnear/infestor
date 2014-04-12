@@ -150,7 +150,7 @@ infestor.define('infestor.Element', {
 		this.initEvents && this.initEvents();
 
 		this.setText().setLayout().setPosition().setDimension().delayInit();
-		
+					
 		// 条件初始化
 		this.initTip().initResize();
 
@@ -191,7 +191,6 @@ infestor.define('infestor.Element', {
 		this.dock && (infestor.inArray(this.dock, ['north', 'south', 'west', 'center', 'east']) == -1 ? this.setDock(this.dock) : this.delayReg(function () {
 				this.setDock();
 			}));
-
 	},
 
 	renderTo : function (element, parent) {
@@ -591,10 +590,11 @@ infestor.define('infestor.Element', {
 
 		});
 
+		this.disableResize();
 
 		this.destroyList && infestor.each(this.destroyList,function(){
 			
-			this.destroy && this.destroy(strict);
+			this.destroy && this.destroy();
 		
 		});
 		
@@ -862,15 +862,21 @@ infestor.define('infestor.Element', {
 	
 		if(!this.resizable) return this;
 		
-		infestor.mgr.require('infestor.Resize',function(){
+		this.$resize && this.resize.init();
 		
-			infestor.create('infestor.Resize',{ element:this.getDom() });
+		!this.$resize && infestor.mgr.require('infestor.Resize',function(){
 		
-	
+			this.$resize = infestor.create('infestor.Resize',{ element:this.getDom() });
+		
 		},this);
 		
-		return this;
-		
+		return this;		
+	},
+	
+	disableResize:function(){
+	
+		this.$resize = this.$resize && this.$resize.destroy();
+	
 	}
 
 });
