@@ -312,8 +312,10 @@ infestor.define('infestor.Dom', {
 
 	css3 : function (name, value) {
 
-		var me = this,
-		prefix = {
+		
+		if(infestor.isIE8Minus()) return this;
+		
+		var prefix = {
 
 			chrome : '-webkit-',
 			webkit : '-webkit-',
@@ -321,16 +323,13 @@ infestor.define('infestor.Dom', {
 			//msie: '-ms-',
 			mozilla : '-moz-'
 
-		}
-		[infestor.browser.name] || '';
+		}[infestor.browser.name] || '';
 
-		if (infestor.isString(name))
-			return this.css(prefix + name, value);
+		infestor.isString(name) && this.css(prefix + name, value);
 
-		if (infestor.isObject(name))
-			infestor.each(name, function (name, value) {
-				me.css(prefix + name, value);
-			});
+		infestor.isRawObject(name) && infestor.each(name, function (name, value) {
+			this.css(prefix + name, value);
+		},this);
 
 		return this;
 

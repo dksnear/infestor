@@ -1,49 +1,58 @@
 
-infestor.define('infestor.Draggable', {
+// 拖动处理类
 
-	/*
-	start
-	move
-	stop
-	 */
+infestor.define('infestor.Drag', {
 
 	extend : 'infestor.Object',
 	
-	//拖放对象
+	uses:['infestor.Dom'],
+	
+	// 拖放对象(DOM)
 	element : null,
 
-	//设置触发对象（不设置则使用拖放对象）
+	// 设置触发对象(DOM)(不设置则使用拖放对象)
 	elementTrigger : null,
 
-	//指定限制在容器内
+	// 指定限制在容器内(DOM)
 	elementContainer : null,
 	
 	posX : 0,
 	posY : 0,
 	
-	//锁定水平方向拖放
+	// 锁定水平方向拖放
 	lockX : false,
-	//锁定垂直方向拖放
+	// 锁定垂直方向拖放
 	lockY : false,
-	//锁定
+	// 锁定
 	lock : false,
-	//透明
+	// 透明
 	transparent : false,
-	//是否设置范围限制(为true时下面参数有用,可以是负数)
+	// 是否设置范围限制(为true时下面参数有用,可以是负数)
 	limit : false,
-	//左边限制
+	// 左边限制
 	maxLeft : 0,
-	//右边限制
+	// 右边限制
 	maxRight : 9999,
-	//上边限制
+	// 上边限制
 	maxTop : 0,
-	//下边限制
+	// 下边限制
 	maxBottom : 9999,
 
 	marginTop : 0,
 	marginLeft : 0,
 
 	isIE : infestor.browser.msie,
+	
+	
+	events:{
+	
+		// @params this.element.offsetTop,this.element.offsetLeft
+		// @this this
+		start:null,
+		move:null,
+		stop:null
+	
+	},
 
 	init: function () {
 

@@ -11,7 +11,7 @@ infestor.define('infestor.Element', {
 	extend : 'infestor.Object',
 
 	// 关联类引用
-	uses : ['infestor.DataSet', 'infestor.Dom', 'infestor.Draggable'],
+	uses : ['infestor.DataSet', 'infestor.Dom'],
 
 	// css 文件引用
 	cssUses : ['infestor.Element'],
@@ -55,16 +55,16 @@ infestor.define('infestor.Element', {
 	cssClsElementPositionNorthEast : 'infestor-element-position-north-east',
 	cssClsElementPositionNorthWest : 'infestor-element-position-north-west',
 
-	// 控件元素的容器接口
+	// 控件元素的容器接口(infestor.Dom)
 	element : null,
 
-	// 控件元素的外层元素容器接口
+	// 控件元素的外层元素容器接口(infestor.Dom)
 	elementOuterContainer : null,
 
-	// 控件元素的子元素容器接口
+	// 控件元素的子元素容器接口(infestor.Dom)
 	elementInnerContainer : null,
 
-	// 遮罩元素接口
+	// 遮罩元素接口(infestor.Dom)
 	elementMask : null,
 
 	// 控件元素的父容器
@@ -152,7 +152,7 @@ infestor.define('infestor.Element', {
 		this.setText().setLayout().setPosition().setDimension().delayInit();
 		
 		// 条件初始化
-		this.initTip();
+		this.initTip().initResize();
 
 	},
 
@@ -630,6 +630,18 @@ infestor.define('infestor.Element', {
 		return null;
 
 	},
+	
+	
+	getElement:function(){
+	
+		return this.element;
+	},
+	
+	getDom:function(){
+		
+		return this.element && this.element.element;
+	
+	},
 
 	// 创建元素
 	createDomElement : function (parent, cls, tag, attr, predicate) {
@@ -719,8 +731,8 @@ infestor.define('infestor.Element', {
 		var css = { position:'fixed',top:'auto',left:'auto',right:'auto',bottom:'auto' },
 			driftMap = { head:-17,middle:0,rear:0 },
 			defaultDepart = 7,
-			scrollHeight = document.body.scrollHeight,
-			scrollWidth = document.body.scrollWidth;
+			clientHeight = document.documentElement.clientHeight,
+			clientWidth = document.documentElement.clientWidth;
 	
 		if(!this.element) return false;
 	
@@ -730,8 +742,8 @@ infestor.define('infestor.Element', {
 			target = target.offset();
 					
 		target = infestor.append({ top:0,left:0,height:0,width:0 },target);	
-		target.right = scrollWidth - parseFloat(target.left);
-		target.bottom = scrollHeight - parseFloat(target.top);
+		target.right = clientWidth - parseFloat(target.left);
+		target.bottom = clientHeight - parseFloat(target.top);
 		target.leftTrend = (parseFloat(target.left) + parseFloat(target.width)) > parseFloat(target.right);
 		target.topTrend = (parseFloat(target.top) + parseFloat(target.height)) > parseFloat(target.bottom);
 		
@@ -802,6 +814,7 @@ infestor.define('infestor.Element', {
 	
 	},
 	
+	// 下面的方法为条件引入
 	
 	// 条件引入Tip	
 	initTip : function (tip){
@@ -818,7 +831,7 @@ infestor.define('infestor.Element', {
 		
 			this.tip = infestor.Tip.init();
 						
-			this.element.on('mouseover',infestor.throttle(function(){
+			this.element.on('mouseover',infestor.debounce(function(){
 			
 				this.tip.setText(this.tipText);
 				this.tip.show();
@@ -843,6 +856,21 @@ infestor.define('infestor.Element', {
 	
 		return this;
 	
+	},
+	
+	initResize:function(){
+	
+		if(!this.resizable) return this;
+		
+		infestor.mgr.require('infestor.Resize',function(){
+		
+			infestor.create('infestor.Resize',{ element:this.getDom() });
+		
+	
+		},this);
+		
+		return this;
+		
 	}
 
 });

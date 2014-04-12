@@ -727,7 +727,7 @@ infestor js
 			return function () {
 
 				var scope = this,
-					args = arguments;
+				args = arguments;
 
 				timeout && clearTimeout(timeout);
 
@@ -955,9 +955,6 @@ infestor js
 			// 存放已加载类或样式表名
 			loadedMap : {},
 
-			// 阻塞方法队列
-			blockQueue : [],
-
 			// 允许加载类中引用的css
 			allowLoadCss : true,
 
@@ -1060,61 +1057,22 @@ infestor js
 					return handle.apply(scope || window), this;
 
 				// 类未加载则创建加载器
-				loader = new global.Loader()
+				loader = new global.Loader();
 
-					// 注册加载器
-					//global.loaders = global.loaders || {};
+				// 注册加载器
+				//global.loaders = global.loaders || {};
 
-					//global.loaders[loader.id] = loader;
+				//global.loaders[loader.id] = loader;
 
-					this.using(clsName, null, loader);
+				this.using(clsName, null, loader);
 
 				// 阻塞委托方法 直到所有依赖类加载完毕再执行
-				this.block(handle, predicate, null, scope);
+				loader.block(handle, predicate, null, scope);
 
 				// 执行加载器
 				loader.using();
 
 				return this;
-
-			},
-
-			// 阻塞委托方法
-			// @method(fn) 委托方法
-			// @predicate(fn) 委托方法执行断言
-			// @args(array) 委托方法执行参数
-			// @scope(obj) 委托方法执行域
-			block : function (method, predicate, args, scope) {
-
-				this.blockQueue.push({
-
-					method : method,
-					predicate : predicate,
-					args : args || [],
-					scope : scope || window,
-					block : true
-
-				});
-
-			},
-
-			// 执行被阻塞的委托方法
-			blockFree : function () {
-
-				var len = this.blockQueue.length;
-
-				infestor.each(this.blockQueue, function () {
-
-					if (this.block && this.predicate.apply(this.scope, this.args)) {
-
-						this.block = false;
-						this.method.apply(this.scope, this.args);
-						len--;
-					}
-
-				});
-
-				!len && (this.blockQueue = []);
 
 			},
 
@@ -1448,6 +1406,9 @@ infestor js
 
 			// 须延时执行的方法执行环境队列
 			delayExecQueue : [],
+			
+			// 阻塞方法队列
+			blockQueue : [],
 
 			constructor : function (id) {
 
@@ -1465,7 +1426,7 @@ infestor js
 
 					handle && handle.call(this);
 					me.delayExec();
-					global.mgr.blockFree();
+					me.blockFree();
 				};
 
 				if (document.readyState == 'complete')
@@ -1557,6 +1518,45 @@ infestor js
 				}, this);
 
 				this.delayDefineSet = {};
+
+			},
+			
+			// 阻塞委托方法
+			// @method(fn) 委托方法
+			// @predicate(fn) 委托方法执行断言
+			// @args(array) 委托方法执行参数
+			// @scope(obj) 委托方法执行域
+			block : function (method, predicate, args, scope) {
+
+				this.blockQueue.push({
+
+					method : method,
+					predicate : predicate,
+					args : args || [],
+					scope : scope || window,
+					block : true
+
+				});
+
+			},
+
+			// 执行被阻塞的委托方法
+			blockFree : function () {
+
+				var len = this.blockQueue.length;
+
+				infestor.each(this.blockQueue, function () {
+
+					if (this.block && this.predicate.apply(this.scope, this.args)) {
+
+						this.block = false;
+						this.method.apply(this.scope, this.args);
+						len--;
+					}
+
+				});
+
+				!len && (this.blockQueue = []);
 
 			},
 
