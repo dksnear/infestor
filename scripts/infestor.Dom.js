@@ -343,7 +343,7 @@ infestor.define('infestor.Dom', {
 		p = /p/i.test(attrs),
 		oh = infestor.parseNumeric(this.element.offsetHeight),
 		ph = infestor.parseNumeric(this.css('padding-top')) + infestor.parseNumeric(this.css('padding-bottom')),
-		bh = infestor.parseNumeric(this.css('border-top')) + infestor.parseNumeric(this.css('border-bottom')),
+		bh = infestor.parseNumeric(this.css('border-top-width')) + infestor.parseNumeric(this.css('border-bottom-width')),
 		mh = infestor.parseNumeric(this.css('margin-top')) + infestor.parseNumeric(this.css('margin-bottom')),
 		h = oh - ph - bh;
 

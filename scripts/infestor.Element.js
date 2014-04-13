@@ -847,7 +847,7 @@ infestor.define('infestor.Element', {
 	
 	disableDraggable:function(){
 	
-		this.$drag = this.$drag && this.drag.destroy();
+		this.$drag = this.$drag && this.$drag.destroy();
 	
 	},
 	
@@ -859,7 +859,27 @@ infestor.define('infestor.Element', {
 		
 		!this.$resize && infestor.mgr.require('infestor.Resize',infestor.debounce(function(){
 		
-			this.$resize = this.$resize || infestor.create('infestor.Resize',{ element:this.getDom() });
+			var me=this;
+			
+			this.$resize = this.$resize || infestor.create('infestor.Resize',{ 
+				
+				element:this.getDom(),
+				events:{
+				
+					beforeStart:function(){
+					
+						me.disableDraggable();
+					
+					},
+					afterStop:function(){
+						
+						me.initDraggable();
+					
+					}
+				
+				}	
+					
+			});
 		
 		},100),this);
 		

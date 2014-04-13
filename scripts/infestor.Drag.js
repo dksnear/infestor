@@ -103,6 +103,8 @@ infestor.define('infestor.Drag', {
 			infestor.on(window, 'blur', this.stopEventHandler);
 			event.preventDefault();
 		};
+		
+		infestor.Dom.use(this.element).zIndex();
 
 		this.emit('start', [this.element.offsetTop, this.element.offsetLeft], this);
 	},

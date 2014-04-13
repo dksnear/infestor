@@ -35,9 +35,12 @@ infestor.define('infestor.Resize', {
 
 		// @params this.elementTrigger.offsetTop,this.elementTrigger.offsetLeft
 		// @this this
-		start : null,
-		move : null,
-		stop : null
+		beforeStart : null,
+		afterStart: null,
+		beforeMove : null,
+		afterMove : null,
+		beforeStop: null,
+		afterStop: null
 
 	},
 
@@ -47,13 +50,10 @@ infestor.define('infestor.Resize', {
 			return;
 
 		this.offset = infestor.Dom.use(this.element).offset();
-		this.targetBorderHeight = this.offset.height - infestor.Dom.use(this.element).height();
-		this.targetBorderWidth = this.offset.width - infestor.Dom.use(this.element).width();
-		
-		this.targetBorderTop = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-top'));
-		this.targetBorderLeft = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-left'));
-		this.targetBorderBottom = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-bottom'));
-		this.targetBorderRight = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-right'));
+		this.targetBorderTop = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-top-width'));
+		this.targetBorderLeft = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-left-width'));
+		this.targetBorderBottom = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-bottom-width'));
+		this.targetBorderRight = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-right-width'));
 
 		this.initDrag();
 
@@ -70,10 +70,8 @@ infestor.define('infestor.Resize', {
 				border : infestor.px(this.triggerBorder) + ' solid black',
 				cursor : this.lockX ? 's-resize' : this.lockY ? 'e-resize' : 'se-resize',
 				position : 'absolute',
-				right : '-2px', //infestor.px(this.targetBorderRight*-1),
-				bottom : '-1px'//infestor.px(this.targetBorderBottom*-1)
-				// top : infestor.px(this.offset.top + this.offset.height - 2 * this.triggerBorder - this.triggerHeight),
-				// left : infestor.px(this.offset.left + this.offset.width - 2 * this.triggerBorder - this.triggerWidth)
+				right : infestor.px(this.targetBorderRight * -1),
+				bottom : infestor.px(this.targetBorderBottom * -1)
 
 			}).appendTo(infestor.Dom.use(this.element)).zIndex();
 
@@ -110,53 +108,54 @@ infestor.define('infestor.Resize', {
 				events : {
 
 					start : function (top, left) {
+					
+						me.emit('beforeStart', [top, left], me);
 
 						me.offset = infestor.Dom.use(me.element).offset();
 
-						me.targetBorderTop = 10; //infestor.parseNumeric(infestor.Dom.use(this.element).css('border-top'));
-						me.targetBorderLeft = 5;// infestor.parseNumeric(infestor.Dom.use(this.element).css('border-left'));
-						me.targetBorderBottom = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-bottom'));
-						me.targetBorderRight = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-right'));
 						//this.maxTop = me.triggerBorder*-2;
 						//this.maxLeft = me.triggerBorder*-2;
-						this.maxBottom = document.documentElement.clientHeight-me.offset.top-me.targetBorderTop; //52
-						this.maxRight= document.documentElement.clientWidth -me.offset.left-me.targetBorderLeft; //102
-						
-						me.elementGuideRect.zIndex().show();
-						me.elementTrigger.zIndex();
+						this.maxBottom = document.documentElement.clientHeight - me.offset.top - me.targetBorderTop; 
+						this.maxRight = document.documentElement.clientWidth - me.offset.left - me.targetBorderLeft; 
 
-						me.emit('start', [top, left], me);
+						//me.elementTrigger.zIndex();
+
+						me.emit('afterStart', [top, left], me);
 
 					},
 
 					move : function (top, left) {
-
+					
+						me.emit('beforeMove', [top, left], me);
+						
 						me.elementGuideRect.css({
 
-							height : infestor.px(top + me.elementTrigger.height() + me.targetBorderTop -2),
-							width : infestor.px(left + me.elementTrigger.width() + me.targetBorderLeft -2)
+							top : infestor.px(me.offset.top),
+							left : infestor.px(me.offset.left),
+							height : infestor.px(top + me.elementTrigger.height() + me.targetBorderTop),
+							width : infestor.px(left + me.elementTrigger.width() + me.targetBorderLeft - (infestor.isWebkit() ? 0 : 2 * me.triggerBorder))
 
-						});
+						}).zIndex().show();
+						
+						me.emit('afterMove', [top, left], me);
 
-						me.emit('move', [top, left], me);
 					},
 
 					stop : function (top, left) {
+					
+						me.emit('beforeStop', [top, left], me);
 
 						infestor.Dom.use(me.element).css({
 
-							// height : infestor.px(top + me.elementTrigger.height() - me.targetBorderBottom + (!infestor.isWebkit() ? 0 : 2 * me.triggerBorder)),
-							// width : infestor.px(left + me.elementTrigger.width() - me.targetBorderRight + (!infestor.isWebkit() ? 0 : 2 * me.triggerBorder))
-
-							height : infestor.px(top + me.elementTrigger.height() - 1 + (!infestor.isWebkit() ? 0 : 2 * me.triggerBorder)),
-							width : infestor.px(left + me.elementTrigger.width() - 2 + (!infestor.isWebkit() ? 0 : 2 * me.triggerBorder))
+							height : infestor.px(top + me.elementTrigger.height() - me.targetBorderBottom + 2 * me.triggerBorder),
+							width : infestor.px(left + me.elementTrigger.width() - me.targetBorderRight + (!infestor.isWebkit() ? 0 : 2 * me.triggerBorder))
 
 						});
 
 						me.elementGuideRect.hide();
 						infestor.Dom.use(me.element).zIndex();
-
-						me.emit('stop', [top, left], me);
+						
+						me.emit('afterStop', [top, left], me);
 
 					}
 
