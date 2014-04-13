@@ -37,7 +37,7 @@ infestor.define('infestor.Object', {
 	// 注册延时执行方法
 	delayReg : function (fn, args, scope) {
 
-		infestor.mgr.delayReg(fn, args || [], scope || this);
+		infestor.mgr.delayReg(infestor.mgr.loadedMap[this.$clsName], fn, args || [], scope || this);
 
 	},
 

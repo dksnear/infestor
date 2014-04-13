@@ -20,6 +20,9 @@ infestor.define('infestor.Resize', {
 
 	// 调整目标尺寸
 	offset : null,
+	
+	lockX:false,
+	lockY:false,
 
 	triggerBorder : 1,
 	triggerWidth : 10,
@@ -27,6 +30,16 @@ infestor.define('infestor.Resize', {
 
 	// (infestor.Drag)
 	drag : null,
+	
+	events:{
+	
+		// @params this.elementTrigger.offsetTop,this.elementTrigger.offsetLeft
+		// @this this
+		start:null,
+		move:null,
+		stop:null
+	
+	},
 
 	init : function () {
 
@@ -87,9 +100,16 @@ infestor.define('infestor.Resize', {
 				maxTop : this.offset.top,
 				maxLeft : this.offset.left,
 				limit : true,
+				lockY: this.lockY,
+				lockX:this.lockX,
 				events : {
 
-					start : function () {},
+					start : function (top,left) {
+					
+					
+						me.emit('start',[top,left],me);
+					
+					},
 
 					move : function (top, left) {
 
@@ -102,6 +122,8 @@ infestor.define('infestor.Resize', {
 							width : infestor.px(me.currentWidth)
 
 						});
+						
+						me.emit('move',[top,left],me);
 					},
 
 					stop : function (top, left) {
@@ -112,6 +134,8 @@ infestor.define('infestor.Resize', {
 							width : infestor.px(me.currentWidth - me.targetBorderWidth + (!infestor.isWebkit() ? 0 : 2 * me.triggerBorder))
 
 						});
+						
+						me.emit('stop',[top,left],me);
 
 					}
 

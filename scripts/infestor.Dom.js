@@ -591,8 +591,8 @@ infestor.define('infestor.Dom', {
 
 	destroy : function () {
 
-		this.remove();
-		//this.element = null;
+	    return this.remove();
+		
 	}
 
 },

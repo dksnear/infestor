@@ -1,8 +1,29 @@
 
 
-// 一些不是很科学的保留方法
+//  保留方法(一些不是很科学的方法)
 
 infestor.namespace('infestor.reserve',{
+
+	// 计算滚动条的宽度
+	scrollWidth : function () {
+
+		if (this.$scrollWidth)
+			return this.$scrollWidth;
+
+		var noScroll,
+		scroll,
+		oDiv = document.createElement("DIV");
+
+		oDiv.style.cssText = 'position:absolute; top:-1000px; width:100px; height:100px; overflow:hidden;';
+		noScroll = document.body.appendChild(oDiv).clientWidth;
+		oDiv.style.overflowY = 'scroll';
+		scroll = oDiv.clientWidth;
+		document.body.removeChild(oDiv);
+
+		this.$scrollWidth = noScroll - scroll;
+
+		return this.$scrollWidth;
+	},
 
 	// 判断元素是否出现滚动条
 	isScroll : function (el) {

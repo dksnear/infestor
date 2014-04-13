@@ -73,7 +73,7 @@ infestor js
 
 	global.appendIf = function (des, src, predicate, scope, reverse) {
 
-		infestor.isString(predicate) && (predicate = [predicate]);
+		global.isString(predicate) && (predicate = [predicate]);
 
 		var predicateArr = global.isArray(predicate) ? predicate : null;
 
@@ -851,7 +851,7 @@ infestor js
 
 			var event;
 
-			//for other browser and IE9+
+			// otherwise IE8-
 
 			if (document.createEvent) {
 				event = document.createEvent('HTMLEvents');
@@ -864,6 +864,7 @@ infestor js
 			// for IE8-
 
 			if (document.createEventObject) {
+
 				event = document.createEventObject();
 				event.eventType = 'message';
 				target.fireEvent('on' + eventName, event);
@@ -883,6 +884,12 @@ infestor js
 			return global.reomveEventListener.apply(this, arguments);
 		},
 
+		emit : function () {
+
+			return global.dispatchEvent.apply(this, arguments);
+
+		},
+
 		stopPropagation : function (e) {
 
 			if (e && e.stopPropagation)
@@ -897,26 +904,6 @@ infestor js
 				return e.preventDefault(), undefined;
 
 			(e || window.event).returnValue = false;
-		},
-
-		scrollWidth : function () {
-
-			if (this.$scrollWidth)
-				return this.$scrollWidth;
-
-			var noScroll,
-			scroll,
-			oDiv = document.createElement("DIV");
-
-			oDiv.style.cssText = 'position:absolute; top:-1000px; width:100px; height:100px; overflow:hidden;';
-			noScroll = document.body.appendChild(oDiv).clientWidth;
-			oDiv.style.overflowY = 'scroll';
-			scroll = oDiv.clientWidth;
-			document.body.removeChild(oDiv);
-
-			this.$scrollWidth = noScroll - scroll;
-
-			return this.$scrollWidth;
 		},
 
 		clearSelection : function () {
@@ -940,10 +927,10 @@ infestor js
 			defaultCssPath : 'resources/css',
 			defaultScriptsPath : 'scripts',
 
-			// 类管理器
+			// 类管理器(已经创建完成的类映射表)
 			classMap : {},
 
-			// 实例管理器
+			// 实例映射表
 			instanceMap : {},
 
 			// 已托管实例数目
@@ -952,7 +939,7 @@ infestor js
 			// 类别名映射
 			aliasMap : {},
 
-			// 存放已加载类或样式表名
+			// 文件载入器映射表
 			loadedMap : {},
 
 			// 允许加载类中引用的css
@@ -1015,10 +1002,11 @@ infestor js
 
 					!isDefaultType && (name = name + type);
 
-					if (this.loadedMap[name])
+					if (!!this.loadedMap[name])
 						return true;
 
-					this.loadedMap[name] = true;
+					// 记录加该载文件所用的载入器
+					this.loadedMap[name] = loader;
 
 					path = this.convertToPath(rawName, type);
 
@@ -1039,11 +1027,11 @@ infestor js
 
 					var lock = false;
 
-					infestor.isString(clsName) && (clsName = [clsName]);
+					global.isString(clsName) && (clsName = [clsName]);
 
-					infestor.each(clsName, function () {
+					global.each(clsName, function () {
 
-						if (!infestor.mgr.classMap[clsName])
+						if (!global.mgr.classMap[clsName])
 							lock = true;
 
 					});
@@ -1077,13 +1065,27 @@ infestor js
 			},
 
 			// 注册载入完成后执行的环境
-			delayReg : function (method, args, scope) {
+			delayReg : function (loader ,method, args, scope) {
 
-				global.$currentLoader && global.$currentLoader.delayReg.apply(global.$currentLoader, arguments);
+				loader && loader.delayReg(method, args, scope);
 
 			},
 
 			convertToPath : function (clsName, type) {
+
+				if (global.isArray(clsName)) {
+
+					var ret = [];
+
+					global.each(clsName, function (idx, name) {
+
+						ret.push(this.convertToPath(name, type));
+
+					}, this)
+
+					return ret;
+
+				};
 
 				var pathFragments = clsName && clsName.split('.'),
 				defaultType = '.js',
@@ -1230,8 +1232,8 @@ infestor js
 		define : function (clsNs, options, callback) {
 
 			// 等待所有类加载完成后 延时定义
-			if (global.$currentLoader && global.$currentLoader.isDelay)
-				return global.$currentLoader.delayDefine.apply(global.$currentLoader, arguments);
+			if (global.mgr.loadedMap[clsNs] && global.mgr.loadedMap[clsNs].isDelay)
+				return global.mgr.loadedMap[clsNs].delayDefine.apply(global.mgr.loadedMap[clsNs], arguments);
 
 			options.constructor = options.constructor || function () {
 				this.callParent && this.callParent(arguments);
@@ -1256,6 +1258,8 @@ infestor js
 			extend.$clsName = options.$clsName;
 
 			extend.prototype.$ownerCls = extend;
+			
+			extend.prototype.$loader = global.mgr.loadedMap[clsNs];
 
 			// 添加类的静态方法
 			options.statics && global.append(extend, options.statics);
@@ -1392,6 +1396,8 @@ infestor js
 
 	// 定义加载器类
 	global.Loader = global.extend({
+	
+			$clsName:global.$$libName +'.Loader',
 
 			// true:延时创建类
 			// false:正常创建类
@@ -1402,7 +1408,7 @@ infestor js
 			delayDefineSet : {},
 
 			// 延时写入的样式队列
-			delayStyleQueue : [],
+			delayLoadStyleQueue : [],
 
 			// 须延时执行的方法执行环境队列
 			delayExecQueue : [],
@@ -1427,6 +1433,13 @@ infestor js
 					handle && handle.call(this);
 					me.blockFree();
 					me.delayExec();
+					me.delayWriteStyle();
+					// me.delayWriteStyle(function () {
+
+						// me.delayExec();
+
+					// });
+
 				};
 
 				if (document.readyState == 'complete')
@@ -1442,7 +1455,7 @@ infestor js
 
 				options.alias && global.mgr.addAlias(options.alias, clsNs);
 
-				options.uses && global.mgr.using(options.uses, null, global.$currentLoader);
+				options.uses && global.mgr.using(options.uses, null, this);
 
 				options.extend && global.isString(options.extend) && global.mgr.using(options.extend, null, this);
 
@@ -1511,7 +1524,7 @@ infestor js
 							item && !classMap[name] && (item.isDefined = true) && global.define(item.clsNs, item.options, item.callback)
 
 							// 注册样式
-							 && global.mgr.allowLoadCss && item.options.cssUses && this.delayStyleQueue.push(item.options.cssUses);
+							&& global.mgr.allowLoadCss && item.options.cssUses && (this.delayLoadStyleQueue = this.delayLoadStyleQueue.concat(global.mgr.convertToPath(item.options.cssUses, '.css')));
 						}
 					}
 
@@ -1519,6 +1532,30 @@ infestor js
 
 				this.delayDefineSet = {};
 
+			},
+			
+			// 延时加载已注册样式
+			delayWriteStyle : function (callback, scope) {
+
+				// if (this.delayLoadStyleQueue.length > 0)
+					// return (new global.Loader).using(this.delayLoadStyleQueue).using(function () {
+
+						// callback && callback.call(scope || window);
+						// this.delayLoadStyleQueue = [];
+
+					// }, this), this;
+
+				// return callback && callback.call(scope || window),
+				// this;
+				
+				global.each(this.delayLoadStyleQueue,function(){
+				
+					global.loadStyle(String(this));
+				
+				});
+				
+				this.delayLoadStyleQueue = [];
+			
 			},
 
 			// 阻塞委托方法
@@ -1545,7 +1582,7 @@ infestor js
 
 				var len = this.blockQueue.length;
 
-				infestor.each(this.blockQueue, function () {
+				global.each(this.blockQueue, function () {
 
 					if (this.block && this.predicate.apply(this.scope, this.args)) {
 
@@ -1557,15 +1594,6 @@ infestor js
 				});
 
 				!len && (this.blockQueue = []);
-
-			},
-
-			// 延时加载已注册样式
-			delayWriteStyle : function () {
-
-				var stylePath = null;
-				while (stylePath = this.delayStyleQueue.shift())
-					global.mgr.using(stylePath, '.css');
 
 			},
 
@@ -1611,7 +1639,6 @@ infestor js
 					this.loadList = [];
 					this.loadListUniqueMap = {};
 					this.delayLoad();
-					this.delayWriteStyle();
 					this.load(path, scope);
 
 				}, this);
@@ -1657,15 +1684,11 @@ infestor js
 				global.Loader.loadedMap = global.Loader.loadedMap || {}; //记录已经载入的文件
 
 				var isJs = /.+\.js$/.test(target),
-				isCss = /.+\.css$/.test(target),
-				doNothing = (!isJs && !isCss) || global.Loader.loadedMap[target];
+					isCss = /.+\.css$/.test(target),
+					doNothing = (!isJs && !isCss) || global.Loader.loadedMap[target];
 
-				if (doNothing) {
-					callback();
-					return;
-				}
-
-				global.$currentLoader = this;
+				if (doNothing)
+				    return callback();
 
 				if (!doNothing)
 					global.Loader.loadedMap[target] = true;
@@ -1675,6 +1698,8 @@ infestor js
 
 				if (isCss)
 					global.loadStyle(target, callback);
+					
+				return null;
 
 			},
 

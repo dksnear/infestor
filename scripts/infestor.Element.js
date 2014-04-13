@@ -143,9 +143,6 @@ infestor.define('infestor.Element', {
 		// 初始化数据
 		this.initDataSet();
 
-		// 子元素初始化接口
-		this.initItems();
-
 		// 初始化事件
 		this.initEvents && this.initEvents();
 
@@ -153,6 +150,17 @@ infestor.define('infestor.Element', {
 					
 		// 条件初始化
 		this.initTip().initResize();
+		
+		// 子元素初始化接口
+		this.initItems();
+
+	},
+	
+	delayInit : function () {
+	
+		this.dock&&(/north|south|west|center|east/.test(this.dock)?this.delayReg(function(){ this.setDock();}):this.setDock());
+		
+		return this;
 
 	},
 
@@ -184,13 +192,6 @@ infestor.define('infestor.Element', {
 	load : function () {
 
 		this.dataSet && this.dataSet.load.apply(this.dataSet, arguments);
-	},
-
-	delayInit : function () {
-
-		this.dock && (infestor.inArray(this.dock, ['north', 'south', 'west', 'center', 'east']) == -1 ? this.setDock(this.dock) : this.delayReg(function () {
-				this.setDock();
-			}));
 	},
 
 	renderTo : function (element, parent) {
@@ -864,11 +865,11 @@ infestor.define('infestor.Element', {
 		
 		this.$resize && this.resize.init();
 		
-		!this.$resize && infestor.mgr.require('infestor.Resize',function(){
+		!this.$resize && infestor.mgr.require('infestor.Resize',infestor.debounce(function(){
 		
 			this.$resize = infestor.create('infestor.Resize',{ element:this.getDom() });
 		
-		},this);
+		},100),this);
 		
 		return this;		
 	},
