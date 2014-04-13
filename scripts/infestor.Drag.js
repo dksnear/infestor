@@ -9,7 +9,7 @@ infestor.define('infestor.Drag', {
 	
 	// 拖放对象(DOM)
 	element : null,
-
+	
 	// 设置触发对象(DOM)(不设置则使用拖放对象)
 	elementTrigger : null,
 
@@ -42,7 +42,6 @@ infestor.define('infestor.Drag', {
 	marginLeft : 0,
 
 	isIE : infestor.browser.msie,
-	
 	
 	events:{
 	
@@ -82,7 +81,7 @@ infestor.define('infestor.Drag', {
 
 		if (this.lock)
 			return;
-
+			
 		this.fix();
 
 		this.posX = event.clientX - this.element.offsetLeft;
@@ -116,11 +115,11 @@ infestor.define('infestor.Drag', {
 		infestor.clearSelection();
 
 		var left = event.clientX - this.posX,
-		top = event.clientY - this.posY,
-		maxLeft = this.maxLeft,
-		maxTop = this.maxTop,
-		maxRight = this.maxRight,
-		maxBottom = this.maxBottom;
+			top = event.clientY - this.posY,
+			maxLeft = this.maxLeft,
+			maxTop = this.maxTop,
+			maxRight = this.maxRight,
+			maxBottom = this.maxBottom;
 
 		if (this.limit) {
 
@@ -167,12 +166,10 @@ infestor.define('infestor.Drag', {
 
 		if (!this.limit)
 			return;
-
+			
+		var elementContainer = this.elementContainer && infestor.Dom.use(this.elementContainer);
 		this.maxRight = Math.max(this.maxRight, this.maxLeft + this.element.offsetWidth);
 		this.maxBottom = Math.max(this.maxBottom, this.maxTop + this.element.offsetHeight);
-
-		var elementContainer = this.elementContainer && infestor.Dom.use(this.elementContainer);
-
 		elementContainer && (elementContainer.css('position') != 'relative' || elementContainer.css('position') != 'absolute') && elementContainer.css('position', 'relative');
 	},
 

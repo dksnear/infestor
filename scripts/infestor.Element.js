@@ -146,23 +146,25 @@ infestor.define('infestor.Element', {
 		// 初始化事件
 		this.initEvents && this.initEvents();
 
-		this.setText().setLayout().setPosition().setDimension().delayInit();
+		this.setText().setLayout().setPosition().setDimension();
 					
 		// 条件初始化
-		this.initTip().initResize();
+		this.initTip().initDraggable().initResizable();
+		
+		// this.delayInit();
 		
 		// 子元素初始化接口
 		this.initItems();
 
 	},
 	
-	delayInit : function () {
+	// delayInit : function () {
 	
-		this.dock&&(/north|south|west|center|east/.test(this.dock)?this.delayReg(function(){ this.setDock();}):this.setDock());
+		// this.dock&&(/north|south|west|center|east/.test(this.dock)?this.delayReg(function(){ this.setDock();}):this.setDock());
 		
-		return this;
+		// return this;
 
-	},
+	// },
 
 	initElement : function () {
 
@@ -574,41 +576,6 @@ infestor.define('infestor.Element', {
 		}, this);
 	},
 
-	// 销毁实例
-	destroy : function (strict) {
-
-		// 销毁子元素
-		this.removeItem();
-
-		// 销毁所有Dom元素
-		strict && infestor.each(this, function (name, attr) {
-
-			(name != 'elementOuterContainer')
-			 && (name != 'elementInnerContainer')
-			 && /.+Element/.test(name)
-			 && (attr instanceof infestor.Dom)
-			 && (attr = attr.remove());
-
-		});
-
-		this.disableResize();
-
-		this.destroyList && infestor.each(this.destroyList,function(){
-			
-			this.destroy && this.destroy();
-		
-		});
-		
-		this.element && this.element.remove();
-		
-
-		// 注销实例托管
-		infestor.mgr.removeInstance(this.id);
-
-		return null;
-
-	},
-
 	// 向上查找符合条件的父节点
 	parents : function (keyword, type) {
 
@@ -859,25 +826,86 @@ infestor.define('infestor.Element', {
 	
 	},
 	
-	initResize:function(){
+	initDraggable:function(){
+	
+		if(!this.draggable) return this;
+		
+		!this.$drag && infestor.mgr.require('infestor.Drag',function(){
+		
+			this.$drag = this.$drag || infestor.create('infestor.Drag', {
+
+				element : this.element.getElement(),
+				elementContainer : document.documentElement,
+				limit : true
+			});
+			
+		},this);
+		
+		return this;
+	
+	},
+	
+	disableDraggable:function(){
+	
+		this.$drag = this.$drag && this.drag.destroy();
+	
+	},
+	
+	initResizable:function(){
 	
 		if(!this.resizable) return this;
 		
-		this.$resize && this.resize.init();
+		this.$resize && this.$resize.init();
 		
 		!this.$resize && infestor.mgr.require('infestor.Resize',infestor.debounce(function(){
 		
-			this.$resize = infestor.create('infestor.Resize',{ element:this.getDom() });
+			this.$resize = this.$resize || infestor.create('infestor.Resize',{ element:this.getDom() });
 		
 		},100),this);
 		
 		return this;		
 	},
 	
-	disableResize:function(){
+	disableResizable:function(){
 	
 		this.$resize = this.$resize && this.$resize.destroy();
 	
+	},
+	
+	// 销毁实例
+	destroy : function (strict) {
+
+		// 销毁子元素
+		this.removeItem();
+
+		// 销毁所有Dom元素
+		strict && infestor.each(this, function (name, attr) {
+
+			(name != 'elementOuterContainer')
+			 && (name != 'elementInnerContainer')
+			 && /.+Element/.test(name)
+			 && (attr instanceof infestor.Dom)
+			 && (attr = attr.remove());
+
+		});
+
+		this.disableDraggable();
+		this.disableResizable();
+
+		this.destroyList && infestor.each(this.destroyList,function(){
+			
+			this.destroy && this.destroy();
+		
+		});
+		
+		this.element && this.element.remove();
+		
+
+		// 注销实例托管
+		infestor.mgr.removeInstance(this.id);
+
+		return null;
+
 	}
 
 });
