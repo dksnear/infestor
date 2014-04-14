@@ -6,13 +6,13 @@ infestor.define('infestor.Resize', {
 	extend : 'infestor.Object',
 	uses : ['infestor.Drag'],
 
-	// 尺寸调整触发元素样式
+	// 尺寸调整触发元素样式(该样式不能设置边框(border))
 	cssClsElementTrigger : '',
 
 	// 尺寸调整目标(Dom)
 	element : null,
 
-	// 尺寸调整触发元素(infestor.Dom)
+	// 尺寸调整触发器(infestor.Dom)
 	elementTrigger : null,
 
 	// 尺寸调整引导框(infestor.Dom)
@@ -24,9 +24,17 @@ infestor.define('infestor.Resize', {
 	lockX : false,
 	lockY : false,
 
-	triggerBorder : 1,
+	// 触发器边框样式
+	triggerBorder : '0px solid black',
+	
 	triggerWidth : 10,
 	triggerHeight : 10,
+	
+	miniHeight:15,
+	miniWidth:15,
+	
+	maxHeight:9999,
+	maxWidth:9999,
 
 	// (infestor.Drag)
 	drag : null,
@@ -54,6 +62,7 @@ infestor.define('infestor.Resize', {
 		this.targetBorderLeft = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-left-width'));
 		this.targetBorderBottom = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-bottom-width'));
 		this.targetBorderRight = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-right-width'));
+		this.cursor = this.lockX ? 's-resize' : this.lockY ? 'e-resize' : 'se-resize';
 
 		this.initDrag();
 
@@ -67,13 +76,15 @@ infestor.define('infestor.Resize', {
 
 				height : infestor.px(this.triggerHeight),
 				width : infestor.px(this.triggerWidth),
-				border : infestor.px(this.triggerBorder) + ' solid black',
-				cursor : this.lockX ? 's-resize' : this.lockY ? 'e-resize' : 'se-resize',
+				cursor : this.cursor,
 				position : 'absolute',
 				right : infestor.px(this.targetBorderRight * -1),
 				bottom : infestor.px(this.targetBorderBottom * -1)
 
-			}).appendTo(infestor.Dom.use(this.element)).zIndex();
+			}).addClass(this.cssClsElementTrigger).appendTo(infestor.Dom.use(this.element)).zIndex();
+		
+		this.triggerBorder && this.elementTrigger.css('border',this.triggerBorder);
+		this.triggerBorder = parseFloat(this.triggerBorder) || 0;
 
 	},
 
@@ -105,6 +116,9 @@ infestor.define('infestor.Resize', {
 				limit : true,
 				lockY : this.lockY,
 				lockX : this.lockX,
+				cursor: this.cursor,
+				maxTop: 0,
+				maxLeft: 0,
 				events : {
 
 					start : function (top, left) {
@@ -113,12 +127,8 @@ infestor.define('infestor.Resize', {
 
 						me.offset = infestor.Dom.use(me.element).offset();
 
-						//this.maxTop = me.triggerBorder*-2;
-						//this.maxLeft = me.triggerBorder*-2;
 						this.maxBottom = document.documentElement.clientHeight - me.offset.top - me.targetBorderTop; 
 						this.maxRight = document.documentElement.clientWidth - me.offset.left - me.targetBorderLeft; 
-
-						//me.elementTrigger.zIndex();
 
 						me.emit('afterStart', [top, left], me);
 

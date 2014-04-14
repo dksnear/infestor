@@ -54,6 +54,8 @@ infestor.define('infestor.Element', {
 	cssClsElementPositionSouthWest : 'infestor-element-position-south-west',
 	cssClsElementPositionNorthEast : 'infestor-element-position-north-east',
 	cssClsElementPositionNorthWest : 'infestor-element-position-north-west',
+	cssClsResizableTrigger:'infestor-element-resizable-trigger',
+	cssClsDraggableTrigger:'infestor-element-draggable-trigger',
 
 	// 控件元素的容器接口(infestor.Dom)
 	element : null,
@@ -859,7 +861,7 @@ infestor.define('infestor.Element', {
 		
 		!this.$resize && infestor.mgr.require('infestor.Resize',infestor.debounce(function(){
 		
-			var me=this;
+			var me = this;
 			
 			this.$resize = this.$resize || infestor.create('infestor.Resize',{ 
 				
@@ -893,21 +895,10 @@ infestor.define('infestor.Element', {
 	},
 	
 	// 销毁实例
-	destroy : function (strict) {
+	destroy : function () {
 
 		// 销毁子元素
 		this.removeItem();
-
-		// 销毁所有Dom元素
-		strict && infestor.each(this, function (name, attr) {
-
-			(name != 'elementOuterContainer')
-			 && (name != 'elementInnerContainer')
-			 && /.+Element/.test(name)
-			 && (attr instanceof infestor.Dom)
-			 && (attr = attr.remove());
-
-		});
 
 		this.disableDraggable();
 		this.disableResizable();
@@ -918,7 +909,7 @@ infestor.define('infestor.Element', {
 		
 		});
 		
-		this.element && this.element.remove();
+		this.element && this.element.destroy();
 		
 
 		// 注销实例托管

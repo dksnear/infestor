@@ -40,6 +40,9 @@ infestor.define('infestor.Drag', {
 
 	marginTop : 0,
 	marginLeft : 0,
+	
+	// 移动时鼠标样式
+	cursor:'move',
 
 	isIE : infestor.browser.msie,
 	
@@ -60,7 +63,7 @@ infestor.define('infestor.Drag', {
 		this.elementTrigger = this.elementTrigger || this.element;
 
 		//记录源dom对象的position样式,用来还原
-		this.elbakPos = infestor.Dom.use(this.element).css('position');
+		// this.elbakPos = infestor.Dom.use(this.element).css('position');
 		this.ctbakPos = this.elementContainer && infestor.Dom.use(this.elementContainer).css('position');
 		this.element.style.position = 'absolute';
 
@@ -105,6 +108,13 @@ infestor.define('infestor.Drag', {
 		};
 		
 		infestor.Dom.use(this.element).zIndex();
+		
+		if(this.cursor){
+			
+			this.bakCursor=infestor.Dom.use(this.element).css('cursor');
+			this.element.style.cursor=this.cursor;
+		
+		}
 
 		this.emit('start', [this.element.offsetTop, this.element.offsetLeft], this);
 	},
@@ -159,7 +169,9 @@ infestor.define('infestor.Drag', {
 			this.elementTrigger.releaseCapture();
 		} else
 			infestor.un(window, 'blur', this.stopEventHandler);
-
+			
+	    this.cursor && (this.element.style.cursor = this.bakCursor);
+		
 		this.emit('stop', [this.element.offsetTop, this.element.offsetLeft], this);
 
 	},
@@ -177,9 +189,8 @@ infestor.define('infestor.Drag', {
 
 	destroy : function () {
 
-		this.stop();
 		infestor.un(this.elementTrigger, 'mousedown', this.startEventHandler);
-		this.element.style.position = this.elbakPos;
+		//this.element.style.position = this.elbakPos;
 		if (this.ctbakPos && this.elementContainer)
 			this.elementContainer.style.position = this.ctbakPos;
 	}
