@@ -6,7 +6,7 @@ infestor.define('infestor.Resize', {
 	extend : 'infestor.Object',
 	uses : ['infestor.Drag'],
 
-	// 尺寸调整触发元素样式(该样式不能设置边框(border))
+	// 尺寸调整触发元素样式(该样式只能设置背景和透明度)
 	cssClsElementTrigger : '',
 
 	// 尺寸调整目标(Dom)
@@ -24,17 +24,14 @@ infestor.define('infestor.Resize', {
 	lockX : false,
 	lockY : false,
 
-	// 触发器边框样式
-	triggerBorder : '0px solid black',
-	
-	triggerWidth : 10,
-	triggerHeight : 10,
-	
-	miniHeight:15,
-	miniWidth:15,
-	
-	maxHeight:9999,
-	maxWidth:9999,
+	triggerWidth : 16,
+	triggerHeight : 16,
+
+	minHeight : 100,
+	minWidth : 100,
+
+	maxHeight : 300,
+	maxWidth : 300,
 
 	// (infestor.Drag)
 	drag : null,
@@ -44,11 +41,11 @@ infestor.define('infestor.Resize', {
 		// @params this.elementTrigger.offsetTop,this.elementTrigger.offsetLeft
 		// @this this
 		beforeStart : null,
-		afterStart: null,
+		afterStart : null,
 		beforeMove : null,
 		afterMove : null,
-		beforeStop: null,
-		afterStop: null
+		beforeStop : null,
+		afterStop : null
 
 	},
 
@@ -74,6 +71,7 @@ infestor.define('infestor.Resize', {
 
 		this.elementTrigger = this.elementTrigger || infestor.Dom.div().css({
 
+				'background-color' : 'purple',
 				height : infestor.px(this.triggerHeight),
 				width : infestor.px(this.triggerWidth),
 				cursor : this.cursor,
@@ -82,9 +80,6 @@ infestor.define('infestor.Resize', {
 				bottom : infestor.px(this.targetBorderBottom * -1)
 
 			}).addClass(this.cssClsElementTrigger).appendTo(infestor.Dom.use(this.element)).zIndex();
-		
-		this.triggerBorder && this.elementTrigger.css('border',this.triggerBorder);
-		this.triggerBorder = parseFloat(this.triggerBorder) || 0;
 
 	},
 
@@ -116,55 +111,55 @@ infestor.define('infestor.Resize', {
 				limit : true,
 				lockY : this.lockY,
 				lockX : this.lockX,
-				cursor: this.cursor,
-				maxTop: 0,
-				maxLeft: 0,
+				cursor : this.cursor,
+				maxTop : Math.max(this.minHeight - this.targetBorderTop - this.triggerHeight, 0),
+				maxLeft : Math.max(this.minWidth - this.targetBorderLeft - this.triggerWidth, 0),
 				events : {
 
 					start : function (top, left) {
-					
+
 						me.emit('beforeStart', [top, left], me);
 
 						me.offset = infestor.Dom.use(me.element).offset();
 
-						this.maxBottom = document.documentElement.clientHeight - me.offset.top - me.targetBorderTop; 
-						this.maxRight = document.documentElement.clientWidth - me.offset.left - me.targetBorderLeft; 
+						this.maxBottom = Math.min(document.documentElement.clientHeight - me.offset.top - me.targetBorderTop, me.maxHeight - me.targetBorderTop);
+						this.maxRight = Math.min(document.documentElement.clientWidth - me.offset.left - me.targetBorderLeft, me.maxWidth - me.targetBorderLeft);
 
 						me.emit('afterStart', [top, left], me);
 
 					},
 
 					move : function (top, left) {
-					
+
 						me.emit('beforeMove', [top, left], me);
-						
+
 						me.elementGuideRect.css({
 
 							top : infestor.px(me.offset.top),
 							left : infestor.px(me.offset.left),
-							height : infestor.px(top + me.elementTrigger.height() + me.targetBorderTop),
-							width : infestor.px(left + me.elementTrigger.width() + me.targetBorderLeft - (infestor.isWebkit() ? 0 : 2 * me.triggerBorder))
+							height : infestor.px(top + me.elementTrigger.height() + me.targetBorderTop - 2),
+							width : infestor.px(left + me.elementTrigger.width() + me.targetBorderLeft - 2)
 
 						}).zIndex().show();
-						
+
 						me.emit('afterMove', [top, left], me);
 
 					},
 
 					stop : function (top, left) {
-					
+
 						me.emit('beforeStop', [top, left], me);
 
 						infestor.Dom.use(me.element).css({
 
-							height : infestor.px(top + me.elementTrigger.height() - me.targetBorderBottom + 2 * me.triggerBorder),
-							width : infestor.px(left + me.elementTrigger.width() - me.targetBorderRight + (!infestor.isWebkit() ? 0 : 2 * me.triggerBorder))
+							height : infestor.px(top + me.elementTrigger.height() - me.targetBorderBottom),
+							width : infestor.px(left + me.elementTrigger.width() - me.targetBorderRight)
 
 						});
 
 						me.elementGuideRect.hide();
 						infestor.Dom.use(me.element).zIndex();
-						
+
 						me.emit('afterStop', [top, left], me);
 
 					}
