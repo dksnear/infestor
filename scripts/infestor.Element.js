@@ -461,7 +461,7 @@ infestor.define('infestor.Element', {
 	// 初始化子元素
 	initItems : function () {
 
-		this.items && infestor.each(this.items, function (idx, opts) {
+		this.items && infestor.each(this.items, function (idx, opts) {	
 			this.addItem(opts);
 		}, this);
 
@@ -500,12 +500,12 @@ infestor.define('infestor.Element', {
 
 		this.itemsMap = this.itemsMap || {};
 
-		if (opts.id && this.hasItem(opts.id))
-			infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"已添加子元素"{2}"', this.$clsName, this.id, opts.id));
+		if (opts.name && this.hasItem(opts.name))
+			infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"已添加子元素"{2}"', this.$clsName, this.name, opts.name));
 
 		// 是类的实例 直接添加子元素
 		if (opts instanceof infestor.Element)
-			return ++this.count && (this.itemsMap[opts.id] = this.render(opts));
+			return ++this.count && (this.itemsMap[opts.name] = this.render(opts));
 
 		// 非类的实例 根据配置创建子元素再添加
 		opts = infestor.append({}, this.itemsOpts, opts);
@@ -514,7 +514,7 @@ infestor.define('infestor.Element', {
 		if (opts.xtype || opts.alias) {
 
 			item = infestor.Element.create(opts).renderTo(this);
-			this.itemsMap[item.id] = item;
+			this.itemsMap[item.name] = item;
 			return ++this.count && item;
 		}
 
@@ -528,53 +528,53 @@ infestor.define('infestor.Element', {
 		if (item) {
 
 			item.renderTo(this);
-			this.itemsMap[item.id] = item;
+			this.itemsMap[item.name] = item;
 			return ++this.count && item;
 		}
 
 	},
 
 	// 移除子元素
-	removeItem : function (id) {
+	removeItem : function (name) {
 
 		if (!this.items)
 			return;
 
 		// 删除所有子元素
-		if (infestor.isUndefined(id) && this.hasItem())
-			return infestor.each(this.itemsMap, function (id) {
-				this.removeItem(id);
+		if (infestor.isUndefined(name) && this.hasItem())
+			return infestor.each(this.itemsMap, function (name) {
+				this.removeItem(name);
 			}, this);
 
 		// 删除一个子元素
-		if (this.hasItem(id)) {
+		if (this.hasItem(name)) {
 
 			this.count--;
-			this.itemsMap[id].destroy();
-			delete this.itemsMap[id];
+			this.itemsMap[name].destroy();
+			delete this.itemsMap[name];
 		}
 
 	},
 
 	// 隐藏子元素
-	hideItem : function (id) {
+	hnameeItem : function (name) {
 
-		!infestor.isUndefined(id) & this.itemsMap[id] && this.itemsMap[id].hide && this.itemsMap[id].hide();
+		!infestor.isUndefined(name) & this.itemsMap[name] && this.itemsMap[name].hnamee && this.itemsMap[name].hnamee();
 
 		// 隐藏所有子元素
-		infestor.isUndefined(id) && this.hasItem() && infestor.each(this.itemsMap, function (id) {
-			this.hideItem(id);
+		infestor.isUndefined(name) && this.hasItem() && infestor.each(this.itemsMap, function (name) {
+			this.hnameeItem(name);
 		}, this);
 	},
 
 	// 显示子元素
-	showItem : function (id) {
+	showItem : function (name) {
 
-		!infestor.isUndefined(id) && this.itemsMap[id] && this.itemsMap[id].show && this.itemsMap[id].show();
+		!infestor.isUndefined(name) && this.itemsMap[name] && this.itemsMap[name].show && this.itemsMap[name].show();
 
 		// 显示所有子元素
-		infestor.isUndefined(id) && this.hasItem() && infestor.each(this.itemsMap, function (id) {
-			this.showItem(id);
+		infestor.isUndefined(name) && this.hasItem() && infestor.each(this.itemsMap, function (name) {
+			this.showItem(name);
 		}, this);
 	},
 
@@ -866,6 +866,7 @@ infestor.define('infestor.Element', {
 			this.$resize = this.$resize || infestor.create('infestor.Resize',{ 
 				
 				element:this.getDom(),
+				cssClsElementTrigger:this.cssClsResizableTrigger,
 				events:{
 				
 					beforeStart:function(){

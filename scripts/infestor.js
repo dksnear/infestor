@@ -1727,6 +1727,8 @@ infestor js
 	global.loaders = {};
 
 	global.loaders[global.loader.id] = global.loader;
+	
+	global.mgr.classMap[global.loader.$clsName] = global.Loader;
 
 	window[global.$$libName] = global;
 

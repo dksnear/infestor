@@ -30,8 +30,8 @@ infestor.define('infestor.Resize', {
 	minHeight : 100,
 	minWidth : 100,
 
-	maxHeight : 300,
-	maxWidth : 300,
+	maxHeight : 9999,
+	maxWidth : 9999,
 
 	// (infestor.Drag)
 	drag : null,
@@ -71,7 +71,6 @@ infestor.define('infestor.Resize', {
 
 		this.elementTrigger = this.elementTrigger || infestor.Dom.div().css({
 
-				'background-color' : 'purple',
 				height : infestor.px(this.triggerHeight),
 				width : infestor.px(this.triggerWidth),
 				cursor : this.cursor,
