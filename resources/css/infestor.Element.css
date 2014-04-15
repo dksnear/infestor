@@ -182,6 +182,12 @@ input:focus{
 	top: auto;
 }
 
+.infestor-element-resizable-trigger{
+
+	background-color:yellow;
+
+}
+
 .infestor-element-mask{
 
 
@@ -191,6 +197,7 @@ input:focus{
 
 
 }
+
 
 
 
