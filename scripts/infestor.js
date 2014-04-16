@@ -1065,7 +1065,7 @@ infestor js
 			},
 
 			// 注册载入完成后执行的环境
-			delayReg : function (loader ,method, args, scope) {
+			delayReg : function (loader, method, args, scope) {
 
 				loader && loader.delayReg(method, args, scope);
 
@@ -1258,7 +1258,7 @@ infestor js
 			extend.$clsName = options.$clsName;
 
 			extend.prototype.$ownerCls = extend;
-			
+
 			extend.prototype.$loader = global.mgr.loadedMap[clsNs];
 
 			// 添加类的静态方法
@@ -1321,11 +1321,11 @@ infestor js
 	global.browser.$methods = {};
 
 	// 根据配置中的浏览器类型选择执行相应的方法
-	// @option(obj) 匹配列表 {isIE:fn,isIE6:fn,isChrome:fn....}
-	// @mode(bool)  false:匹配到就停止|true:匹配所有选项
-	global.browser.optionExec = global.boe = function (option, mode) {
+	// @option(obj) 匹配列表 {isIE:fn|value,isIE6:fn|value,isChrome:fn|value....,otherwise:fn|value}
+	// @greedy(bool)  false:匹配到就停止|true:匹配所有选项
+	global.boe = global.browser.optionExec = function (option, greedy) {
 
-		var isRun = false,
+		var matched = false,
 		result;
 
 		global.each(option, function (name, method) {
@@ -1335,18 +1335,43 @@ infestor js
 			if (match && match()) {
 
 				result = global.isFunction(method) ? method.apply(this) : method;
-				isRun = true;
+				matched = true;
 			}
 
-			if (!mode && isRun)
+			if (!greedy && matched)
 				return false;
 
 		}, this);
 
-		if (!isRun && option.otherwise)
+		if (!matched && option.otherwise)
 			return global.isFunction(option.otherwise) ? option.otherwise.apply(this) : option.otherwise;
 
 		return result;
+
+	};
+
+	// 根据配置中的浏览器类型选择生成相应的方法
+	// @option(obj) 匹配列表 {isIE:fn,isIE6:fn,isChrome:fn....,otherwise:fn}
+	global.bof = global.browser.optionFunc = function (option) {
+
+		var fn = function () {
+
+			global.isFunction(option.otherwise) && option.otherwise.apply(this, arguments);
+
+		};
+
+		global.each(option, function (name, method) {
+
+			var match = global.browser.$methods[name];
+
+			match && match() && global.isFunction(method) && (fn = function () {
+			
+				method.apply(this, arguments);
+			});
+
+		}, this);
+
+		return fn;
 
 	};
 
@@ -1396,8 +1421,8 @@ infestor js
 
 	// 定义加载器类
 	global.Loader = global.extend({
-	
-			$clsName:global.$$libName +'.Loader',
+
+			$clsName : global.$$libName + '.Loader',
 
 			// true:延时创建类
 			// false:正常创建类
@@ -1436,7 +1461,7 @@ infestor js
 					me.delayWriteStyle();
 					// me.delayWriteStyle(function () {
 
-						// me.delayExec();
+					// me.delayExec();
 
 					// });
 
@@ -1524,7 +1549,7 @@ infestor js
 							item && !classMap[name] && (item.isDefined = true) && global.define(item.clsNs, item.options, item.callback)
 
 							// 注册样式
-							&& global.mgr.allowLoadCss && item.options.cssUses && (this.delayLoadStyleQueue = this.delayLoadStyleQueue.concat(global.mgr.convertToPath(item.options.cssUses, '.css')));
+							 && global.mgr.allowLoadCss && item.options.cssUses && (this.delayLoadStyleQueue = this.delayLoadStyleQueue.concat(global.mgr.convertToPath(item.options.cssUses, '.css')));
 						}
 					}
 
@@ -1533,29 +1558,29 @@ infestor js
 				this.delayDefineSet = {};
 
 			},
-			
+
 			// 延时加载已注册样式
 			delayWriteStyle : function (callback, scope) {
 
 				// if (this.delayLoadStyleQueue.length > 0)
-					// return (new global.Loader).using(this.delayLoadStyleQueue).using(function () {
+				// return (new global.Loader).using(this.delayLoadStyleQueue).using(function () {
 
-						// callback && callback.call(scope || window);
-						// this.delayLoadStyleQueue = [];
+				// callback && callback.call(scope || window);
+				// this.delayLoadStyleQueue = [];
 
-					// }, this), this;
+				// }, this), this;
 
 				// return callback && callback.call(scope || window),
 				// this;
-				
-				global.each(this.delayLoadStyleQueue,function(){
-				
+
+				global.each(this.delayLoadStyleQueue, function () {
+
 					global.loadStyle(String(this));
-				
+
 				});
-				
+
 				this.delayLoadStyleQueue = [];
-			
+
 			},
 
 			// 阻塞委托方法
@@ -1684,11 +1709,11 @@ infestor js
 				global.Loader.loadedMap = global.Loader.loadedMap || {}; //记录已经载入的文件
 
 				var isJs = /.+\.js$/.test(target),
-					isCss = /.+\.css$/.test(target),
-					doNothing = (!isJs && !isCss) || global.Loader.loadedMap[target];
+				isCss = /.+\.css$/.test(target),
+				doNothing = (!isJs && !isCss) || global.Loader.loadedMap[target];
 
 				if (doNothing)
-				    return callback();
+					return callback();
 
 				if (!doNothing)
 					global.Loader.loadedMap[target] = true;
@@ -1698,7 +1723,7 @@ infestor js
 
 				if (isCss)
 					global.loadStyle(target, callback);
-					
+
 				return null;
 
 			},
@@ -1727,7 +1752,7 @@ infestor js
 	global.loaders = {};
 
 	global.loaders[global.loader.id] = global.loader;
-	
+
 	global.mgr.classMap[global.loader.$clsName] = global.Loader;
 
 	window[global.$$libName] = global;

@@ -54,8 +54,8 @@ infestor.define('infestor.Element', {
 	cssClsElementPositionSouthWest : 'infestor-element-position-south-west',
 	cssClsElementPositionNorthEast : 'infestor-element-position-north-east',
 	cssClsElementPositionNorthWest : 'infestor-element-position-north-west',
-	cssClsResizableTrigger:'infestor-element-resizable-trigger',
-	cssClsDraggableTrigger:'infestor-element-draggable-trigger',
+	cssClsResizableTrigger : 'infestor-element-resizable-trigger',
+	cssClsDraggableTrigger : 'infestor-element-draggable-trigger',
 
 	// 控件元素的容器接口(infestor.Dom)
 	element : null,
@@ -81,8 +81,14 @@ infestor.define('infestor.Element', {
 	// 控件元素的样式属性
 	css : null,
 
+	// 允许移动
 	draggable : false,
+
+	// 允许调整大小
 	resizable : false,
+
+	// 大小调整配置(obj|fn)
+	resizeConfig : null,
 
 	// 元素停靠位置 (north|south|west|center|east|north-east|south-east|north-west|north-east)
 	dock : false,
@@ -109,7 +115,6 @@ infestor.define('infestor.Element', {
 	layoutPosition : null,
 
 	// 元素定位属性(#styleFormat|auto)
-
 	top : null,
 	left : null,
 	right : null,
@@ -149,22 +154,22 @@ infestor.define('infestor.Element', {
 		this.initEvents && this.initEvents();
 
 		this.setText().setLayout().setPosition().setDimension();
-					
+
 		// 条件初始化
 		this.initTip().initDraggable().initResizable();
-		
+
 		// this.delayInit();
-		
+
 		// 子元素初始化接口
 		this.initItems();
 
 	},
-	
+
 	// delayInit : function () {
-	
-		// this.dock&&(/north|south|west|center|east/.test(this.dock)?this.delayReg(function(){ this.setDock();}):this.setDock());
-		
-		// return this;
+
+	// this.dock&&(/north|south|west|center|east/.test(this.dock)?this.delayReg(function(){ this.setDock();}):this.setDock());
+
+	// return this;
 
 	// },
 
@@ -192,7 +197,7 @@ infestor.define('infestor.Element', {
 		this.dataSet = this.dataSet || this.dataConfig && infestor.create('infestor.DataSet', this.dataConfig);
 
 	},
-	
+
 	load : function () {
 
 		this.dataSet && this.dataSet.load.apply(this.dataSet, arguments);
@@ -461,7 +466,7 @@ infestor.define('infestor.Element', {
 	// 初始化子元素
 	initItems : function () {
 
-		this.items && infestor.each(this.items, function (idx, opts) {	
+		this.items && infestor.each(this.items, function (idx, opts) {
 			this.addItem(opts);
 		}, this);
 
@@ -600,17 +605,16 @@ infestor.define('infestor.Element', {
 		return null;
 
 	},
-	
-	
-	getElement:function(){
-	
+
+	getElement : function () {
+
 		return this.element;
 	},
-	
-	getDom:function(){
-		
+
+	getDom : function () {
+
 		return this.element && this.element.element;
-	
+
 	},
 
 	// 创建元素
@@ -678,7 +682,7 @@ infestor.define('infestor.Element', {
 		target[eventName](function (e) {
 
 			e.target = e.target || e.srcElement;
-			
+
 			var args = [e.target.$infestor].concat(infestor.argsToArray(arguments));
 
 			if (infestor.isFunction(pradicate))
@@ -687,214 +691,231 @@ infestor.define('infestor.Element', {
 		});
 
 	},
-	
-	
-	// 使当前元素定位在目标元素附近 
+
+	// 使当前元素定位在目标元素附近
 	// @target 目标元素或坐标({ top:0,left:0,height:0,width:0})
 	// @pos 默认位置 (top|left|right|bottom)
- 	// @offset 偏移量 浮动距离和分开距离  ({ drift:(0|head|middle|rear),depart:0})
+	// @offset 偏移量 浮动距离和分开距离  ({ drift:(0|head|middle|rear),depart:0})
 	// @strict 按照默认位置定位 不自动左右/上下切换 (true|false)
 	// @mode 定位模式 (fixed|absolute|relative|static)
 	// #return 返回最终出现位置 @pos (top|left|right|bottom|false)
-	autoPosition:function(target,pos,offset,mode,strict){
-	
-		var css = { position:'fixed',top:'auto',left:'auto',right:'auto',bottom:'auto' },
-			driftMap = { head:-17,middle:0,rear:0 },
-			defaultDepart = 7,
-			clientHeight = document.documentElement.clientHeight,
-			clientWidth = document.documentElement.clientWidth;
-	
-		if(!this.element) return false;
-	
-		if(target instanceof infestor.Element)
+	autoPosition : function (target, pos, offset, mode, strict) {
+
+		var css = {
+			position : 'fixed',
+			top : 'auto',
+			left : 'auto',
+			right : 'auto',
+			bottom : 'auto'
+		},
+		driftMap = {
+			head : -17,
+			middle : 0,
+			rear : 0
+		},
+		defaultDepart = 7,
+		clientHeight = document.documentElement.clientHeight,
+		clientWidth = document.documentElement.clientWidth;
+
+		if (!this.element)
+			return false;
+
+		if (target instanceof infestor.Element)
 			target = target.element;
-		if(target instanceof infestor.Dom)
+		if (target instanceof infestor.Dom)
 			target = target.offset();
-					
-		target = infestor.append({ top:0,left:0,height:0,width:0 },target);	
+
+		target = infestor.append({
+				top : 0,
+				left : 0,
+				height : 0,
+				width : 0
+			}, target);
 		target.right = clientWidth - parseFloat(target.left);
 		target.bottom = clientHeight - parseFloat(target.top);
 		target.leftTrend = (parseFloat(target.left) + parseFloat(target.width)) > parseFloat(target.right);
 		target.topTrend = (parseFloat(target.top) + parseFloat(target.height)) > parseFloat(target.bottom);
-		
-		if(!strict && (pos == 'left' || pos == 'right'))
+
+		if (!strict && (pos == 'left' || pos == 'right'))
 			pos = target.leftTrend ? 'left' : 'right';
-			
-		if(!strict && (pos == 'top' || pos == 'bottom'))
+
+		if (!strict && (pos == 'top' || pos == 'bottom'))
 			pos = target.topTrend ? 'top' : 'bottom';
-			
-			
+
 		//处理offset参数
-		if(infestor.isString(offset))
-			offset = {				
-				drift: offset.split(' ')[0],
-				depart: offset.split(' ')[1] || defaultDepart
+		if (infestor.isString(offset))
+			offset = {
+				drift : offset.split(' ')[0],
+				depart : offset.split(' ')[1] || defaultDepart
 			};
-		
-		if(pos == 'left' || pos == 'right'){
-		
+
+		if (pos == 'left' || pos == 'right') {
+
 			driftMap.middle = driftMap.head + Math.ceil(parseFloat(target.height) / 2);
 			driftMap.rear = driftMap.head + parseFloat(target.height);
 		}
-		
-		if(pos == 'top' || pos == 'bottom'){
-		
+
+		if (pos == 'top' || pos == 'bottom') {
+
 			driftMap.middle = driftMap.head + Math.ceil(parseFloat(target.width) / 2);
 			driftMap.rear = driftMap.head + parseFloat(target.width);
 		}
-		
+
 		offset.drift = driftMap[offset.drift] || offset.drift || 0;
-		
-		offset = infestor.append({ drift:0,depart:defaultDepart },offset);
-				
+
+		offset = infestor.append({
+				drift : 0,
+				depart : defaultDepart
+			}, offset);
+
 		mode && (css.position = mode);
-		
-		if(pos == 'right')
-			this.element.css(infestor.append(css,{
-			
-				top:infestor.px(parseFloat(target.top) + parseFloat(offset.drift)),
-				left: infestor.px(parseFloat(target.left) + parseFloat(target.width) + parseFloat(offset.depart))
-				
-			}));
-		
-		if(pos =='left')
-			this.element.css(infestor.append(css,{
-				
-				top:infestor.px(parseFloat(target.top) + parseFloat(offset.drift)),
-				right:infestor.px(parseFloat(target.right) + parseFloat(offset.depart))
-			}));
-			
-		if(pos == 'top')
-			this.element.css(infestor.append(css,{
-				
-				left:infestor.px(parseFloat(target.left) + parseFloat(offset.drift)),
-				bottom:infestor.px(parseFloat(target.bottom) + parseFloat(offset.depart)) 
-			
-			}));
-		
-		if(pos == 'bottom')
-			this.element.css(infestor.append(css,{
-				
-				left:infestor.px(parseFloat(target.left) + parseFloat(offset.drift)),
-				top:infestor.px(parseFloat(target.top) + parseFloat(target.height) + parseFloat(offset.depart))
-			}));
-		
-		
+
+		if (pos == 'right')
+			this.element.css(infestor.append(css, {
+
+					top : infestor.px(parseFloat(target.top) + parseFloat(offset.drift)),
+					left : infestor.px(parseFloat(target.left) + parseFloat(target.width) + parseFloat(offset.depart))
+
+				}));
+
+		if (pos == 'left')
+			this.element.css(infestor.append(css, {
+
+					top : infestor.px(parseFloat(target.top) + parseFloat(offset.drift)),
+					right : infestor.px(parseFloat(target.right) + parseFloat(offset.depart))
+				}));
+
+		if (pos == 'top')
+			this.element.css(infestor.append(css, {
+
+					left : infestor.px(parseFloat(target.left) + parseFloat(offset.drift)),
+					bottom : infestor.px(parseFloat(target.bottom) + parseFloat(offset.depart))
+
+				}));
+
+		if (pos == 'bottom')
+			this.element.css(infestor.append(css, {
+
+					left : infestor.px(parseFloat(target.left) + parseFloat(offset.drift)),
+					top : infestor.px(parseFloat(target.top) + parseFloat(target.height) + parseFloat(offset.depart))
+				}));
+
 		return pos;
-	
+
 	},
-	
+
 	// 下面的方法为条件引入
-	
-	// 条件引入Tip	
-	initTip : function (tip){
-		
+
+	// 条件引入Tip
+	initTip : function (tip) {
+
 		this.tip = tip || this.tip;
-		
-		if(infestor.isString(this.tip))
+
+		if (infestor.isString(this.tip))
 			this.tipText = this.tip;
-		
-		if(!this.tip) return this;
-		
-		
-		infestor.mgr.require('infestor.Tip',function(){
-		
+
+		if (!this.tip)
+			return this;
+
+		infestor.mgr.require('infestor.Tip', function () {
+
 			this.tip = infestor.Tip.init();
-						
-			this.element.on('mouseover',infestor.debounce(function(){
-			
-				this.tip.setText(this.tipText);
-				this.tip.show();
-				this.tip.autoPosition(this.element,'left','middle');
-			
-			}),this);
-			
-		
-			this.element.on('mouseleave',function(){
-				
+
+			this.element.on('mouseover', infestor.debounce(function () {
+
+					this.tip.setText(this.tipText);
+					this.tip.show();
+					this.tip.autoPosition(this.element, 'left', 'middle');
+
+				}), this);
+
+			this.element.on('mouseleave', function () {
+
 				this.tip.hide();
-			
-			},this);
-		
-		},this);
-		
+
+			}, this);
+
+		}, this);
+
 		return this;
-		
+
 	},
-	
-	disableTip:function(){
-	
+
+	disableTip : function () {
+
 		return this;
-	
+
 	},
-	
-	initDraggable:function(){
-	
-		if(!this.draggable) return this;
-		
-		!this.$drag && infestor.mgr.require('infestor.Drag',function(){
-		
+
+	initDraggable : function () {
+
+		if (!this.draggable)
+			return this;
+
+		!this.$drag && infestor.mgr.require('infestor.Drag', function () {
+
 			this.$drag = this.$drag || infestor.create('infestor.Drag', {
 
-				element : this.element.getElement(),
-				elementContainer : document.documentElement,
-				limit : true
-			});
-			
-		},this);
-		
+					element : this.element.getElement(),
+					elementContainer : document.documentElement,
+					limit : true
+				});
+
+		}, this);
+
 		return this;
-	
+
 	},
-	
-	disableDraggable:function(){
-	
+
+	disableDraggable : function () {
+
 		this.$drag = this.$drag && this.$drag.destroy();
-	
+
 	},
-	
-	initResizable:function(){
-	
-		if(!this.resizable) return this;
-		
+
+	initResizable : function () {
+
+		if (!this.resizable)
+			return this;
+
 		this.$resize && this.$resize.init();
-		
-		!this.$resize && infestor.mgr.require('infestor.Resize',infestor.debounce(function(){
-		
-			var me = this;
-			
-			this.$resize = this.$resize || infestor.create('infestor.Resize',{ 
-				
-				element:this.getDom(),
-				cssClsElementTrigger:this.cssClsResizableTrigger,
-				events:{
-				
-					beforeStart:function(){
-					
-						me.disableDraggable();
-					
-					},
-					afterStop:function(){
-						
-						me.initDraggable();
-					
-					}
-				
-				}	
-					
-			});
-		
-		},100),this);
-		
-		return this;		
+
+		!this.$resize && infestor.mgr.require('infestor.Resize', infestor.debounce(function () {
+
+				var me = this;
+
+				this.$resize = this.$resize || infestor.create('infestor.Resize', infestor.append({
+
+							element : this.getDom(),
+							cssClsElementTrigger : this.cssClsResizableTrigger,
+							events : {
+
+								beforeStart : function () {
+
+									me.disableDraggable();
+
+								},
+								afterStop : function () {
+
+									me.initDraggable();
+
+								}
+
+							}
+
+						}, infestor.isFunction(this.resizeConfig) ? this.resizeConfig() : this.resizeConfig));
+
+			}, 100), this);
+
+		return this;
 	},
-	
-	disableResizable:function(){
-	
+
+	disableResizable : function () {
+
 		this.$resize = this.$resize && this.$resize.destroy();
-	
+
 	},
-	
+
 	// 销毁实例
 	destroy : function () {
 
@@ -904,14 +925,13 @@ infestor.define('infestor.Element', {
 		this.disableDraggable();
 		this.disableResizable();
 
-		this.destroyList && infestor.each(this.destroyList,function(){
-			
+		this.destroyList && infestor.each(this.destroyList, function () {
+
 			this.destroy && this.destroy();
-		
+
 		});
-		
+
 		this.element && this.element.destroy();
-		
 
 		// 注销实例托管
 		infestor.mgr.removeInstance(this.id);

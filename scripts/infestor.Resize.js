@@ -11,13 +11,16 @@ infestor.define('infestor.Resize', {
 
 	// 尺寸调整目标(Dom)
 	element : null,
+	
+	// 尺寸调整目标父容器(Dom)
+	elementContainer : null,
 
 	// 尺寸调整触发器(infestor.Dom)
 	elementTrigger : null,
 
 	// 尺寸调整引导框(infestor.Dom)
 	elementGuideRect : null,
-
+	
 	// 调整目标尺寸
 	offset : null,
 
@@ -106,7 +109,7 @@ infestor.define('infestor.Resize', {
 		this.drag = this.drag || infestor.create('infestor.Drag', {
 
 				element : this.elementTrigger.getElement(),
-				elementContainer : document.documentElement,
+				elementContainer : this.elementContainer,
 				limit : true,
 				lockY : this.lockY,
 				lockX : this.lockX,
@@ -121,8 +124,8 @@ infestor.define('infestor.Resize', {
 
 						me.offset = infestor.Dom.use(me.element).offset();
 
-						this.maxBottom = Math.min(document.documentElement.clientHeight - me.offset.top - me.targetBorderTop, me.maxHeight - me.targetBorderTop);
-						this.maxRight = Math.min(document.documentElement.clientWidth - me.offset.left - me.targetBorderLeft, me.maxWidth - me.targetBorderLeft);
+						this.maxBottom = Math.min(me.elementContainer.clientHeight - me.offset.top - me.targetBorderTop, me.maxHeight - me.targetBorderTop);
+						this.maxRight = Math.min(me.elementContainer.clientWidth - me.offset.left - me.targetBorderLeft, me.maxWidth - me.targetBorderLeft);
 
 						me.emit('afterStart', [top, left], me);
 
