@@ -18,6 +18,7 @@ infestor.define('infestor.Element', {
 
 	statics : {
 
+		// 通过类型或别名创建实例
 		create : function (opts, def) {
 
 			if (opts && opts.xtype)
@@ -30,9 +31,8 @@ infestor.define('infestor.Element', {
 
 	},
 
+	// 元素样式
 	cssClsElement : '',
-
-	// 遮罩元素css类名
 	cssClsElementMask : 'infestor-element-mask',
 	cssClsElementInlineBlock : 'infestor-element-inline-block',
 	cssClsElementBlock : 'infestor-element-block',
@@ -81,15 +81,6 @@ infestor.define('infestor.Element', {
 	// 控件元素的样式属性
 	css : null,
 
-	// 允许移动
-	draggable : false,
-
-	// 允许调整大小
-	resizable : false,
-
-	// 大小调整配置(obj|fn)
-	resizeConfig : null,
-
 	// 元素停靠位置 (north|south|west|center|east|north-east|south-east|north-west|north-east)
 	dock : false,
 
@@ -119,6 +110,21 @@ infestor.define('infestor.Element', {
 	left : null,
 	right : null,
 	bottom : null,
+	
+	// 允许移动
+	draggable : false,
+
+	// 允许调整大小
+	resizable : false,
+
+	// 大小调整及移动限制容器(Dom|infestor.Dom|infestor.Element|fn)
+	limitContainer: null,
+	
+	// 大小调整限制尺寸
+	minHeight:100,
+	minWidth:100,
+	maxHeight:9999,
+	maxWidth:9999,
 
 	// 子元素定义数组
 	items : null,
@@ -132,9 +138,12 @@ infestor.define('infestor.Element', {
 	// 对象销毁时要同时清理的属性列表
 	destroyList : null,
 
+	// 数据集对象(infestor.DataSet)
+	dataSet : null,
+	
+	// 数据集对象配置(obj)
 	dataConfig : null,
 
-	dataSet : null,
 
 	// 类初始化接口
 	init : function () {
@@ -473,14 +482,14 @@ infestor.define('infestor.Element', {
 		return this;
 	},
 
-	hasItem : function (id) {
+	hasItem : function (name) {
 
 		// 判断该对象是否含有子元素
-		if (infestor.isUndefined(id))
+		if (infestor.isUndefined(name))
 			return this.count > 0;
 
 		// 判断该对象是否含有id为id的子元素
-		return this.hasItem() && this.itemsMap[id]instanceof infestor.Element;
+		return this.hasItem() && this.itemsMap[name] instanceof infestor.Element;
 
 	},
 
@@ -490,7 +499,7 @@ infestor.define('infestor.Element', {
 
 	},
 
-	// 子元素构建方法
+	// 子元素构建接口
 	createItem : function (opts) {
 		return false;
 	},
@@ -504,8 +513,10 @@ infestor.define('infestor.Element', {
 			return;
 
 		this.itemsMap = this.itemsMap || {};
+		
+		!opts.name && (opts.name = this.getId());
 
-		if (opts.name && this.hasItem(opts.name))
+		if (this.hasItem(opts.name))
 			infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"已添加子元素"{2}"', this.$clsName, this.name, opts.name));
 
 		// 是类的实例 直接添加子元素
@@ -553,22 +564,22 @@ infestor.define('infestor.Element', {
 
 		// 删除一个子元素
 		if (this.hasItem(name)) {
-
-			this.count--;
+		
 			this.itemsMap[name].destroy();
 			delete this.itemsMap[name];
+			this.count--;
 		}
 
 	},
 
 	// 隐藏子元素
-	hnameeItem : function (name) {
+	hideItem : function (name) {
 
 		!infestor.isUndefined(name) & this.itemsMap[name] && this.itemsMap[name].hnamee && this.itemsMap[name].hnamee();
 
 		// 隐藏所有子元素
 		infestor.isUndefined(name) && this.hasItem() && infestor.each(this.itemsMap, function (name) {
-			this.hnameeItem(name);
+			this.hideItem(name);
 		}, this);
 	},
 
@@ -852,16 +863,18 @@ infestor.define('infestor.Element', {
 		if (!this.draggable)
 			return this;
 
-		!this.$drag && infestor.mgr.require('infestor.Drag', function () {
+		!this.$drag && infestor.mgr.require('infestor.Drag', infestor.debounce(function () {
 
+			var me = this;
+			
 			this.$drag = this.$drag || infestor.create('infestor.Drag', {
 
 					element : this.element.getElement(),
-					elementContainer : document.documentElement,
+					elementContainer:this.getLimitContainer(),
 					limit : true
 				});
 
-		}, this);
+		},100), this);
 
 		return this;
 
@@ -884,10 +897,15 @@ infestor.define('infestor.Element', {
 
 				var me = this;
 
-				this.$resize = this.$resize || infestor.create('infestor.Resize', infestor.append({
+				this.$resize = this.$resize || infestor.create('infestor.Resize', {
 
 							element : this.getDom(),
+							elementContainer:this.getLimitContainer(),
 							cssClsElementTrigger : this.cssClsResizableTrigger,
+							miniWidth:this.miniWidth,
+							miniHeight:this.miniHeight,
+							maxWidth:this.maxWidth,
+							maxHeight:this.maxHeight,
 							events : {
 
 								beforeStart : function () {
@@ -903,7 +921,7 @@ infestor.define('infestor.Element', {
 
 							}
 
-						}, infestor.isFunction(this.resizeConfig) ? this.resizeConfig() : this.resizeConfig));
+						});
 
 			}, 100), this);
 
@@ -915,21 +933,35 @@ infestor.define('infestor.Element', {
 		this.$resize = this.$resize && this.$resize.destroy();
 
 	},
+	
+	// 大小调整及移动限制容器(Dom)
+	getLimitContainer:function(){
+	
+		var container = infestor.isFunction(this.limitContainer) && this.limitContainer();
+		
+		if(container instanceof infestor.Element)
+			container = container.getDom();
+		if(container instanceof infestor.Dom)
+			container = container.getElement();
+		
+		return container || document.documentElement;
+		
+	},
 
 	// 销毁实例
 	destroy : function () {
-
-		// 销毁子元素
-		this.removeItem();
-
-		this.disableDraggable();
-		this.disableResizable();
-
+	
 		this.destroyList && infestor.each(this.destroyList, function () {
 
 			this.destroy && this.destroy();
 
 		});
+
+		// 销毁子元素
+		this.removeItem();
+	
+		this.disableDraggable();
+		this.disableResizable();
 
 		this.element && this.element.destroy();
 

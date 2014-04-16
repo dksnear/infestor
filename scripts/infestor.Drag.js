@@ -4,21 +4,21 @@
 infestor.define('infestor.Drag', {
 
 	extend : 'infestor.Object',
-	
-	uses:['infestor.Dom'],
-	
+
+	uses : ['infestor.Dom'],
+
 	// 拖放对象(DOM)
 	element : null,
-	
+
 	// 设置触发对象(DOM)(不设置则使用拖放对象)
 	elementTrigger : null,
 
 	// 指定限制在容器内(DOM)
 	elementContainer : null,
-	
+
 	posX : 0,
 	posY : 0,
-	
+
 	// 锁定水平方向拖放
 	lockX : false,
 	// 锁定垂直方向拖放
@@ -40,25 +40,37 @@ infestor.define('infestor.Drag', {
 
 	marginTop : 0,
 	marginLeft : 0,
-	
-	// 移动时鼠标样式
-	cursor:'move',
 
-	isIE : infestor.browser.msie,
+	// 移动时鼠标样式
+	cursor : 'move',
+
+	statics : {
 	
-	events:{
-	
-		// @params this.element.offsetTop,this.element.offsetLeft
-		// @this this
-		start:null,
-		move:null,
-		stop:null
-	
+		// 当前实例id
+		currentInstId : null,
+		
+		// 实例管理器
+		instMap : {}
+
 	},
 
-	init: function () {
+	events : {
+
+		// @params this.element.offsetTop,this.element.offsetLeft
+		// @this this
+		start : null,
+		move : null,
+		stop : null
+
+	},
+
+	init : function () {
 
 		var me = this;
+
+		this.id = this.getId();
+
+		infestor.Drag.instMap[this.id] = this;
 
 		this.elementTrigger = this.elementTrigger || this.element;
 
@@ -69,6 +81,11 @@ infestor.define('infestor.Drag', {
 		this.element.style.position = 'absolute';
 
 		this.moveEventHandler = function (e) {
+
+			// 同一时刻只允许一个实例移动
+			if (me.id != infestor.Drag.currentInstId)
+				return;
+
 			me.move(e || window.event);
 		};
 		this.stopEventHandler = function () {
@@ -78,14 +95,16 @@ infestor.define('infestor.Drag', {
 			me.start(e);
 		}
 
-		infestor.on(this.elementTrigger, 'mousedown', this.startEventHandler);
+		infestor.on(this.elementTrigger, 'mousedown', this.startEventHandler, true);
 	},
 
 	start : function (event) {
 
 		if (this.lock)
 			return;
-			
+
+		infestor.Drag.currentInstId = this.id;
+
 		this.fix();
 
 		this.posX = event.clientX - this.element.offsetLeft;
@@ -94,27 +113,27 @@ infestor.define('infestor.Drag', {
 		this.marginLeft = parseInt(infestor.Dom.use(this.element).css('marginLeft')) || 0;
 		this.marginTop = parseInt(infestor.Dom.use(this.element).css('marginTop')) || 0;
 
-		infestor.on(document, 'mousemove', this.moveEventHandler);
-		infestor.on(document, 'mouseup', this.stopEventHandler);
+		infestor.on(document, 'mousemove', this.moveEventHandler, true);
+		infestor.on(document, 'mouseup', this.stopEventHandler, true);
 
-		if (this.isIE) {
+		if (infestor.isIE()) {
 
-			infestor.on(this.elementTrigger, 'losecapture', this.stopEventHandler);
+			infestor.on(this.elementTrigger, 'losecapture', this.stopEventHandler, true);
 			this.elementTrigger.setCapture();
 
 		} else {
 
-			infestor.on(window, 'blur', this.stopEventHandler);
+			infestor.on(window, 'blur', this.stopEventHandler, true);
 			event.preventDefault();
 		};
-		
+
 		infestor.Dom.use(this.element).zIndex();
-		
-		if(this.cursor){
-			
-			this.bakCursor=infestor.Dom.use(this.element).css('cursor');
-			this.element.style.cursor=this.cursor;
-		
+
+		if (this.cursor) {
+
+			this.bakCursor = infestor.Dom.use(this.element).css('cursor');
+			this.element.style.cursor = this.cursor;
+
 		}
 
 		this.emit('start', [this.element.offsetTop, this.element.offsetLeft], this);
@@ -128,11 +147,11 @@ infestor.define('infestor.Drag', {
 		infestor.clearSelection();
 
 		var left = event.clientX - this.posX,
-			top = event.clientY - this.posY,
-			maxLeft = this.maxLeft,
-			maxTop = this.maxTop,
-			maxRight = this.maxRight,
-			maxBottom = this.maxBottom;
+		top = event.clientY - this.posY,
+		maxLeft = this.maxLeft,
+		maxTop = this.maxTop,
+		maxRight = this.maxRight,
+		maxBottom = this.maxBottom;
 
 		if (this.limit) {
 
@@ -161,18 +180,18 @@ infestor.define('infestor.Drag', {
 
 	stop : function () {
 
-		infestor.un(document, 'mousemove', this.moveEventHandler);
-		infestor.un(document, 'mouseup', this.stopEventHandler);
+		infestor.un(document, 'mousemove', this.moveEventHandler, true);
+		infestor.un(document, 'mouseup', this.stopEventHandler, true);
 
-		if (this.isIE) {
+		if (infestor.isIE()) {
 
-			infestor.un(this.elementTrigger, 'losecapture', this.stopEventHandler);
+			infestor.un(this.elementTrigger, 'losecapture', this.stopEventHandler, true);
 			this.elementTrigger.releaseCapture();
 		} else
-			infestor.un(window, 'blur', this.stopEventHandler);
-			
-	    this.cursor && (this.element.style.cursor = this.bakCursor);
-		
+			infestor.un(window, 'blur', this.stopEventHandler, true);
+
+		this.cursor && (this.element.style.cursor = this.bakCursor);
+
 		this.emit('stop', [this.element.offsetTop, this.element.offsetLeft], this);
 
 	},
@@ -181,7 +200,7 @@ infestor.define('infestor.Drag', {
 
 		if (!this.limit)
 			return;
-			
+
 		var elementContainer = this.elementContainer && infestor.Dom.use(this.elementContainer);
 		this.maxRight = Math.max(this.maxRight, this.maxLeft + this.element.offsetWidth);
 		this.maxBottom = Math.max(this.maxBottom, this.maxTop + this.element.offsetHeight);
@@ -190,10 +209,12 @@ infestor.define('infestor.Drag', {
 
 	destroy : function () {
 
-		infestor.un(this.elementTrigger, 'mousedown', this.startEventHandler);
+		infestor.un(this.elementTrigger, 'mousedown', this.startEventHandler, true);
 		//this.element.style.position = this.elbakPos;
 		if (this.ctbakPos && this.elementContainer)
 			this.elementContainer.style.position = this.ctbakPos;
+
+		delete infestor.Drag.instMap[this.id];
 	}
 
 });

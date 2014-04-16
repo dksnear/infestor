@@ -119,7 +119,7 @@ infestor js
 			};
 			while (stack && caller && depth > 0) {
 
-				caller.$clsName && (stackInfo += global.stringFormat('#   className: {0}\n', caller.$clsName));
+				caller.$clsName && (stackInfo += global.stringFormat('#   className: {0}  instId: {1}  instName:{2}\n', caller.$clsName,caller.id,caller.name));
 
 				caller = caller.caller;
 				--depth;

@@ -491,12 +491,16 @@ infestor.define('infestor.Dom', {
 
 		var top = this.element.offsetTop,
 			left = this.element.offsetLeft,
+			borderTop = infestor.parseNumeric(this.element.style.borderTopWidth),
+			borderLeft = infestor.parseNumeric(this.element.style.borderLeftWidth),
 			offsetParent = this.element.offsetParent;
 
 		while (offsetParent) {
 
 			top += offsetParent.offsetTop;
 			left += offsetParent.offsetLeft;
+			borderTop += infestor.parseNumeric(offsetParent.style.borderTopWidth);
+			borderLeft += infestor.parseNumeric(offsetParent.style.borderLeftWidth);
 			offsetParent = offsetParent.offsetParent;
 		}
 
@@ -506,6 +510,10 @@ infestor.define('infestor.Dom', {
 			rawLeft : this.element.offsetLeft,
 			top : top,
 			left : left,
+			rawBorderTop: infestor.parseNumeric(this.element.style.borderTopWidth),
+			rawBorderLeft: infestor.parseNumeric(this.element.style.borderLeftWidth),
+			borderTop:borderTop,
+			borderLeft:borderLeft,
 			height : this.element.offsetHeight,
 			width : this.element.offsetWidth
 

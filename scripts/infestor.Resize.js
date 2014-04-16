@@ -57,11 +57,16 @@ infestor.define('infestor.Resize', {
 		if (!this.element)
 			return;
 
+		this.elementContainer = this.elementContainer || document.documentElement;
+		
+		this.containerOffset = infestor.Dom.use(this.elementContainer).offset();
 		this.offset = infestor.Dom.use(this.element).offset();
+		
 		this.targetBorderTop = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-top-width'));
 		this.targetBorderLeft = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-left-width'));
 		this.targetBorderBottom = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-bottom-width'));
 		this.targetBorderRight = infestor.parseNumeric(infestor.Dom.use(this.element).css('border-right-width'));
+		
 		this.cursor = this.lockX ? 's-resize' : this.lockY ? 'e-resize' : 'se-resize';
 
 		this.initDrag();
@@ -124,9 +129,9 @@ infestor.define('infestor.Resize', {
 
 						me.offset = infestor.Dom.use(me.element).offset();
 
-						this.maxBottom = Math.min(me.elementContainer.clientHeight - me.offset.top - me.targetBorderTop, me.maxHeight - me.targetBorderTop);
-						this.maxRight = Math.min(me.elementContainer.clientWidth - me.offset.left - me.targetBorderLeft, me.maxWidth - me.targetBorderLeft);
-
+						this.maxBottom = Math.min(me.elementContainer.clientHeight - me.offset.rawTop - me.targetBorderTop, me.maxHeight - me.targetBorderTop);
+						this.maxRight = Math.min(me.elementContainer.clientWidth - me.offset.rawLeft - me.targetBorderLeft, me.maxWidth - me.targetBorderLeft);
+					
 						me.emit('afterStart', [top, left], me);
 
 					},
@@ -137,8 +142,8 @@ infestor.define('infestor.Resize', {
 
 						me.elementGuideRect.css({
 
-							top : infestor.px(me.offset.top),
-							left : infestor.px(me.offset.left),
+							top : infestor.px(me.offset.top + me.containerOffset.borderTop),
+							left : infestor.px(me.offset.left + me.containerOffset.borderLeft),
 							height : infestor.px(top + me.elementTrigger.height() + me.targetBorderTop - 2),
 							width : infestor.px(left + me.elementTrigger.width() + me.targetBorderLeft - 2)
 
