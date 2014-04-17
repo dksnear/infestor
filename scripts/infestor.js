@@ -119,7 +119,7 @@ infestor js
 			};
 			while (stack && caller && depth > 0) {
 
-				caller.$clsName && (stackInfo += global.stringFormat('#   className: {0}  instId: {1}  instName:{2}\n', caller.$clsName,caller.id,caller.name));
+				caller.$clsName && (stackInfo += global.stringFormat('#   className: {0}  instId: {1}  instName:{2}\n', caller.$clsName, caller.id, caller.name));
 
 				caller = caller.caller;
 				--depth;
@@ -533,7 +533,8 @@ infestor js
 
 		},
 
-		numberFormat : function (num, digit) {
+		// 位数格式化
+		digitFormat : function (num, digit) {
 
 			if (!global.isNumber(num))
 				return '';
@@ -571,9 +572,10 @@ infestor js
 
 		},
 
-		random : function () {
+		random : function (lower, upper) {
 
-			return Number(new Number(Math.floor(new Date().getTime() * Math.random())).toPrecision(8));
+			return Math.floor(Math.random() * (upper - lower + 1) + lower);
+
 		},
 
 		randomCode : function (len) {
@@ -588,11 +590,6 @@ infestor js
 
 			return rs;
 
-		},
-
-		randomNumber : function (len) {
-
-			return Math.floor(Math.random() * Math.pow(10, len || 6));
 		},
 
 		jsonEncode : function (obj, rules) {
@@ -1365,7 +1362,7 @@ infestor js
 			var match = global.browser.$methods[name];
 
 			match && match() && global.isFunction(method) && (fn = function () {
-			
+
 				method.apply(this, arguments);
 			});
 

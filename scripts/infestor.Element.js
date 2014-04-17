@@ -34,14 +34,18 @@ infestor.define('infestor.Element', {
 		// 全局遮罩
 		showMask : function () {
 		
-			this.elementGlobalMask =  this.globalMask || infestor.Dom.div().addClass(this.cssClsElementGlobalMask).appendTo(infestor.Dom.getBody());
+			this.elementGlobalMask =  this.elementGlobalMask || infestor.Dom.div().addClass(this.cssClsElementGlobalMask).appendTo(infestor.Dom.getBody());
 			this.elementGlobalMask.zIndex().show();
+			
+			return this;
 			
 		},
 		
 		hideMask:function(){
 		
 			this.elementGlobalMask && this.elementGlobalMask.hide();
+			
+			return this;
 		
 		}
 
