@@ -76,7 +76,7 @@ infestor.define('infestor.DataSet', {
 
 		this.current = 0;
 		this.data = infestor.isFunction(data) ? data.call(this) : data;
-		this.count = this.data && this.data.length || this.count;
+		this.count = this.data && this.data.length || 0;
 		
 		return this.data;
 
