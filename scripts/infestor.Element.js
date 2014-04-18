@@ -190,6 +190,8 @@ infestor.define('infestor.Element', {
 
 		// 子元素初始化接口
 		this.initItems();
+		
+		this.setDock();
 
 	},
 

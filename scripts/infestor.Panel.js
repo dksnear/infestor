@@ -10,7 +10,6 @@ infestor.define('infestor.Panel', {
 	cssClsHead : 'infestor-panel-head',
 	cssClsBody : 'infestor-panel-body',
 	cssClsRear : 'infestor-panel-rear',
-	cssClsContent : 'infestor-panel-content',
 	cssClsTitle : 'infestor-panel-title',
 
 	height : null,

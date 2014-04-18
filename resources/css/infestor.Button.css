@@ -1,10 +1,44 @@
  
  .infestor-button{
  
-	width: 60px;
-	height: 30px;
-	cursor: pointer;
-	
-	line-height: 30px;
-	text-align: center;
+	display:table;
  }
+ 
+ .infestor-button-body{
+ 
+	display:table-cell;
+	vertical-align: middle;
+	text-align:center;
+	cursor:pointer;
+	padding:0 10px;
+	font-weight:blod;
+ 
+ }
+ 
+ .infestor-button-head{
+ 
+	display:table-cell;
+ 
+ }
+ 
+ .infestor-button-rear{
+ 
+	display:table-cell;
+ 
+ }
+ 
+ .infestor-button-icon{
+ 
+	padding:0px;
+	background-repeat:no-repeat;
+	background-position:center center;
+	cursor:auto;
+	
+ }
+ 
+ .infestor-button-icon-image{
+ 
+	background-image:url(../images/chain-node-hover.png);
+	
+ }
+ 

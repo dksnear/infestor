@@ -3,7 +3,7 @@ infestor.define('infestor.DataSet', {
 
 	extend : 'infestor.Object',
 
-	uses : ['infestor.request', 'infestor.Dom', 'infestor.Task'],
+	uses : ['infestor.request', 'infestor.cross', 'infestor.Dom', 'infestor.Task'],
 
 	statics : {
 
@@ -25,6 +25,7 @@ infestor.define('infestor.DataSet', {
 			return this;
 
 		},
+
 		changeIndicator : function (value) {
 
 			if (!this.elementIndicator)
@@ -35,6 +36,7 @@ infestor.define('infestor.DataSet', {
 			return this;
 
 		},
+
 		hideIndicator : function () {
 
 			this.elementIndicator && this.elementIndicator.hide();
@@ -45,24 +47,35 @@ infestor.define('infestor.DataSet', {
 
 	},
 
-	url : null,
-
-	params : null,
-
-	// get post jsonp
-	method : 'get',
-
+	// 远程请求
 	remote : true,
 
+	// 请求地址
+	url : null,
+
+	// 请求参数 (obj)
+	params : null,
+
+	// 远程请求方法 (get|post|jsonp)
+	method : 'get',
+
+	// 数据对象 (array)
 	data : null,
 
+	// 数据对象长度
 	count : 0,
 
+	// 当前数据
 	current : 0,
 
+	// 已载入
 	isLoaded : false,
-	
-	globalIndicator: true,
+
+	// 显示加载进度 (bool|options:{ show:fn ,change:fn(value) ,hide:fn ,scope:obj})
+	indicator : true,
+
+	// 显示遮罩 (bool|options:{ show:fn , hide:fn ,scope:obj })
+	mask : true,
 
 	events : {
 
@@ -77,15 +90,15 @@ infestor.define('infestor.DataSet', {
 		this.current = 0;
 		this.data = infestor.isFunction(data) ? data.call(this) : data;
 		this.count = this.data && this.data.length || 0;
-		
+
 		return this.data;
 
 	},
-	
-	clearData : function(){
-	
+
+	clearData : function () {
+
 		return this.setData([]);
-		
+
 	},
 
 	setCurrent : function (current) {
@@ -111,7 +124,9 @@ infestor.define('infestor.DataSet', {
 	load : function (opts, rewrite) {
 
 		var me = this,
-		task;
+		task,
+		mask,
+		indicator;
 
 		if (!this.remote) {
 
@@ -119,36 +134,78 @@ infestor.define('infestor.DataSet', {
 			return;
 		}
 
+		mask = this.mask ? {
+
+			show : infestor.isBoolean(this.mask) ? infestor.cross.showMask : function () {
+
+				me.mask.show.call(me.mask.scope || window);
+
+			},
+			hide : infestor.isBoolean(this.mask) ? infestor.cross.hideMask : function () {
+
+				me.mask.hide.call(me.mask.scope || window);
+			}
+
+		}
+		 : this.mask;
+
+		indicator = this.indicator ? {
+
+			show : infestor.isBoolean(this.indicator) ? infestor.DataSet.showIndicator: function () {
+
+				me.indicator.show.call(me.indicator.scope || window)
+			},
+			hide : infestor.isBoolean(this.indicator) ? infestor.DataSet.hideIndicator : function () {
+
+				me.indicator.hide.call(me.indicator.scope || window);
+			},
+			change : infestor.isBoolean(this.indicator) ? infestor.DataSet.changeIndicator : function () {
+
+				me.indicator.change.apply(me.indicator.scope || window, arguments);
+
+			}
+
+		}
+		 : this.indicator;
+
 		task = infestor.create('infestor.Task', {
 
-				indicatorStart : infestor.random(0,15),
-				indicatorStop : infestor.random(35,85),
+				indicatorStart : infestor.random(0, 15),
+				indicatorStop : infestor.random(35, 85),
 				interval : 20,
 
 				events : {
 
 					start : function () {
-					
-						infestor.DataSet.showIndicator().changeIndicator(this.indicatorStart);
-					
+
+						mask && mask.show();
+
+						indicator && indicator.show();
+						indicator && indicator.change(this.indicatorStart);
+
 					},
 					turn : function () {
 
+						if (!indicator)
+							return;
+
 						this.indicatorStart = infestor.random(this.indicatorStart, this.indicatorStop);
-						infestor.DataSet.changeIndicator(this.indicatorStart);
+						indicator.change(this.indicatorStart);
 
 					},
 					stop : function () {
-					
-						infestor.DataSet.changeIndicator(100);
-						
-						infestor.delay(function(){
-							
-							infestor.DataSet.hideIndicator().changeIndicator(0);
-						
-						},200);
-						
-					
+
+						indicator && indicator.change(100);
+
+						indicator && infestor.delay(function () {
+
+							indicator.hide();
+							indicator.change(0);
+
+						}, 200);
+
+						mask && mask.hide();
+
 					}
 
 				}
@@ -171,7 +228,7 @@ infestor.define('infestor.DataSet', {
 					task.stop();
 				},
 				error : function () {
-				
+
 					me.emit('error', arguments);
 				},
 				complete : function () {
