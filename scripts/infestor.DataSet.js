@@ -9,7 +9,7 @@ infestor.define('infestor.DataSet', {
 
 		showIndicator : function () {
 
-			this.elementIndicator = this.elementIndicator || infestor.Dom.div().css({
+			infestor.DataSet.elementIndicator = infestor.DataSet.elementIndicator || infestor.Dom.div().css({
 
 					position : 'fixed',
 					width : '0%',
@@ -20,7 +20,7 @@ infestor.define('infestor.DataSet', {
 
 				}).appendTo(infestor.Dom.getBody());
 
-			this.elementIndicator.zIndex().show();
+			infestor.DataSet.elementIndicator.zIndex().show();
 
 			return this;
 
@@ -28,10 +28,10 @@ infestor.define('infestor.DataSet', {
 
 		changeIndicator : function (value) {
 
-			if (!this.elementIndicator)
+			if (!infestor.DataSet.elementIndicator)
 				return;
 
-			infestor.isRawObject(value) ? this.elementIndicator.css(value) : this.elementIndicator.css('width', value + '%');
+			infestor.isRawObject(value) ? infestor.DataSet.elementIndicator.css(value) : infestor.DataSet.elementIndicator.css('width', value + '%');
 
 			return this;
 
@@ -39,7 +39,7 @@ infestor.define('infestor.DataSet', {
 
 		hideIndicator : function () {
 
-			this.elementIndicator && this.elementIndicator.hide();
+			infestor.DataSet.elementIndicator && infestor.DataSet.elementIndicator.hide();
 
 			return this;
 
