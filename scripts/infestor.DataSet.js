@@ -184,6 +184,7 @@ infestor.define('infestor.DataSet', {
 						indicator && indicator.change(this.indicatorStart);
 
 					},
+					
 					turn : function () {
 
 						if (!indicator)
@@ -193,6 +194,7 @@ infestor.define('infestor.DataSet', {
 						indicator.change(this.indicatorStart);
 
 					},
+					
 					stop : function () {
 
 						indicator && indicator.change(100);

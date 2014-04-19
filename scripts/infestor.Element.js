@@ -953,7 +953,7 @@ infestor.define('infestor.Element', {
 
 	},
 
-	// 大小调整及移动限制容器(Dom)
+	// 动态获取大小调整及移动限制容器(Dom)
 	getLimitContainer : function () {
 
 		var container = infestor.isFunction(this.limitContainer) ? this.limitContainer() : this.limitContainer;

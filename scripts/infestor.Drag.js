@@ -77,8 +77,9 @@ infestor.define('infestor.Drag', {
 		this.elementContainer = this.elementContainer || document.documentElement;
 		//记录源dom对象的position样式,用来还原
 		// this.elbakPos = infestor.Dom.use(this.element).css('position');
-		this.ctbakPos = this.elementContainer && infestor.Dom.use(this.elementContainer).css('position');
-		this.element.style.position = 'absolute';
+		this.ctbakPos = this.elementContainer && this.element.style.position;
+		
+		this.element.style.position = this.element.style.position == 'fixed'? this.element.style.position : 'absolute';
 
 		this.moveEventHandler = function (e) {
 
