@@ -3,16 +3,115 @@
 <head>
 	<meta charset="UTF-8">
 	<title>infestor</title>
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<script src="scripts/infestor.js"></script>
 	<script>
-	
-		window.onload = function(){
-		
-			location.href = 'http://192.168.39.251:3013';
-		}
+		infestor.mgr.using('infestor.Element');
+		infestor(function(){
+			
+			infestor.define('infestor.IndexStage',{
+			
+				extend:'infestor.Element',
+				margin:'30px',
+				initElement:function(){
+					
+					this.callParent();
+					this.renderTo(infestor.Dom.getBody());
 				
+				},
+				createItem:function(opts){
+				
+					return infestor.create('infestor.Element',{
+					
+						css:{
+						
+							display:'table',
+							margin:'0 0 5px 0'
+						
+						},
+						
+						items:[{
+						
+							alias:'element',
+							css:{
+								'font-size':'14px',
+								padding:'0 5px',
+								display:'table-cell',
+							    'text-decoration':'underline'
+							},
+							text:opts.port+':'
+							
+						},{
+						
+							tagName:'a',
+							alias:'element',
+							css:{
+								
+								'font-size':'14px',
+								color:!opts.isServer? 'black':'red'
+							
+							},
+							text:opts.name,
+							attr:{
+							
+								href:!opts.isServer ? infestor.stringFormat('{0}:{1}',opts.host,opts.port):'#'
+							}
+							
+						}]
+					
+					});
+				
+				}
+			
+			});
+			
+			
+			infestor.create('infestor.IndexStage',{
+						
+				itemsOpts:{
+				
+					host:'http://192.168.39.251'
+				},
+				items:[{
+				
+					name:'infestor',
+					port:'3010'
+					
+				},{
+				
+					name:'slide',
+					port:'3011'
+				
+				},{
+				
+					name:'server-comic',
+					port:'3012',
+					isServer:true
+				
+				},{
+				
+					name:'demo',
+					port:'3013'
+				
+				},{
+				
+					name:'ysera',
+					port:'3014'
+				
+				},{
+				
+					name:'iconfix',
+					port:'3015'
+				}]
+			
+			});
+			
+		
+		
+		});
 	</script>
 </head>
 <body>
+	
 </body>
 </html>

@@ -1107,14 +1107,10 @@ infestor js
 
 				// css
 				if (!isDefaultType) {
-
+				
 					pathFragments[0] = this.cssPath[pathFragments[0]] || this.defaultCssPath;
-
-					if (pathFragments.length > 1) {
-
-						pathFragments.length = 2;
-						pathFragments[1] = clsName;
-					}
+					pathFragments.length = 2;
+					pathFragments[1] = clsName;
 
 				}
 
