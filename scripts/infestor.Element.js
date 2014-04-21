@@ -108,6 +108,12 @@ infestor.define('infestor.Element', {
 
 	text : null,
 
+	// tip
+	tip:null,
+	
+	// 贴士出现位置 (top|left|bottom|right)
+	tipTrend:'left',
+
 	// 元素尺寸属性(#styleFormat|auto)
 
 	height : null,
@@ -494,9 +500,13 @@ infestor.define('infestor.Element', {
 	// 初始化子元素
 	initItems : function () {
 
+		this.items = this.items || [];
+	
 		this.items && infestor.each(this.items, function (idx, opts) {
 			this.addItem(opts);
 		}, this);
+		
+		this.items = [];
 
 		return this;
 	},
@@ -576,7 +586,7 @@ infestor.define('infestor.Element', {
 			return;
 
 		// 删除所有子元素
-		if (infestor.isUndefined(name) && this.hasItem())
+		if (infestor.isUndefined(name) && this.hasItem())	
 			return infestor.each(this.itemsMap, function (name) {
 				this.removeItem(name);
 			}, this);
@@ -589,6 +599,15 @@ infestor.define('infestor.Element', {
 			this.count--;
 		}
 
+	},
+	
+	getItem:function(name){
+	
+		if(arguments.length<1)
+			return this.itemsMap;
+			
+		return this.itemsMap && this.itemsMap[name];
+	
 	},
 
 	// 隐藏子元素
@@ -855,7 +874,7 @@ infestor.define('infestor.Element', {
 
 					this.tip.setText(this.tipText);
 					this.tip.show();
-					this.tip.autoPosition(this.element, 'left', 'middle');
+					this.tip.autoPosition(this.element, this.tipTrend, 'middle');
 
 				}), this);
 

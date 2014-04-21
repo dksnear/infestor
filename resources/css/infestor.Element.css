@@ -5,7 +5,13 @@
 	border: 0;
 	font-size: 12px;
 	font-family: 'Segoe UI', Arial, 'Microsoft Yahei', Simsun, sans-serif;
-	color: #000;
+	/* color: transparent; */
+}
+
+table,td{
+
+	border-collapse:collapse;
+
 }
 
 input [type=text]{
@@ -184,7 +190,6 @@ input:focus{
 
 .infestor-element-resizable-trigger{
 
-	background-color:yellow;
 
 }
 

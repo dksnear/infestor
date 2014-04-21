@@ -45,7 +45,7 @@ infestor.define('infestor.Resize', {
 	maxWidth : 9999,
 
 	// 引导框边界尺寸
-	rectBorder : 2,
+	rectBorder : 1,
 
 	// 引导框边界颜色(样式颜色(#000..))
 	rectBorderColor : 'red',
@@ -101,6 +101,17 @@ infestor.define('infestor.Resize', {
 				bottom : infestor.px(this.targetBorderBottom * -1)
 
 			}).addClass(this.cssClsElementTrigger).appendTo(infestor.Dom.use(this.element)).zIndex();
+			
+		this.elementTriggerTag = this.elementTriggerTag || infestor.Dom.div().css({
+			
+				width:0,
+				height:0,
+				display:'none',
+				'border-bottom': infestor.px(this.triggerHeight-2) + ' solid ' + this.rectBorderColor,
+				'border-left':infestor.px(this.triggerWidth-2) + ' solid transparent'
+
+			
+			}).appendTo(this.elementTrigger);
 
 	},
 
@@ -110,7 +121,7 @@ infestor.define('infestor.Resize', {
 
 				height : infestor.px(this.offset.height - this.rectBorder * 2),
 				width : infestor.px(this.offset.width - this.rectBorder * 2),
-				border : this.rectBorder + 'px solid ' + this.rectBorderColor,
+				border : infestor.px(this.rectBorder) + ' solid ' + this.rectBorderColor,
 				position : 'absolute',
 				top : infestor.px(this.offset.top),
 				left : infestor.px(this.offset.left)
@@ -154,7 +165,7 @@ infestor.define('infestor.Resize', {
 
 						me.emit('beforeMove', [top, left], me);
 
-						me.elementGuideRect.css({
+						me.elementGuideRect && me.elementGuideRect.css({
 
 							top : infestor.px(me.offset.top + me.containerOffset.borderTop),
 							left : infestor.px(me.offset.left + me.containerOffset.borderLeft),
@@ -162,6 +173,8 @@ infestor.define('infestor.Resize', {
 							width : infestor.px(left + me.elementTrigger.width() + me.targetBorderLeft - me.rectBorder * 2)
 
 						}).zIndex().show();
+						
+						me.elementTriggerTag && me.elementTriggerTag.zIndex().show();
 
 						me.emit('afterMove', [top, left], me);
 
@@ -178,7 +191,8 @@ infestor.define('infestor.Resize', {
 
 						});
 
-						me.elementGuideRect.hide();
+						me.elementGuideRect && me.elementGuideRect.hide();
+						me.elementTriggerTag && me.elementTriggerTag.hide();
 						infestor.Dom.use(me.element).zIndex();
 
 						me.emit('afterStop', [top, left], me);

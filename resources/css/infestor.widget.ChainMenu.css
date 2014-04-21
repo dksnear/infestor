@@ -1,5 +1,4 @@
 
-
 .infestor-chain-menu{
 
 	width: 35px;
@@ -13,12 +12,34 @@
 	text-align: center;
 }
 
-.infestor-chain-menu-line span{
+.infestor-chain-menu-line div{
 
 	background-color: #1c62a3;
 	width: 6px;
 	height: 23px;
 	display: inline-block;
+	*display: inline;
+	*zoom: 1;
+
+}
+
+.infestor-chain-menu-horizon-line{
+
+	width: 23px;
+	height: 23px;
+	text-align: center;
+
+}
+
+
+.infestor-chain-menu-horizon-line div{
+
+	background-color: #1c62a3;
+	width:23px;
+	height:6px;
+	display:inline-block;
+	*display: inline;
+	*zoom: 1;
 
 }
 

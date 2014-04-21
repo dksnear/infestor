@@ -95,6 +95,20 @@ infestor.define('infestor.DataSet', {
 
 	},
 
+	getData : function (idx) {
+	
+		if (!this.data)
+			return null;
+
+		if (infestor.isUndefined(idx))
+			return this.data;
+			
+		idx = idx > this.count - 1 ? this.count - 1 : idx;
+		this.current = idx;
+
+		return this.data[idx];
+	},
+
 	clearData : function () {
 
 		return this.setData([]);
@@ -130,7 +144,8 @@ infestor.define('infestor.DataSet', {
 
 		if (!this.remote) {
 
-			this.emit('load', arguments);
+			this.emit('load', [me.setData(opts)],this);
+			this.emit('complete',[],this);
 			return;
 		}
 
@@ -151,7 +166,7 @@ infestor.define('infestor.DataSet', {
 
 		indicator = this.indicator ? {
 
-			show : infestor.isBoolean(this.indicator) ? infestor.DataSet.showIndicator: function () {
+			show : infestor.isBoolean(this.indicator) ? infestor.DataSet.showIndicator : function () {
 
 				me.indicator.show.call(me.indicator.scope || window)
 			},
@@ -184,7 +199,7 @@ infestor.define('infestor.DataSet', {
 						indicator && indicator.change(this.indicatorStart);
 
 					},
-					
+
 					turn : function () {
 
 						if (!indicator)
@@ -194,7 +209,7 @@ infestor.define('infestor.DataSet', {
 						indicator.change(this.indicatorStart);
 
 					},
-					
+
 					stop : function () {
 
 						indicator && indicator.change(100);
@@ -225,18 +240,21 @@ infestor.define('infestor.DataSet', {
 				params : this.params,
 				success : function (data) {
 
-					me.emit('load', [me.setData(data)]);
+					me.emit('load', [me.setData(data)],me);
 					me.isLoaded = true;
 					task.stop();
+					
+					if(me.method == 'jsonp')
+						me.emit('complete', arguments, me);
 				},
 				error : function () {
 
-					me.emit('error', arguments);
+					me.emit('error', arguments,me);
 				},
 				complete : function () {
 
 					task.stop();
-					me.emit('complete', arguments);
+					me.emit('complete', arguments, me);
 				}
 
 			}, opts);

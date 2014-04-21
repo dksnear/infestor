@@ -10,8 +10,11 @@ infestor.define('infestor.widget.ChainMenu', {
 
 	cssClsElement : 'infestor-chain-menu',
 	cssClsLine : 'infestor-chain-menu-line',
+	cssClsHorizonLine :'infestor-chain-menu-horizon-line',
 	cssClsNode : 'infestor-chain-menu-node',
 	cssClsNodeHover : 'infestor-chain-menu-node-hover',
+	
+	vertical:true,
 	
 	events:{
 	
@@ -21,21 +24,45 @@ infestor.define('infestor.widget.ChainMenu', {
 	
 	},
 	
+	initElement:function(){
+	
+	
+		this.callParent();
+		
+		if(!this.vertical){
+		
+			this.tipTrend = 'bottom';
+			this.cssClsLine = this.cssClsHorizonLine;
+		    this.elementCt = this.createDomElement(this.element,'','table');
+			this.elementICt = this.createDomElement(this.elementCt,'','tr');
+			this.elementInnerContainer = this.elementICt;
+		
+		}
+	
+	},
+	
 	initEvents:function(){
 	
 		this.delegate(this,'click',function(inst,e){
 		
-			return inst && inst.cssClsElement == this.cssClsNode;
+			return inst && inst.getElement().hasClass(this.cssClsNode);
 			
 		},function(inst,e){
 		
-			this.emit('itemClick',[inst.parent,inst,e],this);
+			this.emit('itemClick',[this.getItem(inst.targetName),inst,e],this);
 		
 		},this);
 	
 	},
+	
+	
+	createItem:function(opts){
+	
+		return this.vertical? this.createVerticalItem(opts) : this.createHorizonItem(opts);
+	
+	},
 
-	createItem : function (opts) {
+	createVerticalItem : function (opts) {
 
 		if (!this.count) {
 
@@ -44,7 +71,8 @@ infestor.define('infestor.widget.ChainMenu', {
 				items : [{
 				
 					alias : 'element',
-					cssClsElement : this.cssClsNode,
+					cssClsElement : this.cssClsNode +' ' + (opts.cssClsTarget || ''),
+					targetName:opts.name,
 					tip: opts.tip
 				}]
 
@@ -59,19 +87,105 @@ infestor.define('infestor.widget.ChainMenu', {
 				cssClsElement : this.cssClsLine,
 				items : [{
 
-					alias : 'element',
-					tagName : 'span'
+					alias : 'element'
 
 				}]
 			}, {
 
 				alias : 'element',
-				cssClsElement : this.cssClsNode,
+				cssClsElement : this.cssClsNode +' '+ (opts.cssClsTarget || ''),
+				targetName:opts.name,
 				tip: opts.tip
 			}]
 
 		},opts,'tip',null,true));
 
+	},
+	
+	createHorizonItem:function(opts){
+	
+		if (!this.count) {
+
+			return infestor.create('infestor.Element', infestor.appendIf({
+
+				tagName:'td',
+				items : [{
+				
+					alias : 'element',
+					tagName:'table',
+					items:[{
+					
+						alias:'element',
+						tagName:'tr',
+						items:[{
+						
+							alias:'element',
+							tagName:'td',
+							items:[{
+							
+								alias:'element',
+								cssClsElement:this.cssClsNode +' '+ (opts.cssClsTarget || ''),
+								targetName:opts.name,
+								tip:opts.Tip
+							
+							}]
+						
+						}]
+					
+					}]
+				}]
+
+			},opts,'tip',null,true));
+		}
+
+		return infestor.create('infestor.Element', infestor.appendIf({
+
+			tagName:'td',
+			items : [{
+			
+				alias : 'element',
+				tagName:'table',
+				items:[{
+				
+					alias:'element',
+					tagName:'tr',
+					items:[{
+					
+						alias:'element',
+						tagName:'td',
+						items:[{
+						
+							alias:'element',
+							cssClsElement:this.cssClsLine,
+							items:[{
+							
+								alias:'element'
+							
+							}]
+						
+						}]
+								
+					},{
+					
+						alias:'element',
+						tagName:'td',
+						items:[{
+						
+							alias:'element',
+							cssClsElement:this.cssClsNode +' '+ (opts.cssClsTarget || ''),
+							targetName:opts.name,
+							tip:opts.Tip
+						
+						}]
+					
+					}]
+				
+				}]
+			}]
+
+		},opts,'tip',null,true));
+	
+	
 	}
 
 });
