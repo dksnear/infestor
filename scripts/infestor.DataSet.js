@@ -200,7 +200,7 @@ infestor.define('infestor.DataSet', {
 
 					},
 
-					turn : function () {
+					tick : function () {
 
 						if (!indicator)
 							return;

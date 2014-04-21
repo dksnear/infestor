@@ -4,23 +4,28 @@ infestor.define('infestor.Task',{
 
 	extend:'infestor.Object',
 	
-	task:null,
+	// 任务Id
+	taskId:null,
 	
+	// 任务执行间隔时间
 	interval:100,
+	
+	// 已经开始
+	isStart:false,
 		
 	start:function(){
 	
 		if(this.isStart) return;
 		
-		this.task = infestor.task(function(){
+		this.taskId = infestor.task(function(){
 		
-			this.emit('turn',[]);
+			this.emit('tick',[],this);
 		
 		},this.interval,this);
 		
 		this.isStart = true;
 		
-		this.emit('start',[]);
+		this.emit('start',[],this);
 	
 	},
 	
@@ -28,16 +33,21 @@ infestor.define('infestor.Task',{
 	
 		if(!this.isStart) return;
 				
-		infestor.stopTask(this.task);
+		infestor.stopTask(this.taskId);
 		
 		this.isStart = false;
 		
-		this.emit('stop',[]);
+		this.emit('stop',[],this);
 	
 	},
 	
 	
 	destroy:function(){
+	
+		this.taskId && infestor.stopTask(this.taskId);
+		this.isStart = false;
+		
+		return null;
 	
 	}
 	
