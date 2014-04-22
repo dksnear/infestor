@@ -79,7 +79,11 @@ infestor.define('infestor.DataSet', {
 
 	events : {
 
+		// @params data
+		// @scope this
 		load : null,
+		
+		//@scope this
 		error : null,
 		complete : null
 
@@ -93,6 +97,18 @@ infestor.define('infestor.DataSet', {
 
 		return this.data;
 
+	},
+	
+	addData :function(item){
+	
+		this.data = this.data || [];
+	
+		this.data.push(item);
+		
+		this.count++;
+		
+		return item;
+	
 	},
 
 	getData : function (idx) {
@@ -248,7 +264,7 @@ infestor.define('infestor.DataSet', {
 						me.emit('complete', arguments, me);
 				},
 				error : function () {
-
+					
 					me.emit('error', arguments,me);
 				},
 				complete : function () {
@@ -279,6 +295,12 @@ infestor.define('infestor.DataSet', {
 	reload : function () {
 
 		this.load();
+	},
+	
+	destroy:function(){
+	
+		this.clearData();
+	
 	}
 
 });
