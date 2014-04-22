@@ -1008,6 +1008,8 @@ infestor.define('infestor.Element', {
 
 		// 注销实例托管
 		infestor.mgr.removeInstance(this.id);
+		
+		this.callParent();
 
 		return null;
 

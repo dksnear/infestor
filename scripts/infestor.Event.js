@@ -9,6 +9,17 @@ infestor.define('infestor.Event', {
 
 		this.addEventListener.apply(this, arguments);
 	},
+	
+	// 调用父类同名方法
+	callParent : function () {
+
+		var method = this.callParent.caller,
+		ownerCls = method.$ownerCls,
+		parentClass = !!ownerCls ? method.$ownerCls.$superClass : undefined,
+		methodName = method.$methodName;
+
+		return parentClass && parentClass[methodName].apply(this, arguments.length > 0 ? arguments : method.arguments);
+	},
 
 	// 添加侦听事件
 	addEventListener : function (eventName, eventHandle) {
@@ -30,8 +41,7 @@ infestor.define('infestor.Event', {
 			if (!handle)
 				return true;
 
-			if (!this.eventsMap[name])
-				this.eventsMap[name] = {};
+			this.eventsMap[name] = this.eventsMap[name] || {};
 
 			this.eventsMap[name][infestor.getId()] = handle;
 
@@ -65,19 +75,7 @@ infestor.define('infestor.Event', {
 		}, this);
 
 	},
-
-	// 添加侦听事件
-	on : function () {
-
-		this.addEventListener.apply(this, arguments);
-	},
-
-	// 移除侦听事件
-	un : function () {
-
-		this.removeEventListener.apply(this, arguments);
-	},
-
+	
 	// 触发侦听事件
 	emit : function (eventName, eventArgs, scope) {
 
@@ -94,6 +92,24 @@ infestor.define('infestor.Event', {
 			this.apply(scope, (infestor.isArguments(eventArgs) || infestor.isArray(eventArgs)) ? eventArgs : [eventArgs]);
 
 		});
+	},
+
+	// 添加侦听事件
+	on : function () {
+
+		this.addEventListener.apply(this, arguments);
+	},
+
+	// 移除侦听事件
+	un : function () {
+
+		this.removeEventListener.apply(this, arguments);
+	},
+	
+	fire:function(){
+	
+		this.emit.apply(this,arguments);
+	
 	},
 
 	destroy : function () {

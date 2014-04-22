@@ -18,17 +18,6 @@ infestor.define('infestor.Object', {
 
 	},
 
-	// 调用父类同名方法
-	callParent : function () {
-
-		var method = this.callParent.caller,
-		ownerCls = method.$ownerCls,
-		parentClass = !!ownerCls ? method.$ownerCls.$superClass : undefined,
-		methodName = method.$methodName;
-
-		return parentClass && parentClass[methodName].apply(this, arguments.length > 0 ? arguments : method.arguments);
-	},
-
 	getId : function () {
 
 		return infestor.getId();
@@ -39,12 +28,6 @@ infestor.define('infestor.Object', {
 
 		infestor.mgr.delayReg(infestor.mgr.loadedMap[this.$clsName], fn, args || [], scope || this);
 
-	},
-
-	printClsName : function () {
-
-		//for test
-		alert(this.$clsName);
 	}
 
 });

@@ -77,9 +77,9 @@ infestor.define('infestor.Drag', {
 		this.elementContainer = this.elementContainer || document.documentElement;
 		//记录源dom对象的position样式,用来还原
 		// this.elbakPos = infestor.Dom.use(this.element).css('position');
-		this.ctbakPos = this.elementContainer && this.element.style.position;
+		// this.ctbakPos = this.elementContainer && this.element.style.position;
 		
-		this.element.style.position = this.element.style.position == 'fixed'? this.element.style.position : 'absolute';
+		this.element.style.position = this.element.style.position == 'fixed'? 'fixed' : 'absolute';
 
 		this.moveEventHandler = function (e) {
 
@@ -212,8 +212,8 @@ infestor.define('infestor.Drag', {
 
 		infestor.un(this.elementTrigger, 'mousedown', this.startEventHandler, true);
 		//this.element.style.position = this.elbakPos;
-		if (this.ctbakPos && this.elementContainer)
-			this.elementContainer.style.position = this.ctbakPos;
+		//if (this.ctbakPos && this.elementContainer)
+			//this.elementContainer.style.position = this.ctbakPos;
 
 		delete infestor.Drag.instMap[this.id];
 	}
