@@ -6,19 +6,13 @@
 
 }
 
-
 .infestor-field{
 	
 	position: relative;
 	margin: 5px;
 	padding: 5px 10px;
-
-}
-
-.infestor-field-label-left{
-
-	padding-bottom: 5px;
-
+	*display:inline;
+	*zoom:1;
 }
 
 .infestor-field-label{
@@ -31,14 +25,19 @@
 
 }
 
+.infestor-field-label-right{
+
+	padding:0 0 0 10px;
+	
+}
+
+.infestor-field-label-top{
+
+	padding:0 0 5px 0.5em;
+
+}
+
 .infestor-field-content{
 
     display: block;
-}
-
-.infestor-field-input{
-
-	outline: none;
-	width: auto;
-
 }

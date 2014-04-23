@@ -22,21 +22,21 @@ infestor.define('infestor.Panel', {
 	rear : null,
 	body : true,
 	
-	// 内部元素布局模式 (vertical,horizon,table,inline-block,float,none)
-	// vertical = none
-	// horizon = table
-	layout : 'none',
+	// 内部元素布局模式 (vertical|horizon|table|inline-block|float|block)
+	// vertical = block
+	// horizon = inline-block
+	layout : 'block',
 
 	initElement : function () {
 
 		this.callParent();
 
-		var inner = this.elementInnerContainer,layout='none',layoutMap={
+		var inner = this.elementInnerContainer,layout='block',layoutMap={
 		
-			vertical:'none',
-			horizon:'table',
+			vertical:'block',
+			horizon:'inline-block',
 			table:'table',
-			none:'none',
+			block:'block',
 			'inline-block':'inline-block',
 			'float':'float'
 		
@@ -46,22 +46,12 @@ infestor.define('infestor.Panel', {
 		
 		layout = this.layout = layoutMap[this.layout] || layout;
 		
-		if(infestor.isIE7Minus() && (layout == layoutMap.table) && !this.isLayoutSet){
+		if((layout == layoutMap.table) && !this.isLayoutSet){
 		
 			this.elementContainerTable = infestor.Dom.table().appendTo(inner);
 			this.elementContainerTableRow = infestor.Dom.tr().appendTo(this.elementContainerTable);
 			this.elementInnerContainer = this.elementContainerTableRow;
 		}
-		
-		if(layout == layoutMap.table){
-		
-			this.element.addClass(this.cssClsElementTable);
-			this.cssClsHead = (this.cssClsHead || '') + ' ' + this.cssClsElementTableCell;
-			this.cssClsBody = (this.cssClsBody || '') + ' ' + this.cssClsElementTableCell;
-			this.cssClsRear = (this.cssClsRear || '') + ' ' + this.cssClsElementTableCell;
-		
-		}
-		
 		
 		if(layout == layoutMap['inline-block']){
 		
@@ -91,7 +81,7 @@ infestor.define('infestor.Panel', {
 	
 		var container = this.element;
 	
-		if(infestor.isIE7Minus() && this.layout == 'table' && this.head){
+		if(this.layout == 'table' && this.head){
 		
 			container = infestor.Dom.td().appendTo(this.elementInnerContainer);
 			this.elementHeadCellContainer = container;
@@ -110,7 +100,7 @@ infestor.define('infestor.Panel', {
 	
 		var container = this.element;
 	
-		if(infestor.isIE7Minus() && this.layout == 'table' && this.body){
+		if(this.layout == 'table' && this.body){
 		
 			container = infestor.Dom.td().appendTo(this.elementInnerContainer);
 			this.elementBoyCellContainer = container;
@@ -129,7 +119,7 @@ infestor.define('infestor.Panel', {
 
 		var container = this.element;
 	
-		if(infestor.isIE7Minus() && this.layout == 'table' && this.rear){
+		if(this.layout == 'table' && this.rear){
 		
 			container = infestor.Dom.td().appendTo(this.elementInnerContainer);
 			this.elementRearCellContainer = container;

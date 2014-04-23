@@ -62,6 +62,7 @@ infestor.define('infestor.Element', {
 	cssClsElementTable:'infestor-element-table',
 	cssClsElementTableCell:'infestor-element-table-cell',
 	cssClsElementBoxShadow : 'infestor-element-box-shadow',
+	cssClsElementIEBoxShadow :'infestor-element-box-shadow-ie',
 	cssClsElementBorder : 'infestor-element-border',
 	cssClsElementPositionAbsolute : 'infestor-element-position-absolute',
 	cssClsElementPositionRelative : 'infestor-element-position-relative',
@@ -154,10 +155,10 @@ infestor.define('infestor.Element', {
 	// 子元素默认配置属性
 	itemsOpts : null,
 		
-	// 子元素布局模式 (vertical,horizon,table,inline-block,float,none)
-	// vertical=none
-	// horizon=table
-	itemLayout:'none',
+	// 子元素布局模式 (vertical|horizon|table|inline-block|float|block)
+	// vertical=block
+	// horizon=inline-block
+	itemLayout:'block',
 
 	// 对象销毁时要同时清理的属性列表
 	destroyList : null,
@@ -176,6 +177,9 @@ infestor.define('infestor.Element', {
 		this.id && infestor.mgr.addInstance(this.id, this);
 		this.id = this.id || this.getId();
 
+		// 配置不同浏览器下的属性
+		this.initBrower();
+		
 		// 元素初始化接口
 		this.initElement();
 
@@ -197,6 +201,25 @@ infestor.define('infestor.Element', {
 		
 		this.setDock();
 
+	},
+	
+
+	initBrower:function(){
+	
+		var me = this;
+	
+		infestor.boe({
+		
+			ie9minus:function(){
+			
+				me.cssClsElementBoxShadow = me.cssClsElementIEBoxShadow;
+			
+			}
+		
+		});
+		
+		return this;
+	
 	},
 
 	// delayInit : function () {
@@ -265,56 +288,6 @@ infestor.define('infestor.Element', {
 
 		return this;
 	},
-
-	//设置元素排列模式
-	// (absolute|relative|fixed|block|inline-block|float|none)|{ position:*|display:* }
-	setLayout : function (opts) {
-
-		var match = /(absolute|relative|fixed)?\s?(block|inline-block|float|none)?/,
-		map = {
-
-			absolute : this.cssClsElementPositionAbsolute,
-			relative : this.cssClsElementPositionRelative,
-			fixed : this.cssClsElementPositionFixed,
-			block : this.cssClsElementBlock,
-			float : this.cssClsElementFloat,
-			'inline-block' : this.cssClsElementInlineBlock
-		},
-		p = [map.absolute, map.relative, map.fixed].join(' '),
-		d = [map.block, map['inline-block'], map.float].join(' ');
-
-		this.layout = opts || this.layout;
-
-		if (infestor.isString(this.layout)) {
-
-			match = match.exec(this.layout);
-
-			if (!match[0])
-				return this;
-
-			this.layoutPosition = match[1] || null;
-			this.layoutDisplay = match[2] || null;
-
-		} else {
-
-			this.layoutPosition = opts && opts.position;
-			this.layoutDisplay = opts && opts.display;
-		}
-
-		if (this.layoutDisplay == 'float')
-			this.elementOuterContainer && this.elementOuterContainer.addClass(this.cssClsElementBFC);
-		else
-			this.elementOuterContainer && this.elementOuterContainer.removeClass(this.cssClsElementBFC);
-
-		if (this.layoutDisplay == 'none')
-			this.element.removeClass(p).removeClass(d);
-
-		this.layoutPosition && this.element.removeClass(p.replace(map[this.layoutPosition], '')).addClass(map[this.layoutPosition]);
-		this.layoutDisplay && this.element.removeClass(d.replace(map[this.layoutDisplay], '')).addClass(map[this.layoutDisplay]);
-
-		return this;
-	},
-
 
 	// 设定元素尺寸样式
 	// opts { width|height|padding|border|margin }
@@ -535,12 +508,12 @@ infestor.define('infestor.Element', {
 	// 添加子元素
 	addItem : function (opts) {
 
-		var item,container=this,inner = this.elementInnerContainer,layout='none',layoutMap={
+		var item,container=this,inner = this.elementInnerContainer,layout='block',layoutMap={
 		
-			vertical:'none',
-			horizon:'table',
+			vertical:'block',
+			horizon:'inline-block',
 			table:'table',
-			none:'none',
+			block:'block',
 			'inline-block':'inline-block',
 			'float':'float'
 		
@@ -563,19 +536,20 @@ infestor.define('infestor.Element', {
 		
 		layout = layoutMap[this.itemLayout] || layout;
 		
-		if(infestor.isIE7Minus() && (layout == layoutMap.table) && !this.isItemsLayoutSet){
+		if((layout == layoutMap.table) && !this.isItemsLayoutSet){
 		
 			this.elementItemsContainerTable = infestor.Dom.table().appendTo(inner);
 			this.elementItemsContainerTableRow = infestor.Dom.tr().appendTo(this.elementItemsContainerTable);
 			this.elementInnerContainer = this.elementItemsContainerTableRow;
 		}
 		
-		if(infestor.isIE7Minus() && layout == layoutMap.table){
+		if(layout == layoutMap.table){
 		
 			container = infestor.Dom.td().appendTo(this.elementInnerContainer);
 			opts.elementItemCellContainer = container;
 		
 		}
+	
 		
 		this.isItemsLayoutSet = true;
 		
@@ -588,7 +562,7 @@ infestor.define('infestor.Element', {
 		// 非类的实例 根据配置创建子元素再添加
 
 		// 按类名或别名创建并添加元素
-		else if (opts.xtype || opts.alias) 
+		else if (opts.xtype || opts.alias)
 			item = infestor.Element.create(opts);
 
 		// 使用模板创建
@@ -603,19 +577,18 @@ infestor.define('infestor.Element', {
 			return infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"已添加子元素"{2}"失败!', this.$clsName, this.name, opts.name));
 		
 		
-		// 添加布局样式
+		// 修改布局样式
 		
-		if(!infestor.isIE7Minus() && layout == layoutMap.table){
+		// if(!infestor.isIE7Minus() && layout == layoutMap.table){
 		
-			this.elementInnerContainer.addClass(this.cssClsElementTable);
-			item.element.addClass(this.cssClsElementTableCell);
-		};
+			// this.elementInnerContainer.addClass(this.cssClsElementTable);
+			// item.element.addClass(this.cssClsElementTableCell);
+		// };
 		
 		if(layout == layoutMap['inline-block'])
 			item.element.addClass(this.cssClsElementInlineBlock);
 		if(layout == layoutMap['float'])
 			item.element.addClass(this.cssClsElementFloat);
-		
 		
 		this.itemsMap[item.name] = item;
 		

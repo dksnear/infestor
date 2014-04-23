@@ -551,9 +551,20 @@ infestor.define('infestor.Dom', {
 	},
 
 	append : function (dom) {
-
-		this.element && this.element.appendChild(dom.getElement());
-		return this;
+	
+		var element = this.element,child = dom.getElement();
+		
+		if(!element || !child) return this;
+		
+		if(infestor.isIE7Minus()){
+		
+			if(element.nodeName.toLowerCase()=='table' && child.nodeName.toLowerCase()=='tr')
+				return (dom.element = element.insertRow(element.rows.length||0)),this;
+			if(element.nodeName.toLowerCase()=='tr' && child.nodeName.toLowerCase()=='td')
+				return (dom.element = element.insertCell(element.cells.length||0)),this;
+		}
+			
+		return element.appendChild(child),this;
 	},
 
 	text : function (text) {

@@ -10,7 +10,8 @@ infestor.define('infestor.field.Field', {
 	cssClsElement : 'infestor-field',
 
 	cssClsFieldLabel : 'infestor-field-label',
-	cssClsFieldLabelLeft : 'infestor-field-label-left',
+	cssClsFieldLabelRight : 'infestor-field-label-right',
+	cssClsFieldLabelTop : 'infestor-field-label-top',
 	cssClsFieldContent : 'infestor-field-content',
 
 	elementFieldLabel : null,
@@ -31,7 +32,7 @@ infestor.define('infestor.field.Field', {
 
 	//(top|left|right)
 	labelPos : 'left',
-
+	
 	// 字段名
 	fieldName : null,
 	
@@ -47,6 +48,9 @@ infestor.define('infestor.field.Field', {
 		
 		this.label && (this.labelPos == 'left' || this.labelPos == 'top') && (this.head = true);
 		this.label && (this.labelPos == 'right') && (this.rear = true);
+		
+		((this.labelPos == 'left' || this.labelPos == 'right') && (this.layout=='none' || !this.layout)) && (this.layout = 'horizon');
+		(this.labelPos == 'top' && (this.layout == 'horizon' || this.layout == 'table')) && (this.layout = 'vertical');
 		
 		this.callParent();
 	},
@@ -72,6 +76,9 @@ infestor.define('infestor.field.Field', {
 		});
 		
 		this.elementFieldLabel.text(this.label);
+		
+		(this.labelPos == 'right') && this.elementFieldLabel.addClass(this.cssClsFieldLabelRight);
+		(this.labelPos == 'top') && this.elementFieldLabel.addClass(this.cssClsFieldLabelTop);
 	
 		return this;
 	
@@ -79,7 +86,7 @@ infestor.define('infestor.field.Field', {
 	
 	createContent:function(){
 	
-		this.elementFieldContent= this.createDomElement(this.body,this.cssClsFieldContent);
+		this.elementFieldContent = this.createDomElement(this.body,this.cssClsFieldContent);
 		
 		return this;
 	

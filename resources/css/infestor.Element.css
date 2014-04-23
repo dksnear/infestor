@@ -19,8 +19,7 @@ input{
     padding: 0 5px;
 	border: 1px solid #bfbfbf;
 	color: #444;
-	height: 22px;	
-	width: 165px;
+	height: 25px;	
 
 }
 
@@ -78,9 +77,12 @@ input:focus{
 
 .infestor-element-box-shadow{
 
-	-webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-	-moz-box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 	box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.infestor-element-box-shadow-ie{
+
+	border:1px solid black;
 
 }
 

@@ -1314,7 +1314,7 @@ infestor js
 	global.browser.$methods = {};
 
 	// 根据配置中的浏览器类型选择执行相应的方法
-	// @option(obj) 匹配列表 {isIE:fn|value,isIE6:fn|value,isChrome:fn|value....,otherwise:fn|value}
+	// @option(obj) 匹配列表 {ie:fn|value,ie6:fn|value,chrome:fn|value....,otherwise:fn|value}
 	// @greedy(bool)  false:匹配到就停止|true:匹配所有选项
 	global.boe = global.browser.optionExec = function (option, greedy) {
 
@@ -1344,7 +1344,7 @@ infestor js
 	};
 
 	// 根据配置中的浏览器类型选择生成相应的方法
-	// @option(obj) 匹配列表 {isIE:fn,isIE6:fn,isChrome:fn....,otherwise:fn}
+	// @option(obj) 匹配列表 {ie:fn,ie6:fn,chrome:fn....,otherwise:fn}
 	global.bof = global.browser.optionFunc = function (option) {
 
 		var fn = function () {
