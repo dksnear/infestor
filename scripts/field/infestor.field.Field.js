@@ -1,17 +1,16 @@
 
-/// <reference path="../../infestor.js"/>
-
 infestor.define('infestor.field.Field', {
 
 	alias : 'field',
 
-	extend : 'infestor.Element',
+	extend : 'infestor.Panel',
 
-	cssUses : ['infestor.form'],
+	cssUses : ['infestor.Form'],
 	
 	cssClsElement : 'infestor-field',
-	cssClsFieldLabelLeftFix : 'infestor-field-label-left-fix',
+
 	cssClsFieldLabel : 'infestor-field-label',
+	cssClsFieldLabelLeft : 'infestor-field-label-left',
 	cssClsFieldContent : 'infestor-field-content',
 
 	elementFieldLabel : null,
@@ -30,55 +29,73 @@ infestor.define('infestor.field.Field', {
 
 	labelWidth : 40,
 
-	//(top|left)
+	//(top|left|right)
 	labelPos : 'left',
 
-	name : '',
+	// 字段名
+	fieldName : null,
+	
 	promptMsg : '',
 	errorMsg : '',
 
-	layout:'inline-block',
+	layout:'horizon',
+	
+	
+	init:function(){
+	
+		this.fieldName = this.fieldName || this.getId();
+		
+		this.label && (this.labelPos == 'left' || this.labelPos == 'top') && (this.head = true);
+		this.label && (this.labelPos == 'right') && (this.rear = true);
+		
+		this.callParent();
+	},
 
 	initElement : function () {
 
 		this.callParent();
-
-		this.elementFieldLabel = this.label ? infestor.Dom.label({
-				'for' : this.id
-			}).addClass(this.cssClsFieldLabel).text(this.label).appendTo(this.element) : null;
-
-		this.elementFieldContent = infestor.Dom.div().addClass(this.cssClsFieldContent).appendTo(this.element);
-
-		this.elementFieldInput = infestor.Dom.input({
-				type : 'text',
-				id : this.id,
-				name : this.name
-			}).appendTo(this.elementFieldContent);
-
-		this.labelWidth && this.elementFieldLabel && this.elementFieldLabel.css('width', infestor.styleExpr(this.labelWidth));
-
-		this.setLabelPosition();
+		
+		this.createLabel().createContent().createInput();
 
 	},
-
-	// pos:(top|left)
-	setLabelPosition : function (pos) {
-
-		var map = {
-
-			top : 'removeClass',
-			left : 'addClass'
-
-		};
-
-		pos = pos || this.labelPos;
-
-		this.elementFieldLabel && map[pos]
-		 && (this.labelPos = pos)
-		 && this.element[map[pos]](this.cssClsFieldLabelLeftFix)
-		 && this.elementFieldLabel[map[pos]](this.cssClsElementInlineBlock)
-		 && this.elementFieldContent[map[pos]](this.cssClsElementInlineBlock);
-
+	
+	
+	createLabel:function(){
+	
+		var parent= (this.labelPos == 'top'||this.labelPos=='left') ? this.head : this.rear;
+	
+		if(!this.label || !parent) return;
+		
+		this.elementFieldLabel = this.createDomElement(parent,this.cssClsFieldLabel,'label',{
+		
+			'for':this.id
+		});
+		
+		this.elementFieldLabel.text(this.label);
+	
+		return this;
+	
+	},
+	
+	createContent:function(){
+	
+		this.elementFieldContent= this.createDomElement(this.body,this.cssClsFieldContent);
+		
+		return this;
+	
+	},
+	
+	createInput:function(){
+	
+		this.elementFieldInput=this.createDomElement(this.elementFieldContent,'','input',{
+			
+			type : 'text',
+			id : this.id,
+			name : this.fieldName
+		});
+	
+		return this;
+	
 	}
 
 });

@@ -1,13 +1,17 @@
 
 // 用于处理图片预加载
 
-infestor.define('infestor.Image', {
+infestor.define('infestor.ImageLoader', {
 
 	extend : 'infestor.Object',
 
 	uses : ['infestor.DataSet', 'infestor.Task'],
 
-	statics : {},
+	statics : {
+	
+		lazy:null
+	
+	},
 	
 	// 加载失败替换图片地址
 	alt:null,

@@ -5,7 +5,7 @@ infestor.define('infestor.Form', {
 
 	alias : 'form',
 
-	extend : 'infestor.Element',
+	extend : 'infestor.Panel',
 
 	uses : ['infestor.request', 'infestor.field.Field'],
 
@@ -13,8 +13,6 @@ infestor.define('infestor.Form', {
 
 	cssClsElement : 'infestor-form',
 	
-	layout:'block',
-
 	itemsOpts : {
 
 		alias : 'field'

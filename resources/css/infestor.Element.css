@@ -14,13 +14,12 @@ table,td{
 
 }
 
-input [type=text]{
+input{
 
     padding: 0 5px;
 	border: 1px solid #bfbfbf;
 	color: #444;
-	height: 22px;
-	
+	height: 22px;	
 	width: 165px;
 
 }
@@ -43,6 +42,18 @@ input:focus{
 
 	display:block;
 
+}
+
+.infestor-element-table{
+
+	display:table;
+
+}
+
+.infestor-element-table-cell{
+
+	display:table-cell;
+	
 }
 
 .infestor-element-float{

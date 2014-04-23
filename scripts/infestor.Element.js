@@ -59,6 +59,8 @@ infestor.define('infestor.Element', {
 	cssClsElementFloat : 'infestor-element-float',
 	cssClsElementClear : 'infestor-element-clear',
 	cssClsElementBFC : 'infestor-element-bfc',
+	cssClsElementTable:'infestor-element-table',
+	cssClsElementTableCell:'infestor-element-table-cell',
 	cssClsElementBoxShadow : 'infestor-element-box-shadow',
 	cssClsElementBorder : 'infestor-element-border',
 	cssClsElementPositionAbsolute : 'infestor-element-position-absolute',
@@ -122,15 +124,6 @@ infestor.define('infestor.Element', {
 	margin : null,
 	border : null,
 
-	// 元素排列模式 (absolute|relative|fixed|block|inline-block|float|none)
-	layout : 'none',
-
-	// (block|inline-block|float)
-	layoutDisplay : null,
-
-	// (absolute|relative|fixed|static)
-	layoutPosition : null,
-
 	// 元素定位属性(#styleFormat|auto)
 	top : null,
 	left : null,
@@ -160,6 +153,11 @@ infestor.define('infestor.Element', {
 
 	// 子元素默认配置属性
 	itemsOpts : null,
+		
+	// 子元素布局模式 (vertical,horizon,table,inline-block,float,none)
+	// vertical=none
+	// horizon=table
+	itemLayout:'none',
 
 	// 对象销毁时要同时清理的属性列表
 	destroyList : null,
@@ -187,7 +185,7 @@ infestor.define('infestor.Element', {
 		// 初始化事件
 		this.initEvents && this.initEvents();
 
-		this.setText().setLayout().setPosition().setDimension();
+		this.setText().setPosition().setDimension();
 
 		// 条件初始化
 		this.initTip().initDraggable().initResizable();
@@ -316,6 +314,7 @@ infestor.define('infestor.Element', {
 
 		return this;
 	},
+
 
 	// 设定元素尺寸样式
 	// opts { width|height|padding|border|margin }
@@ -536,7 +535,16 @@ infestor.define('infestor.Element', {
 	// 添加子元素
 	addItem : function (opts) {
 
-		var item;
+		var item,container=this,inner = this.elementInnerContainer,layout='none',layoutMap={
+		
+			vertical:'none',
+			horizon:'table',
+			table:'table',
+			none:'none',
+			'inline-block':'inline-block',
+			'float':'float'
+		
+		};
 
 		if (!this.items)
 			return;
@@ -546,36 +554,72 @@ infestor.define('infestor.Element', {
 		!opts.name && (opts.name = this.getId());
 
 		if (this.hasItem(opts.name))
-			infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"已添加子元素"{2}"', this.$clsName, this.name, opts.name));
+			return infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"已添加子元素"{2}"', this.$clsName, this.name, opts.name));
 
+		if(!(opts instanceof infestor.Element))
+			opts = infestor.append({}, this.itemsOpts, opts);
+			
+		//设置布局
+		
+		layout = layoutMap[this.itemLayout] || layout;
+		
+		if(infestor.isIE7Minus() && (layout == layoutMap.table) && !this.isItemsLayoutSet){
+		
+			this.elementItemsContainerTable = infestor.Dom.table().appendTo(inner);
+			this.elementItemsContainerTableRow = infestor.Dom.tr().appendTo(this.elementItemsContainerTable);
+			this.elementInnerContainer = this.elementItemsContainerTableRow;
+		}
+		
+		if(infestor.isIE7Minus() && layout == layoutMap.table){
+		
+			container = infestor.Dom.td().appendTo(this.elementInnerContainer);
+			opts.elementItemCellContainer = container;
+		
+		}
+		
+		this.isItemsLayoutSet = true;
+		
+			
 		// 是类的实例 直接添加子元素
-		if (opts instanceof infestor.Element)
-			return ++this.count && (this.itemsMap[opts.name] = this.render(opts));
+		if (opts instanceof infestor.Element)		
+			item = opts;
+
 
 		// 非类的实例 根据配置创建子元素再添加
-		opts = infestor.append({}, this.itemsOpts, opts);
 
 		// 按类名或别名创建并添加元素
-		if (opts.xtype || opts.alias) {
-
-			item = infestor.Element.create(opts).renderTo(this);
-			this.itemsMap[item.name] = item;
-			return ++this.count && item;
-		}
+		else if (opts.xtype || opts.alias) 
+			item = infestor.Element.create(opts);
 
 		// 使用模板创建
 		// 未实现
-
+		
 
 		// 使用构建方法创建
-		item = this.createItem(opts);
-
-		if (item) {
-
-			item.renderTo(this);
-			this.itemsMap[item.name] = item;
-			return ++this.count && item;
-		}
+		else 
+			item = this.createItem(opts);
+			
+		if(!item)
+			return infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"已添加子元素"{2}"失败!', this.$clsName, this.name, opts.name));
+		
+		
+		// 添加布局样式
+		
+		if(!infestor.isIE7Minus() && layout == layoutMap.table){
+		
+			this.elementInnerContainer.addClass(this.cssClsElementTable);
+			item.element.addClass(this.cssClsElementTableCell);
+		};
+		
+		if(layout == layoutMap['inline-block'])
+			item.element.addClass(this.cssClsElementInlineBlock);
+		if(layout == layoutMap['float'])
+			item.element.addClass(this.cssClsElementFloat);
+		
+		
+		this.itemsMap[item.name] = item;
+		
+		return ++this.count && item.renderTo(container,this);
 
 	},
 
@@ -676,6 +720,9 @@ infestor.define('infestor.Element', {
 			if (infestor.isFunction(predicate) && !predicate())
 				return null;
 		};
+		
+		if(parent instanceof infestor.Element)
+			parent = parent.getElement();
 
 		var dom = infestor.Dom.create(tag || 'div', attr).appendTo(parent || this.element).addClass(cls);
 
@@ -1005,6 +1052,9 @@ infestor.define('infestor.Element', {
 
 		// 销毁Dom元素
 		this.element && this.element.destroy();
+		
+		// 如果是table布局 销毁封装该元素相应的td
+		this.elementItemCellContainer && this.elementItemCellContainer.destroy();
 
 		// 注销实例托管
 		infestor.mgr.removeInstance(this.id);

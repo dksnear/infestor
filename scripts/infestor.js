@@ -1565,10 +1565,18 @@ infestor js
 
 				// return callback && callback.call(scope || window),
 				// this;
+				
+				global.loader.loadedMap = global.loader.loadedMap || {};
 
 				global.each(this.delayLoadStyleQueue, function () {
 
-					global.loadStyle(String(this));
+					var path = String(this);
+				
+					if(global.loader.loadedMap[path])
+						return true;
+				
+					global.loadStyle(path);
+					global.loader.loadedMap[path] = true;
 
 				});
 
@@ -1665,7 +1673,7 @@ infestor js
 			},
 
 			// 加载请求
-			// @param (路径列表[...],加载完成后委托句柄(fn))
+			// @params (路径列表[...],加载完成后委托句柄(fn))
 			require : function () {
 
 				if (arguments.length < 1)
