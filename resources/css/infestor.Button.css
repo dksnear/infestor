@@ -1,12 +1,10 @@
  
  .infestor-button{
  
-	display:table;
  }
  
  .infestor-button-body{
  
-	display:table-cell;
 	vertical-align: middle;
 	text-align:center;
 	cursor:pointer;
@@ -17,13 +15,11 @@
  
  .infestor-button-head{
  
-	display:table-cell;
  
  }
  
  .infestor-button-rear{
  
-	display:table-cell;
  
  }
  

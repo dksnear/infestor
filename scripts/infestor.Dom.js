@@ -20,11 +20,11 @@ infestor.define('infestor.Dom', {
 
 		use : function (id) {
 
-			this.element = this.element || new infestor.Dom();
+			infestor.Dom.element = infestor.Dom.element || new infestor.Dom();
 
-			this.element.element = infestor.isString(id) ? document.getElementById(id) : id;
+			infestor.Dom.element.element = infestor.isString(id) ? document.getElementById(id) : id;
 
-			return this.element;
+			return infestor.Dom.element;
 		},
 
 		create : function (tagName, attrs) {
@@ -38,7 +38,7 @@ infestor.define('infestor.Dom', {
 
 		getBody : function () {
 
-			return this.get(document.body);
+			return infestor.Dom.get(document.body);
 
 		},
 
@@ -54,12 +54,12 @@ infestor.define('infestor.Dom', {
 
 		getZIndex : function () {
 
-			return this.zIndex++;
+			return infestor.Dom.zIndex++;
 		},
 
 		setZIndex : function (element) {
 
-			element.css('z-index', this.getZIndex());
+			element.css('z-index', infestor.Dom.getZIndex());
 		},
 
 		clientWidth : function () {
@@ -544,27 +544,27 @@ infestor.define('infestor.Dom', {
 
 	},
 
-	appendTo : function (dom) {
+	appendTo : function (parent) {
 
-		dom.append(this);
+		parent.append(this);
 		return this;
 	},
 
-	append : function (dom) {
+	append : function (child) {
 	
-		var element = this.element,child = dom.getElement();
+		var parentElement = this.element,childElement = child.getElement();
 		
-		if(!element || !child) return this;
+		if(!parent || !childElement) return this;
 		
 		if(infestor.isIE7Minus()){
 		
-			if(element.nodeName.toLowerCase()=='table' && child.nodeName.toLowerCase()=='tr')
-				return (dom.element = element.insertRow(element.rows.length||0)),this;
-			if(element.nodeName.toLowerCase()=='tr' && child.nodeName.toLowerCase()=='td')
-				return (dom.element = element.insertCell(element.cells.length||0)),this;
+			if(parentElement.nodeName.toLowerCase()=='table' && childElement.nodeName.toLowerCase()=='tr')
+				return (child.element = parentElement.insertRow(parentElement.rows.length||0)),this;
+			if(parentElement.nodeName.toLowerCase()=='tr' && childElement.nodeName.toLowerCase()=='td')
+				return (child.element = parentElement.insertCell(parentElement.cells.length||0)),this;
 		}
 			
-		return element.appendChild(child),this;
+		return parentElement.appendChild(childElement),this;
 	},
 
 	text : function (text) {

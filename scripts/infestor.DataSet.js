@@ -92,7 +92,11 @@ infestor.define('infestor.DataSet', {
 	setData : function (data) {
 
 		this.current = 0;
+		
 		this.data = infestor.isFunction(data) ? data.call(this) : data;
+		
+		this.data = !infestor.isArray(data) ? [this.data] : this.data;
+			
 		this.count = this.data && this.data.length || 0;
 
 		return this.data;

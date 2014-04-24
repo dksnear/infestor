@@ -11,6 +11,7 @@ infestor.define('infestor.Window', {
 
 	cssClsElement : 'infestor-window',
 	boxShadow : true,
+	dock:'center',
 
 	// 关闭类型(hide|destory)
 	closeType : 'hide',

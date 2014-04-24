@@ -55,6 +55,8 @@ infestor.define('infestor.Element', {
 	cssClsElement : '',
 	cssClsElementMask : 'infestor-element-mask',
 	cssClsElementInlineBlock : 'infestor-element-inline-block',
+	// 在父容器添加去除inline-block带来的间距
+	cssClsElementRemoveSpace:'infestor-element-remove-space',
 	cssClsElementBlock : 'infestor-element-block',
 	cssClsElementFloat : 'infestor-element-float',
 	cssClsElementClear : 'infestor-element-clear',
@@ -106,9 +108,14 @@ infestor.define('infestor.Element', {
 
 	// 元素停靠位置 (north|south|west|center|east|north-east|south-east|north-west|north-east)
 	dock : false,
+	
+	// 停靠模式 (fixed|absolute|relative)
+	dockMode:'fixed',
 
+	// 边框阴影
 	boxShadow : false,
 
+	// 文本内容
 	text : null,
 
 	// tip
@@ -189,16 +196,16 @@ infestor.define('infestor.Element', {
 		// 初始化事件
 		this.initEvents && this.initEvents();
 
-		this.setText().setPosition().setDimension();
+		// 设置 内容/尺寸 
+		this.setText().setDimension();
 
 		// 条件初始化
 		this.initTip().initDraggable().initResizable();
 
-		// this.delayInit();
-
 		// 子元素初始化接口
 		this.initItems();
 		
+		// 设置停靠
 		this.setDock();
 
 	},
@@ -212,8 +219,7 @@ infestor.define('infestor.Element', {
 		
 			ie9minus:function(){
 			
-				me.cssClsElementBoxShadow = me.cssClsElementIEBoxShadow;
-			
+				me.cssClsElementBoxShadow = me.cssClsElementIEBoxShadow;			
 			}
 		
 		});
@@ -221,14 +227,6 @@ infestor.define('infestor.Element', {
 		return this;
 	
 	},
-
-	// delayInit : function () {
-
-	// this.dock&&(/north|south|west|center|east/.test(this.dock)?this.delayReg(function(){ this.setDock();}):this.setDock());
-
-	// return this;
-
-	// },
 
 	initElement : function () {
 
@@ -322,7 +320,7 @@ infestor.define('infestor.Element', {
 		// 给对象设定位置样式
 		infestor.each(list, function (idx, name) {
 
-			!infestor.isNull(this[name]) && this.element.css(name, infestor.styleExpr(this[name])) && (isSet = true);
+			!infestor.isNull(this[name]) && this.element.css(name, infestor.styleFormat(this[name])) && (isSet = true);
 
 		}, this);
 
@@ -339,7 +337,7 @@ infestor.define('infestor.Element', {
 	setDock : function (dock, mode) {
 
 		this.dock = dock || this.dock;
-		mode = mode || 'absolute';
+		this.dockMode =  mode || this.dockMode;
 
 		if (!this.dock)
 			return this;
@@ -351,32 +349,59 @@ infestor.define('infestor.Element', {
 			fixed : this.cssClsElementPositionFixed,
 			clear : this.cssClsElementPositionClear
 
-		}
-			[mode]);
+		}[this.dockMode]);
 
-		if (mode == 'clear')
+		if (this.dockMode == 'clear')
 			return this;
 
 		return ({
 
 			north : function () {
-				this.element.addClass(this.cssClsElementPositionNorth).css('margin-left', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetWidth) / 2));
+			
+				return infestor.debounce(function(){
+			
+					this.element.addClass(this.cssClsElementPositionNorth).css('margin-left', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetWidth) / 2));
+					
+				},20).call(this);
+				
 			},
 			south : function () {
-				this.element.addClass(this.cssClsElementPositionSouth).css('margin-left', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetWidth) / 2));
+			
+				return infestor.debounce(function(){
+			
+					this.element.addClass(this.cssClsElementPositionSouth).css('margin-left', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetWidth) / 2));
+					
+				},20).call(this);
+		
 			},
 			west : function () {
-				this.element.addClass(this.cssClsElementPositionWest).css('margin-top', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetHeight) / 2));
+			
+				return infestor.debounce(function(){
+			
+					this.element.addClass(this.cssClsElementPositionWest).css('margin-top', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetHeight) / 2));
+					
+				},20).call(this);
+							
 			},
 			east : function () {
-				this.element.addClass(this.cssClsElementPositionEast).css('margin-top', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetHeight) / 2)); ;
+			
+				return infestor.debounce(function(){
+			
+					this.element.addClass(this.cssClsElementPositionEast).css('margin-top', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetHeight) / 2));
+					
+				},20).call(this);
+				
 			},
 			center : function () {
 
-				this.element.addClass(this.cssClsElementPositionCenter).css({
-					'margin-left' : infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetWidth) / 2),
-					'margin-top' : infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetHeight) / 2)
-				});
+				return infestor.debounce(function() {	
+				
+					this.element.addClass(this.cssClsElementPositionCenter).css({
+						'margin-left' : infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetWidth) / 2),
+						'margin-top' : infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetHeight) / 2)
+					});
+					
+				},20).call(this);
 			},
 			'north-east' : function () {
 				this.element.addClass(this.cssClsElementPositionNorthEast);
@@ -579,14 +604,11 @@ infestor.define('infestor.Element', {
 		
 		// 修改布局样式
 		
-		// if(!infestor.isIE7Minus() && layout == layoutMap.table){
-		
-			// this.elementInnerContainer.addClass(this.cssClsElementTable);
-			// item.element.addClass(this.cssClsElementTableCell);
-		// };
-		
-		if(layout == layoutMap['inline-block'])
+		if(layout == layoutMap['inline-block']){
+			this.elementInnerContainer.addClass(this.cssClsElementRemoveSpace);
 			item.element.addClass(this.cssClsElementInlineBlock);
+		}
+		
 		if(layout == layoutMap['float'])
 			item.element.addClass(this.cssClsElementFloat);
 		

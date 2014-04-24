@@ -22,7 +22,7 @@ infestor.define('infestor.Button',{
 	// false 不设置图标
 	icon:'left',
 	
-	layout:'vertical',
+	layout:'table',
 	
 	// 图标尺寸 (12|16|25|..)
 	iconSize:16,
@@ -46,6 +46,7 @@ infestor.define('infestor.Button',{
 		if(this.icon=='center'){
 		
 			this.center = true;
+			this.layout = 'vertical';
 			this.cssClsBody = [this.cssClsBody,this.cssClsIcon,this.cssClsIconImage].join(' ');
 		
 		}

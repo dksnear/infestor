@@ -30,6 +30,12 @@ input:focus{
 
 }
 
+.infestor-element-remove-space{
+
+	font-size:0px;
+
+}
+
 .infestor-element-inline-block{
 
     display: inline-block;

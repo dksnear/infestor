@@ -103,6 +103,22 @@ infestor.define('infestor.field.Field', {
 	
 		return this;
 	
+	},
+	
+	getValue:function(){
+	
+	
+	},
+	
+	setValue:function(){
+	
+	
+	},
+	
+	check:function(){
+	
+	
+	
 	}
 
 });

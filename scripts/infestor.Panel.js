@@ -55,8 +55,9 @@ infestor.define('infestor.Panel', {
 		
 		if(layout == layoutMap['inline-block']){
 		
+			this.elementInnerContainer.addClass(this.cssClsElementRemoveSpace);
 			this.cssClsHead = (this.cssClsHead || '') + ' ' + this.cssClsElementInlineBlock;
-			this.cssClsBody = (this.cssClsBody || '') + ' ' +this.cssClsElementInlineBlock;
+			this.cssClsBody = (this.cssClsBody || '') + ' ' + this.cssClsElementInlineBlock;
 			this.cssClsRear = (this.cssClsRear || '') + ' ' + this.cssClsElementInlineBlock;
 			
 		}
@@ -66,8 +67,7 @@ infestor.define('infestor.Panel', {
 			this.cssClsHead = (this.cssClsHead || '') + ' ' + this.cssClsElementFloat;
 			this.cssClsBody = (this.cssClsBody || '') + ' ' + this.cssClsElementFloat;
 			this.cssClsRear = (this.cssClsRear || '') + ' ' + this.cssClsElementFloat;
-		
-		
+			
 		}
 		
 		this.isLayoutSet = true;
@@ -103,7 +103,7 @@ infestor.define('infestor.Panel', {
 		if(this.layout == 'table' && this.body){
 		
 			container = infestor.Dom.td().appendTo(this.elementInnerContainer);
-			this.elementBoyCellContainer = container;
+			this.elementBodyCellContainer = container;
 		
 		}
 

@@ -18,6 +18,19 @@ infestor.namespace('infestor.request', {
 		error = opts.error || this.settings.error,
 		complete = opts.complete || this.settings.complete,
 		success = opts.success,
+	    dataType = opts.dataType || 'json',
+		dataConvertHandle = function(type,data){
+		
+			switch(type){
+			
+				case 'json':
+					return infestor.jsonDecode(data);
+				default:
+					return data;
+			
+			}
+		
+		},
 		standardXhr = function () {
 			try {
 				return new window.XMLHttpRequest();
@@ -48,7 +61,7 @@ infestor.namespace('infestor.request', {
 			if (xhr.readyState === 4) {
 
 				if (((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304))
-					success && success(xhr.responseText, xhr);
+					success && success(dataConvertHandle(dataType,xhr.responseText), xhr);
 				else
 					error && error(xhr);
 
