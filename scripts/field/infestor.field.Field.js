@@ -41,6 +41,8 @@ infestor.define('infestor.field.Field', {
 
 	layout:'horizon',
 	
+	value:null,
+	
 	
 	init:function(){
 	
@@ -53,6 +55,8 @@ infestor.define('infestor.field.Field', {
 		(this.labelPos == 'top' && (this.layout == 'horizon' || this.layout == 'table')) && (this.layout = 'vertical');
 		
 		this.callParent();
+		
+		this.setValue(this.value);
 	},
 
 	initElement : function () {
@@ -94,12 +98,19 @@ infestor.define('infestor.field.Field', {
 	
 	createInput:function(){
 	
+		
 		this.elementFieldInput=this.createDomElement(this.elementFieldContent,'','input',{
 			
 			type : 'text',
 			id : this.id,
 			name : this.fieldName
 		});
+		
+		this.elementFieldInput.change(function(){
+		
+			this.check();
+		
+		},this);
 	
 		return this;
 	
@@ -107,12 +118,17 @@ infestor.define('infestor.field.Field', {
 	
 	getValue:function(){
 	
+		return this.elementFieldInput && this.elementFieldInput.val();
 	
 	},
 	
-	setValue:function(){
+	setValue:function(value){
 	
-	
+		if(infestor.isNull(value)||infestor.isUndefined(value))
+			return;
+		
+		this.value = value;
+		this.elementFieldInput && this.elementFieldInput.val(value);
 	},
 	
 	check:function(){

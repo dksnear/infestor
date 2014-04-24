@@ -694,7 +694,7 @@ infestor.define('infestor.Dom', {
 
 		methods[eventName] = function (eventHandle, scope) {
 
-			return eventHandle ? cls.prototype.addEventListener.call(this, eventName, eventHandle, scope) : cls.prototype.emit.call(this, eventName);
+			return infestor.isFunction(eventHandle) ? cls.prototype.addEventListener.call(this, eventName, eventHandle, scope) : cls.prototype.emit.call(this, eventName,eventHandle,scope);
 		}
 
 		infestor.override(cls, methods);

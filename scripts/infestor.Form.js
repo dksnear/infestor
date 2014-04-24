@@ -12,63 +12,77 @@ infestor.define('infestor.Form', {
 	cssUses : ['infestor.Form'],
 
 	cssClsElement : 'infestor-form',
-	
+
 	// 字段深度
-	level:0,
-	
-	fieldsMap:null,
-	
+	level : 1,
+
+	fieldsMap : null,
+
 	itemsOpts : {
 
 		alias : 'field'
 
 	},
-	
-	init:function(){
-	
-		this.callPrent();
-		
-		this.eachFields();
-	
-	},
-	
-	initEvents:function(){
-	
-		this.dataSet && this.dataSet.on('load',function(){
-		
-		
-		
+
+	init : function () {
+
+		this.callParent();
+
+		this.eachFields(this,function (fieldName, field, level) {
+
+			this.fieldsMap = this.fieldsMap || {};
+			this.fieldsMap[fieldName] = field;
+			field.formLevel = level;
+
 		});
-	
+
 	},
-	
-	loadField:function(){
-	
-	
+
+	initEvents : function () {
+
+		this.dataSet && this.dataSet.on('load', function () {});
+
 	},
-	
-	setField:function(data){
-	
-	
-	},
-	
-	getField:function(fieldName){
+
+	loadField : function () {},
+
+	setField : function () {
 	
 		
-	
-	},
-	
-	removeField:function(fieldName){
+		
 	
 	
 	},
-	
+
+	getField : function (fieldName) {},
+
+	removeField : function (fieldName) {},
+
 	// 扫描字段
-	eachFields:function(){
-	
-		this.fieldsMap = this.fieldsMap || {};
+	// func: @params fieldName,field,level(扫描深度) @scope scope @return false(停止扫描)|true
+	eachFields : function (target, func, level, scope) {
+
+		level = level || 1;
 		
-	
+		this.level = level;
+
+		target.hasItem() && infestor.each(target.itemsMap, function (itemName, item) {
+
+			var goAhead = true;
+
+			if (item instanceof infestor.field.Field) {
+
+				goAhead = func.call(scope || this, item.fieldName, item, level);
+				if (infestor.isBoolean(goAhead) && !goAhead)
+					return false;
+				return true;
+			}
+
+			if (item instanceof infestor.Element)
+				this.eachFields.call(this, item, func, level + 1, scope);
+
+		}, this);
+
 	},
 
 	submit : function () {}

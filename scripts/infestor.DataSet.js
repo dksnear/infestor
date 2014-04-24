@@ -79,13 +79,23 @@ infestor.define('infestor.DataSet', {
 
 	events : {
 
+		// for load
+	
 		// @params data
 		// @scope this
 		load : null,
 		
 		//@scope this
 		error : null,
-		complete : null
+		complete : null,
+		
+		
+		// for submit
+		
+		beforeSubmit:null,
+		afterSubmit:null,
+		submitComplete:null,
+		submitError:null
 
 	},
 
@@ -117,18 +127,68 @@ infestor.define('infestor.DataSet', {
 
 	getData : function (idx) {
 	
+		var data=[];
+	
 		if (!this.data)
 			return null;
 
-		if (infestor.isUndefined(idx))
+		if (arguments.length < 1)
 			return this.data;
 			
+		if(infestor.isFunction(idx)){
+		
+			infestor.each(this.data,function(i,item){
+			
+				idx.call(this,i,item) && data.push(item);
+				
+			},this);
+			
+			return data;
+		
+		}	
+			
 		idx = idx > this.count - 1 ? this.count - 1 : idx;
+		
 		this.current = idx;
 
 		return this.data[idx];
 	},
 
+	removeData:function(idx){
+	
+		if(!this.data) return;
+		
+		var removed = [];
+				
+		if(infestor.isFunction(idx)){
+		
+			var i=0;
+			
+			for(;i<this.count;){
+			
+				if(idx.call(this,idx,this.data[idx])){
+				
+					removed.push(this.data.splice(i,1));
+					--this.count;
+					continue;
+				}
+				
+				i++;
+			}
+			
+			return removed;
+		
+		}
+		
+		
+		removed.push(this.data.splice(idx,1));
+		
+		this.count--;
+		
+		return removed;
+		
+	},
+	
 	clearData : function () {
 
 		return this.setData([]);
@@ -299,6 +359,11 @@ infestor.define('infestor.DataSet', {
 	reload : function () {
 
 		this.load();
+	},
+
+	submit:function(){
+	
+	
 	},
 	
 	destroy:function(){
