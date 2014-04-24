@@ -133,10 +133,14 @@ infestor.define('infestor.Element', {
 	border : null,
 
 	// 元素定位属性(#styleFormat|auto)
+	position : null,
 	top : null,
 	left : null,
 	right : null,
 	bottom : null,
+	
+	// 不显示该元素
+	hidden:false,
 
 	// 允许移动
 	draggable : false,
@@ -196,8 +200,8 @@ infestor.define('infestor.Element', {
 		// 初始化事件
 		this.initEvents && this.initEvents();
 
-		// 设置 内容/尺寸 
-		this.setText().setDimension();
+		// 设置 内容/位置/尺寸 
+		this.setText().setPosition().setDimension();
 
 		// 条件初始化
 		this.initTip().initDraggable().initResizable();
@@ -232,6 +236,8 @@ infestor.define('infestor.Element', {
 
 		// 创建控件元素容器
 		this.element = this.element || infestor.Dom.create(this.tagName, this.attr).css(this.css || {});
+		
+		this.hidden && this.element.hide();
 
 		this.element.element.$infestor = this;
 
@@ -286,14 +292,13 @@ infestor.define('infestor.Element', {
 
 		return this;
 	},
-
-	// 设定元素尺寸样式
-	// opts { width|height|padding|border|margin }
-	setDimension : function (opts) {
-
-		var list = ['width', 'height', 'padding', 'border', 'margin'];
-
-		// 给对象属性赋值 并确保只赋值width|height|padding|border|margin属性
+	
+	
+	setCss:function(list,opts){
+	
+		list = list || [];
+	
+		// 给对象属性赋值 并确保只赋值list中列出的属性
 		opts && infestor.appendIf(this, opts , list);
 
 		// 给对象设定尺寸样式
@@ -304,31 +309,23 @@ infestor.define('infestor.Element', {
 		}, this);
 
 		return this;
+	
+	
+	},
+
+	// 设定元素尺寸样式
+	// opts { width|height|padding|border|margin }
+	setDimension : function (opts) {
+
+		return this.setCss(['width', 'height', 'padding', 'border', 'margin'],opts);
 
 	},
 
 	// 设定元素位置样式
 	// opts { top|left|right|bottom }
 	setPosition : function (opts) {
-
-		var list = ['top', 'right', 'left', 'bottom'],
-		isSet;
-
-		// 给对象属性赋值 并确保只赋值top|right|left|bottom属性
-		opts && infestor.appendIf(this, opts, list); 
-
-		// 给对象设定位置样式
-		infestor.each(list, function (idx, name) {
-
-			!infestor.isNull(this[name]) && this.element.css(name, infestor.styleFormat(this[name])) && (isSet = true);
-
-		}, this);
-
-		// 上下左右中有一个属性不是null 则设置定位
-		isSet && this.elementOuterContainer.addClass(this.cssClsElementPositionRelative) && !this.layoutPosition && this.element.addClass(this.cssClsElementPositionRelative);
-
-		return this;
-
+	
+		return this.setCss(['top', 'right', 'left', 'bottom', 'position'],opts);
 	},
 
 	// 设置停靠
@@ -451,15 +448,22 @@ infestor.define('infestor.Element', {
 	},
 
 	hide : function () {
+	
+		if(this.hidden)
+			return this;
+			
+		this.hidden = true;
 
 		return this.element && this.element.hide(),
 		this;
 	},
 
 	show : function (top) {
-
-		if (!this.element)
+	
+		if(!this.hidden || !this.element)
 			return this;
+
+		this.hidden = false;
 
 		top && this.element.zIndex();
 
