@@ -155,7 +155,10 @@ infestor.define('infestor.Form', {
 	},
 	
 	// 扫描字段
-	// func: @params fieldName,field,level(扫描深度) @scope scope @return false(停止扫描)|true
+	// @target 扫描对象
+	// @func: (function) @params (fieldName,field,level(当前扫描深度)) @scope scope @return false(停止扫描)|true
+	// @level 当前扫描深度
+	// @scope 作用域
 	eachFields : function (target, func, level, scope) {
 
 		level = level || 1;
