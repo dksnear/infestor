@@ -69,6 +69,15 @@ infestor.define('infestor.field.Field', {
 
 	},
 	
+	initEvents:function(){
+	
+		this.on('change',function(){
+		
+			this.check();
+		
+		},this);
+	
+	},
 	
 	createLabel:function(){
 	
@@ -110,7 +119,7 @@ infestor.define('infestor.field.Field', {
 		
 		this.elementFieldInput.change(function(){
 		
-			this.check();
+			this.emit('change',arguments,this);
 		
 		},this);
 	

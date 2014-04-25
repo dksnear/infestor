@@ -51,6 +51,26 @@ infestor.define('infestor.Form', {
 
 	},
 	
+	getData:function(name){
+	
+		var data = null,field;
+		
+		if(arguments.length<1)
+			return infestor.each(this.fieldsMap,function(fieldName,field){
+			
+				data = data || [];
+				data[fieldName] = field.getValue();
+			
+			}) && (data=infestor.append({},this.dataSet.next(),data)) && this.dataSet.setData(data).next();
+		
+		data = this.dataSet.next() || {};
+		
+		field = this.getField(name);
+		
+		return field && (data[field.fieldName] = field.getValue()) && this.dataSet.setData(data) && data[name];
+	
+	},
+	
 	addField :function(opts,feed){
 	
 		if(!opts) return null;
@@ -197,13 +217,19 @@ infestor.define('infestor.Form', {
 			
 		this.checked = checked;
 		
-		return this.checked
+		return this.checked;
 	
 	},
 
-	submit : function () {
+	submit : function (opts,rewrite) {
 	
+		if(!check())
+			return false;
+			
+		// 同步数据集数据
+		this.getData();
 		
+		return this.dataSet.submit(opts,rewrite),true;
 	
 	}
 

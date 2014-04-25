@@ -157,7 +157,7 @@ infestor js
 			isObj = length === undefined || typeof object === 'function';
 
 			if (!object)
-				return;
+				return true;
 
 			if (isObj) {
 				for (name in object)
@@ -168,6 +168,8 @@ infestor js
 					if (callback.call(scope || object[i], i, object[i]) === false)
 						break;
 			}
+			
+			return true;
 		},
 
 		/* 获取predicate返回true的元素 */
