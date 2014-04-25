@@ -25,33 +25,81 @@ infestor.define('infestor.Form', {
 		alias : 'field'
 
 	},
+	
+	dataConfig:{
+	
+		submitConfig:{},
+		loadConfig:{}
+	
+	},
 
 	init : function () {
 
 		this.callParent();
 
-		this.eachFields(this,function (fieldName, field, level) {
-
-			this.fieldsMap = this.fieldsMap || {};
-			this.fieldsMap[fieldName] = field;
-			field.formLevel = level;
-
-		});
+		this.feed();
 
 	},
 
 	initEvents : function () {
 
-		this.dataSet && this.dataSet.on('load', function () {});
+		this.dataSet && this.dataSet.on('load', function () {
+		
+			this.setField(this.dataSet.next());
+		
+		},this);
 
 	},
-
-	loadField : function () {},
+	
+	addField :function(opts,feed){
+	
+		if(!opts) return null;
+		
+		var item = this.addItem(opts);
+		
+		field.formLevel = 1;
+		
+		if(!feed)
+			return (this.fieldsMap[item.fieldName] = item);
+		
+		return this.feed(),item;
+	
+	},
+	
+	removeField : function (fieldName) {
+	
+		var field = this.getField(fieldName);
+		
+		if(!field) return this;
+		
+		if(infestor.isRawObject(field))
+			return infestor.each(field,function(fieldName,field){
+			
+				delete this.fieldsMap[fieldName];
+				this.removeItem(field.name);
+			
+			},this),this;
+		
+		return  delete this.fieldsMap[fieldName] && this.removeItem(field.name);
+		
+	
+	},
 
 	setField : function (fieldName,value) {
 	
+		if(!this.fieldsMap) 
+			return this;
 		
-		this.getField(fieldName)
+		if(infestor.isRawObject(fieldName))	
+			return infestor.each(fieldName,function(name,value){
+			
+				this.fieldsMap[name] && this.fieldsMap[name].setValue(value);
+			
+			},this),this;
+		
+		this.fieldsMap[name] && this.fieldsMap[name].setValue(value);
+		
+		return this;
 	
 	
 	},
@@ -65,11 +113,46 @@ infestor.define('infestor.Form', {
 	
 	},
 
-	removeField : function (fieldName) {},
-
-	hideField:function(fieldName){},
+	hideField:function(fieldName){
 	
-	showField:function(fieldName){},
+		var field = this.getField.apply(this,arguments);
+		
+		if(!field) return this;
+		
+		if(infestor.isRawObject(field))
+			return infestor.each(field,function(){
+				this.hide();
+			}),this;
+	
+		return field.hide();
+	},
+	
+	showField:function(fieldName){
+	
+		var field = this.getField.apply(this,arguments);
+		
+		if(!field) return this;
+		
+		if(infestor.isRawObject(field))
+			return infestor.each(field,function(){
+				this.show();
+			}),this;
+	
+		return field.show();
+	
+	},
+	
+	// 抽取有效字段
+	feed : function(){
+	
+		return this.eachFields(this,function (fieldName, field, level) {
+
+			this.fieldsMap = this.fieldsMap || {};
+			this.fieldsMap[fieldName] = field;
+			field.formLevel = level;
+
+		}),this;
+	},
 	
 	// 扫描字段
 	// func: @params fieldName,field,level(扫描深度) @scope scope @return false(停止扫描)|true

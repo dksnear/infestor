@@ -574,7 +574,7 @@ infestor.define('infestor.Element', {
 		};
 
 		if (!this.items)
-			return;
+			return null;
 
 		this.itemsMap = this.itemsMap || {};
 
@@ -651,13 +651,13 @@ infestor.define('infestor.Element', {
 	removeItem : function (name) {
 
 		if (!this.items)
-			return;
+			return null;
 
 		// 删除所有子元素
 		if (infestor.isUndefined(name) && this.hasItem())	
 			return infestor.each(this.itemsMap, function (name) {
 				this.removeItem(name);
-			}, this);
+			}, this),this;
 
 		// 删除一个子元素
 		if (this.hasItem(name)) {
@@ -666,6 +666,8 @@ infestor.define('infestor.Element', {
 			delete this.itemsMap[name];
 			this.count--;
 		}
+		
+		return this;
 
 	},
 	
