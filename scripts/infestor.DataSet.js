@@ -3,63 +3,21 @@ infestor.define('infestor.DataSet', {
 
 	extend : 'infestor.Object',
 
-	uses : ['infestor.request', 'infestor.cross', 'infestor.Dom', 'infestor.Task'],
+	uses : ['infestor.request','infestor.Indicator'],
 
-	statics : {
-
-		showIndicator : function () {
-
-			infestor.DataSet.elementIndicator = infestor.DataSet.elementIndicator || infestor.Dom.div().css({
-
-					position : 'fixed',
-					width : '0%',
-					height : '5px',
-					top : 0,
-					left : 0,
-					'background-color' : 'orange'
-
-				}).appendTo(infestor.Dom.getBody());
-
-			infestor.DataSet.elementIndicator.zIndex().show();
-
-			return this;
-
-		},
-
-		changeIndicator : function (value) {
-
-			if (!infestor.DataSet.elementIndicator)
-				return;
-
-			infestor.isRawObject(value) ? infestor.DataSet.elementIndicator.css(value) : infestor.DataSet.elementIndicator.css('width', value + '%');
-
-			return this;
-
-		},
-
-		hideIndicator : function () {
-
-			infestor.DataSet.elementIndicator && infestor.DataSet.elementIndicator.hide();
-
-			return this;
-
-		}
-
-	},
-
-	// 远程请求
+	// 远程加载请求
 	remote : true,
 
-	// 请求地址
+	// 加载请求地址
 	url : null,
 
-	// 请求参数 (obj)
+	// 加载请求参数 (obj)
 	params : null,
 
-	// 远程请求方法 (get|post|jsonp)
+	// 加载请求方法 (get|post|jsonp)
 	method : 'get',
 
-	// 数据对象 (array)
+	// 加载数据对象 (array)
 	data : null,
 
 	// 数据对象长度
@@ -68,35 +26,93 @@ infestor.define('infestor.DataSet', {
 	// 当前数据
 	current : 0,
 
-	// 已载入
-	isLoaded : false,
-
 	// 显示加载进度 (bool|options:{ show:fn ,change:fn(value) ,hide:fn ,scope:obj})
-	indicator : true,
-
-	// 显示遮罩 (bool|options:{ show:fn , hide:fn ,scope:obj })
-	mask : true,
+	indicator:true,
+	
+	// 显示加载遮罩 (bool|options:{ show:fn , hide:fn ,scope:obj })
+	mask:true,
+	
+	// 提交选项  options:{ url:string,params:obj,indicator:options|true|false,mask:options|true|false}
+	submitConfig:null,
+	
+	// 加载选项 options:{remote:true|false,url:string,params:obj,method:get|post|jsonp,indicator:options|true|false,mask:options|true|false}
+	loadConfig:null,
 
 	events : {
 
+		// @scope this
+		
 		// for load
 	
-		// @params data
-		// @scope this
+		// @params this.data
+		
+		beforeLoad:null,
+		afterLoad:null,
 		load : null,
 		
-		//@scope this
-		error : null,
-		complete : null,
+		// @params ajaxComplete
+		
+		LoadError : null,
+		LoadComplete : null,
 		
 		
-		// for submit
-		
-		beforeSubmit:null,
-		afterSubmit:null,
-		submitComplete:null,
-		submitError:null
+		// for submit	
 
+		// @params submitOptions
+		beforeSubmit:null,
+		
+		// @params data
+		afterSubmit:null,
+		submit:null,
+		
+		// @params ajaxComplete
+		submitComplete:null,
+		submitError:null,
+		
+		// for all
+		
+		error:null
+
+	},
+	
+	
+	init : function(){
+	
+		this.loadConfig = infestor.append({
+		
+			remote:this.remote,
+			url:this.url,
+			params:this.params,
+			method:this.method,
+			indicator:this.indicator,
+			mask:this.mask
+			
+		},this.loadConfig);
+		
+		
+		this.submitConfig = infestor.append({
+		
+			remote:true,
+		    method:'post'
+			
+		},this.submitConfig);
+		
+		
+		this.loadIndicator =  this.loadIndicator || infestor.create('infestor.Indicator',{ 
+
+			indicator:this.loadConfig.indicator,
+			mask:this.loadConfig.mask
+
+		});
+		
+		this.submitIndicator = this.submitIndicator || infestor.create('infestor.Indicator',{
+		
+			indicator:this.submitConfig.indicator,
+			mask:this.submitConfig.mask
+		
+		});
+		
+		
 	},
 
 	setData : function (data) {
@@ -218,140 +234,61 @@ infestor.define('infestor.DataSet', {
 	load : function (opts, rewrite) {
 
 		var me = this,
-		task,
-		mask,
-		indicator;
+			config = this.loadConfig,
+			indicator = this.loadIndicator;
 
-		if (!this.remote) {
+		if (!config.remote) {
 
-			this.emit('load', [me.setData(opts)],this);
-			this.emit('complete',[],this);
+			this.emit('load', [this.setData(opts)],this);
 			return;
 		}
 
-		mask = this.mask ? {
-
-			show : infestor.isBoolean(this.mask) ? infestor.cross.showMask : function () {
-
-				me.mask.show.call(me.mask.scope || window);
-
-			},
-			hide : infestor.isBoolean(this.mask) ? infestor.cross.hideMask : function () {
-
-				me.mask.hide.call(me.mask.scope || window);
-			}
-
-		}
-		 : this.mask;
-
-		indicator = this.indicator ? {
-
-			show : infestor.isBoolean(this.indicator) ? infestor.DataSet.showIndicator : function () {
-
-				me.indicator.show.call(me.indicator.scope || window)
-			},
-			hide : infestor.isBoolean(this.indicator) ? infestor.DataSet.hideIndicator : function () {
-
-				me.indicator.hide.call(me.indicator.scope || window);
-			},
-			change : infestor.isBoolean(this.indicator) ? infestor.DataSet.changeIndicator : function () {
-
-				me.indicator.change.apply(me.indicator.scope || window, arguments);
-
-			}
-
-		}
-		 : this.indicator;
-
-		task = infestor.create('infestor.Task', {
-
-				indicatorStart : infestor.random(0, 15),
-				indicatorStop : infestor.random(35, 85),
-				interval : 20,
-
-				events : {
-
-					start : function () {
-
-						mask && mask.show();
-
-						indicator && indicator.show();
-						indicator && indicator.change(this.indicatorStart);
-
-					},
-
-					tick : function () {
-
-						if (!indicator)
-							return;
-
-						this.indicatorStart = infestor.random(this.indicatorStart, this.indicatorStop);
-						indicator.change(this.indicatorStart);
-
-					},
-
-					stop : function () {
-
-						indicator && indicator.change(100);
-
-						indicator && infestor.delay(function () {
-
-							indicator.hide();
-							indicator.change(0);
-
-						}, 200);
-
-						mask && mask.hide();
-
-					}
-
-				}
-
-			});
-
-		opts && opts.params && (opts.params = infestor.append({}, this.params, opts.params));
-
-		this.isLoaded = false;
+		opts && opts.params && (opts.params = infestor.append({}, config.params, opts.params));
 
 		opts = infestor.append({
 
-				url : this.url,
-				method : this.method,
-				params : this.params,
+				url : config.url,
+				method : config.method,
+				params : config.params,
 				success : function (data) {
 
 					me.emit('load', [me.setData(data)],me);
-					me.isLoaded = true;
-					task.stop();
-					
-					if(me.method == 'jsonp')
-						me.emit('complete', arguments, me);
+					indicator && indicator.stop();
+					me.emit('afterLoad',[me.data],me);
+					if(config.method == 'jsonp')
+						me.emit('loadComplete', arguments, me);
 				},
 				error : function () {
 					
-					me.emit('error', arguments,me);
+					me.emit('loadError', arguments,me);
+					me.emit('error',arguments,me);
+					
 				},
 				complete : function () {
 
-					task.stop();
-					me.emit('complete', arguments, me);
+					indicator && indicator.stop();
+					me.emit('loadComplete', arguments, me);
 				}
 
 			}, opts);
 
-		task.start();
-
-		if (this.method != 'jsonp')
+		this.emit('beforeLoad',[opts],this);
+		
+		indicator && indicator.start();
+	
+		if (config.method != 'jsonp')
 			infestor.request.ajax(opts);
 
-		if (this.method == 'jsonp')
+		if (config.method == 'jsonp')
 			infestor.request.jsonp(opts.url, opts.params, opts.success);
 
 		if (rewrite) {
 
-			this.params = opts.params;
-			this.method = opts.method;
-			this.url = opts.url;
+			config.params = opts.params;
+			config.method = opts.method;
+			config.url = opts.url;
+			
+			this.loadConfig = config;
 		}
 
 	},
@@ -361,7 +298,59 @@ infestor.define('infestor.DataSet', {
 		this.load();
 	},
 
-	submit:function(){
+	submit:function(opts, rewrite){
+	
+		var me = this,
+			config = this.submitConfig,
+			indicator = this.submitIndicator;
+
+		if (!config.remote)
+			return;
+
+		config.params.data = this.getData();	
+			
+		opts && opts.params && (opts.params = infestor.append({}, config.params, opts.params));
+		
+		opts = infestor.append({
+
+				url : config.url,
+				method : config.method,
+				params : config.params,
+				success : function (data) {
+
+					me.emit('submit', data ,me);
+					indicator && indicator.stop();
+					me.emit('afterSubmit',data ,me);
+
+				},
+				error : function () {
+					
+					me.emit('submitError', arguments,me);
+					me.emit('error',arguments,me);
+					
+				},
+				complete : function () {
+
+					indicator && indicator.stop();
+					me.emit('submitComplete', arguments, me);
+				}
+
+			}, opts);
+
+		this.emit('beforeSubmit',[opts],this);
+		
+		indicator && indicator.start();
+	
+		infestor.request.ajax(opts);
+
+		if (rewrite) {
+
+			config.params = opts.params;
+			config.method = opts.method;
+			config.url = opts.url;
+			
+			this.submitConfig = config;
+		}
 	
 	
 	},
@@ -369,6 +358,10 @@ infestor.define('infestor.DataSet', {
 	destroy:function(){
 	
 		this.clearData();
+		this.submitIndicator = this.submitIndicator && this.submitIndicator.destroy();
+		this.loadIndicator = this.loadIndicator && this.loadIndicator.destroy();
+		
+		this.callParent();
 	
 	}
 
