@@ -179,6 +179,41 @@ infestor.define('infestor.Element', {
 
 	// 数据集对象配置(obj)
 	dataConfig : null,
+	
+	constructor :function(options){
+	
+		this.initDataSet(options);
+
+		this.callParent();
+	
+	},
+	
+	initDataSet : function (options) {
+	
+	
+		if(options && options.dataSet)
+			return (this.dataSet = options.dataSet) && delete options.dataSet;
+		
+		if(!this.dataConfig && !(options && options.dataConfig))
+			return;
+		
+		if(options && options.dataConfig && this.dataConfig){
+		
+			 options.dataConfig.loadConfig = infestor.append({},this.dataConfig.loadConfig,options.dataConfig.loadConfig);
+			 options.dataConfig.submitConfig = infestor.append({},this.dataConfig.submitConfig,options.dataConfig.submitConfig);
+			 this.dataConfig = infestor.append({},this.dataConfig,options.dataConfig);
+	
+		}
+		
+		if(options && options.dataConfig && !this.dataConfig)
+			this.dataConfig = options.dataConfig;
+		
+		
+		options && options.dataConfig && delete options.dataConfig;
+			
+		this.dataSet = this.dataSet || this.dataConfig && infestor.create('infestor.DataSet', this.dataConfig);
+
+	},
 
 	// 类初始化接口
 	init : function () {
@@ -187,16 +222,13 @@ infestor.define('infestor.Element', {
 		// 对于已托管实例 可通过eks.getInst(id)方法全局获取实例
 		this.id && infestor.mgr.addInstance(this.id, this);
 		this.id = this.id || this.getId();
-
+		
 		// 配置不同浏览器下的属性
 		this.initBrower();
 		
-		// 元素初始化接口
+		// 元素初始化
 		this.initElement();
-
-		// 初始化数据
-		this.initDataSet();
-
+		
 		// 初始化事件
 		this.initEvents && this.initEvents();
 
@@ -206,7 +238,7 @@ infestor.define('infestor.Element', {
 		// 条件初始化
 		this.initTip().initDraggable().initResizable();
 
-		// 子元素初始化接口
+		// 子元素初始化
 		this.initItems();
 		
 		// 设置停靠
@@ -214,7 +246,6 @@ infestor.define('infestor.Element', {
 
 	},
 	
-
 	initBrower:function(){
 	
 		var me = this;
@@ -250,12 +281,6 @@ infestor.define('infestor.Element', {
 		this.elementInnerContainer = this.elementInnerContainer || this.element;
 
 		this.boxShadow && this.element.addClass(this.cssClsElementBoxShadow);
-
-	},
-
-	initDataSet : function () {
-
-		this.dataSet = this.dataSet || this.dataConfig && infestor.create('infestor.DataSet', this.dataConfig);
 
 	},
 

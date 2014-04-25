@@ -41,6 +41,8 @@ infestor.define('infestor.field.Field', {
 
 	layout:'horizon',
 	
+	checked:false,
+	
 	value:null,
 	
 	

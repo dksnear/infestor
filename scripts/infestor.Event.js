@@ -22,7 +22,7 @@ infestor.define('infestor.Event', {
 	},
 
 	// 添加侦听事件
-	addEventListener : function (eventName, eventHandle) {
+	addEventListener : function (eventName, eventHandle, scope) {
 
 		if (!eventName)
 			return;
@@ -43,6 +43,8 @@ infestor.define('infestor.Event', {
 
 			this.eventsMap[name] = this.eventsMap[name] || {};
 
+			handle.$scope = scope;
+			
 			this.eventsMap[name][infestor.getId()] = handle;
 
 		}, this);
@@ -89,7 +91,7 @@ infestor.define('infestor.Event', {
 			if (!infestor.isFunction(this))
 				return true;
 
-			this.apply(scope, (infestor.isArguments(eventArgs) || infestor.isArray(eventArgs)) ? eventArgs : [eventArgs]);
+			this.apply(this.$scope || scope || window, (infestor.isArguments(eventArgs) || infestor.isArray(eventArgs)) ? eventArgs : [eventArgs]);
 
 		});
 	},

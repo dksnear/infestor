@@ -15,6 +15,8 @@ infestor.define('infestor.Form', {
 
 	// 字段深度
 	level : 1,
+	
+	checked : false,
 
 	fieldsMap : null,
 
@@ -46,18 +48,29 @@ infestor.define('infestor.Form', {
 
 	loadField : function () {},
 
-	setField : function () {
+	setField : function (fieldName,value) {
 	
 		
-		
+		this.getField(fieldName)
 	
 	
 	},
 
-	getField : function (fieldName) {},
+	getField : function (fieldName) {
+	
+		if(arguments.length<1)
+			return this.fieldsMap;
+	
+		return this.fieldsMap && this.fieldsMap[fieldName];
+	
+	},
 
 	removeField : function (fieldName) {},
 
+	hideField:function(fieldName){},
+	
+	showField:function(fieldName){},
+	
 	// 扫描字段
 	// func: @params fieldName,field,level(扫描深度) @scope scope @return false(停止扫描)|true
 	eachFields : function (target, func, level, scope) {
@@ -84,7 +97,28 @@ infestor.define('infestor.Form', {
 		}, this);
 
 	},
+	
+	check: function(){
+	
+		var checked = true;
+		
+		this.fieldsMap && infestor.each(this.fieldsMap,function(){
+		
+			if(!this.checked)
+				return (checked = false);
+		
+		});
+			
+		this.checked = checked;
+		
+		return this.checked
+	
+	},
 
-	submit : function () {}
+	submit : function () {
+	
+		
+	
+	}
 
 });
