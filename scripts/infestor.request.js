@@ -43,7 +43,7 @@ infestor.namespace('infestor.request', {
 		};
 		
 		//for xdebug
-		params = infestor.xdebug || param.$xdebug ? infestor.append({},{ XDEBUG_SESSION_START:1 },params) : params;
+		params = infestor.xdebug || params.$xdebug ? infestor.append({},{ XDEBUG_SESSION_START:1 },params) : params;
 
 		xhr = window.ActiveXObject ? activeXhr() : standardXhr();
 

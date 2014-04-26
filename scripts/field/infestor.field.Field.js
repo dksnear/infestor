@@ -45,6 +45,9 @@ infestor.define('infestor.field.Field', {
 	
 	value:null,
 	
+	disabled:false,
+	
+	readOnly:false,
 	
 	init:function(){
 	
@@ -66,6 +69,8 @@ infestor.define('infestor.field.Field', {
 		this.callParent();
 		
 		this.createLabel().createContent().createInput();
+		
+		this.setReadOnly(this.readOnly).setDisable();
 
 	},
 	
@@ -110,7 +115,7 @@ infestor.define('infestor.field.Field', {
 	createInput:function(){
 	
 		
-		this.elementFieldInput=this.createDomElement(this.elementFieldContent,'','input',{
+		this.elementFieldInput = this.createDomElement(this.elementFieldContent,'','input',{
 			
 			type : 'text',
 			id : this.id,
@@ -128,6 +133,8 @@ infestor.define('infestor.field.Field', {
 	},
 	
 	getValue:function(){
+		
+		if(this.disabled) return null;
 	
 		return this.elementFieldInput && this.elementFieldInput.val();
 	
@@ -135,11 +142,63 @@ infestor.define('infestor.field.Field', {
 	
 	setValue:function(value){
 	
-		if(infestor.isNull(value)||infestor.isUndefined(value))
+		if(this.disabled || infestor.isNull(value)|| infestor.isUndefined(value))
 			return;
 		
 		this.value = value;
 		this.elementFieldInput && this.elementFieldInput.val(value);
+	},
+	
+	setReadOnly:function(readOnly){
+	
+		if(readOnly){
+		
+			this.readOnly = true;
+			this.elementFieldInput.attr('readonly','readonly');
+			return this;
+		}
+		
+		this.readOnly = false
+		this.elementFieldInput.removeAttr('readonly');
+		
+		return this;
+	
+	},
+	
+	setDisable:function(){
+	
+		this.disabled = !this.disabled;
+		
+		if(!this.disabled) 
+			this.disable();
+		else 
+			this.disabled = !this.disabled;
+		
+		return this;
+		
+	},
+	
+	disable:function(){
+		
+		if(this.disabled)
+			return this;
+		
+		this.disabled = true;
+		
+		this.elementFieldInput.removeAttr('disabled');
+	
+	},
+	
+	enable:function(){
+	
+		if(!this.disabled)
+			return this;
+		
+		this.disabled = false;
+		
+		this.elementFieldInput.attr('disabled',true);
+		
+		return this;
 	},
 	
 	check:function(){

@@ -276,6 +276,13 @@ infestor.define('infestor.Dom', {
 
 		return this;
 	},
+	
+	
+	removeAttr:function(name){
+	
+		return this.attr(name,null);
+	
+	},
 
 	css : function (name, value) {
 

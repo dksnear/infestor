@@ -192,7 +192,7 @@ infestor.define('infestor.Element', {
 	
 	
 		if(options && options.dataSet)
-			return (this.dataSet = options.dataSet) && delete options.dataSet;
+			return (this.dataSet = options.dataSet) && (this.dataSet.parent = this) && delete options.dataSet;
 		
 		if(!this.dataConfig && !(options && options.dataConfig))
 			return;
@@ -212,6 +212,8 @@ infestor.define('infestor.Element', {
 		options && options.dataConfig && delete options.dataConfig;
 			
 		this.dataSet = this.dataSet || this.dataConfig && infestor.create('infestor.DataSet', this.dataConfig);
+		
+		this.dataSet && (this.dataSet.parent = this);
 
 	},
 
@@ -1084,6 +1086,8 @@ infestor.define('infestor.Element', {
 
 		// 注销实例托管
 		infestor.mgr.removeInstance(this.id);
+		
+		this.dataSet && this.dataSet.destroy();
 		
 		this.callParent();
 

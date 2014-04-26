@@ -1158,6 +1158,7 @@ infestor js
 			}
 
 			var $class = function () {},
+			
 			$instance = options.constructor != Object.prototype.constructor ? options.constructor : function () {
 				superClass.apply(this, arguments);
 			};

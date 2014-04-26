@@ -12,6 +12,8 @@ infestor.define('infestor.Form', {
 	cssUses : ['infestor.Form'],
 
 	cssClsElement : 'infestor-form',
+	
+	position:'relative',
 
 	// 字段深度
 	level : 1,
@@ -28,8 +30,104 @@ infestor.define('infestor.Form', {
 	
 	dataConfig:{
 	
-		submitConfig:{},
-		loadConfig:{}
+		submitConfig:{
+		
+			mask:{
+				
+				show:function(){
+				
+					this.parent.parent.showMask();
+				
+				},
+				hide:function(){
+				
+					this.parent.parent.hideMask();
+				
+				}
+			
+			},
+			indicator:{
+			
+				show:function(){
+				
+					var scope = this.parent.parent;
+				
+					scope.elementIndicator = scope.elementIndicator || this.createIndicator({
+					
+						position:'absolute',
+						'background-color':'green'
+					
+					}).appendTo(scope.getElement());
+
+					scope.elementIndicator.show();
+				
+				},
+				hide:function(){
+				
+					var scope = this.parent.parent;
+					
+					scope.elementIndicator && scope.elementIndicator.hide();
+				
+				},
+				change:function(value){
+				
+					var scope = this.parent.parent;
+					
+					scope.elementIndicator && scope.elementIndicator.css('width', value + '%');
+					
+				}
+			}
+		
+		},
+		
+		loadConfig:{
+		
+			mask:{
+				
+				show:function(){
+				
+					this.parent.parent.showMask();
+				
+				},
+				hide:function(){
+				
+					this.parent.parent.hideMask();
+				
+				}
+			
+			},
+			indicator:{
+			
+				show:function(){
+				
+					var scope = this.parent.parent;
+				
+					scope.elementIndicator = scope.elementIndicator || this.createIndicator({
+					
+						position:absolute
+					
+					}).appendTo(scope.getElement());
+
+					scope.elementIndicator.show();
+				
+				},
+				hide:function(){
+				
+					var scope = this.parent.parent;
+					
+					scope.elementIndicator && scope.elementIndicator.hide();
+				
+				},
+				change:function(value){
+				
+					var scope = this.parent.parent;
+					
+					scope.elementIndicator && scope.elementIndicator.css('width', value + '%');
+					
+				}
+			}
+				
+		}
 	
 	},
 

@@ -16,6 +16,9 @@ infestor.define('infestor.Indicator',{
 	// 显示遮罩 (bool|options:{ show:fn , hide:fn ,scope:obj })
 	mask:null,
 	
+	// 引用对象
+	parent:null,
+	
 	init:function(){
 			
 		this.on('start',function(){
@@ -65,11 +68,14 @@ infestor.define('infestor.Indicator',{
 	
 	initIndicator:function(){
 	
-		if(!this.indicator ||(infestor.isBoolean(this.indicator) && this.indicator)) return this;
+		if(!this.indicator) return this;
 		
-		this.showIndicator = this.indicator.show();
-		this.hideIndicator = this.indicator.hide();
-		this.changeIndicator = this.indicator.change();
+		if(infestor.isBoolean(this.indicator) && this.indicator)
+			this.indicator = {};
+		
+		this.showIndicator = this.indicator.show || this.showIndicator;
+		this.hideIndicator = this.indicator.hide || this.hideIndicator;
+		this.changeIndicator = this.indicator.change || this.changeIndicator;
 		
 		this.indicator.scope = this.indicator.scope || this;
 		
@@ -81,8 +87,8 @@ infestor.define('infestor.Indicator',{
 	
 		if(!this.mask ||(infestor.isBoolean(this.mask) && this.mask)) return this;
 		
-		this.showMask = this.mask.show();
-		this.hideMask = this.mask.hide();
+		this.showMask = this.mask.show;
+		this.hideMask = this.mask.hide;
 		
 		this.mask.scope = this.mask.scope || this;
 		
@@ -90,18 +96,24 @@ infestor.define('infestor.Indicator',{
 	
 	},
 	
+	createIndicator:function(opts){
+	
+		return infestor.Dom.div().css(infestor.append({
+
+			position : 'fixed',
+			width : '0%',
+			height : '5px',
+			top : 0,
+			left : 0,
+			'background-color' : 'orange'
+
+		},opts));
+	
+	},
+	
 	showIndicator:function(){
 		
-		infestor.Indicator.elementIndicator = infestor.Indicator.elementIndicator || infestor.Dom.div().css({
-
-					position : 'fixed',
-					width : '0%',
-					height : '5px',
-					top : 0,
-					left : 0,
-					'background-color' : 'orange'
-
-		}).appendTo(infestor.Dom.getBody());
+		infestor.Indicator.elementIndicator = infestor.Indicator.elementIndicator || this.createIndicator().appendTo(infestor.Dom.getBody());
 
 		infestor.Indicator.elementIndicator.zIndex().show();
 	

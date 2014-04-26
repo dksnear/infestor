@@ -37,6 +37,9 @@ infestor.define('infestor.DataSet', {
 	
 	// 加载选项 options:{remote:true|false,url:string,params:obj,method:get|post|jsonp,indicator:options|true|false,mask:options|true|false}
 	loadConfig:null,
+	
+	// 引用对象
+	parent:null,
 
 	events : {
 
@@ -101,14 +104,16 @@ infestor.define('infestor.DataSet', {
 		this.loadIndicator =  this.loadIndicator || infestor.create('infestor.Indicator',{ 
 
 			indicator:this.loadConfig.indicator,
-			mask:this.loadConfig.mask
+			mask:this.loadConfig.mask,
+			parent:this
 
 		});
 		
 		this.submitIndicator = this.submitIndicator || infestor.create('infestor.Indicator',{
 		
 			indicator:this.submitConfig.indicator,
-			mask:this.submitConfig.mask
+			mask:this.submitConfig.mask,
+			parent:this
 		
 		});
 		
