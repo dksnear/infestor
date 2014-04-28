@@ -8,7 +8,7 @@ infestor.define('infestor.Indicator',{
 	
 	uses:['infestor.cross','infestor.Dom'],
 	
-	interval:20,
+	interval:10,
 	
 	// 显示加载进度 (bool|options:{ show:fn ,change:fn(value) ,hide:fn ,scope:obj})
 	indicator:null,
@@ -25,8 +25,8 @@ infestor.define('infestor.Indicator',{
 				
 			this.mask && this.showMask.call(this.mask.scope);
 						
-			this.indicatorStart = infestor.random(0, 15);
-			this.indicatorStop = infestor.random(35, 85);
+			this.indicatorStart = infestor.random(0, 150)/10;
+			this.indicatorStop = infestor.random(350, 850);
 
 			this.indicator && this.showIndicator.call(this.indicator.scope);		
 			this.indicator && this.changeIndicator.call(this.indicator.scope,this.indicatorStart);
@@ -40,7 +40,7 @@ infestor.define('infestor.Indicator',{
 			if (!this.indicator)
 				return;
 
-			this.indicatorStart = infestor.random(this.indicatorStart, this.indicatorStop);
+			this.indicatorStart = infestor.random(this.indicatorStart*10, this.indicatorStop)/10;
 			this.changeIndicator.call(this.indicator.scope,this.indicatorStart);
 		
 		},this);
