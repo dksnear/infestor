@@ -1125,7 +1125,7 @@ infestor js
 		},
 
 		// 创建命名空间
-		namespace : function (ns, val) {
+		namespace : function (ns, val, rewrite) {
 
 			var nsa = ns.split('.'),
 			pre;
@@ -1140,7 +1140,9 @@ infestor js
 					continue;
 				}
 				if (i == ln - 1) {
-					pre = pre[nsa[i]] = pre[nsa[i]] || val;
+				
+					pre = pre[nsa[i]] = rewrite && val || pre[nsa[i]] || val;
+					
 					break;
 				}
 				pre = pre[nsa[i]] = pre[nsa[i]] || {};
@@ -1454,15 +1456,10 @@ infestor js
 				var me = this,
 				callback = function () {
 
+					me.delayExec();
 					handle && handle.call(this);
 					me.blockFree();
-					me.delayExec();
 					me.delayWriteStyle();
-					// me.delayWriteStyle(function () {
-
-					// me.delayExec();
-
-					// });
 
 				};
 
@@ -1561,17 +1558,6 @@ infestor js
 			// 延时加载已注册样式
 			delayWriteStyle : function (callback, scope) {
 
-				// if (this.delayLoadStyleQueue.length > 0)
-				// return (new global.Loader).using(this.delayLoadStyleQueue).using(function () {
-
-				// callback && callback.call(scope || window);
-				// this.delayLoadStyleQueue = [];
-
-				// }, this), this;
-
-				// return callback && callback.call(scope || window),
-				// this;
-				
 				global.loader.loadedMap = global.loader.loadedMap || {};
 
 				global.each(this.delayLoadStyleQueue, function () {
@@ -1649,6 +1635,17 @@ infestor js
 				while (obj = this.delayExecQueue.shift())
 					obj.method.apply(obj.scope, obj.args);
 
+			},
+			
+			// 加载结束后重写方法
+			override:function(ns,obj,rewrite){
+			
+				this.delayReg(function(ns,obj,rewrite){
+				
+					global.namespace(ns,obj,rewrite);
+				
+				},arguments);
+			
 			},
 
 			// 加载声明
