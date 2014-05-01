@@ -788,7 +788,7 @@ infestor js
 		},
 
 		//异步加载脚本(.js)
-		loadScript : function (src, callback) {
+		loadScript : function (src, callback, error) {
 
 			var script = document.createElement('script'),
 			head = document.head || document.getElementsByTagName('head')[0];
@@ -796,9 +796,12 @@ infestor js
 			head.appendChild(script);
 			script.setAttribute('type', 'text/javascript');
 			script.setAttribute('src', src);
-
-			if (!global.isIE() || global.isIE9Plus())
+		
+			if (!global.isIE8Minus()){
+			
+				script.onerror = error;
 				return script.onload = !!callback ? callback : script.onload, script;
+			}
 
 			return script.onreadystatechange = function () {
 

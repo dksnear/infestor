@@ -11,14 +11,19 @@ infestor.namespace('infestor.request', {
 	ajax : function (opts) {
 
 		var xhr,
-		method = opts.method || 'get',
+		method = (opts.method || 'get').toLowerCase(),
 		url = opts.url || '#',
-		params = infestor.isString(opts.params) ? opts.params : infestor.param(opts.params || {}),
+		params = infestor.isString(opts.params) && infestor.param(opts.params) || opts.params || {},
 		async = opts.async || true,
 		error = opts.error || this.settings.error,
 		complete = opts.complete || this.settings.complete,
 		success = opts.success,
 	    dataType = opts.dataType || 'json',
+		scope = opts.scope || window,
+		jsonpCallbackParamName = opts.jsonpCallbackParamName || 'callback',
+		jsonpCallbackFnName = opts.jsonpCallbackFnName || infestor.$$libName + '.request.$jsonp',
+		script = null,
+		request = this,
 		dataConvertHandle = function(type,data){
 		
 			switch(type){
@@ -42,30 +47,58 @@ infestor.namespace('infestor.request', {
 			} catch (e) {}
 		};
 		
-		//for xdebug
-		params = infestor.xdebug || params.$xdebug ? infestor.append({},{ XDEBUG_SESSION_START:1 },params) : params;
+		// for xdebug
+		(infestor.xdebug || params.$xdebug) && infestor.append(params,{ XDEBUG_SESSION_START:1 });
+		
+		// for jsonp
+		(method == 'jsonp') && (params[jsonpCallbackParamName] = jsonpCallbackFnName);
+		
+		// params obj to params string
+		params = infestor.param(params);
 
+		if (method != 'post') {
+
+			params && (url += '?' + params);
+			params = null;
+			
+		}
+		
+		if(method == 'jsonp'){
+		
+			script = infestor.loadScript(url, function () {
+
+				success && success.call(scope, request.$data);
+				request.$data = null;
+				script.parentNode.removeChild(script);			
+				complete && complete.call(scope,true);
+					
+			},function(e){
+			
+				// ie8minus not support
+				error && error.call(scope,e);
+				complete && complete.call(scope,e);
+			
+			});
+						
+			return true;
+		
+		}
+		
 		xhr = window.ActiveXObject ? activeXhr() : standardXhr();
 
 		if (!xhr)
 			return false;
-
-		if (method.toLowerCase() == 'get') {
-
-			params && (url += '?' + params);
-			params = null;
-		}
 
 		xhr.onreadystatechange = function () {
 
 			if (xhr.readyState === 4) {
 
 				if (((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304))
-					success && success(dataConvertHandle(dataType,xhr.responseText), xhr);
+					success && success.call(scope,dataConvertHandle(dataType,xhr.responseText), xhr);
 				else
-					error && error(xhr);
+					error && error.call(scope,xhr);
 
-				complete && complete(xhr);
+				complete && complete.call(scope,xhr);
 			}
 
 		};
@@ -78,9 +111,11 @@ infestor.namespace('infestor.request', {
 
 		xhr.send(params);
 
+		return true;
+		
 	},
 
-	get : function (url, params, success, error, complete) {
+	get : function (url, params, success, error, complete, scope) {
 
 		this.ajax({
 			url : url,
@@ -92,7 +127,7 @@ infestor.namespace('infestor.request', {
 		});
 	},
 
-	post : function (url, params, success, error, complete) {
+	post : function (url, params, success, error, complete, scope) {
 
 		this.ajax({
 			url : url,
@@ -103,36 +138,22 @@ infestor.namespace('infestor.request', {
 			complete : complete
 		});
 	},
+	
+	jsonp : function (url, params, success, error, complete, scope) {
 
-	/*cross: function (url, params, success, error) {
-
-	var crossFrame = infestor.Dom.create('iframe', { src: url }).on('load', function () {
-
-	success(crossFrame);
-
-	}).hide().appendTo(infestor.Dom.use(document.body));
-
-	},*/
+		this.ajax({
+			url : url,
+			params : params,
+			method : 'jsonp',
+			success : success,
+			error : error,
+			complete : complete
+		});
+	},
 
 	$jsonp : function (data) {
 
 		this.$data = data;
-	},
-
-	jsonp : function (url, params, callback, scope) {
-
-		var params = infestor.append(params, {
-				callback : infestor.$$libName + '.request.$jsonp'
-			}),
-			// for xdebug
-			params = infestor.xdebug || params.$xdebug ? infestor.append({},{ XDEBUG_SESSION_START:1 },params) : params;
-			request = this,
-			script = infestor.loadScript(url + '?' + infestor.param(params), function () {
-
-				callback && callback.call(scope || window, request.$data);
-				request.$data = null;
-				script.parentNode.removeChild(script);
-			});
 	}
 
 });

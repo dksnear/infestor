@@ -32,7 +32,7 @@ infestor.define('infestor.DataSet', {
 	// 显示加载遮罩 (bool|options:{ show:fn , hide:fn ,scope:obj })
 	mask:true,
 	
-	// 提交选项  options:{ url:string,params:obj,indicator:options|true|false,mask:options|true|false}
+	// 提交选项  options:{ url:string,params:obj,method:get|post|jsonp,indicator:options|true|false,mask:options|true|false}
 	submitConfig:null,
 	
 	// 加载选项 options:{remote:true|false,url:string,params:obj,method:get|post|jsonp,indicator:options|true|false,mask:options|true|false}
@@ -95,8 +95,7 @@ infestor.define('infestor.DataSet', {
 		
 		this.submitConfig = infestor.append({
 		
-			remote:true,
-		    method:'post'
+			remote:true
 			
 		},this.submitConfig);
 		
@@ -258,10 +257,8 @@ infestor.define('infestor.DataSet', {
 				success : function (data) {
 
 					me.emit('load', [me.setData(data)],me);
-					indicator && indicator.stop();
 					me.emit('afterLoad',[me.data],me);
-					if(config.method == 'jsonp')
-						me.emit('loadComplete', arguments, me);
+
 				},
 				error : function () {
 					
@@ -281,11 +278,7 @@ infestor.define('infestor.DataSet', {
 		
 		indicator && indicator.start();
 	
-		if (config.method != 'jsonp')
-			infestor.request.ajax(opts);
-
-		if (config.method == 'jsonp')
-			infestor.request.jsonp(opts.url, opts.params, opts.success);
+		infestor.request.ajax(opts);
 
 		if (rewrite) {
 
@@ -324,7 +317,6 @@ infestor.define('infestor.DataSet', {
 				success : function (data) {
 
 					me.emit('submit', data ,me);
-					indicator && indicator.stop();
 					me.emit('afterSubmit',data ,me);
 
 				},
