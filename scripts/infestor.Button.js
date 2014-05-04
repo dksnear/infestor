@@ -20,12 +20,20 @@ infestor.define('infestor.Button',{
 	// 图标位置 (center|left|right|false)
 	// 图标在中央则无法设置按钮文本
 	// false 不设置图标
-	icon:'left',
+	icon:false,
 	
 	layout:'table',
 	
 	// 图标尺寸 (12|16|25|..)
 	iconSize:16,
+	
+	events:{
+	
+		// @params target,eventArgs 
+		// @this button
+		click:null
+	
+	},
 	
 	init:function(){
 	
@@ -53,6 +61,16 @@ infestor.define('infestor.Button',{
 		
 		
 		this.callParent();
+	
+	},
+	
+	initEvents:function(){
+	
+		this.delegate(this,'click',true,function(inst,e){
+		
+			this.emit('click',[inst,e],this);
+		
+		},this)
 	
 	},
 	

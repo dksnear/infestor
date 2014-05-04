@@ -810,8 +810,10 @@ infestor.define('infestor.Element', {
 			var args = [e.target.$infestor].concat(infestor.argsToArray(arguments));
 
 			if (infestor.isFunction(pradicate))
-				pradicate.apply(scope, args) && handle.apply(scope, args);
+			 	return pradicate.apply(scope, args) && handle.apply(scope, args);
 
+			if(pradicate)
+				return handle.apply(scope, args);
 		});
 
 	},

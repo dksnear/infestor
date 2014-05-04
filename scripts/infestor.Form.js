@@ -159,7 +159,7 @@ infestor.define('infestor.Form', {
 				data = data || [];
 				data[fieldName] = field.getValue();
 			
-			}) && (data=infestor.append({},this.dataSet.next(),data)) && this.dataSet.setData(data).next();
+			}) && (data=infestor.append({},this.dataSet.next(),data)) && this.dataSet.setData(data) && this.dataSet.next();
 		
 		data = this.dataSet.next() || {};
 		
