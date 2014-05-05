@@ -305,9 +305,13 @@ infestor.define('infestor.DataSet', {
 		if (!config.remote)
 			return;
 
+		config.params = config.params || {};
+		
 		config.params.data = this.getData();	
 			
 		opts && opts.params && (opts.params = infestor.append({}, config.params, opts.params));
+		
+		config.params.data = infestor.jsonEncode(config.params.data);
 		
 		opts = infestor.append({
 

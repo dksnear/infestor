@@ -203,7 +203,7 @@ infestor.define('infestor.field.Field', {
 	
 	check:function(){
 	
-	
+		this.checked = true;
 	
 	}
 

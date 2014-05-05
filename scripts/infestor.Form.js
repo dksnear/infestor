@@ -29,51 +29,54 @@ infestor.define('infestor.Form', {
 	},
 	
 	dataConfig:{
-	
+		
 		submitConfig:{
 		
-			mask:{
+			// mask:{
 				
-				show:function(){
+				// show:function(){
 				
-					this.parent.parent.showMask();
+					// this.parent.parent.showMask();
 				
-				},
-				hide:function(){
+				// },
+				// hide:function(){
 				
-					this.parent.parent.hideMask();
+					// this.parent.parent.hideMask();
 				
-				}
+				// }
 			
-			},
+			// },
+			mask:false,
 			indicator:{
 			
 				show:function(){
 				
 					var scope = this.parent.parent;
 				
-					scope.elementIndicator = scope.elementIndicator || this.createIndicator({
+					scope.elementSubmitIndicator = scope.elementSubmitIndicator || this.createIndicator({
 					
 						position:'absolute',
+						bottom:0,
+						top:'auto',
 						'background-color':'green'
 					
 					}).appendTo(scope.getElement());
 
-					scope.elementIndicator.show();
+					scope.elementSubmitIndicator.show();
 				
 				},
 				hide:function(){
 				
 					var scope = this.parent.parent;
 					
-					scope.elementIndicator && scope.elementIndicator.hide();
+					scope.elementSubmitIndicator && scope.elementSubmitIndicator.hide();
 				
 				},
 				change:function(value){
 				
 					var scope = this.parent.parent;
 					
-					scope.elementIndicator && scope.elementIndicator.css('width', value + '%');
+					scope.elementSubmitIndicator && scope.elementSubmitIndicator.css('width', value + '%');
 					
 				}
 			}
@@ -82,47 +85,48 @@ infestor.define('infestor.Form', {
 		
 		loadConfig:{
 		
-			mask:{
+			// mask:{
 				
-				show:function(){
+				// show:function(){
 				
-					this.parent.parent.showMask();
+					// this.parent.parent.showMask();
 				
-				},
-				hide:function(){
+				// },
+				// hide:function(){
 				
-					this.parent.parent.hideMask();
+					// this.parent.parent.hideMask();
 				
-				}
+				// }
 			
-			},
+			// },
+			mask:false,
 			indicator:{
 			
 				show:function(){
 				
 					var scope = this.parent.parent;
 				
-					scope.elementIndicator = scope.elementIndicator || this.createIndicator({
+					scope.elementLoadIndicator = scope.elementLoadIndicator || this.createIndicator({
 					
-						position:absolute
+						position:'absolute'
 					
 					}).appendTo(scope.getElement());
 
-					scope.elementIndicator.show();
+					scope.elementLoadIndicator.show();
 				
 				},
 				hide:function(){
 				
 					var scope = this.parent.parent;
 					
-					scope.elementIndicator && scope.elementIndicator.hide();
+					scope.elementLoadIndicator && scope.elementLoadIndicator.hide();
 				
 				},
 				change:function(value){
 				
 					var scope = this.parent.parent;
 					
-					scope.elementIndicator && scope.elementIndicator.css('width', value + '%');
+					scope.elementLoadIndicator && scope.elementLoadIndicator.css('width', value + '%');
 					
 				}
 			}
@@ -146,6 +150,31 @@ infestor.define('infestor.Form', {
 			this.setField(this.dataSet.next());
 		
 		},this);
+		
+		this.dataSet && this.dataSet.on('beforeLoad', function () {
+		
+			this.setFieldReadOnly(true);
+		
+		},this);
+		
+		this.dataSet && this.dataSet.on('loadComplete', function () {
+		
+			this.setFieldReadOnly(false);
+		
+		},this);
+		
+		this.dataSet && this.dataSet.on('beforeSubmit', function () {
+		
+			this.setFieldReadOnly(true);
+		
+		},this);
+		
+		this.dataSet && this.dataSet.on('submitComplete', function () {
+		
+			this.setFieldReadOnly(false);
+		
+		},this);
+		
 
 	},
 	
@@ -224,39 +253,55 @@ infestor.define('infestor.Form', {
 
 	getField : function (fieldName) {
 	
-		if(arguments.length<1)
+		if(infestor.isUndefined(fieldName))
 			return this.fieldsMap;
 	
 		return this.fieldsMap && this.fieldsMap[fieldName];
 	
 	},
-
-	hideField:function(fieldName){
 	
-		var field = this.getField.apply(this,arguments);
+	callFieldMethod:function(fieldName,methodName,args){
+	
+		var field = this.getField(fieldName);
 		
 		if(!field) return this;
 		
 		if(infestor.isRawObject(field))
 			return infestor.each(field,function(){
-				this.hide();
+				 this[methodName] && this[methodName].apply(this,args||[]);
 			}),this;
 	
-		return field.hide();
+		return field[methodName] && field[methodName].apply(field,args||[]);
+	
+	},
+
+	hideField:function(fieldName){
+	
+		return this.callFieldMethod(fieldName,'hide');
+
 	},
 	
 	showField:function(fieldName){
 	
-		var field = this.getField.apply(this,arguments);
-		
-		if(!field) return this;
-		
-		if(infestor.isRawObject(field))
-			return infestor.each(field,function(){
-				this.show();
-			}),this;
+		return this.callFieldMethod(fieldName,'show');
 	
-		return field.show();
+	},
+	
+	disableField:function(fieldName){
+	
+		return this.callFieldMethod(fieldName,'disable');
+		
+	},
+	
+	enableField:function(fieldName){
+	
+		return this.callFieldMethod(fieldName,'enable');
+	
+	},
+	
+	setFieldReadOnly:function(fieldName,readOnly){
+	
+		return this.callFieldMethod(fieldName,'setReadOnly',[readOnly]);
 	
 	},
 	
@@ -321,8 +366,8 @@ infestor.define('infestor.Form', {
 
 	submit : function (opts,rewrite) {
 	
-		if(!check())
-			return false;
+		//if(!this.check())
+			//return false;
 			
 		// 同步数据集数据
 		this.getData();
