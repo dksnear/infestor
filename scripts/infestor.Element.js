@@ -935,29 +935,25 @@ infestor.define('infestor.Element', {
 	// 条件引入Tip
 	initTip : function (tip) {
 
-		this.tip = tip || this.tip;
-
-		if (infestor.isString(this.tip))
-			this.tipText = this.tip;
-
 		if (!this.tip)
 			return this;
 
 		infestor.mgr.require('infestor.Tip', function () {
 
-			this.tip = infestor.Tip.init();
+			this.$tip = this.$tip || infestor.Tip.init();
 
 			this.element.on('mouseover', infestor.throttle(function () {
 
-					this.tip.setText(this.tipText);
-					this.tip.show();
-					this.tip.autoPosition(this.element, this.tipTrend, 'middle');
+					this.$tip.setText(this.tip);
+					this.$tip.show();
+					this.$tip.autoPosition(this.element, this.tipTrend, 'middle');
 
 				}), this);
 
 			this.element.on('mouseleave', function () {
 
-				this.tip.hide();
+				this.$tip.setText('');
+				this.$tip.hide();
 
 			}, this);
 

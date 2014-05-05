@@ -648,7 +648,7 @@ infestor js
 
 				}, rules);
 
-			return (function (o) {
+			var parser = function (o) {
 
 				if (global.isUndefined(o))
 					return rules.undefinedParser(o);
@@ -673,7 +673,9 @@ infestor js
 
 				return '';
 
-			})(obj);
+			}
+			
+			return parser(obj);
 
 		},
 

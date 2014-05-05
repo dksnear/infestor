@@ -10,8 +10,9 @@ infestor.define('infestor.field.Field', {
 	cssClsElement : 'infestor-field',
 
 	cssClsFieldLabel : 'infestor-field-label',
-	cssClsFieldLabelRight : 'infestor-field-label-right',
-	cssClsFieldLabelTop : 'infestor-field-label-top',
+	cssClsFieldLeft:'infestor-field-left',
+	cssClsFieldRight : 'infestor-field-right',
+	cssClsFieldTop : 'infestor-field-top',
 	cssClsFieldContent : 'infestor-field-content',
 
 	elementFieldLabel : null,
@@ -28,7 +29,7 @@ infestor.define('infestor.field.Field', {
 	// false 不创建标签对象
 	label : false,
 
-	labelWidth : 40,
+	labelWidth : 45,
 
 	//(top|left|right)
 	labelPos : 'left',
@@ -48,6 +49,8 @@ infestor.define('infestor.field.Field', {
 	disabled:false,
 	
 	readOnly:false,
+	
+	allowNull:false,
 	
 	init:function(){
 	
@@ -86,7 +89,7 @@ infestor.define('infestor.field.Field', {
 	
 	createLabel:function(){
 	
-		var parent= (this.labelPos == 'top'||this.labelPos=='left') ? this.head : this.rear;
+		var parent = (this.labelPos == 'top'||this.labelPos=='left') ? this.head : this.rear;
 	
 		if(!this.label || !parent) return;
 		
@@ -95,10 +98,13 @@ infestor.define('infestor.field.Field', {
 			'for':this.id
 		});
 		
+		this.labelWidth && this.elementFieldLabel.css('width',infestor.styleFormat(this.labelWidth));
+		
 		this.elementFieldLabel.text(this.label);
 		
-		(this.labelPos == 'right') && this.elementFieldLabel.addClass(this.cssClsFieldLabelRight);
-		(this.labelPos == 'top') && this.elementFieldLabel.addClass(this.cssClsFieldLabelTop);
+		(this.labelPos == 'left') && this.elementFieldLabel.addClass(this.cssClsFieldLeft);
+		(this.labelPos == 'right') && this.elementFieldLabel.addClass(this.cssClsFieldRight);
+		(this.labelPos == 'top') && this.elementFieldLabel.addClass(this.cssClsFieldTop);
 	
 		return this;
 	

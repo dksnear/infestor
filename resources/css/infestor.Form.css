@@ -18,20 +18,25 @@
 .infestor-field-label{
 	
 	display: block;
-	padding:0 10px 0 0;
 	cursor: pointer;
 	font-size: 1.2em;
 	font-weight: bold;
 
 }
 
-.infestor-field-label-right{
+.infestor-field-left{
+
+	padding:0 10px 0 0;
+
+}
+
+.infestor-field-right{
 
 	padding:0 0 0 10px;
 	
 }
 
-.infestor-field-label-top{
+.infestor-field-top{
 
 	padding:0 0 5px 0.5em;
 
@@ -41,3 +46,38 @@
 
     display: block;
 }
+
+.infestor-captcha-field{
+
+
+}
+
+
+.infestor-captcha-field img{
+
+	display:block;
+	height:24px;
+	cursor:pointer;
+
+
+}
+
+/* .infestor-captcha-field:hover img{
+
+	-webkit-transform:scale(1.3);
+	-moz-transform: scale(1.3);
+	-ms-transform: scale(1.3);
+	-o-transform: scale(1.3);
+	transform: scale(1.3);
+
+} */
+
+
+.infestor-captcha-field input{
+
+	width:60px;
+}
+
+
+
+
