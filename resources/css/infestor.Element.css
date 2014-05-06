@@ -234,6 +234,15 @@ input:focus{
 
 }
 
+.infestor-element-text{
+
+	text-indent: 2em;
+	line-height:25px;
+	word-wrap: break-word;
+	white-space: normal;
+
+}
+
 
 
 

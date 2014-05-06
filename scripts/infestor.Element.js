@@ -65,6 +65,7 @@ infestor.define('infestor.Element', {
 	cssClsElementTableCell:'infestor-element-table-cell',
 	cssClsElementBoxShadow : 'infestor-element-box-shadow',
 	cssClsElementIEBoxShadow :'infestor-element-box-shadow-ie',
+	cssClsElementText:'infestor-element-text',
 	cssClsElementBorder : 'infestor-element-border',
 	cssClsElementPositionAbsolute : 'infestor-element-position-absolute',
 	cssClsElementPositionRelative : 'infestor-element-position-relative',
@@ -295,7 +296,7 @@ infestor.define('infestor.Element', {
 
 		element = element || infestor.Dom.getBody();
 
-		if (this.elementOuterContainer)
+		if (this.elementOuterContainer || this.isRendered)
 			infestor.error(infestor.stringFormat('实例嵌入失败,{0}类id为{1}实例已经有父容器!', element.$clsName, element.id));
 
 		this.parent = parent || element || this;
@@ -306,6 +307,9 @@ infestor.define('infestor.Element', {
 		if (element instanceof infestor.Element)
 			this.elementOuterContainer = element.elementInnerContainer;
 
+		
+		this.isRendered = true;
+		
 		this.element.appendTo(this.elementOuterContainer);
 
 		return this;
@@ -765,6 +769,9 @@ infestor.define('infestor.Element', {
 
 		var element = this[attrName],
 			renderTo = function (element) {
+			
+				if(element.isRendered)
+					return element;
 
 				if (container instanceof infestor.Element)
 					element.renderTo(container);
@@ -784,7 +791,7 @@ infestor.define('infestor.Element', {
 			return renderTo.call(this, infestor.create('infestor.Element', opts));
 
 		if (infestor.isRawObject(element))
-			return renderTo.call(this, infestor.Element.create(element));
+			return renderTo.call(this, infestor.Element.create(infestor.append({},opts,element)));
 
 	},
 

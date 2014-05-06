@@ -1289,9 +1289,12 @@ infestor js
 
 			var cls = global.isString(clsNs) ? global.namespace(clsNs) : clsNs;
 
+			// if (!global.isFunction(cls))
+				// return cls;		
+			
 			if (!global.isFunction(cls))
-				return cls;
-
+				global.error(global.stringFormat('"{0}" is not loaded',clsNs));
+			
 			return new cls(options);
 		},
 
