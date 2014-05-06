@@ -153,7 +153,7 @@ infestor.define('infestor.Dom', {
 
 	},
 
-	emit : function (eventName) {
+	emit : function (eventName, eventArgs, scope) {
 
 		if (!this.element || !this.domEventsMap || !this.domEventsMap[eventName])
 			return this;
@@ -163,7 +163,7 @@ infestor.define('infestor.Dom', {
 		return this;
 	},
 
-	trigger : function (eventName, eventArgs, scope) {
+	trigger : function () {
 
 		return this.emit.apply(this, arguments);
 
@@ -276,12 +276,11 @@ infestor.define('infestor.Dom', {
 
 		return this;
 	},
-	
-	
-	removeAttr:function(name){
-	
-		return this.attr(name,null);
-	
+
+	removeAttr : function (name) {
+
+		return this.attr(name, null);
+
 	},
 
 	css : function (name, value) {
@@ -319,9 +318,9 @@ infestor.define('infestor.Dom', {
 
 	css3 : function (name, value) {
 
-		
-		if(infestor.isIE8Minus()) return this;
-		
+		if (infestor.isIE8Minus())
+			return this;
+
 		var prefix = {
 
 			chrome : '-webkit-',
@@ -330,13 +329,14 @@ infestor.define('infestor.Dom', {
 			//msie: '-ms-',
 			mozilla : '-moz-'
 
-		}[infestor.browser.name] || '';
+		}
+		[infestor.browser.name] || '';
 
 		infestor.isString(name) && this.css(prefix + name, value);
 
 		infestor.isRawObject(name) && infestor.each(name, function (name, value) {
 			this.css(prefix + name, value);
-		},this);
+		}, this);
 
 		return this;
 
@@ -497,11 +497,10 @@ infestor.define('infestor.Dom', {
 			return null;
 
 		var top = this.element.offsetTop,
-			left = this.element.offsetLeft,
-			borderTop = infestor.parseNumeric(this.element.style.borderTopWidth),
-			borderLeft = infestor.parseNumeric(this.element.style.borderLeftWidth),
-			offsetParent = this.element.offsetParent;
-
+		left = this.element.offsetLeft,
+		borderTop = infestor.parseNumeric(this.element.style.borderTopWidth),
+		borderLeft = infestor.parseNumeric(this.element.style.borderLeftWidth),
+		offsetParent = this.element.offsetParent;
 		while (offsetParent) {
 
 			top += offsetParent.offsetTop;
@@ -517,10 +516,10 @@ infestor.define('infestor.Dom', {
 			rawLeft : this.element.offsetLeft,
 			top : top,
 			left : left,
-			rawBorderTop: infestor.parseNumeric(this.element.style.borderTopWidth),
-			rawBorderLeft: infestor.parseNumeric(this.element.style.borderLeftWidth),
-			borderTop:borderTop,
-			borderLeft:borderLeft,
+			rawBorderTop : infestor.parseNumeric(this.element.style.borderTopWidth),
+			rawBorderLeft : infestor.parseNumeric(this.element.style.borderLeftWidth),
+			borderTop : borderTop,
+			borderLeft : borderLeft,
 			height : this.element.offsetHeight,
 			width : this.element.offsetWidth
 
@@ -558,20 +557,23 @@ infestor.define('infestor.Dom', {
 	},
 
 	append : function (child) {
-	
-		var parentElement = this.element,childElement = child.getElement();
-		
-		if(!parent || !childElement) return this;
-		
-		if(infestor.isIE7Minus()){
-		
-			if(parentElement.nodeName.toLowerCase()=='table' && childElement.nodeName.toLowerCase()=='tr')
-				return (child.element = parentElement.insertRow(parentElement.rows.length||0)),this;
-			if(parentElement.nodeName.toLowerCase()=='tr' && childElement.nodeName.toLowerCase()=='td')
-				return (child.element = parentElement.insertCell(parentElement.cells.length||0)),this;
+
+		var parentElement = this.element,
+		childElement = child.getElement();
+
+		if (!parent || !childElement)
+			return this;
+
+		if (infestor.isIE7Minus()) {
+
+			if (parentElement.nodeName.toLowerCase() == 'table' && childElement.nodeName.toLowerCase() == 'tr')
+				return (child.element = parentElement.insertRow(parentElement.rows.length || 0)), this;
+			if (parentElement.nodeName.toLowerCase() == 'tr' && childElement.nodeName.toLowerCase() == 'td')
+				return (child.element = parentElement.insertCell(parentElement.cells.length || 0)), this;
 		}
-			
-		return parentElement.appendChild(childElement),this;
+
+		return parentElement.appendChild(childElement),
+		this;
 	},
 
 	text : function (text) {
@@ -599,12 +601,20 @@ infestor.define('infestor.Dom', {
 
 	hide : function () {
 
+		// if ((this.css('display') || '').toLowerCase != 'none')
+			// this.$display = this.css('display');
+
 		return this.element && this.css('display', 'none'),
 		this;
 	},
 
 	show : function () {
 
+		// if ((this.css('display') || '').toLowerCase != 'none')
+			// this.$display = this.css('display');
+	
+		// this.$display = this.$display || 'block';
+	
 		return this.element && this.css('display', 'block'),
 		this;
 	},
@@ -617,8 +627,8 @@ infestor.define('infestor.Dom', {
 
 	destroy : function () {
 
-	    return this.remove();
-		
+		return this.remove();
+
 	}
 
 },
@@ -701,7 +711,7 @@ infestor.define('infestor.Dom', {
 
 		methods[eventName] = function (eventHandle, scope) {
 
-			return infestor.isFunction(eventHandle) ? cls.prototype.addEventListener.call(this, eventName, eventHandle, scope) : cls.prototype.emit.call(this, eventName,eventHandle,scope);
+			return infestor.isFunction(eventHandle) ? cls.prototype.addEventListener.call(this, eventName, eventHandle, scope) : cls.prototype.emit.call(this, eventName, eventHandle, scope);
 		}
 
 		infestor.override(cls, methods);

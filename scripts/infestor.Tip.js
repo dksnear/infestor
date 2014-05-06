@@ -14,32 +14,32 @@ infestor.define('infestor.Tip', {
 		
 		init:function(){
 			
-			if(!this.globalTip){
+			if(!infestor.Tip.globalTip){
 			
-				this.globalTip = infestor.create('infestor.Tip').renderTo(infestor.Dom.getBody());
-				this.globalTip.hide();
+				infestor.Tip.globalTip = infestor.create('infestor.Tip').renderTo(infestor.Dom.getBody());
+				infestor.Tip.globalTip.hide();
 				infestor.Dom.get(window).resize(infestor.throttle(function(){
 					
-					this.globalTip.hide();
+					infestor.Tip.globalTip.hide();
 				
-				}),this);
+				}));
 			
 			};
 	
-			return this.globalTip;
+			return infestor.Tip.globalTip;
 		},
 		
 		show:function(text){
 		
-			this.init();
-			this.globalTip.show();		
-			!infestor.isUndefined(text) && this.globalTip.setText(text);
+			infestor.Tip.init();
+			infestor.Tip.globalTip.show();		
+			!infestor.isUndefined(text) && infestor.Tip.globalTip.setText(text);
 		
 		},
 		
 		hide:function(){
 		
-			this.globalTip && this.globalTip.hide();
+			infestor.Tip.globalTip && infestor.Tip.globalTip.hide();
 		}
 	
 	},

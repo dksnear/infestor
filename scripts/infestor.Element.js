@@ -739,7 +739,7 @@ infestor.define('infestor.Element', {
 	},
 
 	// 创建元素
-	createDomElement : function (parent, cls, tag, attr, predicate) {
+	createDomElement : function (parent, cssCls, tag, attr, predicate) {
 
 		if (!infestor.isUndefined(predicate)) {
 
@@ -752,7 +752,7 @@ infestor.define('infestor.Element', {
 		if(parent instanceof infestor.Element)
 			parent = parent.getElement();
 
-		var dom = infestor.Dom.create(tag || 'div', attr).appendTo(parent || this.element).addClass(cls);
+		var dom = infestor.Dom.create(tag || 'div', attr).appendTo(parent || this.element).addClass(cssCls);
 
 		dom.element.$infestor = this;
 
@@ -764,15 +764,15 @@ infestor.define('infestor.Element', {
 	createElement : function (attrName, container, opts) {
 
 		var element = this[attrName],
-		renderTo = function (element) {
+			renderTo = function (element) {
 
-			if (container instanceof infestor.Element)
-				element.renderTo(container);
-			if (container instanceof infestor.Dom)
-				element.renderTo(container, this);
+				if (container instanceof infestor.Element)
+					element.renderTo(container);
+				if (container instanceof infestor.Dom)
+					element.renderTo(container, this);
 
-			return element;
-		};
+				return element;
+			};
 
 		if (!element || !container)
 			return element;
@@ -1045,7 +1045,7 @@ infestor.define('infestor.Element', {
 
 	},
 
-	// 动态获取大小调整及移动限制容器(Dom)
+	// 动态获取大小调整及移动的限制容器(Dom)
 	getLimitContainer : function () {
 
 		var container = infestor.isFunction(this.limitContainer) ? this.limitContainer() : this.limitContainer;

@@ -13,9 +13,6 @@ infestor.define('infestor.Window', {
 	boxShadow : true,
 	dock:'center',
 
-	// 关闭类型(hide|destory)
-	closeType : 'hide',
-
 	// 模态窗口(bool)
 	modal : true,
 
@@ -52,16 +49,6 @@ infestor.define('infestor.Window', {
 		return this;
 	},
 
-	close : function () {
-
-		if (this.element)
-			return this;
-
-		(this.closeType == 'destroy') ? this.destroy() : this.hide();
-
-		return this;
-
-	},
 
 	destroy : function () {
 
