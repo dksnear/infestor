@@ -39,10 +39,10 @@ infestor.define('infestor.ValidatePanel',{
 	
 		this.callParent();		
 		
-		this.createPromptPanel();
-		this.createErrorPanel();
 		this.createStatusPanel();
-		
+		this.createErrorPanel();
+		this.createPromptPanel();
+			
 		this.setPrompt(this.promptText);
 		this.setError(this.errorText);
 	

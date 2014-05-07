@@ -10,7 +10,37 @@ infestor.define('infestor.Window', {
 
 	statics : {
 	
-		alert:function(msg,confirmFn,parent,scope){
+		// 提醒
+		alert:function(msg,parent){
+		
+			var win = infestor.create('infestor.Window',{
+
+				dock:'center',
+				modal:false,
+				closable:true,
+				titleText:'提示',
+				modal:false,
+				items:[{
+				
+					alias:'element',
+					cssClsElement:infestor.Element.prototype.cssClsElementText,
+					text:msg
+				
+				}]
+			});
+				
+			parent = parent || infestor.Dom.getBody();
+			
+			win.renderTo(parent);
+			
+			//win.show();
+			
+			return win;
+		
+		},
+	
+		// 确认
+		confirm:function(msg,confirmFn,parent,scope){
 			
 		
 			var win = infestor.create('infestor.Window',{
@@ -18,7 +48,7 @@ infestor.define('infestor.Window', {
 				dock:'center',
 				modal:false,
 				closable:true,
-				titleText:'TIPS',
+				titleText:'确认',
 				modal:false,
 				items:[{
 				
@@ -65,14 +95,15 @@ infestor.define('infestor.Window', {
 		
 		},
 		
-		confirm:function(msg,confirmFn,canncelFn,parent,scope){
+		// 抉择
+		choice:function(msg,ayeFn,nayFn,parent,scope){
 		
 			var win = infestor.create('infestor.Window',{
 
 				dock:'center',
 				modal:false,
 				closable:true,
-				titleText:'CONFIRM',
+				titleText:'抉择',
 				modal:false,
 				items:[{
 				
@@ -100,12 +131,12 @@ infestor.define('infestor.Window', {
 						items:[{
 							
 							margin:'0 10 0 0',
-							text:'确定',
+							text:'是',
 							events:{
 							
 								click:function(){
 								
-									confirmFn && confirmFn.call(scope || this);
+									ayeFn && ayeFn.call(scope || this);
 									
 									win.close();
 								
@@ -114,12 +145,12 @@ infestor.define('infestor.Window', {
 						
 						},{
 									
-							text:'取消',
+							text:'否',
 							events:{
 							
 								click:function(){
 								
-									canncelFn && canncelFn.call(scope || this);
+									nayFn && nayFn.call(scope || this);
 									
 									win.close();
 								
