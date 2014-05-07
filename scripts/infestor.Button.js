@@ -53,10 +53,14 @@ infestor.define('infestor.Button',{
 		
 		if(this.icon=='center'){
 		
-			this.center = true;
 			this.layout = 'vertical';
 			this.cssClsBody = [this.cssClsBody,this.cssClsIcon,this.cssClsIconImage].join(' ');
 		
+		}
+		
+		if(!this.icon){
+		
+			this.layout = 'vertical';
 		}
 		
 		

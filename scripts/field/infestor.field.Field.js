@@ -91,7 +91,7 @@ infestor.define('infestor.field.Field', {
 	
 		var parent = (this.labelPos == 'top'||this.labelPos=='left') ? this.head : this.rear;
 	
-		if(!this.label || !parent) return;
+		if(!this.label || !parent) return this;
 		
 		this.elementFieldLabel = this.createDomElement(parent,this.cssClsFieldLabel,'label',{
 		

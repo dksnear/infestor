@@ -28,7 +28,7 @@ infestor.define('infestor.field.Captcha', {
 
 		this.head = true;
 		this.rear = true;
-
+		this.captchaLastUrl || this.captchaUrl;
 		this.callParent();
 
 	},
@@ -49,7 +49,7 @@ infestor.define('infestor.field.Captcha', {
 
 		this.elementFieldCaptcha = this.createDomElement(parent, null, 'img', {
 
-				src : this.captchaUrl,
+				src : this.captchaUrl+'?'+this.getId(),
 				alt : this.altText
 
 			}).click(infestor.throttle(function () {
@@ -69,7 +69,7 @@ infestor.define('infestor.field.Captcha', {
 					
 					this.$tempImage.attr({
 		
-						src:this.captchaLastUrl || this.captchaUrl,
+						src:this.captchaLastUrl+'?'+this.getId(),
 						alt:this.altText
 					
 					});
@@ -110,7 +110,7 @@ infestor.define('infestor.field.Captcha', {
 
 		this.elementFieldCaptcha.attr({
 		
-			src:this.captchaUrl,
+			src:this.captchaUrl+'?'+this.getId(),
 			alt:this.altText
 		
 		});
@@ -119,7 +119,7 @@ infestor.define('infestor.field.Captcha', {
 
 			me.$tip && !me.$tip.hidden && me.$tempImage.attr({
 		
-				src: me.captchaLastUrl || me.captchaUrl,
+				src: me.captchaLastUrl+'?'+me.getId(),
 				alt: me.altText
 		
 			});

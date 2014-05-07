@@ -16,27 +16,24 @@ infestor.define('infestor.Window', {
 			var win = infestor.create('infestor.Window',{
 
 				dock:'center',
-				draggable:true,
 				modal:false,
-				itemLayout:'vertical',
-				padding:'0 10 10 10',
 				closable:true,
-				text:msg,
 				titleText:'TIPS',
-				width:300,
-				// height:300,
 				modal:false,
+				items:[{
+				
+					alias:'element',
+					cssClsElement:infestor.Element.prototype.cssClsElementText,
+					text:msg
+				
+				}],
 				rear:{
 				
 					alias:'element',
-					itemLayout:'horizon',
-					position:'relative',
-					height:25,
 					items:[{
 					
 						alias:'button',
 						boxShadow:true,
-						padding:'5 0',
 						position:'absolute',
 						top:0,
 						right:0,
@@ -68,53 +65,80 @@ infestor.define('infestor.Window', {
 		
 		},
 		
-		confirm:function(msg,confirmFn,canncelFn){
+		confirm:function(msg,confirmFn,canncelFn,parent,scope){
 		
 			var win = infestor.create('infestor.Window',{
 
 				dock:'center',
-				draggable:false,
 				modal:false,
-				itemLayout:'vertical',
-				padding:'0 0 10 0',
 				closable:true,
+				titleText:'CONFIRM',
+				modal:false,
 				items:[{
 				
 					alias:'element',
-					itemLayout:'horizon',
-					padding:'0 0 0 25',
-					
-					itemsOpts:{
+					cssClsElement:infestor.Element.prototype.cssClsElementText,
+					text:msg
 				
-						alias:'button',
-						boxShadow:true,
-						margin:'0 10 0 0',
-						padding:'5 0'
-						
-					},
+				}],
+				rear:{
+				
+					alias:'element',		
 					items:[{
 					
-						text:'提交',
-						events:{
-						
-							click:function(){
-							
-								viewList.form.submit();
-							   //alert(infestor.jsonEncode(viewList.form.getData()));
-							
-							}
-						}
+						alias:'element',
+						itemLayout:'horizon',
+						position:'absolute',
+						top:0,
+						right:0,
+						itemsOpts:{
 					
-					},{
+							alias:'button',
+							boxShadow:true
+					
+						},
+						items:[{
+							
+							margin:'0 10 0 0',
+							text:'确定',
+							events:{
+							
+								click:function(){
+								
+									confirmFn && confirmFn.call(scope || this);
+									
+									win.close();
+								
+								}
+							}
 						
-						text:'取消'
+						},{
+									
+							text:'取消',
+							events:{
+							
+								click:function(){
+								
+									canncelFn && canncelFn.call(scope || this);
+									
+									win.close();
+								
+								}
+							}
+						
+						}]
+								
 					}]
 					
-				}]
+				}
 
 			});
 			
-			win.show();
+			parent = parent || infestor.Dom.getBody();
+			
+			win.renderTo(parent);
+			
+			//win.show();
 			
 			return win;
 		},
@@ -125,6 +149,10 @@ infestor.define('infestor.Window', {
 	},
 
 	cssClsElement : 'infestor-window',
+	cssClsHead : 'infestor-window-head',
+	cssClsBody : 'infestor-window-body',
+	cssClsRear : 'infestor-window-rear',
+	cssClsTitle : 'infestor-window-title',
 	boxShadow : true,
 	dock:'center',
 

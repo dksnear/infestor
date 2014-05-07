@@ -1,6 +1,9 @@
  
  .infestor-button{
  
+	padding:5px 5px;
+	background-color: #8A2BE2;
+	color:#FFFFFF;
  }
  
  .infestor-button-body{
@@ -9,7 +12,7 @@
 	text-align:center;
 	cursor:pointer;
 	padding:0 10px;
-	font-weight:blod;
+	font-weight:bold;
  
  }
  

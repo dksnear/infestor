@@ -2,6 +2,8 @@
 
 .infestor-panel{
 
+	position:relative;
+
 }
 
 .infestor-panel-head{
@@ -25,11 +27,13 @@
 }
 
 .infestor-panel-title{
-	
-	height: 45px;
-	line-height: 35px;
-	font-weight: bold;
-	font-size: 1.5em;
+
+	height:24px;
+	margin-bottom:15px;
+	font-size:12px;
+	font-weight:bold;
+	line-height:24px;
+	border-bottom:1px solid;
 
 }
 
