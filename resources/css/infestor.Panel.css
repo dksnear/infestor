@@ -28,6 +28,7 @@
 
 .infestor-panel-title{
 
+	text-indent: 1em;
 	height:24px;
 	margin-bottom:15px;
 	font-size:12px;
@@ -92,5 +93,47 @@
 	background-position:-44px -4px;
 
 }
+
+
+.infestor-validate-panel{
+
+
+}
+
+.infestor-validate-panel-title{
+
+	text-indent: 1em;
+	height:24px;
+	font-size:12px;
+	font-weight:bold;
+	line-height:24px;
+
+}
+
+.infestor-validate-panel-body{
+
+	padding:10px;
+	text-indent: 2em;
+	line-height:24px;
+	word-wrap: break-word;
+	white-space: normal;
+	border-radius: 5px;
+
+}
+
+.infestor-validate-panel-error-text{
+
+	color:#FFFFFF;
+	background-color:#F00;
+
+}
+
+.infestor-validate-panel-prompt-text{
+	
+	color:#FFFFFF;
+	background-color:#FFA500;
+
+}
+
 
 

@@ -103,17 +103,6 @@ infestor.define('infestor.Tip', {
 
 	},
 
-	setPosition : function (top, left) {
-
-		this.element.css({
-
-			top : infestor.px(top || 0),
-			left : infestor.px(left || 0)
-		});
-
-		return this;
-	},
-
 	autoPosition : function () {
 
 		var pos = this.callParent();

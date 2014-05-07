@@ -445,23 +445,28 @@ infestor js
 
 		},
 
-		// from jQuery browser
 		browser : (function () {
 
 			var ua = navigator.userAgent.toLowerCase(),
-			result = {},
-			match = /(webkit)[ \/]([\w.]+)/.exec(ua) ||
+			browser = {},
+			match = [];
+			
+			// for ie11 
+			match = (match =/rv:([\d.]+)\) like gecko/.exec(ua)) && match[1] && (match[2] = match[1]) && (match[1] = 'msie') && match;
+			
+			// from jQuery browser
+			match = !match && (/(webkit)[ \/]([\w.]+)/.exec(ua) ||
 				/(chrome)[ \/]([\w.]+)/.exec(ua) ||
 				/(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
 				/(msie) ([\w.]+)/.exec(ua) ||
-				ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
-				[];
+				ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua)) ||
+				match || [];
+			
+			match[1] && (browser[match[1]] = true);
+			browser.name = match[1] || '';
+			browser.version = match[2] || '0'
 
-			match[1] && (result[match[1]] = true);
-			result.name = match[1] || '';
-			result.version = match[2] || '0'
-
-				return result;
+			return browser;
 
 		})(),
 
@@ -1382,7 +1387,7 @@ infestor js
 	};
 
 	// 创建判断浏览器类型的系列方法
-	global.each('isOthersBrowser isChrome isWebkit isMozilla isOpera isIE isIE6 isIE7 isIE8 isIE9 isIE10 isIE6Plus isIE7Plus isIE8Plus isIE9Plus isIE10Plus isIE9 isIE7Minus isIE8Minus isIE9Minus isIE10Minus'.split(' '), function (idx, name) {
+	global.each('isOthersBrowser isChrome isWebkit isMozilla isOpera isIE isIE6 isIE7 isIE8 isIE9 isIE10 isIE11 isIE6Plus isIE7Plus isIE8Plus isIE9Plus isIE10Plus isIE7Minus isIE8Minus isIE9Minus isIE10Minus isIE11Minus'.split(' '), function (idx, name) {
 
 		var match = /is(OthersBrowser|IE|Chrome|Webkit|Mozilla|Opera)(\d+)?(plus|minus)?/i.exec(name),
 		name = match[0],

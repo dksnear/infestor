@@ -765,9 +765,10 @@ infestor.define('infestor.Element', {
 	},
 
 	// 创建类的属性元素
-	createElement : function (attrName, container, opts) {
+	createElement : function (attrName, container, opts, clsName) {
 
 		var element = this[attrName],
+			clsName = clsName || 'infestor.Element',
 			renderTo = function (element) {
 			
 				if(element.isRendered)
@@ -788,7 +789,7 @@ infestor.define('infestor.Element', {
 			return renderTo.call(this, element);
 
 		if (infestor.isBoolean(element))
-			return renderTo.call(this, infestor.create('infestor.Element', opts));
+			return renderTo.call(this, infestor.create(clsName, opts));
 
 		if (infestor.isRawObject(element))
 			return renderTo.call(this, infestor.Element.create(infestor.append({},opts,element)));
