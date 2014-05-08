@@ -70,7 +70,7 @@ infestor.define('infestor.field.Field', {
 
 	layout:'horizon',
 	
-	checked:true,
+	checked:false,
 	
 	value:null,
 	
@@ -119,8 +119,11 @@ infestor.define('infestor.field.Field', {
 		
 		this.on('focus',function(){
 		
-			this.validateShower.show();
-			this.validateShower.autoPosition(this.element, 'bottom', 'head');
+			if(this.validateShower){
+			
+				this.validateShower.show();
+				this.validateShower.autoPosition(this.element, 'bottom', 'head');
+			}
 			this.check();
 		
 		},this);
@@ -298,7 +301,7 @@ infestor.define('infestor.field.Field', {
 	
 	check:function(){
 	
-		var value,checked = true,errorMsg,remote = false,prepareFn,affterFn;
+		var value,checked = true,errorMsg,remote = false,prepareFn,afterFn;
 				
 		value = this.getValue();
 		
@@ -306,7 +309,7 @@ infestor.define('infestor.field.Field', {
 		
 			if(this.validatePanel && !this.validatePanel.hidden){
 			
-				this.validatePanel.setError(checked && this.errorMsg);
+				this.validatePanel.setError(!checked && errorMsg);
 				this.validatePanel.setPrompt(this.promptMsg);
 				this.validatePanel.setStatus(checked ? infestor.ValidatePanel.VALIDATED_PASS : infestor.ValidatePanel.VALIDATED_ERROR);
 			}
@@ -316,6 +319,19 @@ infestor.define('infestor.field.Field', {
 		};
 		
 		if(this.checked) return afterFn.call(this,this.checked),true;
+		
+		if(!this.allowNull && !value && value!==0){
+		
+			this.checked = false;
+			errorMsg = '该项不允许为空!';
+			afterFn.call(this,this.checked,errorMsg)
+			return false;
+		
+		};
+		
+		if(!this.validators) return true;
+		
+		this.validators = infestor.isArray(this.validators) && this.validators || [this.validators];
 		
 		prepareFn = function(validator){
 		
@@ -365,21 +381,6 @@ infestor.define('infestor.field.Field', {
 		
 		};
 				
-		this.validators = infestor.isArray(this.validators) && this.validators || [this.validators];
-		
-		if(!this.allowNull && !value && value!==0){
-		
-			this.checked = false;
-			return {
-			
-				checked:this.checked,
-				errorMsg:'该项不允许为空'
-			
-			};
-		
-		}
-		
-
 		infestor.each(this.validators,function(idx,validator){
 		
 			validator = prepareFn.call(this,validator);
@@ -400,18 +401,15 @@ infestor.define('infestor.field.Field', {
 			}
 		
 		},this);
-		
-		if(remote)
+				
+		if(remote && checked)
 			return false;
 		
 		this.checked = checked;
 		
-		return {
+		afterFn.call(this,this.checked,errorMsg);
 		
-			checked:this.checked,
-			errorMsg:errorMsg
-		
-		};
+		return this.checked;
 	
 	}
 
