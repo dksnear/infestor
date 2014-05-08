@@ -72,7 +72,7 @@ infestor.define('infestor.field.Field', {
 
 	layout:'horizon',
 	
-	checked:false,
+	checked:true,
 	
 	value:null,
 	
@@ -97,6 +97,7 @@ infestor.define('infestor.field.Field', {
 		this.callParent();
 		
 		this.setValue(this.value);
+		this.status = this.checked ? 'passed':'error';
 		this.setStatus(this.status);
 	},
 
@@ -278,7 +279,7 @@ infestor.define('infestor.field.Field', {
 	
 		this.readOnly = false;
 		this.elementFieldInput.removeAttr('readonly');
-		this.checked = this.$rchecked;
+		this.checked = infestor.isBoolean(this.$rchecked) ?  this.$rchecked : this.checked;
 		
 		return this;
 	
@@ -320,7 +321,7 @@ infestor.define('infestor.field.Field', {
 		
 		this.elementFieldInput.attr('disabled',true);
 		
-		this.checked = this.$dchecked;
+		this.checked = infestor.isBoolean(this.$dchecked) ?  this.$dchecked : this.checked;
 		
 		return this;
 	},
