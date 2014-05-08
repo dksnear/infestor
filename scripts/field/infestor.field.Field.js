@@ -13,7 +13,7 @@ infestor.define('infestor.field.Field', {
 	
 		getValidateShower:function(){
 		
-			return infestor.field.Field.validateShower || infestor.create('infestor.Tip',{		
+			infestor.field.Field.validateShower = infestor.field.Field.validateShower || infestor.create('infestor.Tip',{		
 		
 				width:200,
 				hidden:true,
@@ -24,6 +24,8 @@ infestor.define('infestor.field.Field', {
 				}]
 		
 			}).renderTo(infestor.Dom.getBody());
+			
+			return infestor.field.Field.validateShower;
 		
 		}
 	
@@ -112,24 +114,32 @@ infestor.define('infestor.field.Field', {
 	
 		this.on('change',function(){
 		
-			this.checked = false;
 			this.check();
 		
 		},this);
 		
-		this.on('focus',function(){
-		
-			if(this.validateShower){
+		this.on('focus',function(e){
 			
-				this.validateShower.show();
-				this.validateShower.autoPosition(this.element, 'bottom', 'head');
-			}
-			this.check();
+			//e.preventDefault();
+			
+			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.ValidatePanel.VALIDATED_PASS : infestor.ValidatePanel.VALIDATING);
+			this.validateShower && this.validateShower.show().autoPosition(this.element, 'bottom', 'head');		
+			this.$taskId = this.$taskId && infestor.stopTask(this.$taskId);
+			this.$taskId = infestor.task(function(){
+			
+				var value = this.value;			
+				this.value = this.getValue();
+			    (value !== this.value) && ((this.checked = false) || this.check());
+
+			},2000,this);
+			
+			//this.check();
 		
 		},this);
 		
 		this.on('blur',function(){
 		
+			this.$taskId = infestor.stopTask(this.$taskId);		
 			this.validateShower && this.validateShower.hide();
 		
 		},this)
@@ -213,6 +223,12 @@ infestor.define('infestor.field.Field', {
 	
 	},
 	
+	focus:function(){
+	
+		this.elementFieldInput && this.elementFieldInput.element.focus();
+	
+	},
+	
 	// 
 	setStatus:function(status){
 	
@@ -253,11 +269,16 @@ infestor.define('infestor.field.Field', {
 		
 			this.readOnly = true;
 			this.elementFieldInput.attr('readonly','readonly');
+			
+			this.$rchecked = this.checked;
+			this.checked = true;
+			
 			return this;
 		}
-		
-		this.readOnly = false
+	
+		this.readOnly = false;
 		this.elementFieldInput.removeAttr('readonly');
+		this.checked = this.$rchecked;
 		
 		return this;
 	
@@ -284,6 +305,9 @@ infestor.define('infestor.field.Field', {
 		this.disabled = true;
 		
 		this.elementFieldInput.removeAttr('disabled');
+		
+		this.$dchecked = this.checked;
+		this.checked = true;
 	
 	},
 	
@@ -296,6 +320,8 @@ infestor.define('infestor.field.Field', {
 		
 		this.elementFieldInput.attr('disabled',true);
 		
+		this.checked = this.$dchecked;
+		
 		return this;
 	},
 	
@@ -305,7 +331,12 @@ infestor.define('infestor.field.Field', {
 				
 		value = this.getValue();
 		
+		this.validatePanel && this.validatePanel.clear();
+		
 		afterFn = function(checked,errorMsg){
+		
+			this.currentErrorMsg = errorMsg;
+			this.checked = checked;
 		
 			if(this.validatePanel && !this.validatePanel.hidden){
 			
@@ -315,21 +346,20 @@ infestor.define('infestor.field.Field', {
 			}
 			
 			this.setStatus(checked ? 'passed':'error');
+			
+			checked && (this.value = value);
+			
+			return checked;
 		
 		};
 		
-		if(this.checked) return afterFn.call(this,this.checked),true;
+		if(this.checked) return afterFn.call(this,true);
 		
-		if(!this.allowNull && !value && value!==0){
+		if(!this.allowNull && !value && value!==0)
+			return afterFn.call(this,false,'该项不允许为空!');
+
 		
-			this.checked = false;
-			errorMsg = '该项不允许为空!';
-			afterFn.call(this,this.checked,errorMsg)
-			return false;
-		
-		};
-		
-		if(!this.validators) return true;
+		if(!this.validators) return afterFn.call(this,true);
 		
 		this.validators = infestor.isArray(this.validators) && this.validators || [this.validators];
 		
@@ -361,17 +391,38 @@ infestor.define('infestor.field.Field', {
 			infestor.isString(validator) && infestor.append(opts,{
 				
 				type:'remote',
-				handle:validator
+				paramName:this.fieldName,
+				url:validator
 				
 			});
 				
-			infestor.isRawObject(validator) && infestor.append(opts,validator);
-			
+			infestor.isRawObject(validator) && infestor.append(opts,validator);		
 			
 			if(opts.type.toLowerCase()=='remote' && !opts.isPrepared){
+					
+				opts.handle={
+					
+					scope:this,
+					url:opts.url,
+					method:opts.method || 'jsonp',
+					success:function(data){
+					
+						afterFn.call(this,!!data,opts.errorMsg);
+						
+					},
+					complete:function(succeed){
+					
+						!succeed && afterFn.call(this,false,'服务器未响应验证请求!');
+					}
+				
+				};
+				
+				opts.handle.params = infestor.append({},opts.params);
+				
+				opts.handle.params[opts.paramName] = value;
+				
 			
-			
-			}
+			};
 			
 			!opts.isPrepared  && (opts.isPrepared = true);
 			
@@ -384,14 +435,15 @@ infestor.define('infestor.field.Field', {
 		infestor.each(this.validators,function(idx,validator){
 		
 			validator = prepareFn.call(this,validator);
+			idx = validator.type.toLowerCase();
 			
-			if(validate.type.toLowerCase() == 'regexp')
+			if(idx == 'regexp')
 				checked = validator.handle.test(value);
 			
-			if(infestor.type.toLowerCase() == 'func')
+			if(idx == 'func')
 				checked = validator.handle.call(this, value ,this);
 			
-			if(infestor.type.toLowerCase() == 'remote')
+			if(idx == 'remote')
 				return infestor.request.ajax(validator.handle) && (remote = true),false;
 				
 			if(!checked){
@@ -405,11 +457,14 @@ infestor.define('infestor.field.Field', {
 		if(remote && checked)
 			return false;
 		
-		this.checked = checked;
+		return afterFn.call(this,checked,errorMsg);
 		
-		afterFn.call(this,this.checked,errorMsg);
-		
-		return this.checked;
+	},
+	
+	destroy:function(){
+	
+		infestor.stopTask(this.$taskId); 
+		this.callParent();
 	
 	}
 

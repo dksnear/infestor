@@ -91,7 +91,7 @@ infestor.define('infestor.Event', {
 			if (!infestor.isFunction(this))
 				return true;
 
-			this.apply(this.$scope || scope || window, (infestor.isArguments(eventArgs) || infestor.isArray(eventArgs)) ? eventArgs : [eventArgs]);
+			this.apply(this.$scope || scope, (infestor.isArguments(eventArgs) || infestor.isArray(eventArgs)) ? eventArgs : [eventArgs]);
 
 		});
 	},

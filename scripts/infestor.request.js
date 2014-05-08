@@ -76,7 +76,7 @@ infestor.namespace('infestor.request', {
 			
 				// ie8minus not support
 				error && error.call(scope,e);
-				complete && complete.call(scope,e);
+				complete && complete.call(scope,false,e);
 			
 			});
 						
@@ -90,15 +90,17 @@ infestor.namespace('infestor.request', {
 			return false;
 
 		xhr.onreadystatechange = function () {
+		
+			var succeed = false;
 
 			if (xhr.readyState === 4) {
 
 				if (((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304))
-					success && success.call(scope,dataConvertHandle(dataType,xhr.responseText), xhr);
-				else
-					error && error.call(scope,xhr);
+				   (succeed = true) && success && success.call(scope,dataConvertHandle(dataType,xhr.responseText), xhr);
+				
+				!succeed && error && error.call(scope,xhr);
 
-				complete && complete.call(scope,xhr);
+				complete && complete.call(scope,succeed,xhr);
 			}
 
 		};

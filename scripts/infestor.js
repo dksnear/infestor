@@ -718,6 +718,8 @@ infestor js
 				return;
 
 			clearInterval(id);
+			
+			return false;
 		},
 
 		// 防抖(方法被调用时 等待一定时间(wait)后再执行方法(fn))

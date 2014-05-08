@@ -353,8 +353,13 @@ infestor.define('infestor.Form', {
 		
 		this.fieldsMap && infestor.each(this.fieldsMap,function(){
 		
-			if(!this.checked)
-				return (checked = false);
+			if(!this.checked){
+			
+				checked = false;
+				//this.emit('focus');
+				this.focus();
+				return false;
+			}
 		
 		});
 			
@@ -366,8 +371,8 @@ infestor.define('infestor.Form', {
 
 	submit : function (opts,rewrite) {
 	
-		//if(!this.check())
-			//return false;
+		if(!this.check())
+			return false;
 			
 		// 同步数据集数据
 		this.getData();

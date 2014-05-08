@@ -159,6 +159,23 @@ infestor.define('infestor.ValidatePanel',{
 		}
 
 		return this;
+	},
+	
+	clear:function(){
+	
+	
+		return this.setPrompt().setError().setStatus(infestor.ValidatePanel.VALIDATING);
+	
+	},
+	
+	destroy:function(){
+	
+		this.statusPanel = this.statusPanel && this.statusPanel.destroy();
+		this.promptPanel = this.promptPanel && this.promptPanel.destroy();
+		this.errorPanel = this.errorPanel && this.errorPanel.destroy();
+		
+		this.callParent();
+	
 	}
 
 
