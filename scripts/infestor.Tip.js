@@ -16,8 +16,7 @@ infestor.define('infestor.Tip', {
 			
 			if(!infestor.Tip.globalTip){
 			
-				infestor.Tip.globalTip = infestor.create('infestor.Tip').renderTo(infestor.Dom.getBody());
-				infestor.Tip.globalTip.hide();
+				infestor.Tip.globalTip = infestor.create('infestor.Tip',{ hidden:true }).renderTo(infestor.Dom.getBody());
 				infestor.Dom.get(window).resize(infestor.throttle(function(){
 					
 					infestor.Tip.globalTip.hide();

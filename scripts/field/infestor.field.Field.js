@@ -4,8 +4,30 @@ infestor.define('infestor.field.Field', {
 	alias : 'field',
 
 	extend : 'infestor.Panel',
+	
+	uses:['infestor.Tip','infestor.ValidatePanel','infestor.request'],
 
 	cssUses : ['infestor.Form'],
+	
+	statics:{
+	
+		getValidateShower:function(){
+		
+			return infestor.field.Field.validateShower || infestor.create('infestor.Tip',{		
+		
+				width:200,
+				hidden:true,
+				items:[{
+				
+					alias:'vpanel',
+					name:'vpanel'
+				}]
+		
+			}).renderTo(infestor.Dom.getBody());
+		
+		}
+	
+	},
 	
 	cssClsElement : 'infestor-field',
 
@@ -14,6 +36,9 @@ infestor.define('infestor.field.Field', {
 	cssClsFieldRight : 'infestor-field-right',
 	cssClsFieldTop : 'infestor-field-top',
 	cssClsFieldContent : 'infestor-field-content',
+	cssClsFieldStatus : 'infestor-field-status',
+	cssClsFieldStatusError : 'infestor-field-status-error',
+	cssClsFieldStatusPassed: 'infestor-field-status-passed',
 
 	elementFieldLabel : null,
 	elementFieldContent : null,
@@ -39,10 +64,13 @@ infestor.define('infestor.field.Field', {
 	
 	promptMsg : '',
 	errorMsg : '',
+	
+	// error passed none
+	status:'error',
 
 	layout:'horizon',
 	
-	checked:false,
+	checked:true,
 	
 	value:null,
 	
@@ -51,6 +79,8 @@ infestor.define('infestor.field.Field', {
 	readOnly:false,
 	
 	allowNull:false,
+	
+	validators:null,
 	
 	init:function(){
 	
@@ -65,13 +95,14 @@ infestor.define('infestor.field.Field', {
 		this.callParent();
 		
 		this.setValue(this.value);
+		this.setStatus(this.status);
 	},
 
 	initElement : function () {
 
 		this.callParent();
 		
-		this.createLabel().createContent().createInput();
+		this.createLabel().createContent().createInput().createStatusIcon().createValidateShower();
 		
 		this.setReadOnly(this.readOnly).setDisable();
 
@@ -81,9 +112,24 @@ infestor.define('infestor.field.Field', {
 	
 		this.on('change',function(){
 		
+			this.checked = false;
 			this.check();
 		
 		},this);
+		
+		this.on('focus',function(){
+		
+			this.validateShower.show();
+			this.validateShower.autoPosition(this.element, 'bottom', 'head');
+			this.check();
+		
+		},this);
+		
+		this.on('blur',function(){
+		
+			this.validateShower && this.validateShower.hide();
+		
+		},this)
 	
 	},
 	
@@ -132,11 +178,54 @@ infestor.define('infestor.field.Field', {
 		
 			this.emit('change',arguments,this);
 		
+		},this).focus(function(){
+		
+			this.emit('focus',arguments,this);
+		
+		},this).blur(function(){
+		
+			this.emit('blur',arguments,this);
+		
 		},this);
 	
 		return this;
 	
 	},
+	
+	createStatusIcon:function(){
+	
+		this.elementStatus = this.createDomElement(this.elementFieldContent,this.cssClsFieldStatus);
+		
+		return this;
+	
+	},
+	
+	createValidateShower:function(){
+	
+	
+		this.validateShower = infestor.field.Field.getValidateShower();
+		this.validatePanel = this.validateShower.getItem('vpanel');
+		
+		return this;
+	
+	},
+	
+	// 
+	setStatus:function(status){
+	
+		this.status = status;
+		
+		this.elementStatus.removeClass([this.cssClsFieldStatusError,this.cssClsFieldStatusPassed].join(' '));
+		
+		if(this.status == 'error')
+			this.elementStatus.addClass(this.cssClsFieldStatusError);
+		if(this.status == 'passed')
+			this.elementStatus.addClass(this.cssClsFieldStatusPassed);
+		
+		return this;
+	
+	},
+
 	
 	getValue:function(){
 		
@@ -209,7 +298,120 @@ infestor.define('infestor.field.Field', {
 	
 	check:function(){
 	
-		this.checked = true;
+		var value,checked = true,errorMsg,remote = false,prepareFn,affterFn;
+				
+		value = this.getValue();
+		
+		afterFn = function(checked,errorMsg){
+		
+			if(this.validatePanel && !this.validatePanel.hidden){
+			
+				this.validatePanel.setError(checked && this.errorMsg);
+				this.validatePanel.setPrompt(this.promptMsg);
+				this.validatePanel.setStatus(checked ? infestor.ValidatePanel.VALIDATED_PASS : infestor.ValidatePanel.VALIDATED_ERROR);
+			}
+			
+			this.setStatus(checked ? 'passed':'error');
+		
+		};
+		
+		if(this.checked) return afterFn.call(this,this.checked),true;
+		
+		prepareFn = function(validator){
+		
+			var opts = {
+			
+				type:'',
+				errorMsg:this.errorMsg,
+				handle:null
+			
+			};
+		
+			infestor.isRegExp(validator) && infestor.append(opts,{
+			
+				type:'regexp',
+				handle:validator
+			
+			});
+			
+			infestor.isFunction(validator) && infestor.append(opts,{
+				
+				type:'func',
+				handle:validator
+			
+			});
+				
+				
+			infestor.isString(validator) && infestor.append(opts,{
+				
+				type:'remote',
+				handle:validator
+				
+			});
+				
+			infestor.isRawObject(validator) && infestor.append(opts,validator);
+			
+			
+			if(opts.type.toLowerCase()=='remote' && !opts.isPrepared){
+			
+			
+			}
+			
+			!opts.isPrepared  && (opts.isPrepared = true);
+			
+			validator = opts;
+				
+			return validator;
+		
+		};
+				
+		this.validators = infestor.isArray(this.validators) && this.validators || [this.validators];
+		
+		if(!this.allowNull && !value && value!==0){
+		
+			this.checked = false;
+			return {
+			
+				checked:this.checked,
+				errorMsg:'该项不允许为空'
+			
+			};
+		
+		}
+		
+
+		infestor.each(this.validators,function(idx,validator){
+		
+			validator = prepareFn.call(this,validator);
+			
+			if(validate.type.toLowerCase() == 'regexp')
+				checked = validator.handle.test(value);
+			
+			if(infestor.type.toLowerCase() == 'func')
+				checked = validator.handle.call(this, value ,this);
+			
+			if(infestor.type.toLowerCase() == 'remote')
+				return infestor.request.ajax(validator.handle) && (remote = true),false;
+				
+			if(!checked){
+			
+				errorMsg = validator.errorMsg;
+				return false;
+			}
+		
+		},this);
+		
+		if(remote)
+			return false;
+		
+		this.checked = checked;
+		
+		return {
+		
+			checked:this.checked,
+			errorMsg:errorMsg
+		
+		};
 	
 	}
 

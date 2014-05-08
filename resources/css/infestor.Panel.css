@@ -97,6 +97,7 @@
 
 .infestor-validate-panel{
 
+	margin-bottom:5px;
 
 }
 
@@ -135,5 +136,41 @@
 
 }
 
+
+.infestor-validate-status-panel{
+
+	padding:10px;
+
+}
+
+.infestor-validate-status-panel-head{
+
+	height:24px;
+	width:24px;
+
+}
+
+.infestor-validate-status-panel-body{
+
+	padding-left:10px;
+
+}
+
+.infestor-validate-panel-status-validating{
+
+	background-image:url(../images/gray-validating.gif);
+
+}
+
+.infestor-validate-panel-status-validated-pass{
+
+	background-image:url(../images/green-validated.png);
+
+}
+
+.infestor-validate-panel-status-validated-error{
+
+	background-image:url(../images/red-validated.png);
+}
 
 

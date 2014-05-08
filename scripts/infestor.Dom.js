@@ -447,7 +447,7 @@ infestor.define('infestor.Dom', {
 			return this;
 
 		if (infestor.isObject(cls))
-			return this.addClass(infestor.boe(cls));
+			return this.removeClass(infestor.boe(cls));
 
 		mutiCls = cls.split(' ');
 

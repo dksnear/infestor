@@ -11,9 +11,9 @@ infestor.define('infestor.ValidatePanel',{
 	statics:{
 	
 		// 状态码
-		validating:1,
-		validated:2,
-		error:3
+		VALIDATING:0,
+		VALIDATED_PASS:1,
+		VALIDATED_ERROR:2
 	
 	},
 
@@ -23,6 +23,13 @@ infestor.define('infestor.ValidatePanel',{
 	cssClsValidateBodyErrorText:'infestor-validate-panel-error-text',
 	cssClsValidateBodyPromptText:'infestor-validate-panel-prompt-text',
 	
+	cssClsValidateStatusPanel:'infestor-validate-status-panel',
+	cssClsValidateStatusPanelHead:'infestor-validate-status-panel-head',
+	cssClsValidateStatusPanelBody:'infestor-validate-status-panel-body',
+	cssClsValidateStatusValidating:'infestor-validate-panel-status-validating',
+	cssClsValidateStatusValidatedPass:'infestor-validate-panel-status-validated-pass',
+	cssClsValidateStatusValidatedError:'infestor-validate-panel-status-validated-error',
+	
 	// 用于显示提示
 	promptPanel:true,
 	// 用于显示错误
@@ -30,9 +37,12 @@ infestor.define('infestor.ValidatePanel',{
 	// 用于显示验证状态
 	statusPanel:true,
 	
+	promptTitle:'提示',
+	errorTitle:'错误',
 	promptText:'',
 	errorText:'',
-	status:1,
+	status:0,
+	statusTexts:['正在验证...','已通过验证!','未通过验证!'],
 	
 	
 	initElement:function(){
@@ -45,6 +55,7 @@ infestor.define('infestor.ValidatePanel',{
 			
 		this.setPrompt(this.promptText);
 		this.setError(this.errorText);
+		this.setStatus(this.status);
 	
 	},
 	
@@ -55,8 +66,7 @@ infestor.define('infestor.ValidatePanel',{
 			cssClsElement :this.cssClsValidateElement,
 			cssClsTitle:this.cssClsValidateTitle,
 			cssClsBody : [this.cssClsValidateBody,this.cssClsValidateBodyPromptText].join(' '),
-			//titleText:'PROMPT',
-			titleText:'提示'
+			titleText:this.promptTitle
 			
 		
 		},'infestor.Panel');
@@ -72,8 +82,7 @@ infestor.define('infestor.ValidatePanel',{
 			cssClsElement : this.cssClsValidateElement,
 			cssClsTitle:this.cssClsValidateTitle,
 			cssClsBody : [this.cssClsValidateBody,this.cssClsValidateBodyErrorText].join(' '),
-			//titleText:'ERROR',
-			titleText:'错误'
+			titleText:this.errorTitle
 		
 		},'infestor.Panel');
 		
@@ -85,11 +94,12 @@ infestor.define('infestor.ValidatePanel',{
 	
 		this.statusPanel = this.createElement('statusPanel',this,{
 		
-			cssClsElement : 'infestor-validate-panel',
-			cssClsTitle:this.cssClsValidateTitle,
-			cssClsBody : 'infestor-validate-body',
-			//titleText:'STATUS',
-			titleText:'状态'
+			cssClsElement : this.cssClsValidateStatusPanel,
+			cssClsHead: [this.cssClsValidateStatusPanelHead,[this.cssClsValidateStatusValidating,this.cssClsValidateStatusValidatedPass,this.cssClsValidateStatusValidatedError][this.status]||''].join(' '),
+			cssClsBody: this.cssClsValidateStatusPanelBody,
+			head:true,
+			text:this.statusTexts[this.status],
+			layout:'horizon'
 		
 		},'infestor.Panel');
 		
@@ -102,7 +112,9 @@ infestor.define('infestor.ValidatePanel',{
 		this.promptText = text;
 		
 		!this.promptText && this.promptPanel && this.promptPanel.hide();
-		this.promptPanel && this.promptPanel.setText(this.promptText);
+		this.promptText && this.promptPanel && this.promptPanel.setText(this.promptText).show();
+		
+		return this;
 		
 	},
 	
@@ -110,15 +122,43 @@ infestor.define('infestor.ValidatePanel',{
 	
 		this.errorText = text;
 		!this.errorText && this.errorPanel && this.errorPanel.hide();
-		this.errorPanel && this.errorPanel.setText(this.errorText);
+		this.errorText && this.errorPanel && this.errorPanel.setText(this.errorText).show();
+		
+		return this;
 	
 	},
 	
 	
-	// @status (validating(1)|validated(2)|error(3))
+	// @status (validating(0)|validatedPass(1)|validatedError(2))
 	setStatus:function(status){
 	
-	
+		if(!this.statusPanel || this.status === status) return this;
+		
+		var allStatusCssCls = [this.cssClsValidateStatusValidating,this.cssClsValidateStatusValidatedPass,this.cssClsValidateStatusValidatedError].join(' ');
+		
+		switch(status){
+		
+			case infestor.ValidatePanel.VALIDATING:
+				this.statusPanel.head.element.removeClass(allStatusCssCls).addClass(this.cssClsValidateStatusValidating);
+				this.statusPanel.setText(this.statusTexts[infestor.ValidatePanel.VALIDATING]);
+				this.status = status;
+				break;
+			case infestor.ValidatePanel.VALIDATED_PASS:
+				this.statusPanel.head.element.removeClass(allStatusCssCls).addClass(this.cssClsValidateStatusValidatedPass);
+				this.statusPanel.setText(this.statusTexts[infestor.ValidatePanel.VALIDATED_PASS]);
+				this.status = status;
+				break;
+			case infestor.ValidatePanel.VALIDATED_ERROR:
+				this.statusPanel.head.element.removeClass(allStatusCssCls).addClass(this.cssClsValidateStatusValidatedError);
+				this.statusPanel.setText(this.statusTexts[infestor.ValidatePanel.VALIDATED_ERROR]);
+				this.status = status;
+				break;
+			
+			default: break;
+		
+		}
+
+		return this;
 	}
 
 
