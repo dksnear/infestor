@@ -17,6 +17,7 @@ infestor.define('infestor.field.Field', {
 		
 				width:200,
 				hidden:true,
+				hideWithResize:true,
 				items:[{
 				
 					alias:'vpanel',
@@ -32,7 +33,6 @@ infestor.define('infestor.field.Field', {
 	},
 	
 	cssClsElement : 'infestor-field',
-
 	cssClsFieldLabel : 'infestor-field-label',
 	cssClsFieldLeft:'infestor-field-left',
 	cssClsFieldRight : 'infestor-field-right',
@@ -65,14 +65,15 @@ infestor.define('infestor.field.Field', {
 	fieldName : null,
 	
 	promptMsg : '',
+	
 	errorMsg : '',
 	
-	// error passed none
-	status:'error',
-
 	layout:'horizon',
 	
-	checked:true,
+	checked:false,
+	
+	// 输入检查间隔时间
+	checkInterval:1000,
 	
 	value:null,
 	
@@ -113,35 +114,37 @@ infestor.define('infestor.field.Field', {
 	
 	initEvents:function(){
 	
-		this.on('change',function(){
+		// this.on('change',function(){
 		
-			this.check();
+			// this.check();
 		
-		},this);
+		// },this);
 		
 		this.on('focus',function(e){
 			
 			//e.preventDefault();
 			
+			this.isFocus = true;
 			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.ValidatePanel.VALIDATED_PASS : infestor.ValidatePanel.VALIDATING);
 			this.validateShower && this.validateShower.show().autoPosition(this.element, 'bottom', 'head');		
 			this.$taskId = this.$taskId && infestor.stopTask(this.$taskId);
 			this.$taskId = infestor.task(function(){
 			
-				var value = this.value;			
-				this.value = this.getValue();
-			    (value !== this.value) && ((this.checked = false) || this.check());
+				if(!this.isFocus) return;
+				
+			    (this.value !== this.getValue()) && ((this.checked = false) || this.check());
+				this.validatePanel.setStatus(this.checked ? infestor.ValidatePanel.VALIDATED_PASS : infestor.ValidatePanel.VALIDATING);
 
-			},2000,this);
-			
-			//this.check();
+			},this.checkInterval || 600,this);
 		
 		},this);
 		
 		this.on('blur',function(){
 		
+			this.isFocus = false;
 			this.$taskId = infestor.stopTask(this.$taskId);		
 			this.validateShower && this.validateShower.hide();
+			(this.value !== this.getValue()) && ((this.checked = false) || this.check());
 		
 		},this)
 	
@@ -226,7 +229,9 @@ infestor.define('infestor.field.Field', {
 	
 	focus:function(){
 	
+		this.isFocus = true;
 		this.elementFieldInput && this.elementFieldInput.element.focus();
+		return this;
 	
 	},
 	
@@ -326,20 +331,55 @@ infestor.define('infestor.field.Field', {
 		return this;
 	},
 	
+	// 立刻置为错误状态
+	setError:function(){
+	
+		this.checked = false;
+		
+		this.setStatus('error');
+		
+		// 阻塞正在进行的异步检查
+		this.blockCheck = true;
+		
+		this.isFocus && this.validatePanel && this.validatePanel.setError(this.currentErrorMsg || this.errorMsg).setPrompt(this.promptMsg).setStatus(infestor.ValidatePanel.VALIDATED_ERROR);
+		
+		return this;
+	
+	},
+	
+	// 立刻置为通过状态
+	setPassed:function(){
+	
+		this.checked = true;
+		
+		this.setStatus('passed');
+		
+		// 阻塞正在进行的异步检查
+		this.blockCheck = true;
+		
+		this.isFocus && this.validatePanel && this.validatePanel.setError(false).setPrompt(this.promptMsg).setStatus(infestor.ValidatePanel.VALIDATED_PASS);
+		
+		return this;
+	
+	},
+	
 	check:function(){
 	
 		var value,checked = true,errorMsg,remote = false,prepareFn,afterFn;
-				
+		
+		this.blockCheck = false;
+		
 		value = this.getValue();
 		
-		this.validatePanel && this.validatePanel.clear();
+		this.validatePanel && this.validatePanel.setStatus(infestor.ValidatePanel.VALIDATING);
 		
 		afterFn = function(checked,errorMsg){
 		
 			this.currentErrorMsg = errorMsg;
 			this.checked = checked;
 		
-			if(this.validatePanel && !this.validatePanel.hidden){
+			// isFocus judgement for validatePanel with single instance
+			if(this.validatePanel && !this.validatePanel.hidden && this.isFocus){
 			
 				this.validatePanel.setError(!checked && errorMsg);
 				this.validatePanel.setPrompt(this.promptMsg);
@@ -348,7 +388,9 @@ infestor.define('infestor.field.Field', {
 			
 			this.setStatus(checked ? 'passed':'error');
 			
-			checked && (this.value = value);
+			//checked && (this.value = value);
+			
+			this.value = value;
 			
 			return checked;
 		
@@ -408,12 +450,12 @@ infestor.define('infestor.field.Field', {
 					method:opts.method || 'jsonp',
 					success:function(data){
 					
-						afterFn.call(this,!!data,opts.errorMsg);
+						!this.blockCheck && afterFn.call(this,!!data,opts.errorMsg);
 						
 					},
 					complete:function(succeed){
 					
-						!succeed && afterFn.call(this,false,'服务器未响应验证请求!');
+						!this.blockCheck && !succeed && afterFn.call(this,false,'服务器未响应验证请求!');
 					}
 				
 				};

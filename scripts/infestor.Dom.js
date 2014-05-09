@@ -12,7 +12,7 @@ infestor.define('infestor.Dom', {
 		element : null,
 
 		zIndex : 100,
-
+	
 		get : function (id) {
 
 			return infestor.create('infestor.Dom', infestor.isString(id) ? document.getElementById(id) : id);
@@ -38,8 +38,18 @@ infestor.define('infestor.Dom', {
 
 		getBody : function () {
 
-			return infestor.Dom.get(document.body);
+			infestor.Dom.$body = infestor.Dom.$body || infestor.Dom.get(document.body);
+			
+			return infestor.Dom.$body;
 
+		},
+		
+		getWindow:function(){
+		
+			infestor.Dom.$window = infestor.Dom.$window || infestor.Dom.get(window);
+			
+			return infestor.Dom.$window;
+		
 		},
 
 		// ie条件注释

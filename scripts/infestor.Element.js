@@ -518,7 +518,7 @@ infestor.define('infestor.Element', {
 
 	hide : function () {
 	
-		if(this.hidden)
+		if(this.hidden || !this.element)
 			return this;
 			
 		this.hidden = true;

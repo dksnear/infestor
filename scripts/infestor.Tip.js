@@ -11,17 +11,17 @@ infestor.define('infestor.Tip', {
 	statics:{
 	
 		globalTip:null,
-		
+			
 		init:function(){
 			
 			if(!infestor.Tip.globalTip){
 			
-				infestor.Tip.globalTip = infestor.create('infestor.Tip',{ hidden:true }).renderTo(infestor.Dom.getBody());
-				infestor.Dom.get(window).resize(infestor.throttle(function(){
-					
-					infestor.Tip.globalTip.hide();
+				infestor.Tip.globalTip = infestor.create('infestor.Tip',{ 
 				
-				}));
+					hidden:true,
+					hideWithResize:true 
+					
+				}).renderTo(infestor.Dom.getBody());
 			
 			};
 	
@@ -56,6 +56,9 @@ infestor.define('infestor.Tip', {
 
 	//top,left,right,bottom
 	arrowPosition : 'bottom',
+	
+	// 当浏览器窗口大小改变时隐藏tip
+	hideWithResize:false,
 
 	initElement : function () {
 
@@ -68,12 +71,37 @@ infestor.define('infestor.Tip', {
 		this.elementInnerContainer = this.elementContent;
 
 		this.setArrowPosition();
+		
+		this.bindHideWithResize();
+	},
+	
+	bindHideWithResize :function(){
+	
+		if(!this.hideWithResize) return this;
+		
+		this.hideWithResizeHandler = this.hideWithResizeHandler || infestor.throttle(function(){
+					
+			this.hide();
+				
+		});
+		
+		infestor.Dom.getWindow().on('resize',this.hideWithResizeHandler,this);
+		
+		return this;
+		
+	
+	},
+	
+	unbindHideWithResize :function(){
+	
+		this.hideWithResizeHandler && infestor.Dom.getWindow().un('resize',this.hideWithResizeHandler);
+		
+		return this;
 	},
 
-	setArrowPosition : function (pos, reverse) {
+	setArrowPosition : function (pos, opposite) {
 
-	
-		if(reverse)
+		if(opposite)
 			pos = {
 			
 				top:'bottom',
@@ -110,6 +138,12 @@ infestor.define('infestor.Tip', {
 
 		return pos;
 
+	},
+	
+	destroy:function(){
+	
+		this.unbindHideWithResize();
+		this.callParent();
 	}
 
 });
