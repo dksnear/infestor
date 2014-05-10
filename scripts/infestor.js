@@ -758,13 +758,13 @@ infestor js
 		// @alt(fn) 等待时间内的替换方法
 		throttle : function (fn, wait, alt) {
 
-			var last = Date.now();
+			var last = new Date().getTime();
 
 			wait = wait || 200;
 
 			return function () {
 
-				var now = Date.now();
+				var now = new Date().getTime();
 
 				if (now - last < wait)
 					return alt && alt.apply(this, arguments);
@@ -797,7 +797,7 @@ infestor js
 		},
 
 		//异步加载脚本(.js)
-		loadScript : function (src, callback, error) {
+		loadScript : function (src, load, error) {
 
 			var script = document.createElement('script'),
 			head = document.head || document.getElementsByTagName('head')[0];
@@ -809,14 +809,19 @@ infestor js
 			if (!global.isIE8Minus()){
 			
 				script.onerror = error;
-				return script.onload = !!callback ? callback : script.onload, script;
+				return script.onload = !!load ? load : script.onload, script;
 			}
 
 			return script.onreadystatechange = function () {
 
-				if (script.readyState === 'loaded' || script.readyState === 'complete') {
+				// if (script.readyState === 'loaded' || script.readyState === 'complete') {
+					// script.onreadystatechange = null;
+					// load && load();
+				// }
+				
+				if (script.readyState === 'loaded') {
 					script.onreadystatechange = null;
-					callback && callback();
+					load && load();
 				}
 
 			},
@@ -825,7 +830,7 @@ infestor js
 		},
 
 		//异步加载样式(.css)
-		loadStyle : function (href, callback) {
+		loadStyle : function (href, load) {
 
 			var link = document.createElement('link'),
 			head = document.head || document.getElementsByTagName('head')[0];
@@ -835,7 +840,7 @@ infestor js
 			link.setAttribute('type', 'text/css');
 			link.setAttribute('href', href);
 
-			link.onload = callback || null;
+			link.onload = load || null;
 
 			return link;
 
@@ -1230,9 +1235,13 @@ infestor js
 					obj.$ownerCls = cls;
 
 				}
-
+				
 				cls.prototype[name] = obj;
 			});
+			
+			// fix ie8minus constructor			
+			global.isIE8Minus() && (cls.prototype.constructor.$ownerCls = cls) && (cls.prototype.constructor.$methodName = 'constructor');
+			
 		},
 
 		// 定义类
@@ -1665,14 +1674,14 @@ infestor js
 			// @path(fn) 加载完毕后委托句柄
 			// @scope(obj) 加载完成后委托句柄执行域
 			using : function (path, scope) {
-
+			
 				this.loadList = this.loadList || [];
 				this.loadListUniqueMap = this.loadListUniqueMap || {};
 
 				global.isString(path) && (path = [path]);
 
 				global.isArray(path) && global.each(path, function (idx, item) {
-					global.uniquePush(this.loadList, item, this.loadListUniqueMap);
+					global.uniquePush(this.loadList, item, this.loadListUniqueMap);					
 				}, this);
 
 				(!path || global.isFunction(path)) && this.iterateLoad(this.loadList, 0, this.loadHandler, function () {
@@ -1720,42 +1729,46 @@ infestor js
 			},
 
 			// 载入句柄
-			loadHandler : function (target, callback) {
+			loadHandler : function (path, load) {
 
 				global.Loader.loadedMap = global.Loader.loadedMap || {}; //记录已经载入的文件
 
-				var isJs = /.+\.js$/.test(target),
-				isCss = /.+\.css$/.test(target),
-				doNothing = (!isJs && !isCss) || global.Loader.loadedMap[target];
+				var isJs = /.+\.js$/.test(path),
+					isCss = /.+\.css$/.test(path),
+					doNothing = (!isJs && !isCss) || global.Loader.loadedMap[path];
 
 				if (doNothing)
-					return callback();
+					return load();
 
 				if (!doNothing)
-					global.Loader.loadedMap[target] = true;
+					global.Loader.loadedMap[path] = true;
 
 				if (isJs)
-					global.loadScript(target, callback);
+					global.loadScript(path, load);
 
 				if (isCss)
-					global.loadStyle(target, callback);
+					global.loadStyle(path, load);
 
 				return null;
 
 			},
-
+			
 			// 递归载入器
-			iterateLoad : function (lst, i, handle, callback, scope) {
+			iterateLoad : function (lst, i, handle, load, scope) {
 
 				var me = this;
-
+				
+				scope = scope || this;
+				
 				if (i == lst.length) {
-					callback.call(scope || me);
+				
+					load.call(scope);
 					return;
 				}
 
 				handle.call(me, lst[i], function () {
-					global.Loader.prototype.iterateLoad.call(me, lst, ++i, handle, callback, scope);
+				
+					global.Loader.prototype.iterateLoad.call(me, lst, ++i, handle, load, scope);
 				});
 			}
 
