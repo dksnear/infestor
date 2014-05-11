@@ -448,8 +448,8 @@ infestor js
 		browser : (function () {
 
 			var ua = navigator.userAgent.toLowerCase(),
-			browser = {},
-			match = [];
+				browser = {},
+				match = [];
 			
 			// for ie11 
 			match = (match =/rv:([\d.]+)\) like gecko/.exec(ua)) && match[1] && (match[2] = match[1]) && (match[1] = 'msie') && match;
@@ -461,9 +461,15 @@ infestor js
 				/(msie) ([\w.]+)/.exec(ua) ||
 				ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua)) ||
 				match || [];
+				
+			// for tencent | 360 | maxthon | avant | sogou | the world	
+			// 这些webkit浏览器的ua有些带msie 7.0的字符串 会产生误判
+			/(tencent|360se|360ee|maxthon|avant|sogou|sogoumse|the world)/.test(ua) && (match[1]='webkit');
 			
-			match[1] && (browser[match[1]] = true);
-			browser.name = match[1] || '';
+			// 没有匹配到 默认webkit
+			match[1] = match[1] || 'webkit';		
+			browser[match[1]] = true;
+			browser.name = match[1];
 			browser.version = match[2] || '0'
 
 			return browser;
@@ -1339,8 +1345,6 @@ infestor js
 		}
 	});
 
-	// 定义浏览器类型判断相关方法
-	global.browser.$methods = {};
 
 	// 根据配置中的浏览器类型选择执行相应的方法
 	// @option(obj) 匹配列表 {ie:fn|value,ie6:fn|value,chrome:fn|value....,otherwise:fn|value}
@@ -1401,10 +1405,13 @@ infestor js
 	global.each('isOthersBrowser isChrome isWebkit isMozilla isOpera isIE isIE6 isIE7 isIE8 isIE9 isIE10 isIE11 isIE6Plus isIE7Plus isIE8Plus isIE9Plus isIE10Plus isIE7Minus isIE8Minus isIE9Minus isIE10Minus isIE11Minus'.split(' '), function (idx, name) {
 
 		var match = /is(OthersBrowser|IE|Chrome|Webkit|Mozilla|Opera)(\d+)?(plus|minus)?/i.exec(name),
-		name = match[0],
-		browser = match[1] && match[1].toLowerCase(),
-		version = global.parseNumeric(match[2]),
-		range = match[3] && match[3].toLowerCase();
+			name = match[0],
+			browser = match[1] && match[1].toLowerCase(),
+			version = global.parseNumeric(match[2]),
+			range = match[3] && match[3].toLowerCase();
+			
+		// 定义浏览器类型判断相关方法
+		global.browser.$methods = global.browser.$methods || {};
 
 		if (browser == 'othersBrowser')
 			return global[name] = global.browser.$methods[browser] = function () {
@@ -1439,6 +1446,109 @@ infestor js
 				return global.browser.msie && Math.floor(global.browser.version) >= version;
 			}
 
+	});
+	
+
+	// 创建判断操作系统的系列方法
+	global.each('platform isOthersPlatform isUnix isLinux isMac isAndroid isIPad isIPhone isIPod isIOS isWin isWin2000 isWinXp isWin2003 isWinVista isWin7 isWin8 isWin81'.split(' '),function(idx,name){
+	
+		var ua = navigator.userAgent.toLowerCase(),
+			platform = navigator.platform.toLowerCase(),
+			match = /(is)?(platform|OthersPlatform|Unix|Linux|Mac|IPad|IPhone|IPod|IOS|Android|Win)(\w+)?/i.exec(name),
+			name = match[0],
+			os = match[2] && match[2].toLowerCase(),
+			version = match[3] && match[3].toLowerCase(),
+			regexps = {
+				
+				// os
+				unix:/x11/,
+				linux:/linux/,
+				mac:/(mac68k|macppc|macintosh|macintel)/,
+				win:/(win32|windows)/,
+				android:/android/,
+				ios:/ios/,
+				
+				// mobile devices
+				ipad:/ipad/,
+				iphone:/iphone/,
+				ipod:/ipod/,
+				
+				// windows version
+				'2000':/windows nt 5.0/,		
+				xp:/windows nt 5.1/,
+				'2003':/windows nt 5.2/,
+				vista:/windows nt 6.0/,
+				'7':/windows nt 6.1/,
+				'8':/windows nt 6.2/,
+				'81':/windows nt 6.3/
+			};
+			
+		// 定义操作系统判断相关方法
+		global.browser.platform = global.browser.platform || {};
+		global.browser.platform.$methods = global.browser.platform.$methods || {};
+		
+		if(os == 'platform')
+			return global[name] = function () {
+				
+				var platform = 'Does not recognize!';
+				
+				global.each(global.browser.platform.$methods,function(name,method){
+				
+					if(method())
+						return platform = name;
+				
+				});
+				
+				return platform;
+				
+			},true;
+		
+		if(os == 'othersplatform')
+			return global[name] = function () {
+				
+				var isOthers = true;
+				
+				global.each(global.browser.platform.$methods,function(){
+				
+					if(this())
+						return isOthers = false;
+				
+				});
+				
+				return isOthers;
+				
+			},true;
+						
+		if((os == 'win' && !version) || os=='mac')
+			return global[name] = global.browser.platform.$methods[os] = function () {
+				return regexps[os].test(platform);
+			},true;
+		
+		if(os == 'win' && version)
+			return global[name] = global.browser.platform.$methods[os + version]= function () {
+				return regexps[os].test(platform) && regexps[version].test(ua);
+			},true;
+		
+		if(/(android|ipad|iphone|ipod)/.test(os))
+			return global[name] = global.browser.platform.$methods[os] = function () {
+				return regexps[os].test(ua);
+			},true;
+		
+		if(os == 'ios')
+			return global[name] = global.browser.platform.$methods[os] = function () {
+				return regexps[os].test(ua) || global.isIPad() || global.isIPhone() || global.isIPod();
+			},true;
+		
+		if(os == 'linux')
+			return global[name] = global.browser.platform.$methods[os] = function () {
+				return regexps[os].test(platform) || global.isAndroid();
+			},true;
+			
+		if(os == 'unix')
+			return global[name] = global.browser.platform.$methods[os] = function () {
+				return regexps[os].test(platform) || global.isLinux() || global.isMac() || global.isIOS();
+			},true;
+			
 	});
 
 	// 定义加载器类
