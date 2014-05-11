@@ -102,7 +102,7 @@ infestor.define('infestor.Element', {
 	tagName : 'div',
 
 	// 控件元素标签属性
-	attrs : null,
+	attr : null,
 
 	// 控件元素的样式属性
 	css : null,
@@ -572,7 +572,9 @@ infestor.define('infestor.Element', {
 
 		this.items = this.items || [];
 	
-		this.items && infestor.each(this.items, function (idx, opts) {
+		//this.removeItem();
+		
+		infestor.each(this.items, function (idx, opts) {
 			this.addItem(opts);
 		}, this);
 		
@@ -587,8 +589,8 @@ infestor.define('infestor.Element', {
 		if (infestor.isUndefined(name))
 			return this.count > 0;
 
-		// 判断该对象是否含有id为id的子元素
-		return this.hasItem() && this.itemsMap[name]instanceof infestor.Element;
+		
+		return this.hasItem() && this.itemsMap[name] instanceof infestor.Element;
 
 	},
 
@@ -693,9 +695,6 @@ infestor.define('infestor.Element', {
 
 	// 移除子元素
 	removeItem : function (name) {
-
-		if (!this.items)
-			return null;
 
 		// 删除所有子元素
 		if (infestor.isUndefined(name) && this.hasItem())	

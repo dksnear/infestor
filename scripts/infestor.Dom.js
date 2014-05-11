@@ -536,12 +536,12 @@ infestor.define('infestor.Dom', {
 		};
 	},
 
-	scroll : function () {
+	scrollPosition : function () {
 
 		return this.element && {
 
-			top : this.element.scollTop,
-			left : this.element.scollLeft,
+			top : this.element.scrollTop,
+			left : this.element.scrollLeft,
 			height : this.element.scrollHeight,
 			width : this.element.scrollWidth
 		};
