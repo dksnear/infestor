@@ -126,7 +126,7 @@ infestor.define('infestor.field.Captcha', {
 
 		}, this).keydown(infestor.throttle(function(event){
 		
-			(event.which==13) && this.refresh();
+			(event.keyCode==13) && this.refresh();
 			
 		},2000),this);
 		
