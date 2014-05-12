@@ -266,7 +266,7 @@ infestor.define('infestor.field.Field', {
 			return;
 		
 		this.value = value;
-		this.elementFieldInput && this.elementFieldInput.val(value);
+		this.elementFieldInput && this.elementFieldInput.val(String(value));
 	},
 	
 	setReadOnly:function(readOnly){

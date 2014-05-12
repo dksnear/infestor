@@ -2,7 +2,7 @@
 
 infestor.namespace('infestor.cookie', {
 
-	expires : 20,
+	expires : 20, //单位(天)
 	path : null, //默认路径
 	secure : false,
 	domain : null,

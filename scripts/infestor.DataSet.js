@@ -133,6 +133,11 @@ infestor.define('infestor.DataSet', {
 
 	},
 	
+	hasData : function(){
+	
+		return !!this.count;
+	},
+	
 	addData :function(item){
 	
 		this.data = this.data || [];
