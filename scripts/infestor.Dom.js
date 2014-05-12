@@ -80,7 +80,64 @@ infestor.define('infestor.Dom', {
 		clientHeight : function () {
 
 			return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+		},
+		
+		autoScroll:function(opts){
+		
+			infestor.Dom.stopScroll();
+		
+			// x&y轴同时滚动不支持循环
+			opts = infestor.append({
+			
+				// x轴循环滚动
+				xCircle:false,
+				// x轴滚动步长
+				xStepSize:0,
+				// x轴向前滚动(true) x轴向后滚动(false)
+				xForward:true,
+				// y轴循环滚动
+				yCircle:false,
+				// y轴滚动步长
+				yStepSize:200,
+				// y轴向前滚动(true) y轴向后滚动(false)
+				yForward:true,			
+				// 滚动间隔时间
+				interval:1500
+						
+			},opts);
+			
+			infestor.Dom.$scrollTaskId = infestor.task(function(){
+			
+				var scroll = infestor.Dom.getBody().scrollOffset(),
+					isXend = opts.xForward ? scroll.left == scroll.width - infestor.Dom.clientWidth() : scroll.left == 0,
+					isYend = opts.yForward ? scroll.top == scroll.height - infestor.Dom.clientHeight() : scroll.top == 0;
+				
+				if(!opts.xStepSize && isYend)
+					return opts.yCircle ? window.scrollTo(0,opts.yForward ? 0 : scroll.top ) : infestor.Dom.stopScroll();
+			
+				if(!opts.yStepSize && isXend)
+					return opts.xCircle ? window.scrollTo(opts.xForward ? 0 : scroll.left,0) : infestor.Dom.stopScroll();
+				
+				// x&y轴同时滚动不支持循环
+				if(opts.xStepSize && opts.yStepSize && isXend && isYend)
+					return infestor.Dom.stopScroll();
+			
+				opts.xForward ? (scroll.left += opts.xStepSize) : (scroll.left -= opts.xStepSize);
+				opts.yForward ? (scroll.top += opts.yStepSize) : (scroll.top -= opts.yStepSize);
+
+				window.scrollTo(scroll.left,scroll.top);
+			
+			},opts.interval);
+			
+		
+		},
+		
+		stopScroll:function(){
+		
+			infestor.stopTask(infestor.Dom.$scrollTaskId);
+		
 		}
+
 	},
 
 	element : null,
