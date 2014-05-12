@@ -571,7 +571,9 @@ infestor.define('infestor.Element', {
 	initItems : function () {
 
 		this.items = this.items || [];
-	
+		
+		this.items = infestor.isArray(this.items) ? this.items : [this.items];
+		
 		//this.removeItem();
 		
 		infestor.each(this.items, function (idx, opts) {

@@ -97,34 +97,42 @@ infestor.define('infestor.Dom', {
 
 		return this.element;
 	},
+	
+	
+	fixEventName:function(eventName){
+		
+		return eventName;
+	},
 
 	addEventListener : function (eventName, eventHandle, scope) {
 
 		var me = this,
-		fixEvent = function (event) {
+			fixEvent = function (event) {
 
-			if (!event)
-				return;
+				if (!event)
+					return;
 
-			//ie6-8
+				//ie6-8
 
-			infestor.isUndefined(event.which) && !infestor.isUndefined(event.button) && (event.which = {
-					0 : 2,
-					1 : 1,
-					2 : 3
-				}
-				[event.button]);
+				infestor.isUndefined(event.which) && !infestor.isUndefined(event.button) && (event.which = {
+						0 : 2,
+						1 : 1,
+						2 : 3
+					}
+					[event.button]);
 
-			infestor.isUndefined(event.preventDefault) && (event.preventDefault = function () {
-				event.returnValue = false;
-			});
-			infestor.isUndefined(event.stopPropagation) && (event.stopPropagation = function () {
-				event.cancelBubble = true;
-			});
-		};
+				infestor.isUndefined(event.preventDefault) && (event.preventDefault = function () {
+					event.returnValue = false;
+				});
+				infestor.isUndefined(event.stopPropagation) && (event.stopPropagation = function () {
+					event.cancelBubble = true;
+				});
+			};
 
 		if (!this.element)
 			return this;
+		
+		//eventName = this.fixEventName(eventName);
 
 		scope = scope || this;
 		this.domEventsMap = this.domEventsMap || {};
@@ -146,6 +154,8 @@ infestor.define('infestor.Dom', {
 	},
 
 	removeEventListener : function (eventName, eventHandle) {
+	
+		//eventName = this.fixEventName(eventName);
 
 		if (!this.element || !this.domEventsMap || !this.domEventsMap[eventName])
 			return this;
@@ -307,7 +317,7 @@ infestor.define('infestor.Dom', {
 		setStyle = function (name, value) {
 
 			try {
-				element && (element.style[filter(name)] = value);
+				element && (element.style[filter(name)] = infestor.styleFormat(value));
 			} catch (err) {}
 		};
 
@@ -536,7 +546,7 @@ infestor.define('infestor.Dom', {
 		};
 	},
 
-	scrollPosition : function () {
+	scrollOffset : function () {
 
 		return this.element && {
 
@@ -547,7 +557,7 @@ infestor.define('infestor.Dom', {
 		};
 	},
 
-	client : function () {
+	clientOffset : function () {
 
 		return this.element && {
 
@@ -611,34 +621,36 @@ infestor.define('infestor.Dom', {
 
 	hide : function () {
 
-		// if ((this.css('display') || '').toLowerCase != 'none')
-			// this.$display = this.css('display');
-
-		return this.element && this.css('display', 'none'),
-		this;
+		return this.element && this.css('display', 'none'),this;
 	},
 
 	show : function () {
-
-		// if ((this.css('display') || '').toLowerCase != 'none')
-			// this.$display = this.css('display');
 	
-		// this.$display = this.$display || 'block';
-	
-		return this.element && this.css('display', 'block'),
-		this;
+		return this.element && this.css('display', 'block'),this;
 	},
 
 	remove : function () {
 
 		this.element && this.element.parentNode && this.element.parentNode.removeChild(this.element);
-		return null;
 	},
 
 	destroy : function () {
 
 		return this.remove();
 
+	},
+		
+	startScroll:function(){
+	
+
+		this.stopScroll(this.$scrollTaskId);
+		
+	
+	
+	},
+	
+	stopScroll:function(){
+	
 	}
 
 },
@@ -717,12 +729,12 @@ infestor.define('infestor.Dom', {
 			'change select submit keydown keypress keyup error contextmenu').split(' '), function () {
 
 		var eventName = String(this),
-		methods = {};
+			methods = {};
 
 		methods[eventName] = function (eventHandle, scope) {
 
 			return infestor.isFunction(eventHandle) ? cls.prototype.addEventListener.call(this, eventName, eventHandle, scope) : cls.prototype.emit.call(this, eventName, eventHandle, scope);
-		}
+		};
 
 		infestor.override(cls, methods);
 	});
