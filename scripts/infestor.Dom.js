@@ -638,19 +638,6 @@ infestor.define('infestor.Dom', {
 
 		return this.remove();
 
-	},
-		
-	startScroll:function(){
-	
-
-		this.stopScroll(this.$scrollTaskId);
-		
-	
-	
-	},
-	
-	stopScroll:function(){
-	
 	}
 
 },
