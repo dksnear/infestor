@@ -574,6 +574,24 @@ infestor js
 			return s;
 
 		},
+		
+		trim:function(str){
+		
+			return String(str).replace(/(^\s*)|(\s*$)/,'');
+		
+		},
+		
+		triml:function(str){
+		
+			return String(str).replace(/^\s*/,'');
+		
+		},
+		
+		trimr:function(str){
+		
+			return String(str).replace(/\s*$/,'');
+		
+		},
 
 		guid : function () {
 

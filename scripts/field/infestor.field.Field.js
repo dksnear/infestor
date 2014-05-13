@@ -5,7 +5,7 @@ infestor.define('infestor.field.Field', {
 
 	extend : 'infestor.Panel',
 	
-	uses:['infestor.Tip','infestor.ValidatePanel','infestor.request'],
+	uses:['infestor.Tip','infestor.ValidatePanel','infestor.validator','infestor.request'],
 
 	cssUses : ['infestor.Form'],
 	
@@ -82,6 +82,9 @@ infestor.define('infestor.field.Field', {
 	readOnly:false,
 	
 	allowNull:false,
+	
+	// 获取表单值时去除空格
+	trim:false,
 	
 	validators:null,
 	
@@ -252,11 +255,15 @@ infestor.define('infestor.field.Field', {
 	},
 
 	
-	getValue:function(){
+	getValue :function(){
+	
+		var value;
 		
 		if(this.disabled) return null;
+		
+		value = this.elementFieldInput && this.elementFieldInput.val() || '';
 	
-		return this.elementFieldInput && this.elementFieldInput.val();
+		return this.trim ? infestor.trim(value) : value;
 	
 	},
 	
@@ -265,8 +272,8 @@ infestor.define('infestor.field.Field', {
 		if(this.disabled || infestor.isNull(value)|| infestor.isUndefined(value))
 			return;
 		
-		this.value = value;
-		this.elementFieldInput && this.elementFieldInput.val(String(value));
+		this.value = String(value);
+		this.elementFieldInput && this.elementFieldInput.val(this.value);
 	},
 	
 	setReadOnly:function(readOnly){
@@ -365,7 +372,7 @@ infestor.define('infestor.field.Field', {
 	
 	check:function(){
 	
-		var value,checked = true,errorMsg,remote = false,prepareFn,afterFn;
+		var value,checked = true,errorMsg,promptMsg,remote = false,prepareFn,afterFn;
 		
 		this.blockCheck = false;
 		
@@ -373,16 +380,17 @@ infestor.define('infestor.field.Field', {
 		
 		this.validatePanel && this.validatePanel.setStatus(infestor.ValidatePanel.VALIDATING);
 		
-		afterFn = function(checked,errorMsg){
+		afterFn = function(checked,errorMsg,promptMsg){
 		
 			this.currentErrorMsg = errorMsg;
+			this.currentPromptMsg = promptMsg;
 			this.checked = checked;
 		
 			// isFocus judgement for validatePanel with single instance
 			if(this.validatePanel && !this.validatePanel.hidden && this.isFocus){
 			
 				this.validatePanel.setError(!checked && errorMsg);
-				this.validatePanel.setPrompt(this.promptMsg);
+				this.validatePanel.setPrompt(promptMsg);
 				this.validatePanel.setStatus(checked ? infestor.ValidatePanel.VALIDATED_PASS : infestor.ValidatePanel.VALIDATED_ERROR);
 			}
 			
@@ -412,6 +420,7 @@ infestor.define('infestor.field.Field', {
 			
 				type:'',
 				errorMsg:this.errorMsg,
+				promptMsg:this.promptMsg,
 				handle:null
 			
 			};
@@ -440,6 +449,10 @@ infestor.define('infestor.field.Field', {
 			});
 				
 			infestor.isRawObject(validator) && infestor.append(opts,validator);		
+			
+			!opts.type && infestor.isRegExp(opts.handle) && (opts.type = 'regexp');
+			!opts.type && infestor.isFunction(opts.handle) && (opts.type = 'func');
+			!opts.type && infestor.isString(opts.handle) && (opts.type = 'remote');
 			
 			if(opts.type.toLowerCase()=='remote' && !opts.isPrepared){
 					
@@ -480,23 +493,34 @@ infestor.define('infestor.field.Field', {
 			validator = prepareFn.call(this,validator);
 			idx = validator.type.toLowerCase();
 			
+			errorMsg = validator.errorMsg || this.errorMsg;
+			promptMsg = validator.promptMsg || this.promptMsg;
+			
 			if(idx == 'regexp')
 				checked = validator.handle.test(value);
 			
-			if(idx == 'func')
+			if(idx == 'func'){
 				checked = validator.handle.call(this, value ,this);
+				if(infestor.isRawObject(checked)){
+					
+					errorMsg = checked.errorMsg || errorMsg;
+					promptMsg = check.promptMsg || promptMsg;
+					checked = checked.passed;
+				
+				}
+			}
 			
+			// 只接受一个远程验证器
 			if(idx == 'remote')
-				return infestor.request.ajax(validator.handle) && (remote = true),false;
+				return !remote && infestor.request.ajax(validator.handle) && (remote = true),false;
 				
 			if(!checked){
 			
-				errorMsg = validator.errorMsg;
 				return false;
 			}
-		
+					
 		},this);
-				
+		
 		if(remote && checked)
 			return false;
 		
