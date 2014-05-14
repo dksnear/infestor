@@ -189,7 +189,7 @@ infestor.namespace('infestor.validator',{
 
 });
 
-// 注册正则验证器
+// 装配正则验证器
 
 infestor.each(infestor.validator.$regExp,function(name,regExp){
 
@@ -202,7 +202,7 @@ infestor.each(infestor.validator.$regExp,function(name,regExp){
 });
 
 
-// 注册方法验证器
+// 装配方法验证器
 
 infestor.each(infestor.validator.$func,function(name,func){
 

@@ -49,6 +49,7 @@ infestor.define('infestor.Tip', {
 	cssClsArrowLeft : 'arrow-left',
 	cssClsArrowRight : 'arrow-right',
 	cssClsContent : 'content',
+	cssClsTipSChromeFix :'infestor-tip-s-chrome-fix',
 
 	elementContent : null,
 
@@ -64,7 +65,12 @@ infestor.define('infestor.Tip', {
 
 		this.callParent();
 
-		this.createDomElement(this.createDomElement(this.element, null, 's'), null, 'i');
+		this.createDomElement(this.createDomElement(this.element, infestor.boe({
+		
+			webkit:this.cssClsTipSChromeFix,
+			otherwise:null
+		
+		}), 's'), null, 'i');
 
 		this.elementContent = this.createDomElement(this.element, this.cssClsContent);
 

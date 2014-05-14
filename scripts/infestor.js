@@ -1587,6 +1587,12 @@ infestor js
 	global.Loader = global.extend({
 
 			$clsName : global.$$libName + '.Loader',
+			
+			// 加载完所有脚本
+			loaded:false,
+			
+			// 执行完所有脚本
+			complete:false,
 
 			// true:延时创建类
 			// false:正常创建类
@@ -1623,8 +1629,11 @@ infestor js
 					handle && handle.call(this);
 					me.blockFree();
 					me.delayWriteStyle();
+					me.complete = true;
 
 				};
+				
+				this.loaded = true;
 
 				if (document.readyState == 'complete')
 					return callback.call(scope || window);

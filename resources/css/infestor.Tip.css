@@ -29,8 +29,15 @@
 	width: 0;
 	font-size: 0;
 	line-height: 0;
-	border-style: dashed dashed solid dashed;
+	border-style: dashed solid;
+	/* border-style: dashed dashed solid dashed; */
 	border-width: 8px;
+}
+
+.infestor-tip s.infestor-tip-s-chrome-fix{
+
+	border-width: 9px;
+
 }
 
 .infestor-tip s i {
@@ -41,7 +48,8 @@
 	width: 0;
 	font-size: 0;
 	line-height: 0;
-	border-style: dashed dashed solid dashed;
+	border-style: dashed solid;
+	/* border-style: dashed dashed solid dashed; */
 	border-width: 10px;
 }
 
@@ -51,7 +59,7 @@
 .infestor-tip.arrow-bottom s {
 
 	left: 8px;
-	bottom:-16px;
+	bottom:-17px;
 	border-color: #888 transparent transparent transparent;
 }
 
@@ -66,7 +74,7 @@
 
 .infestor-tip.arrow-top s {
 
-	top: -16px;
+	top: -17px;
 	left: 8px;
 	border-color: transparent transparent #888 transparent;
 }
@@ -82,7 +90,7 @@
 
 .infestor-tip.arrow-left s {
 	top: 8px;
-	left: -16px;
+	left: -17px;
 	border-color: transparent #888 transparent transparent;
 }
 
@@ -98,7 +106,7 @@
 
 .infestor-tip.arrow-right s {
 	top: 8px;
-	right: -16px;
+	right: -17px;
 	border-color: transparent transparent transparent #888;
 }
 
