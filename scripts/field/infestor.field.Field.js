@@ -142,7 +142,7 @@ infestor.define('infestor.field.Field', {
 		
 		},this);
 		
-		this.on('keydown',function(){
+		this.on('keyup',function(){
 		
 			(this.value !== this.getValue()) && this.validatePanel.setStatus(infestor.ValidatePanel.VALIDATING);
 		
@@ -206,6 +206,10 @@ infestor.define('infestor.field.Field', {
 		},this).keydown(function(){
 		
 			this.emit('keydown',arguments,this);
+		
+		},this).keyup(function(){
+		
+			this.emit('keyup',arguments,this);
 		
 		},this);
 	
