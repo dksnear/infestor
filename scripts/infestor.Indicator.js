@@ -19,17 +19,21 @@ infestor.define('infestor.Indicator',{
 	// 引用对象
 	parent:null,
 	
+	stopNodes:[70,100,150,250,350,450,550,650,750,850,950,999],
+		
+	stopNeedle:0,
+	
 	init:function(){
 			
 		this.on('start',function(){
 				
 			this.mask && this.showMask.call(this.mask.scope);
 						
-			this.indicatorStart = infestor.random(0, 150)/10;
-			this.indicatorStop = infestor.random(350, 850);
+			this.startPos = infestor.random(0, 10)/10;
+			this.stopPos = infestor.random(40, this.stopNodes[this.stopNeedle])/10;
 
 			this.indicator && this.showIndicator.call(this.indicator.scope);		
-			this.indicator && this.changeIndicator.call(this.indicator.scope,this.indicatorStart);
+			this.indicator && this.changeIndicator.call(this.indicator.scope,this.startPos);
 			
 		
 		},this);
@@ -39,9 +43,13 @@ infestor.define('infestor.Indicator',{
 		
 			if (!this.indicator)
 				return;
+			
+			if(this.stopPos * 10 >= this.stopNodes[this.stopNeedle] && this.stopNeedle < this.stopNodes.length-1)
+				this.stopNeedle++;
 
-			this.indicatorStart = infestor.random(this.indicatorStart*10, this.indicatorStop)/10;
-			this.changeIndicator.call(this.indicator.scope,this.indicatorStart);
+			this.stopPos = infestor.random(this.stopPos*10,this.stopNodes[this.stopNeedle])/10;
+			this.startPos =	infestor.random(this.startPos*10, this.stopPos*10)/10;
+			this.changeIndicator.call(this.indicator.scope,this.startPos);
 		
 		},this);
 		
