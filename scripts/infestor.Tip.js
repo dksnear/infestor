@@ -44,16 +44,36 @@ infestor.define('infestor.Tip', {
 	},
 	
 	cssClsElement : 'infestor-tip',
-	cssClsArrowTop : 'arrow-top',
-	cssClsArrowBottom : 'arrow-bottom',
-	cssClsArrowLeft : 'arrow-left',
-	cssClsArrowRight : 'arrow-right',
-	cssClsContent : 'content',
-	cssClsTipSChromeFix :'infestor-tip-s-chrome-fix',
+	cssClsArrow : infestor.boe({
+		webkit : 'infestor-tip-triangle infestor-tip-triangle-chrome-fix',
+		otherwise : 'infestor-tip-triangle'
+	}),
+	cssClsArrowMask : 'infestor-tip-triangle-mask',
+	cssClsArrowTop : infestor.boe({
+		ie8minus:'infestor-tip-triangle-top infestor-tip-triangle-vertical-ie8minus-fix',
+		otherwise:'infestor-tip-triangle-top'
+	}),
+	cssClsArrowMaskTop : infestor.boe({
+		ie8minus:'infestor-tip-triangle-mask-top infestor-tip-triangle-vertical-ie8minus-fix',
+		otherwise:'infestor-tip-triangle-mask-top'
+	}),
+	cssClsArrowBottom : infestor.boe({
+		ie8minus:'infestor-tip-triangle-bottom infestor-tip-triangle-vertical-ie8minus-fix',
+		otherwise:'infestor-tip-triangle-bottom'
+	}),
+	cssClsArrowMaskBottom : infestor.boe({
+		ie8minus:'infestor-tip-triangle-mask-bottom infestor-tip-triangle-vertical-ie8minus-fix',
+		otherwise:'infestor-tip-triangle-mask-bottom'
+	}),
+	cssClsArrowLeft : 'infestor-tip-triangle-left',
+	cssClsArrowMaskLeft : 'infestor-tip-triangle-mask-left',
+	cssClsArrowRight : 'infestor-tip-triangle-right',
+	cssClsArrowMaskRight : 'infestor-tip-triangle-mask-right',
+	cssClsContent : 'infestor-tip-content',
 
 	elementContent : null,
 
-	currentArrowCls : null,
+	currentCls : null,
 
 	//top,left,right,bottom
 	arrowPosition : 'bottom',
@@ -64,13 +84,10 @@ infestor.define('infestor.Tip', {
 	initElement : function () {
 
 		this.callParent();
-
-		this.createDomElement(this.createDomElement(this.element, infestor.boe({
 		
-			webkit:this.cssClsTipSChromeFix,
-			otherwise:null
+		this.elementArrow = this.createDomElement(this.element,this.cssClsArrow);
 		
-		}), 's'), null, 'i');
+		this.elementArrowMask = this.createDomElement(this.elementArrow,this.cssClsArrowMask);
 
 		this.elementContent = this.createDomElement(this.element, this.cssClsContent);
 
@@ -121,16 +138,36 @@ infestor.define('infestor.Tip', {
 
 		this.posClsMap = this.posClsMap || {
 
-			top : this.cssClsArrowTop,
-			bottom : this.cssClsArrowBottom,
-			left : this.cssClsArrowLeft,
-			right : this.cssClsArrowRight
+			top : {
+				
+				triangle:this.cssClsArrowTop,
+				mask:this.cssClsArrowMaskTop
+			
+			},
+			bottom : {
+				
+				triangle:this.cssClsArrowBottom,
+				mask:this.cssClsArrowMaskBottom
+			
+			},
+			left : {
+				
+				triangle:this.cssClsArrowLeft,
+				mask:this.cssClsArrowMaskLeft
+			
+			},
+			right : {
+				
+				triangle:this.cssClsArrowRight,
+				mask:this.cssClsArrowMaskRight
+			
+			}
 
 		};
 
-		this.currentArrowCls && this.element.removeClass(this.currentArrowCls);
-		this.currentArrowCls = this.posClsMap[this.arrowPosition];
-		this.element.addClass(this.currentArrowCls);
+		this.currentCls && this.elementArrow.removeClass(this.currentCls.triangle) && this.elementArrowMask.removeClass(this.currentCls.mask);
+		this.currentCls = this.posClsMap[this.arrowPosition];
+		this.elementArrow.addClass(this.currentCls.triangle) && this.elementArrowMask.addClass(this.currentCls.mask);
 
 		return this;
 
