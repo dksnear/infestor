@@ -56,8 +56,49 @@ infestor.define('infestor.field.Captcha', {
 		this.callParent();
 		this.createCaptchaImage();
 		this.createCaptchaTip();
-		this.eventBindInput();
+	},
+	
+	initEvents:function(){
+	
+		this.callParent();
+		
+		this.on('focus',infestor.throttle(function () {
 
+			this.$tempImage = this.$tempImage || this.captchaTip.createDomElement(this.captchaTip, null, 'img');
+			
+			if(this.isCaptchaChange){
+			
+				this.$tempImage.attr({
+
+					src:this.captchaLastUrl+'?'+this.getId(),
+					alt:this.altText
+			
+				});
+				
+				this.isCaptchaChange = false;
+			
+			}
+
+			this.captchaTip.show();
+			this.captchaTip.autoPosition(this.element, 'right', 'middle');
+
+		}, 100), this);
+		
+		
+		this.on('blur',function () {
+
+			this.captchaTip.hide();
+
+		}, this);
+		
+		
+		this.on('keydown',infestor.throttle(function(event){
+		
+			(event.keyCode==infestor.keyCode.enter) && this.refresh();
+			
+		},2000),this);
+	
+	
 	},
 
 	createCaptchaImage : function () {
@@ -98,42 +139,6 @@ infestor.define('infestor.field.Captcha', {
 	
 	},
 	
-	eventBindInput:function(){
-	
-		this.elementFieldInput.focus(infestor.throttle(function () {
-
-			this.$tempImage = this.$tempImage || this.captchaTip.createDomElement(this.captchaTip, null, 'img');
-			
-			if(this.isCaptchaChange){
-			
-				this.$tempImage.attr({
-
-					src:this.captchaLastUrl+'?'+this.getId(),
-					alt:this.altText
-			
-				});
-				
-				this.isCaptchaChange = false;
-			
-			}
-
-			this.captchaTip.show();
-			this.captchaTip.autoPosition(this.element, 'right', 'middle');
-
-		}, 100), this).blur(function () {
-
-			this.captchaTip.hide();
-
-		}, this).keydown(infestor.throttle(function(event){
-		
-			(event.keyCode==infestor.keyCode.enter) && this.refresh();
-			
-		},2000),this);
-		
-		return this;
-	
-	},
-
 	refresh : function () {
 
 		var me = this;

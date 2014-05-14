@@ -117,18 +117,10 @@ infestor.define('infestor.field.Field', {
 	
 	initEvents:function(){
 	
-		// this.on('change',function(){
-		
-			// this.check();
-		
-		// },this);
-		
 		this.on('focus',function(e){
 			
-			//e.preventDefault();
-			
 			this.isFocus = true;
-			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.ValidatePanel.VALIDATED_PASS : infestor.ValidatePanel.VALIDATING);
+			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.ValidatePanel.VALIDATED_PASS : infestor.ValidatePanel.VALIDATED_ERROR);
 			this.validateShower && this.validateShower.show().autoPosition(this.element, 'bottom', 'head');		
 			this.$taskId = this.$taskId && infestor.stopTask(this.$taskId);
 			this.$taskId = infestor.task(function(){
@@ -136,7 +128,6 @@ infestor.define('infestor.field.Field', {
 				if(!this.isFocus) return;
 				
 			    (this.value !== this.getValue()) && ((this.checked = false) || this.check());
-				this.validatePanel.setStatus(this.checked ? infestor.ValidatePanel.VALIDATED_PASS : infestor.ValidatePanel.VALIDATING);
 
 			},this.checkInterval || 600,this);
 		
@@ -149,7 +140,13 @@ infestor.define('infestor.field.Field', {
 			this.validateShower && this.validateShower.hide();
 			(this.value !== this.getValue()) && ((this.checked = false) || this.check());
 		
-		},this)
+		},this);
+		
+		this.on('keydown',function(){
+		
+			(this.value !== this.getValue()) && this.validatePanel.setStatus(infestor.ValidatePanel.VALIDATING);
+		
+		},this);
 	
 	},
 	
@@ -205,6 +202,10 @@ infestor.define('infestor.field.Field', {
 		},this).blur(function(){
 		
 			this.emit('blur',arguments,this);
+		
+		},this).keydown(function(){
+		
+			this.emit('keydown',arguments,this);
 		
 		},this);
 	
