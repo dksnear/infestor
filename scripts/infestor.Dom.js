@@ -542,10 +542,10 @@ infestor.define('infestor.Dom', {
 
 	val : function (val) {
 
-		if (!this.element || !this.element.tagName.toLowerCase == 'input')
+		if (!this.element || this.element.tagName.toLowerCase() != 'input')
 			return this;
 
-		if (val)
+		if (!infestor.isUndefined(val) && !infestor.isNull(val) && !isNaN(val))
 			return this.element.value = val, this;
 
 		return this.element.value;

@@ -242,7 +242,7 @@ infestor.define('infestor.field.Field', {
 		return this;
 	
 	},
-	
+		
 	// 
 	setStatus:function(status){
 	
@@ -279,6 +279,14 @@ infestor.define('infestor.field.Field', {
 		
 		this.value = String(value);
 		this.elementFieldInput && this.elementFieldInput.val(this.value);
+	},
+	
+	clearValue:function(){
+
+		this.setValue('');
+		
+		return this;
+	
 	},
 	
 	setReadOnly:function(readOnly){

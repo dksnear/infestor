@@ -5,47 +5,52 @@ infestor.namespace('infestor.request', {
 	settings : {
 
 		cache : true,
-		contentType : 'application/x-www-form-urlencoded'
+		contentType : 'application/x-www-form-urlencoded',
+		timeout: 60*1000,
+		error:null,
+		success:null,
+		complete:null
 	},
 
 	ajax : function (opts) {
 
-		var xhr,
-		method = (opts.method || 'get').toLowerCase(),
-		url = opts.url || '#',
-		params = infestor.isString(opts.params) && infestor.param(opts.params) || opts.params || {},
-		async = opts.async || true,
-		error = opts.error || this.settings.error,
-		complete = opts.complete || this.settings.complete,
-		success = opts.success,
-	    dataType = opts.dataType || 'json',
-		scope = opts.scope || window,
-		jsonpCallbackParamName = opts.jsonpCallbackParamName || 'callback',
-		jsonpCallbackFnName = opts.jsonpCallbackFnName || infestor.$$libName + '.request.$jsonp',
-		script = null,
-		request = this,
-		dataConvertHandle = function(type,data){
-		
-			switch(type){
+		var xhr,timeoutId,
+			method = (opts.method || 'get').toLowerCase(),
+			url = opts.url || '#',
+			params = infestor.isString(opts.params) && infestor.param(opts.params) || opts.params || {},
+			async = opts.async || true,
+			error = opts.error || this.settings.error,
+			complete = opts.complete || this.settings.complete,
+			success = opts.success || this.settings.success,
+			dataType = opts.dataType || 'json',
+			scope = opts.scope || window,
+			jsonpCallbackParamName = opts.jsonpCallbackParamName || 'callback',
+			jsonpCallbackFnName = opts.jsonpCallbackFnName || infestor.$$libName + '.request.$jsonp',
+			script = null,
+			request = this,
+			timeout = options.timeout || this.settings.timeout,
+			dataConvertHandle = function(type,data){
 			
-				case 'json':
-					return infestor.jsonDecode(data);
-				default:
-					return data;
+				switch(type){
+				
+					case 'json':
+						return infestor.jsonDecode(data);
+					default:
+						return data;
+				
+				}
 			
-			}
-		
-		},
-		standardXhr = function () {
-			try {
-				return new window.XMLHttpRequest();
-			} catch (e) {}
-		},
-		activeXhr = function () {
-			try {
-				return new window.ActiveXObject('Microsoft.XMLHTTP');
-			} catch (e) {}
-		};
+			},
+			standardXhr = function () {
+				try {
+					return new window.XMLHttpRequest();
+				} catch (e) {}
+			},
+			activeXhr = function () {
+				try {
+					return new window.ActiveXObject('Microsoft.XMLHTTP');
+				} catch (e) {}
+			};
 		
 		// for xdebug
 		(infestor.xdebug || params.$xdebug) && infestor.append(params,{ XDEBUG_SESSION_START:1 });
@@ -67,6 +72,7 @@ infestor.namespace('infestor.request', {
 		
 			script = infestor.loadScript(url, function () {
 
+				timeoutId && clearTimeout(timeoutId);
 				success && success.call(scope, request.$data);
 				request.$data = null;
 				script.parentNode.removeChild(script);			
@@ -84,6 +90,17 @@ infestor.namespace('infestor.request', {
 		
 		}
 		
+		timeout && (timeoutId = setTimeout(function(){
+		
+			error && error.call(scope,{ timeout:true });
+			complete && complete.call(scope,false,{ timeout:true });
+			
+			success = null;
+			error = null;
+			complete = null;
+		
+		},timeout));
+		
 		xhr = window.ActiveXObject ? activeXhr() : standardXhr();
 
 		if (!xhr)
@@ -94,6 +111,8 @@ infestor.namespace('infestor.request', {
 			var succeed = false;
 
 			if (xhr.readyState === 4) {
+			
+				timeoutId && clearTimeout(timeoutId);
 
 				if (((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304))
 				   (succeed = true) && success && success.call(scope,dataConvertHandle(dataType,xhr.responseText), xhr);

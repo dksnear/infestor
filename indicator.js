@@ -1,9 +1,10 @@
 
-(function(assert){
+(function(options){
 
-	var Indicator = function(assert){
+	var Indicator = function(options){
 
-		this.init(assert);
+		 this.cover(this,options);
+		 this.init();
 
 	};
 	
@@ -19,9 +20,12 @@
 		
 		stopNeedle:0,
 		
-		init:function(assert){
+		timeout:15 * 1000,
 		
-			this.assert = assert;
+		scope:null,
+		
+		init:function(){
+		
 			this.regist();
 			
 		},
@@ -45,7 +49,8 @@
 		startTask:function(){
 		
 			this.createIndicator();
-		
+			
+			this.startTime = new Date().getTime();
 			this.startPos = this.random(0, 10)/10;
 			this.stopPos = this.random(40, this.stopNodes[this.stopNeedle])/10;
 			
@@ -66,8 +71,17 @@
 				this.stopPos = this.random(this.stopPos*10,this.stopNodes[this.stopNeedle])/10;
 				this.startPos =	this.random(this.startPos*10, this.stopPos*10)/10;
 				this.change(this.startPos);
-				if(this.assert()){
-						
+				
+				if(this.isTimeout()){
+				
+					clearInterval(this.taskId);
+					this.timeoutHandler.call(this.scope || this);
+				
+				};
+					
+				
+				if(this.assert.call(this.scope || this)){
+					
 					clearInterval(this.taskId);
 					this.change(100);
 					
@@ -85,11 +99,19 @@
 					
 					},1000,this);
 					
-				}
+				};
 				
 			
 			},this.interval,this);
 		
+		},
+		
+		assert:function(){
+
+			window.$elapsed = window.$elapsed || 1000;
+			window.$count = window.$count && ++window.$count || 1;
+			return --window.$elapsed == 0;
+
 		},
 		
 		createMask:function(){
@@ -172,6 +194,8 @@
 		
 		cover:function(target,source){
 
+			if(!target || !source) return {};
+		
 			for(var name in target){
 			
 				target[name] = source[name] || target[name];
@@ -199,24 +223,32 @@
 			return this;
 			
 		},
+		
+		isTimeout:function(){
+		
+			if(!this.startTime && !this.timeout) return true;
+			
+			return new Date().getTime() - this.startTime > this.timeout;
+		
+		},
+		
+		timeoutHandler:function(){
+		
+			alert('timeout!');
+		
+		},
 
 		destroy:function(){
 		
-			//this.mask && document.body.removeChild(this.mask);
-			//Indicator = null;
+			this.mask && document.body.removeChild(this.mask);
+			Indicator = null;
 		
 		}
 		
 	};
 	
-	 new Indicator(assert);
+	 new Indicator(options);
 
-})(function(){
-
-	window.elapsed = window.elapsed || 1000;
-	window.count = window.count && ++window.count || 1;
-	return --window.elapsed == 0;
-
-});
+})();
 
 
