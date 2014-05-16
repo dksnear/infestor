@@ -63,8 +63,10 @@ infestor.define('infestor.Element', {
 	cssClsElementBFC : 'infestor-element-bfc',
 	cssClsElementTable:'infestor-element-table',
 	cssClsElementTableCell:'infestor-element-table-cell',
-	cssClsElementBoxShadow : 'infestor-element-box-shadow',
-	cssClsElementIEBoxShadow :'infestor-element-box-shadow-ie',
+	cssClsElementBoxShadow : infestor.boe({ 
+		 ie9minus:'infestor-element-box-shadow-ie9minus',
+		 otherwise: 'infestor-element-box-shadow'
+	 }),
 	cssClsElementText:'infestor-element-text',
 	cssClsElementBorder : 'infestor-element-border',
 	cssClsElementPositionAbsolute : 'infestor-element-position-absolute',
@@ -226,9 +228,6 @@ infestor.define('infestor.Element', {
 		this.id && infestor.mgr.addInstance(this.id, this);
 		this.id = this.id || this.getId();
 		
-		// 配置不同浏览器下的属性
-		this.initBrower();
-		
 		// 元素初始化
 		this.initElement();
 		
@@ -247,23 +246,6 @@ infestor.define('infestor.Element', {
 		// 设置停靠
 		this.setDock();
 
-	},
-	
-	initBrower:function(){
-	
-		var me = this;
-	
-		infestor.boe({
-		
-			ie9minus:function(){
-			
-				me.cssClsElementBoxShadow = me.cssClsElementIEBoxShadow;			
-			}
-		
-		});
-		
-		return this;
-	
 	},
 
 	initElement : function () {
@@ -529,12 +511,13 @@ infestor.define('infestor.Element', {
 
 	show : function (top) {
 	
+	
+		top && this.element.zIndex();
+	
 		if(!this.hidden || !this.element)
 			return this;
 
 		this.hidden = false;
-
-		top && this.element.zIndex();
 
 		return this.element.show(),
 		this;
@@ -904,6 +887,7 @@ infestor.define('infestor.Element', {
 				height : 0,
 				width : 0
 			}, target);
+			
 		target.right = clientWidth - parseFloat(target.left);
 		target.bottom = clientHeight - parseFloat(target.top);
 		target.leftTrend = (parseFloat(target.left) + parseFloat(target.width)) > parseFloat(target.right);
@@ -995,7 +979,7 @@ infestor.define('infestor.Element', {
 					this.$tip.show();
 					this.$tip.autoPosition(this.element, this.tipTrend, 'middle');
 
-				}), this);
+				},150), this);
 
 			this.element.on('mouseleave', function () {
 

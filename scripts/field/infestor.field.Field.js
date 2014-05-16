@@ -56,7 +56,7 @@ infestor.define('infestor.field.Field', {
 	// false 不创建标签对象
 	label : false,
 
-	labelWidth : 45,
+	labelWidth : 40,
 
 	//(top|left|right)
 	labelPos : 'left',
@@ -103,6 +103,8 @@ infestor.define('infestor.field.Field', {
 		this.setValue(this.value);
 		this.status = this.checked ? 'passed':'error';
 		this.setStatus(this.status);
+		this.setReadOnly(this.readOnly).setDisable();
+
 	},
 
 	initElement : function () {
@@ -111,8 +113,6 @@ infestor.define('infestor.field.Field', {
 		
 		this.createLabel().createContent().createInput().createStatusIcon().createValidateShower();
 		
-		this.setReadOnly(this.readOnly).setDisable();
-
 	},
 	
 	initEvents:function(){

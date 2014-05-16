@@ -28,7 +28,7 @@ infestor.namespace('infestor.request', {
 			jsonpCallbackFnName = opts.jsonpCallbackFnName || infestor.$$libName + '.request.$jsonp',
 			script = null,
 			request = this,
-			timeout = options.timeout || this.settings.timeout,
+			timeout = opts.timeout || this.settings.timeout,
 			dataConvertHandle = function(type,data){
 			
 				switch(type){

@@ -1,11 +1,8 @@
 *{
-
 	margin: 0;
 	padding: 0;
 	border: 0;
-	font-size: 12px;
-	font-family: 'Segoe UI', Arial, 'Microsoft Yahei', Simsun, sans-serif;
-	/* color: transparent; */
+	font: 12px/1.5 'Microsoft YaHei',tahoma,arial,'Hiragino Sans GB',\5b8b\4f53,'宋体',sans-serif;
 }
 
 table,td{
@@ -86,7 +83,7 @@ input:focus{
 	box-shadow: 0 1px 4px rgba(0,0,0,0.2);
 }
 
-.infestor-element-box-shadow-ie{
+.infestor-element-box-shadow-ie9minus{
 
 /* 	border:1px solid black; */
 	background-color:#E7E7E7;

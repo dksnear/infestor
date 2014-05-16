@@ -136,6 +136,50 @@ infestor.define('infestor.Dom', {
 		
 			infestor.stopTask(infestor.Dom.$scrollTaskId);
 		
+		},
+		
+		// 构造一个等腰三角形
+		triangle:function(opts){
+		
+			opts = infestor.append({
+			
+				// 斜边长
+				hypotenuse:10,
+				// 斜角方向 (top|left|bottom|right)
+				bevelTrend:'top',
+				// 颜色
+				color:'gray',	
+				// 其他样式
+				css:null
+			
+			},opts);
+			
+			
+			return infestor.Dom.create('div').css(infestor.append({
+			
+				width : '0px',
+				height : '0px',
+				borderWidth:{
+					left : infestor.stringFormat('{0}px {1}px {2}px {3}px',opts.hypotenuse,opts.hypotenuse,opts.hypotenuse,0),
+					right : infestor.stringFormat('{0}px {1}px {2}px {3}px',opts.hypotenuse,0,opts.hypotenuse,opts.hypotenuse),
+					top : infestor.stringFormat('{0}px {1}px {2}px {3}px',0,opts.hypotenuse,opts.hypotenuse,opts.hypotenuse),
+					bottom : infestor.stringFormat('{0}px {1}px {2}px {3}px',opts.hypotenuse,opts.hypotenuse,0,opts.hypotenuse)
+				}[opts.bevelTrend],
+				borderStyle:{ 
+					left : 'dashed solid',
+					right : 'dashed solid',
+					top : 'solid dashed',
+					bottom : 'solid dashed'
+				}[opts.bevelTrend],
+				borderColor:{
+					left : 'transparent ' + opts.color,
+					right: 'transparent ' + opts.color,
+					top : opts.color  + ' transparent',
+					bottom : opts.color  + ' transparent',
+				}[opts.bevelTrend]
+			
+			},opts.css));
+		
 		}
 
 	},
@@ -374,7 +418,7 @@ infestor.define('infestor.Dom', {
 		setStyle = function (name, value) {
 
 			try {
-				element && (element.style[filter(name)] = infestor.styleFormat(value));
+				element && (element.style[filter(name)] = value);
 			} catch (err) {}
 		};
 
@@ -543,9 +587,9 @@ infestor.define('infestor.Dom', {
 	val : function (val) {
 
 		if (!this.element || this.element.tagName.toLowerCase() != 'input')
-			return this;
+			return null;
 
-		if (!infestor.isUndefined(val) && !infestor.isNull(val) && !isNaN(val))
+		if (arguments.length > 0)
 			return this.element.value = val, this;
 
 		return this.element.value;

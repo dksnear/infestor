@@ -7,7 +7,7 @@ infestor.define('infestor.Button',{
 	extend:'infestor.Panel',
 	
 	cssUses:['infestor.Button'],
-	
+		
 	cssClsElement:'infestor-button',
 	
 	cssClsHead : 'infestor-button-head',

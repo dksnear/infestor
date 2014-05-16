@@ -2,23 +2,22 @@
 
     padding: 5px 10px;
     display: block;
-    cursor:default;
-    font-size: 12px;
-    color: #666666;
-    white-space: normal;
-    position: absolute;
     border: 1px solid #B3B3B3;
     border-radius: 5px;
-    line-height: 22px; /*height: 1%;*/
-    z-index: 9999;
     background: #ffffff;
     outline:none;
+	
+
 }
 
 .infestor-tip-content {
 
 	white-space: normal;
 	word-break: break-all;
+	line-height: 22px;
+
+	font-size: 12px;
+	color: #666666;
 }
 
 .infestor-tip-triangle{
@@ -57,11 +56,13 @@
 	left: 8px;
 	bottom:-17px;
 	border-color: #888 transparent transparent transparent;
+	border-style:solid dashed;
 }
 
 .infestor-tip-triangle-mask-bottom{
 	top: -11px;
 	border-color: #fff transparent transparent transparent;
+	border-style:solid dashed;
 }
 
 
@@ -70,18 +71,13 @@
 	top: -17px;
 	left: 8px;
 	border-color: transparent transparent #888 transparent;
+	border-style:solid dashed;
 }
 
 .infestor-tip-triangle-mask-top {
 	top: -9px;
 	border-color: transparent transparent #fff transparent;
-}
-
-
-.infestor-tip-triangle-vertical-ie8minus-fix{
-
 	border-style:solid dashed;
-
 }
 
 

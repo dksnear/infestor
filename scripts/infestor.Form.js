@@ -7,7 +7,12 @@ infestor.define('infestor.Form', {
 
 	extend : 'infestor.Panel',
 
-	uses : ['infestor.request', 'infestor.field.Field','infestor.field.Captcha'],
+	uses : [
+		'infestor.request', 
+		'infestor.field.Field',
+		'infestor.field.Captcha',
+		'infestor.field.Combo'
+	],
 
 	cssUses : ['infestor.Form'],
 

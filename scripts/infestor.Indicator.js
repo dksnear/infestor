@@ -8,7 +8,7 @@ infestor.define('infestor.Indicator',{
 	
 	uses:['infestor.cross','infestor.Dom'],
 	
-	interval:10,
+	interval:100,
 	
 	// 显示加载进度 (bool|options:{ show:fn ,change:fn(value) ,hide:fn ,scope:obj})
 	indicator:null,
