@@ -587,7 +587,7 @@ infestor.define('infestor.Dom', {
 	val : function (val) {
 
 		if (!this.element || this.element.tagName.toLowerCase() != 'input')
-			return null;
+			return this;
 
 		if (arguments.length > 0)
 			return this.element.value = val, this;

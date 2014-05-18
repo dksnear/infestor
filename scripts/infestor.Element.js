@@ -23,6 +23,8 @@ infestor.define('infestor.Element', {
 		// 通过类型或别名创建实例
 		create : function (opts, def) {
 
+			!opts.xtype && !opts.alias && (opts.xtype = 'infestor.Element');
+		
 			if (opts && opts.xtype)
 				return infestor.create(opts.xtype, opts);
 			if (opts && opts.alias)
@@ -161,7 +163,14 @@ infestor.define('infestor.Element', {
 	maxWidth : 9999,
 
 	// 子元素定义数组
+	// 子元素名称不能重复 且不能为纯数字
 	items : null,
+	
+	// 子元素存储映射表 包含名称映射和索引映射
+	itemsMap:null,
+	
+	// 子元素索引序列计数器
+	itemsIndex:0,
 
 	// 子元素数量
 	count : 0,
@@ -173,14 +182,20 @@ infestor.define('infestor.Element', {
 	// vertical=block
 	// horizon=inline-block
 	itemLayout:'block',
+	
+	// 子元素构造模式 (options[通过构造选项构造]|method[通过createItem(opts)接口方法构造]|template[通过字符串模板构造(未实现)])
+	itemsConstructMode:'options',
 
 	// 对象销毁时要同时清理的属性列表
 	destroyList : null,
+	
+	// 标识一个Element对象已经销毁 避免已销毁的对象副本重复销毁
+	destroyed:false,
 
 	// 数据集对象(infestor.DataSet)
 	dataSet : null,
 
-	// 数据集对象配置(obj)
+	// 数据集对象配置(obj) 参考infestor.DataSet
 	dataConfig : null,
 	
 	constructor :function(options){
@@ -557,7 +572,7 @@ infestor.define('infestor.Element', {
 		
 		this.items = infestor.isArray(this.items) ? this.items : [this.items];
 		
-		//this.removeItem();
+		this.removeItem();
 		
 		infestor.each(this.items, function (idx, opts) {
 			this.addItem(opts);
@@ -574,6 +589,9 @@ infestor.define('infestor.Element', {
 		if (infestor.isUndefined(name))
 			return this.count > 0;
 
+		// 移除已经销毁的对象副本
+		if(this.itemsMap[name] && this.itemsMap[name].destroyed && delete this.itemsMap[name])
+			return false;
 		
 		return this.hasItem() && this.itemsMap[name] instanceof infestor.Element;
 
@@ -583,11 +601,6 @@ infestor.define('infestor.Element', {
 
 		return this.count;
 
-	},
-
-	// 子元素构建接口
-	createItem : function (opts) {
-		return false;
 	},
 
 	// 添加子元素
@@ -642,21 +655,21 @@ infestor.define('infestor.Element', {
 		// 是类的实例 直接添加子元素
 		if (opts instanceof infestor.Element)		
 			item = opts;
-
-
+			
 		// 非类的实例 根据配置创建子元素再添加
 
-		// 按类名或别名创建并添加元素
-		else if (opts.xtype || opts.alias)
-			item = infestor.Element.create(opts);
-
+		// 使用构建方法创建
+		else if (this.itemsConstructMode == 'method' && this.createItem)
+			item = this.createItem(opts);
+			
 		// 使用模板创建
 		// 未实现
-		
+		else if (this.itemsConstructMode == 'template' && this.itemTemplate)
+			return infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"意图使用模板添加子元素"{2}"失败! 该模式尚未实现', this.$clsName, this.name, opts.name));	
 
-		// 使用构建方法创建
+		// 按类名或别名创建并添加元素
 		else 
-			item = this.createItem(opts);
+			item = infestor.Element.create(opts);
 			
 		if(!item)
 			return infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"已添加子元素"{2}"失败!', this.$clsName, this.name, opts.name));
@@ -672,8 +685,12 @@ infestor.define('infestor.Element', {
 		if(layout == layoutMap['float'])
 			item.element.addClass(this.cssClsElementFloat);
 		
-		this.itemsMap[item.name] = item;
+		this.itemsIndex = this.itemsIndex || 0;
+		item.$index = this.itemsIndex++;
 		
+		this.itemsMap[item.name] = item;
+		this.itemsMap[item.$index] = item;
+	
 		return ++this.count && item.renderTo(container,this);
 
 	},
@@ -686,14 +703,18 @@ infestor.define('infestor.Element', {
 			return infestor.each(this.itemsMap, function (name) {
 				this.removeItem(name);
 			}, this),this;
+			
+		if(!this.hasItem(name))
+			return this;
 
 		// 删除一个子元素
-		if (this.hasItem(name)) {
+		this.itemsMap[name].destroy();
+		this.count--;	
+		delete this.itemsMap[name];
 
-			this.itemsMap[name].destroy();
-			delete this.itemsMap[name];
-			this.count--;
-		}
+		
+		// 重置子元素索引序列
+		!this.count && (this.itemsIndex = 0);
 		
 		return this;
 
@@ -703,8 +724,11 @@ infestor.define('infestor.Element', {
 	
 		if(arguments.length<1)
 			return this.itemsMap;
+		
+		// 移除已经销毁的对象副本
+		this.itemsMap && this.itemsMap[name] && this.itemsMap[name].destroyed && delete this.itemsMap[name];
 			
-		return this.itemsMap && this.itemsMap[name];
+		return this.itemsMap && this.itemsMap[name] || null;
 	
 	},
 
@@ -1092,6 +1116,9 @@ infestor.define('infestor.Element', {
 
 	// 销毁实例
 	destroy : function () {
+	
+		if(this.destroyed)
+			return null;
 
 		//  注销托管列表实例
 		this.destroyList && infestor.each(this.destroyList, function () {
@@ -1119,6 +1146,8 @@ infestor.define('infestor.Element', {
 		this.dataSet && this.dataSet.destroy();
 		
 		this.callParent();
+		
+		this.destroyed = true;
 
 		return null;
 

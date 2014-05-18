@@ -7,11 +7,55 @@ infestor.define('infestor.field.Combo',{
 	
 	cssUses:'infestor.Form',
 	
+	statics:{
+	
+		groupMap:{},
+		
+		clearGroup:function(name){
+		
+		
+			if(arguments.length < 1)
+				infestor.each(infestor.field.Combo.groupMap,function(name){
+				
+					infestor.field.Combo.clearGroup(name);
+				
+				});
+		
+			if(!infestor.field.Combo.groupMap[name])
+				return false;
+			
+			infestor.each(infestor.field.Combo.groupMap[name],function(){
+			
+				(this instanceof infestor.Element || this instanceof infestor.Dom) && this.destroy();
+			
+			});
+			
+			return delete infestor.field.Combo.groupMap[name];
+			
+		
+		},
+		
+		addGroup:function(name,contents){
+		
+			infestor.field.Combo.groupMap[name] = infestor.field.Combo.groupMap[name] || {};
+			
+			infestor.append(infestor.field.Combo.groupMap[name],contents);
+		
+		}
+	
+	},
+	
 	cssClsElement:'infestor-field infestor-combo-field',
 	cssClsFieldComboTrigger:'infestor-combo-field-trigger',
 	
 	// 下拉按钮
 	trigger:true,
+	
+	group:false,
+	
+	comboPanel:null,
+	
+	autoComplete:false,
 
 	initElement:function(){
 	
@@ -43,6 +87,11 @@ infestor.define('infestor.field.Combo',{
 		}).appendTo(this.elementComboTrigger);
 		
 		return this;
+	
+	},
+	
+	createComboPanel:function(){
+	
 	
 	}
 

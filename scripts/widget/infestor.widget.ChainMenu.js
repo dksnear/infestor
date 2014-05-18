@@ -14,6 +14,8 @@ infestor.define('infestor.widget.ChainMenu', {
 	cssClsNode : 'infestor-chain-menu-node',
 	cssClsNodeHover : 'infestor-chain-menu-node-hover',
 	
+	itemsConstructMode:'method',
+	
 	vertical:true,
 	
 	events:{
