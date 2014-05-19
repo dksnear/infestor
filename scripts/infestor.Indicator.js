@@ -16,8 +16,8 @@ infestor.define('infestor.Indicator',{
 	// 显示遮罩 (bool|options:{ show:fn , hide:fn ,scope:obj })
 	mask:null,
 	
-	// 引用对象
-	parent:null,
+	// 拥有者对象
+	owner:null,
 	
 	stopNodes:[70,100,150,250,350,450,550,650,750,850,950,999],
 		

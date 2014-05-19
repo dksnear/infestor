@@ -138,7 +138,7 @@
 
 }
 
-.infestor-combo-field-trigger{
+.infestor-combo-field-drop-down-trigger{
 
 	position:absolute;
 	top:0px;
@@ -151,3 +151,26 @@
 	cursor:pointer;
 
 }
+
+.infestor-combo-field-drop-down-panel{
+
+	background-color:#FFFFFF;
+	outline:0;
+
+}
+
+.infestor-combo-field-drop-down-item{
+	
+	height:25px;
+	line-height:24px;
+	cursor:pointer;
+	padding:0 5px;
+
+}
+
+.infestor-combo-field-drop-down-active-item{
+
+	background-color:orange;
+
+}
+

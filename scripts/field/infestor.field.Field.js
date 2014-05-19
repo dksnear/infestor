@@ -10,6 +10,40 @@ infestor.define('infestor.field.Field', {
 	cssUses : ['infestor.Form'],
 	
 	statics:{
+		
+		groupMap:{},
+		
+		clearGroup:function(name){
+		
+		
+			if(arguments.length < 1)
+				infestor.each(infestor.field.Field.groupMap,function(name){
+				
+					infestor.field.Field.clearGroup(name);
+				
+				});
+		
+			if(!infestor.field.Field.groupMap[name])
+				return false;
+			
+			infestor.each(infestor.field.Field.groupMap[name],function(){
+			
+				(this instanceof infestor.Element || this instanceof infestor.Dom) && this.destroy();
+			
+			});
+			
+			return delete infestor.field.Field.groupMap[name];
+			
+		
+		},
+		
+		addGroup:function(name,contents){
+		
+			infestor.field.Field.groupMap[name] = infestor.field.Field.groupMap[name] || {};
+			
+			infestor.append(infestor.field.Field.groupMap[name],contents);
+		
+		},
 	
 		getValidateShower:function(){
 		
@@ -237,8 +271,18 @@ infestor.define('infestor.field.Field', {
 	
 	focus:function(){
 	
-		this.isFocus = true;
 		this.elementFieldInput && this.elementFieldInput.element.focus();
+		this.isFocus = true;
+		
+		return this;
+	
+	},
+	
+	blur:function(){
+	
+		this.elementFieldInput && this.elementFieldInput.element.blur();		
+		this.isFocus = false;
+		
 		return this;
 	
 	},

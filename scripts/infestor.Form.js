@@ -41,12 +41,12 @@ infestor.define('infestor.Form', {
 				
 				// show:function(){
 				
-					// this.parent.parent.showMask();
+					// this.owner.owner.showMask();
 				
 				// },
 				// hide:function(){
 				
-					// this.parent.parent.hideMask();
+					// this.owner.owner.hideMask();
 				
 				// }
 			
@@ -56,7 +56,7 @@ infestor.define('infestor.Form', {
 			
 				show:function(){
 				
-					var scope = this.parent.parent;
+					var scope = this.owner.owner;
 				
 					scope.elementSubmitIndicator = scope.elementSubmitIndicator || this.createIndicator({
 					
@@ -72,14 +72,14 @@ infestor.define('infestor.Form', {
 				},
 				hide:function(){
 				
-					var scope = this.parent.parent;
+					var scope = this.owner.owner;
 					
 					scope.elementSubmitIndicator && scope.elementSubmitIndicator.hide();
 				
 				},
 				change:function(value){
 				
-					var scope = this.parent.parent;
+					var scope = this.owner.owner;
 					
 					scope.elementSubmitIndicator && scope.elementSubmitIndicator.css('width', value + '%');
 					
@@ -94,12 +94,12 @@ infestor.define('infestor.Form', {
 				
 				// show:function(){
 				
-					// this.parent.parent.showMask();
+					// this.owner.owner.showMask();
 				
 				// },
 				// hide:function(){
 				
-					// this.parent.parent.hideMask();
+					// this.owner.owner.hideMask();
 				
 				// }
 			
@@ -109,7 +109,7 @@ infestor.define('infestor.Form', {
 			
 				show:function(){
 				
-					var scope = this.parent.parent;
+					var scope = this.owner.owner;
 				
 					scope.elementLoadIndicator = scope.elementLoadIndicator || this.createIndicator({
 					
@@ -122,14 +122,14 @@ infestor.define('infestor.Form', {
 				},
 				hide:function(){
 				
-					var scope = this.parent.parent;
+					var scope = this.owner.owner;
 					
 					scope.elementLoadIndicator && scope.elementLoadIndicator.hide();
 				
 				},
 				change:function(value){
 				
-					var scope = this.parent.parent;
+					var scope = this.owner.owner;
 					
 					scope.elementLoadIndicator && scope.elementLoadIndicator.css('width', value + '%');
 					

@@ -37,9 +37,9 @@ infestor.define('infestor.DataSet', {
 	
 	// 加载选项 options:{remote:true|false,url:string,params:obj,method:get|post|jsonp,indicator:options|true|false,mask:options|true|false}
 	loadConfig:null,
-	
-	// 引用对象
-	parent:null,
+		
+	// 拥有者对象
+	owner:null,
 
 	events : {
 
@@ -104,7 +104,7 @@ infestor.define('infestor.DataSet', {
 
 			indicator:this.loadConfig.indicator,
 			mask:this.loadConfig.mask,
-			parent:this
+			owner:this
 
 		});
 		
@@ -112,10 +112,9 @@ infestor.define('infestor.DataSet', {
 		
 			indicator:this.submitConfig.indicator,
 			mask:this.submitConfig.mask,
-			parent:this
+			owner:this
 		
 		});
-		
 		
 	},
 
@@ -123,9 +122,9 @@ infestor.define('infestor.DataSet', {
 
 		this.current = 0;
 		
-		this.data = infestor.isFunction(data) ? data.call(this) : data;
-		
-		this.data = !infestor.isArray(data) ? [this.data] : this.data;
+		this.data = data;
+				
+		this.data = !infestor.isArray(this.data) ? [this.data] : this.data;
 			
 		this.count = this.data && this.data.length || 0;
 
@@ -248,7 +247,7 @@ infestor.define('infestor.DataSet', {
 
 		if (!config.remote) {
 
-			this.emit('load', [this.setData(opts)],this);
+			this.emit('load', [this.setData(opts || this.data)],this);
 			return;
 		}
 

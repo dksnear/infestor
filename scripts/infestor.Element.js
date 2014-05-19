@@ -198,43 +198,9 @@ infestor.define('infestor.Element', {
 	// 数据集对象配置(obj) 参考infestor.DataSet
 	dataConfig : null,
 	
-	constructor :function(options){
+	// 自动加载数据
+	autoLoad:false,
 	
-		this.initDataSet(options);
-
-		this.callParent();
-	
-	},
-	
-	initDataSet : function (options) {
-	
-	
-		if(options && options.dataSet)
-			return (this.dataSet = options.dataSet) && (this.dataSet.parent = this) && delete options.dataSet;
-		
-		if(!this.dataConfig && !(options && options.dataConfig))
-			return;
-		
-		if(options && options.dataConfig && this.dataConfig){
-		
-			 options.dataConfig.loadConfig = infestor.append({},this.dataConfig.loadConfig,options.dataConfig.loadConfig);
-			 options.dataConfig.submitConfig = infestor.append({},this.dataConfig.submitConfig,options.dataConfig.submitConfig);
-			 this.dataConfig = infestor.append({},this.dataConfig,options.dataConfig);
-	
-		}
-		
-		if(options && options.dataConfig && !this.dataConfig)
-			this.dataConfig = options.dataConfig;
-		
-		
-		options && options.dataConfig && delete options.dataConfig;
-			
-		this.dataSet = this.dataSet || this.dataConfig && infestor.create('infestor.DataSet', this.dataConfig);
-		
-		this.dataSet && (this.dataSet.parent = this);
-
-	},
-
 	// 类初始化接口
 	init : function () {
 
@@ -246,9 +212,6 @@ infestor.define('infestor.Element', {
 		// 元素初始化
 		this.initElement();
 		
-		// 初始化事件
-		this.initEvents && this.initEvents();
-
 		// 设置 内容/位置/尺寸 
 		this.setText().setPosition().setDimension();
 
@@ -257,9 +220,18 @@ infestor.define('infestor.Element', {
 
 		// 子元素初始化
 		this.initItems();
-		
+	
 		// 设置停靠
 		this.setDock();
+		
+		// 初始化数据对象
+		this.initDataSet();
+		
+		// 初始化事件
+		this.initEvents && this.initEvents();
+		
+		// 自动加载数据
+		this.autoLoad && this.load();
 
 	},
 
@@ -281,6 +253,29 @@ infestor.define('infestor.Element', {
 		this.elementInnerContainer = this.elementInnerContainer || this.element;
 
 		this.boxShadow && this.element.addClass(this.cssClsElementBoxShadow);
+		
+	},
+	
+	initDataSet : function () {
+	
+		var cls = this.$ownerCls.prototype;
+	
+		if(this.dataSet)
+			return this.dataSet.owner = this;
+				
+		if(!this.hasOwnProperty(this.dataConfig) && cls.dataConfig && this.dataConfig){
+		
+			 this.dataConfig.loadConfig = infestor.append({},cls.dataConfig.loadConfig,this.dataConfig.loadConfig);
+			 this.dataConfig.submitConfig = infestor.append({},cls.dataConfig.submitConfig,this.dataConfig.submitConfig);
+			 this.dataConfig = infestor.append({},cls.dataConfig,this.dataConfig);
+	
+		}		
+			
+		this.dataSet = this.dataConfig && infestor.create('infestor.DataSet', this.dataConfig);
+		
+		this.dataSet && (this.dataSet.owner = this);
+		
+		return this;
 
 	},
 
