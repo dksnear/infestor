@@ -79,7 +79,7 @@ infestor.define('infestor.field.Combo',{
 			if(this.dropDownPanel.count<2)
 				return;
 			
-			this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActiveItem);
+			this.activeItem && this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActiveItem);
 			
 			if(e.keyCode == infestor.keyCode.up)
 				this.activeIndex = this.activeIndex==0 ? this.dropDownPanel.count-1 : this.activeIndex-1;
@@ -126,10 +126,15 @@ infestor.define('infestor.field.Combo',{
 			var value = this.getValue();
 			
 			if(this.value == value) return;
-				
+			
 			this.dropDownPanel.items = !value ? this.dataSet.getData() : this.autoSearch(value,this.dataSet.getData(),function(idx,obj){ return obj.text;  });
 			this.dropDownPanel.initItems();
 			
+			this.activeItem = this.dropDownPanel.getItem(0);
+			this.activeIndex = 0;
+			this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActiveItem);
+			this.actived = true;
+		
 			this.showDropDown();
 		
 		},this);
@@ -200,7 +205,7 @@ infestor.define('infestor.field.Combo',{
 	
 	},
 	
-	autoSearch:function(keyword,set,filter,scope){
+	autoSearch:function(keyword,set,matchFilter,resultFilter,scope){
 		
 		var reg,match=[];
 		
@@ -212,7 +217,8 @@ infestor.define('infestor.field.Combo',{
 		
 		infestor.each(set,function(idx,content){
 			
-			reg.test(infestor.isFunction(filter) ? filter.call(this,idx,content) : content) && match.push(content);
+			reg.test(infestor.isFunction(matchFilter) ? matchFilter.call(this,idx,content,keyword,reg,set) : content) 
+				&& match.push(infestor.isFunction(resultFilter) ? resultFilter.call(this,idx,content,keyword,reg,set) : content);
 		
 		},scope || this);
 		
