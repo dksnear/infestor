@@ -19,7 +19,7 @@ infestor.define('infestor.field.Combo',{
 	
 	group:false,
 
-	autoComplete:false,
+	autoComplete:true,
 	
 	autoLoad:true,
 	
@@ -57,11 +57,11 @@ infestor.define('infestor.field.Combo',{
 		});
 		
 		this.on('keydown',function(e){
-			
-			//e.preventDefault();
-								
+									
 			if(e.keyCode != infestor.keyCode.up && e.keyCode != infestor.keyCode.down)
 				return;
+				
+			e.preventDefault();
 			
 			if(!this.actived){
 			
@@ -114,6 +114,27 @@ infestor.define('infestor.field.Combo',{
 			this.setValue(this.activeItem.text);
 		
 		},this);
+		
+		
+		if(!this.autoComplete)
+			return this;
+		
+		// autoComplete
+		
+		this.on('keyup',function(e){
+	
+			var value = this.getValue();
+			
+			if(this.value == value) return;
+				
+			this.dropDownPanel.items = !value ? this.dataSet.getData() : this.autoSearch(value,this.dataSet.getData(),function(idx,obj){ return obj.text;  });
+			this.dropDownPanel.initItems();
+			
+			this.showDropDown();
+		
+		},this);
+		
+		return this;
 	
 	},
 	
@@ -164,7 +185,6 @@ infestor.define('infestor.field.Combo',{
 		
 		}, 'infestor.Panel');
 		
-	
 		return this;
 	
 	},
@@ -178,6 +198,26 @@ infestor.define('infestor.field.Combo',{
 		
 		return true;
 	
+	},
+	
+	autoSearch:function(keyword,set,filter,scope){
+		
+		var reg,match=[];
+		
+		if(!keyword) return match;
+		
+		keyword = String(keyword);
+		
+		reg = new RegExp('^'+keyword);
+		
+		infestor.each(set,function(idx,content){
+			
+			reg.test(infestor.isFunction(filter) ? filter.call(this,idx,content) : content) && match.push(content);
+		
+		},scope || this);
+		
+		return match;
+		
 	}
 
 });
