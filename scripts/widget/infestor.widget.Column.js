@@ -17,20 +17,16 @@ infestor.define('infestor.widget.Column',{
 	columnHead : null,
 	
 	// 
-	addCell : function(opts){
+	addCell : function(cellData,rowData,cellCt,row){
 	
-	
-		opts = infestor.append({},this.columnOptions,opts);
+		return columnCells[row.id] = infestor.create('infestor.Element',{ text : cellData.text}).renderTo(cellCt);
 		
-	
 	},
 	
-	removeCell : function(){
+	clearCell : function(){
 	
 	
 	}
 	
-	
-	
-	
+
 });

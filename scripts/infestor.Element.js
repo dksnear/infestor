@@ -829,11 +829,13 @@ infestor.define('infestor.Element', {
 		if (element instanceof infestor.Element)
 			return renderTo.call(this, element);
 
-		if (infestor.isBoolean(element))
+		if (infestor.isBoolean(element) && element)
 			return renderTo.call(this, infestor.create(clsName, opts));
 
 		if (infestor.isRawObject(element))
 			return renderTo.call(this, infestor.Element.create(infestor.append({},opts,element)));
+			
+		return null;
 
 	},
 
