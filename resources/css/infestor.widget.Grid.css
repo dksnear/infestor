@@ -1,0 +1,39 @@
+.infestor-grid{
+
+	font-size: 12px;
+
+}
+
+.infestor-grid-head{
+
+	height: 30px;
+	line-height:30px;
+
+}
+
+.infestor-grid-column-head-cell{
+	
+	display:inline-block;
+	text-align: center;
+	font-weight: bold;
+
+}
+
+.infestor-grid-body{
+
+
+}
+
+.infestor-grid-body-container{
+
+
+
+}
+
+.infestor-grid-body-row{
+
+	height : 25px;
+	line-height:35px;
+	text-align: center;
+
+}

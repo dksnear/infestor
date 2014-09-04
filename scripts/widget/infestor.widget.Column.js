@@ -6,24 +6,64 @@ infestor.define('infestor.widget.Column',{
 	extend : 'infestor.Element',
 
 	cssUses : 'infestor.widget.Grid',
-
-	cssClsElement : 'infestor-grid',
 	
-	// { name : , title : , type : , hidden: , sort ,template : string|fn, }
+	cssClsColumnHeadCell : 'infestor-grid-column-head-cell',
+	
+	// { name : , title : , type : , hidden: , sort: , width: ,template : string|fn, }
 	columnOptions: null,
 	
-	columnCells : null
+	columnCells : null,
 	
 	columnHead : null,
 	
-	// 
-	addCell : function(cellData,rowData,cellCt,row){
+	createColumnHead : function(headCt){
 	
-		return columnCells[row.id] = infestor.create('infestor.Element',{ text : cellData.text}).renderTo(cellCt);
+		return this.columnHead = infestor.create('infestor.Element',{
+		
+			cssClsElement:this.cssClsColumnHeadCell,
+			width : this.columnOptions.width || 60,
+			text : this.columnOptions.title || '',
+			hidden : this.columnOptions.hidden
+		
+		}).renderTo(headCt);
+	
+	},
+	
+	// 
+	createColumnCell : function(cellData,rowData,cellsCt,row){
+	
+		this.columnCells = this.columnCells || {};
+		
+		return this.columnCells[row.id] = infestor.create('infestor.Element',{
+		
+			tagName:'td',	
+			width : this.columnOptions.width || 60,
+			text : cellData,
+			hidden : this.columnOptions.hidden
+			
+		}).renderTo(cellsCt);
+	
 		
 	},
 	
-	clearCell : function(){
+	clearColumnCell : function(){
+	
+	
+	},
+	
+	hide : function(){
+	
+	
+	},
+	
+	
+	show : function(){
+	
+	
+	},
+	
+	destroy : function(){
+	
 	
 	
 	}

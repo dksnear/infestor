@@ -27,7 +27,11 @@ infestor.define('infestor.widget.Grid',{
 	
 	cssClsGridBody : 'infestor-grid-body',
 	
-	columnsConfig : null,
+	cssClsGridBodyContainer : 'infestor-grid-body-container',
+	
+	cssClsGridBodyRow : 'infestor-grid-body-row',
+	
+	columnsOptions : null,
 	
 	gridHead : null,
 	
@@ -37,7 +41,7 @@ infestor.define('infestor.widget.Grid',{
 	
 	gridColumns : null,
 
-	rowId : 1;
+	rowId : 1,
 		
 	events : {
 	
@@ -49,33 +53,13 @@ infestor.define('infestor.widget.Grid',{
 	
 	initEvents : function () {
 
-		this.dataSet && this.dataSet.on('load', function () {
+		this.dataSet && this.dataSet.on('load', function (data) {
 		
-			this.setField(this.dataSet.next());
-		
-		},this);
-		
-		this.dataSet && this.dataSet.on('beforeLoad', function () {
-		
-			this.setFieldReadOnly(true);
-		
-		},this);
-		
-		this.dataSet && this.dataSet.on('loadComplete', function () {
-		
-			this.setFieldReadOnly(false);
-		
-		},this);
-		
-		this.dataSet && this.dataSet.on('beforeSubmit', function () {
-		
-			this.setFieldReadOnly(true);
-		
-		},this);
-		
-		this.dataSet && this.dataSet.on('submitComplete', function () {
-		
-			this.setFieldReadOnly(false);
+			infestor.each(data,function(idx,rowData){
+			
+				this.addRow(rowData);
+			
+			},this);
 		
 		},this);
 		
@@ -104,13 +88,21 @@ infestor.define('infestor.widget.Grid',{
 	createGridBody : function(){
 	
 		this.gridBody = this.gridBody || infestor.create('infestor.Element',{ cssClsElement:this.cssClsGridBody }).renderTo(this);
-		this.gridBodyContainer = this.gridBodyContainer || infestor.create('infestor.Element',{ tagName:'table' }).renderTo(this.gridBody);
+		this.gridBodyContainer = this.gridBodyContainer || infestor.create('infestor.Element',{ tagName:'table',cssClsElement:this.cssClsGridBodyContainer }).renderTo(this.gridBody);
 	
 	},
 	
 	createColumns : function(){
 	
+		this.gridColumns = this.gridColumns || {};
 	
+		infestor.each(this.columnsOptions,function(idx,options){
+		
+			this.gridColumns[options.name] = infestor.create(options.type || 'infestor.widget.Column',{ columnOptions : options });
+			
+			this.gridColumns[options.name].createColumnHead(this.gridHead);
+		
+		},this);
 	
 	},
 	
@@ -118,19 +110,18 @@ infestor.define('infestor.widget.Grid',{
 	
 		id = id || this.rowId ++;
 		
+		this.gridRows = this.gridRows || {};
+		
 		if(this.gridRows[id]) return this;
 		
 		this.gridRows[id] = {};
 		this.gridRows[id].data = rowData;
-		this.gridRows[id].element = infestor.create('infestor.Element',{tagName:'tr'}).renderTo(this.gridBodyContainer);
-		this.gridRows[id].items = {};
+		this.gridRows[id].container = infestor.create('infestor.Element',{ cssClsElement:this.cssClsGridBodyRow ,tagName:'tr'}).renderTo(this.gridBodyContainer);
+		this.gridRows[id].cells = {};
 		
 		infestor.each(this.gridColumns,function(name,column){
 		
-			this.gridRows[id].items[name] = this.gridRows[id].items[name] || {};
-			this.gridRows[id].items[name].element = infestor.create('infestor.Element',{tagName:'td'}).renderTo(this.gridRows[id].element);
-			this.gridRows[id].items[name].cell = column.addCell(rowData[name],rowData,this.gridRows[id].items[name].element,this.gridRows[id]);
-		
+			this.gridRows[id].cells[name] = column.createColumnCell(rowData[name],rowData,this.gridRows[id].container,this.gridRows[id]);
 		
 		},this);
 		
@@ -149,14 +140,13 @@ infestor.define('infestor.widget.Grid',{
 	
 		if(!this.gridRows[id]) return this;
 		
-		infestor.each(this.gridRows[id].items,function(name,item){
+		infestor.each(this.gridRows[id].cells,function(name,cell){
 		
-			item.cell.destroy();
-			item.element.destroy();
-		
+			cell.destroy();
+			
 		});
 		
-		this.gridRows[id].element.destroy();
+		this.gridRows[id].container.destroy();
 		
 		delete this.gridRows[id];
 		
