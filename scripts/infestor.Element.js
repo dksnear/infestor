@@ -21,7 +21,7 @@ infestor.define('infestor.Element', {
 		cssClsElementGlobalMask:'infestor-element-global-mask',
 
 		// 通过类型或别名创建实例
-		create : function (opts, def) {
+		create : function (opts, name) {
 
 			!opts.xtype && !opts.alias && (opts.xtype = 'infestor.Element');
 		
@@ -29,8 +29,8 @@ infestor.define('infestor.Element', {
 				return infestor.create(opts.xtype, opts);
 			if (opts && opts.alias)
 				return infestor.createByAlias(opts.alias, opts);
-			if (def)
-				return infestor.create(def, opts);
+			if (name)
+				return infestor.create(name, opts);
 		},
 
 		// 全局遮罩
@@ -68,7 +68,7 @@ infestor.define('infestor.Element', {
 	cssClsElementBoxShadow : infestor.boe({ 
 		 ie9minus:'infestor-element-box-shadow-ie9minus',
 		 otherwise: 'infestor-element-box-shadow'
-	 }),
+	}),
 	cssClsElementText:'infestor-element-text',
 	cssClsElementBorder : 'infestor-element-border',
 	cssClsElementPositionAbsolute : 'infestor-element-position-absolute',
@@ -263,7 +263,7 @@ infestor.define('infestor.Element', {
 		if(this.dataSet)
 			return this.dataSet.owner = this;
 				
-		if(!this.hasOwnProperty(this.dataConfig) && cls.dataConfig && this.dataConfig){
+		if(this.hasOwnProperty('dataConfig') && cls.dataConfig){
 		
 			 this.dataConfig.loadConfig = infestor.append({},cls.dataConfig.loadConfig,this.dataConfig.loadConfig);
 			 this.dataConfig.submitConfig = infestor.append({},cls.dataConfig.submitConfig,this.dataConfig.submitConfig);
@@ -1139,10 +1139,10 @@ infestor.define('infestor.Element', {
 		infestor.mgr.removeInstance(this.id);
 		
 		this.dataSet && this.dataSet.destroy();
+			
+		this.destroyed = true;
 		
 		this.callParent();
-		
-		this.destroyed = true;
 
 		return null;
 

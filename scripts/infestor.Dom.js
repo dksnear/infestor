@@ -744,7 +744,7 @@ infestor.define('infestor.Dom', {
 },
 	function (cls) {
 
-	//类创建完成后回掉方法
+	//类创建完成后回调方法
 
 
 	// 创建判断节点类型方法集合
