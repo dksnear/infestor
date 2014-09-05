@@ -9,25 +9,25 @@ infestor.define('infestor.widget.TreeNode',{
 
 	cssClsElement : 'infestor-tree-node',
 
-	cssClsNodeSpaceCell : '',
+	cssClsNodeSpaceCell : 'infestor-tree-node-sapce-cell',
 	
-	cssClsNodeExpandSwitchCell : '',
+	cssClsNodeExpandSwitchCell : 'infestor-tree-node-expand-switch-cell',
 	
-	cssClsNodeCollapseSwitchCell : '',
+	cssClsNodeCollapseSwitchCell : 'infestor-tree-node-collapse-switch-cell',
 	
-	cssClsNodeCheckCell : '',
+	cssClsNodeCheckCell : 'infestor-tree-node-check-cell',
 	
-	cssClsNodeUnCheckCell : '',
+	cssClsNodeUnCheckCell : 'infestor-tree-node-uncheck-cell',
 	
-	cssClsNodeHalfCheckCell : '' ,
+	cssClsNodeHalfCheckCell : 'infestor-tree-node-half-check-cell' ,
 	
-	cssClsNodeExpandIconCell : '',
+	cssClsNodeExpandIconCell : 'infestor-tree-node-expand-icon-cell',
 	
-	cssClsNodeCollapseIconCell : '',
+	cssClsNodeCollapseIconCell : 'infestor-tree-node-collapse-icon-cell',
 	
-	cssClsNodeNormalIconCell : '',
+	cssClsNodeNormalIconCell : 'infestor-tree-node-normal-icon-cell',
 
-	cssClsNodeTextCell : '',
+	cssClsNodeTextCell : 'infestor-tree-node-text-cell',
 	
 	nodeSpaceCells : null,
 	
@@ -54,11 +54,17 @@ infestor.define('infestor.widget.TreeNode',{
 	
 	isCollapse : false,
 	
+	nodeId : null,
+	
+	parentNodeId : null,
+	
 	prarentNode : null,
 	
 	previousSiblingNode : null,
 	
 	nextSiblingNode : null,
+	
+	lastNode : null,
 	
 	childNodes : null,
 	
