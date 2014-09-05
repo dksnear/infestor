@@ -721,7 +721,7 @@ infestor.define('infestor.Dom', {
 		if(!this.element.parentNode) return this;
 	
 		if(!this.element.nextSibling)
-			return infestor.Dom.get(this.element.parentNode).append(afterSibling),this;
+			return infestor.Dom.get(this.element.parentNode).append(afterSibling);
 	
 		return infestor.Dom.get(this.element.nextSibling).insertBefore(afterSibling);		
 	},
