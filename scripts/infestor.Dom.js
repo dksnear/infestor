@@ -29,7 +29,7 @@ infestor.define('infestor.Dom', {
 
 		create : function (tagName, attrs) {
 
-			var element = new infestor.Dom(document.createElement(tagName));
+			var element = infestor.create('infestor.Dom',document.createElement(tagName));
 
 			attrs && element.attr(attrs);
 			
@@ -688,12 +688,42 @@ infestor.define('infestor.Dom', {
 
 		if (!parentElement || !childElement)
 			return this;
-
+	
 		// 修正ie6-7 table 标记 appendChild 方法无效问题
 		if (infestor.isIE7Minus() && parentElement.nodeName.toLowerCase() == 'table' && childElement.nodeName.toLowerCase() == 'tr')
 			return this.$tbody.element.appendChild(childElement),this;
 
 		return parentElement.appendChild(childElement),this;
+	},
+	
+	
+	before : function(afterSibling){
+	
+		return afterSibling.insertBefore(this);
+	
+	},
+	
+	after : function(beforeSibling){
+	
+		return beforeSibling.insertAfter(this);
+	},
+	
+	insertBefore : function(beforeSibling) {
+	
+		if(!this.element.parentNode) return this;
+	
+		return this.element.parentNode.insertBefore(beforeSibling.element,this.element),this;
+	
+	},
+	
+	insertAfter : function(afterSibling) {
+	
+		if(!this.element.parentNode) return this;
+	
+		if(!this.element.nextSibling)
+			return infestor.Dom.get(this.element.parentNode).append(afterSibling),this;
+	
+		return infestor.Dom.get(this.element.nextSibling).insertBefore(afterSibling);		
 	},
 
 	text : function (text) {
