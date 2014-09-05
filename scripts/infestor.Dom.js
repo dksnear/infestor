@@ -29,9 +29,13 @@ infestor.define('infestor.Dom', {
 
 		create : function (tagName, attrs) {
 
-			var element = infestor.isString(tagName) ? new infestor.Dom(document.createElement(tagName)) : infestor.Dom.get(tagName);
+			var element = new infestor.Dom(document.createElement(tagName));
 
 			attrs && element.attr(attrs);
+			
+			// 用于修正ie6-7 table 标记 appendChild 方法无效问题
+			if(infestor.isIE7Minus() && tagName.toLowerCase()==='table')
+				 element.$tbody = infestor.Dom.create('tbody').appendTo(element);
 
 			return element;
 		},
@@ -175,7 +179,7 @@ infestor.define('infestor.Dom', {
 					left : 'transparent ' + opts.color,
 					right: 'transparent ' + opts.color,
 					top : opts.color  + ' transparent',
-					bottom : opts.color  + ' transparent',
+					bottom : opts.color  + ' transparent'
 				}[opts.bevelTrend]
 			
 			},opts.css));
@@ -682,19 +686,14 @@ infestor.define('infestor.Dom', {
 		var parentElement = this.element,
 		childElement = child.getElement();
 
-		if (!parent || !childElement)
+		if (!parentElement || !childElement)
 			return this;
 
-		if (infestor.isIE7Minus()) {
+		// 修正ie6-7 table 标记 appendChild 方法无效问题
+		if (infestor.isIE7Minus() && parentElement.nodeName.toLowerCase() == 'table' && childElement.nodeName.toLowerCase() == 'tr')
+			return this.$tbody.element.appendChild(childElement),this;
 
-			if (parentElement.nodeName.toLowerCase() == 'table' && childElement.nodeName.toLowerCase() == 'tr')
-				return (child.element = parentElement.insertRow(parentElement.rows.length || 0)), this;
-			if (parentElement.nodeName.toLowerCase() == 'tr' && childElement.nodeName.toLowerCase() == 'td')
-				return (child.element = parentElement.insertCell(parentElement.cells.length || 0)), this;
-		}
-
-		return parentElement.appendChild(childElement),
-		this;
+		return parentElement.appendChild(childElement),this;
 	},
 
 	text : function (text) {

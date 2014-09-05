@@ -7,7 +7,11 @@ infestor.define('infestor.widget.Column',{
 
 	cssUses : 'infestor.widget.Grid',
 	
-	cssClsColumnHeadCell : 'infestor-grid-column-head-cell',
+	cssClsColumnHeadCell : infestor.boe({ 
+	
+		 ie7minus: 'infestor-grid-column-head-cell-ie7minus',
+		 otherwise: 'infestor-grid-column-head-cell'
+	}),
 	
 	// { name : , title : , type : , hidden: , sort: , width: ,template : string|fn, }
 	columnOptions: null,
@@ -39,7 +43,13 @@ infestor.define('infestor.widget.Column',{
 			tagName:'td',	
 			width : this.columnOptions.width || 60,
 			text : cellData,
-			hidden : this.columnOptions.hidden
+			hidden : this.columnOptions.hidden//,
+			// items :{
+			
+				// alias:'element',
+				// text:cellData
+			
+			// }
 			
 		}).renderTo(cellsCt);
 	
