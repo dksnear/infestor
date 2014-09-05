@@ -56,7 +56,10 @@ infestor.define('infestor.Element', {
 	// 元素样式
 	cssClsElement : '',
 	cssClsElementMask : 'infestor-element-mask',
-	cssClsElementInlineBlock : 'infestor-element-inline-block',
+	cssClsElementInlineBlock : infestor.boe({ 
+		 ie9minus:'infestor-element-inline-block-ie7minus',
+		 otherwise: 'infestor-element-inline-block'
+	}),
 	// 在父容器添加去除inline-block带来的间距
 	cssClsElementRemoveSpace:'infestor-element-remove-space',
 	cssClsElementBlock : 'infestor-element-block',

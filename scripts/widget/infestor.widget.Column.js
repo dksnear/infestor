@@ -7,11 +7,7 @@ infestor.define('infestor.widget.Column',{
 
 	cssUses : 'infestor.widget.Grid',
 	
-	cssClsColumnHeadCell : infestor.boe({ 
-	
-		 ie7minus: 'infestor-grid-column-head-cell-ie7minus',
-		 otherwise: 'infestor-grid-column-head-cell'
-	}),
+	cssClsColumnHeadCell :'infestor-grid-column-head-cell',
 	
 	// { name : , title : , type : , hidden: , sort: , width: ,template : string|fn, }
 	columnOptions: null,
@@ -20,11 +16,12 @@ infestor.define('infestor.widget.Column',{
 	
 	columnHead : null,
 	
+	// 列表头单元格创建接口
 	createColumnHead : function(headCt){
 	
 		return this.columnHead = infestor.create('infestor.Element',{
 		
-			cssClsElement:this.cssClsColumnHeadCell,
+			cssClsElement: this.cssClsElementInlineBlock  + ' ' + this.cssClsColumnHeadCell,
 			width : this.columnOptions.width || 60,
 			text : this.columnOptions.title || '',
 			hidden : this.columnOptions.hidden
@@ -33,7 +30,7 @@ infestor.define('infestor.widget.Column',{
 	
 	},
 	
-	// 
+	// 列单元格创建接口
 	createColumnCell : function(cellData,rowData,cellsCt,row){
 	
 		this.columnCells = this.columnCells || {};

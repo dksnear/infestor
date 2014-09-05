@@ -36,8 +36,15 @@ input:focus{
 .infestor-element-inline-block{
 
     display: inline-block;
-	*display: inline;
-	*zoom: 1;
+	
+}
+
+
+.infestor-element-inline-block-ie7minus{
+
+	display: inline;
+	zoom: 1;
+
 }
 
 .infestor-element-block{
