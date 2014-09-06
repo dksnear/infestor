@@ -10,17 +10,6 @@ infestor.define('infestor.widget.Grid',{
 	
 	cssUses : 'infestor.widget.Grid',
 
-	statics : {
-	
-		// 列类型映射 如果需要使用列类型简称 在此处注册
-		columnTypeMap:{
-		
-			tree : 'infestor.widget.TreeColumn'
-		
-		}
-	
-	},
-
 	cssClsElement : 'infestor-grid',
 	
 	cssClsGridHead : 'infestor-grid-head',

@@ -1,10 +1,10 @@
-infestor.define('infestor.tree.Tree',{
+infestor.define('infestor.widget.Tree',{
 
 	alias : 'tree',
 	
-	extend : 'infestor.grid.Grid',
+	extend : 'infestor.widget.Grid',
 	
-	uses : ['infestor.tree.TreeColumn'],
+	uses : ['infestor.widget.TreeColumn'],
 	
 	// 表格树 
 	multiColumn:true,

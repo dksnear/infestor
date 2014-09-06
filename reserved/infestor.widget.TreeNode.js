@@ -1,6 +1,5 @@
 infestor.define('infestor.widget.TreeNode',{
 
-
 	alias : 'treeNode',
 
 	extend : 'infestor.Element',
@@ -53,6 +52,9 @@ infestor.define('infestor.widget.TreeNode',{
 	isExpand : true,
 	
 	isCollapse : false,
+	
+	// 异步加载节点完成
+	isLoaded : false,
 	
 	nodeId : null,
 	

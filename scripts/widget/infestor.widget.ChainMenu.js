@@ -6,7 +6,7 @@ infestor.define('infestor.widget.ChainMenu', {
 
 	extend : 'infestor.Element',
 
-	cssUses : 'infestor.widget.ChainMenu',
+	cssUses : 'infestor.Widget',
 
 	cssClsElement : 'infestor-chain-menu',
 	cssClsLine : 'infestor-chain-menu-line',
