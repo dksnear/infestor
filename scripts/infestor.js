@@ -71,6 +71,8 @@ infestor js
 		}
 	};
 
+	// 拷贝@predicate(method)返回true的属性
+	// 拷贝@predicate(array)包含的属性
 	global.appendIf = function (des, src, predicate, scope, reverse) {
 
 		global.isString(predicate) && (predicate = [predicate]);
@@ -172,7 +174,7 @@ infestor js
 			return true;
 		},
 
-		/* 获取predicate返回true的元素 */
+		// 获取@predicate方法返回true的元素
 		filter : function (obj, predicate, scope) {
 
 			var newObj;
@@ -345,7 +347,7 @@ infestor js
 			return this.type(obj) === 'arguments';
 		},
 
-		// form jQuery isPlainObject
+		// from jQuery isPlainObject
 		isRawObject : function (obj) {
 
 			var hasOwn = Object.prototype.hasOwnProperty,

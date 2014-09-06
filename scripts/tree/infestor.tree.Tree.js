@@ -4,7 +4,9 @@ infestor.define('infestor.tree.Tree',{
 	
 	extend : 'infestor.grid.Grid',
 	
-	uses : ['infestor.tree.TreeColumn'],
+	uses : ['infestor.tree.DataSet','infestor.tree.TreeColumn'],
+	
+	dataSetClsName : 'infestor.tree.DataSet',
 	
 	// 表格树 
 	multiColumn:true,

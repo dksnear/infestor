@@ -3,7 +3,7 @@ infestor.define('infestor.tree.TreeColumn',{
 
 	alias : 'treeColumn',
 
-	extend : 'infestor.tree.Column',
+	extend : 'infestor.grid.Column',
 	
 	uses : 'infestor.tree.TreeNode',
 

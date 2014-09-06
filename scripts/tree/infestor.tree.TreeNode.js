@@ -4,7 +4,7 @@ infestor.define('infestor.tree.TreeNode',{
 
 	extend : 'infestor.Element',
 
-	cssUses : 'infestor.widget.Tree',
+	cssUses : 'infestor.Tree',
 
 	cssClsElement : 'infestor-tree-node',
 
@@ -147,7 +147,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 		return infestor.create('infestor.widget.TreeNode',infestor.append({
 		
-			childNodes : [];
+			childNodes : []
 		
 		},opts));
 	

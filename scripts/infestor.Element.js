@@ -197,6 +197,9 @@ infestor.define('infestor.Element', {
 
 	// 数据集对象(infestor.DataSet)
 	dataSet : null,
+	
+	// 数据集对象类名(infestor.DataSet或其子类)
+	dataSetClsName : 'infestor.DataSet',
 
 	// 数据集对象配置(obj) 参考infestor.DataSet
 	dataConfig : null,
@@ -274,7 +277,7 @@ infestor.define('infestor.Element', {
 	
 		}		
 			
-		this.dataSet = this.dataConfig && infestor.create('infestor.DataSet', this.dataConfig);
+		this.dataSet = this.dataConfig && infestor.create(this.dataSetClsName, this.dataConfig);
 		
 		this.dataSet && (this.dataSet.owner = this);
 		
