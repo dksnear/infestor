@@ -211,7 +211,7 @@ infestor.define('infestor.Element', {
 	init : function () {
 
 		// 如果配置了实例id则注册托管实例 否则不托管实例
-		// 对于已托管实例 可通过eks.getInst(id)方法全局获取实例
+		// 对于已托管实例 可通过infestor.getInst(id)方法全局获取实例
 		this.id && infestor.mgr.addInstance(this.id, this);
 		this.id = this.id || this.getId();
 		
@@ -561,7 +561,7 @@ infestor.define('infestor.Element', {
 
 		this.elementMask && this.elementMask.hide();
 		
-		!/absolute|fixed|relative/.test(this.orgElementPostion) && this.element.css('position',this.$orgElementPostion);
+		!/absolute|fixed|relative/.test(this.$orgElementPostion) && this.element.css('position',this.$orgElementPostion);
 		
 		return this;
 	},

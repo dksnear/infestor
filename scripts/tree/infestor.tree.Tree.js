@@ -9,7 +9,25 @@ infestor.define('infestor.tree.Tree',{
 	dataSetClsName : 'infestor.tree.DataSet',
 	
 	// 表格树 
-	multiColumn:true,
+	multiColumn : true,
+	
+	// rewrite
+	
+	createColumns : function(){
+	
+		this.gridColumns = this.gridColumns || {};
+	
+		infestor.each(this.columnsOptions,function(idx,options){
+		
+			
+		
+			this.gridColumns[options.name] = infestor.create(options.type || 'infestor.grid.Column',{ columnOptions : options });
+			
+			this.gridColumns[options.name].createColumnHead(this.gridHead);
+		
+		},this);
+	
+	},
 	
 	addRow : function(rowData,id){
 	
@@ -31,6 +49,37 @@ infestor.define('infestor.tree.Tree',{
 		},this);
 		
 		return this;
+	
+	},
+	
+
+	addRow : function(rowData,id){
+	
+		id = id || this.rowId ++;
+		
+		this.gridRows = this.gridRows || {};
+		
+		if(this.gridRows[id]) return this;
+		
+		this.gridRows[id] = {};
+		this.gridRows[id].data = rowData;
+		this.gridRows[id].container = infestor.create('infestor.Element',{ cssClsElement:this.cssClsGridBodyRow ,tagName:'tr'}).renderTo(this.gridBodyContainer);
+		this.gridRows[id].cells = {};
+		
+		infestor.each(this.gridColumns,function(name,column){
+		
+			this.gridRows[id].cells[name] = column.createColumnCell(rowData[name],rowData,this.gridRows[id].container,this.gridRows[id]);
+		
+		},this);
+		
+		return this;
+	
+	},
+	
+	
+	destroy : function(){
+	
+	
 	
 	}
 	

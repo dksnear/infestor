@@ -478,6 +478,21 @@ infestor js
 
 		})(),
 
+		// 返回一个键值互换的对象
+		kvSwap : function(target){
+		
+			var o = {};
+			
+			global.each(target,function(k,v){
+			
+				o[String(v)] = k;
+			
+			});
+			
+			return o;
+		
+		},
+		
 		parseNumeric : function (s) {
 
 			s = parseFloat(s);
@@ -485,7 +500,7 @@ infestor js
 			return isNaN(s) ? 0 : s;
 
 		},
-
+		
 		// 格式化样式字符串
 		styleFormat : function (expr) {
 

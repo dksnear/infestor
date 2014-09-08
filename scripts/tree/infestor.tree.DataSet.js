@@ -13,11 +13,11 @@ infestor.define('infestor.tree.DataSet',{
 	// 根节点数据父标识(数组数据模型)
 	rootPId : '0',
 	
-	// 数据模型 (数组数据模型)
+	// 数据模型(数组数据模型)
 	model : {
 	
-		id : 'id',
-		pId : 'pId',
+		nodeId : 'id',
+		parentNodeId: 'pId',
 		text : 'text'
 	
 	},
@@ -31,7 +31,12 @@ infestor.define('infestor.tree.DataSet',{
 	// 按照数据模型格式化一个数据行
 	map : function(rowData) {
 		
-		var set = [];
+		var set = [],o = {
+		
+			rawData : rowData,
+			children : []
+		
+		};
 	
 		if(infestor.isArray(rowData))
 			return infestor.each(rowData,function(idx,rowData){
@@ -39,16 +44,17 @@ infestor.define('infestor.tree.DataSet',{
 				set.push(this.map(rowData));
 			
 			},this),set;
-	
-		return {
+			
+		this.$modelMap = this.$modeMap || infestor.kvSwap(this.model);
+			
+		return infestor.each(rowData,function(name,data){
 		
-			id : rowData[this.model.id],
-			pId : rowData[this.model.pId],
-			text : rowData[this.model.text],
-			rawData : rowData,
-			children : []
+			if(this.$modelMap.hasOwnProperty(name))
+				return o[this.$modelMap[name]] = data,true;
+			
+			o[name] = data;
 		
-		};
+		},this),o;
 	
 	},
 	
@@ -61,7 +67,7 @@ infestor.define('infestor.tree.DataSet',{
 		
 			for(var i=0;i<data.length;i++){
 			
-				if(data[i].pId === pId)
+				if(data[i].parentNodeId === pId)
 				    return node = data.splice(i,1)[0] || false;
 			}
 			
@@ -79,7 +85,7 @@ infestor.define('infestor.tree.DataSet',{
 		
 			var child;
 		
-			while((child = getNode(node.id))!==false){
+			while((child = getNode(node.nodeId))!==false){
 			
 				node.children.push(child);
 				arguments.callee(child);
@@ -100,16 +106,17 @@ infestor.define('infestor.tree.DataSet',{
 		
 		(function(node,pNode){
 		
-			var caller = arguments.callee;
+			var caller = arguments.callee,o={};
 		
 			node.rawData && data.push(node.rawData);
 			
-			!node.rawData && data.push(infestor.appendIf({
-				
-				pId : pNode && pNode.id || String(genId++),
-				id : node.id || String(genId++)
-						
-			},node,['children'],null,true));
+			if(!node.rawData){
+			
+				o[this.model.parentNodeId] =  pNode && pNode.nodeId || String(genId++);
+				o[this.model.nodeId] =  node.nodeId || String(genId++);
+
+				data.push(infestor.appendIf(o,node,['children'],null,true));
+			}
 			
 			node.children && node.children.length && infestor.each(node.children,function(){
 			
