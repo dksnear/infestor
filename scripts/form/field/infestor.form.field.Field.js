@@ -447,7 +447,7 @@ infestor.define('infestor.form.field.Field', {
 			if(this.validatePanel && !this.validatePanel.hidden && this.isFocus){
 			
 				this.validatePanel.setError(!checked && errorMsg);
-				this.validatePanel.setPrompt(promptMsg);
+				this.validatePanel.setPrompt(promptMsg || this.promptMsg);
 				this.validatePanel.setStatus(checked ? infestor.form.ValidatePanel.VALIDATED_PASS : infestor.form.ValidatePanel.VALIDATED_ERROR);
 			}
 			
