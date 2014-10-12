@@ -22,9 +22,10 @@ infestor.define('infestor.form.field.Captcha', {
 	// 获取验证码的连接地址
 	captchaUrl : '',
 	// 验证验证码的连接地址
-	captchaVUrl:'',
-	// 获取上一个验证码的连接地址
-	captchaLastUrl : '',
+	captchaVUrl: '',
+	
+	// 验证码缓存参数名
+	captchaCacheTagName : 'captcha-cache-tag',
 	
 	checkInterval:2500,
 	
@@ -38,8 +39,6 @@ infestor.define('infestor.form.field.Captcha', {
 
 		this.head = true;
 		this.rear = true;
-		
-		this.captchaLastUrl || this.captchaUrl;
 		
 		this.validators = (this.validators = this.validators || []) && infestor.isArray(this.validators) && this.validators || [this.validators];
 		
@@ -66,18 +65,12 @@ infestor.define('infestor.form.field.Captcha', {
 
 			this.$tempImage = this.$tempImage || this.captchaTip.createDomElement(this.captchaTip, null, 'img');
 			
-			if(this.isCaptchaChange){
-			
-				this.$tempImage.attr({
+			this.$tempImage.attr({
 
-					src:this.captchaLastUrl+'?'+this.getId(),
-					alt:this.altText
+				src:this.currentUrl,
+				alt:this.altText
 			
-				});
-				
-				this.isCaptchaChange = false;
-			
-			}
+			});
 
 			this.captchaTip.show();
 			this.captchaTip.autoPosition(this.element, 'right', 'middle');
@@ -145,11 +138,11 @@ infestor.define('infestor.form.field.Captcha', {
 		
 		this.setError();
 		
-		this.isCaptchaChange = true;
+		this.currentUrl = this.captchaUrl + '?' + this.captchaCacheTagName + '=' + this.getId();
 
 		this.elementFieldCaptcha.attr({
 		
-			src:this.captchaUrl + '?' + this.getId()
+			src:this.currentUrl
 		
 		});
 
@@ -157,7 +150,7 @@ infestor.define('infestor.form.field.Captcha', {
 
 			me.$tempImage && me.$tempImage.attr({
 		
-				src: me.captchaLastUrl+'?'+me.getId()
+				src : me.currentUrl
 		
 			});
 		}
