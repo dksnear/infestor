@@ -1290,6 +1290,8 @@ infestor js
 		// @options(obj):类的方法在这个对象里定义 见global.extend
 		// @callback(fn):类定义完成后的委托句柄
 		define : function (clsNs, options, callback) {
+		
+			var extend = options.extend || Object;
 
 			// 等待所有类加载完成后 延时定义
 			if (global.mgr.loadedMap[clsNs] && global.mgr.loadedMap[clsNs].isDelay)
@@ -1300,8 +1302,6 @@ infestor js
 			};
 
 			options.$clsName = options.$clsName || clsNs;
-
-			var extend = options.extend || Object;
 
 			if (global.isString(extend)) {
 

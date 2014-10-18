@@ -57,7 +57,7 @@ infestor.define('infestor.Element', {
 	cssClsElement : '',
 	cssClsElementMask : 'infestor-element-mask',
 	cssClsElementInlineBlock : infestor.boe({ 
-		 ie9minus:'infestor-element-inline-block-ie7minus',
+		 ie7minus:'infestor-element-inline-block-ie7minus',
 		 otherwise: 'infestor-element-inline-block'
 	}),
 	// 在父容器添加去除inline-block带来的间距
@@ -673,7 +673,7 @@ infestor.define('infestor.Element', {
 			item = infestor.Element.create(opts);
 			
 		if(!item)
-			return infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"已添加子元素"{2}"失败!', this.$clsName, this.name, opts.name));
+			return infestor.error(infestor.stringFormat('类"{0}"的实例"{1}"添加子元素"{2}"失败!', this.$clsName, this.name, opts.name));
 		
 		
 		// 修改布局样式
@@ -721,7 +721,7 @@ infestor.define('infestor.Element', {
 
 	},
 	
-	getItem:function(name){
+	getItem : function(name){
 	
 		if(arguments.length<1)
 			return this.itemsMap;
@@ -732,16 +732,48 @@ infestor.define('infestor.Element', {
 		return this.itemsMap && this.itemsMap[name] || null;
 	
 	},
+	
+	
+	// 遍历所有子元素
+	// @fn(idx[索引],item[元素]) 委托方法
+	// @scope @fn的作用域
+	// @mode all(所有) num(数值索引) name(关联名索引)
+	eachItems : function(fn,scope,mode){
+	
+		if(!fn) return this;
+		
+		mode = mode || 'name';
+		scope = scope || this;
+	
+		this.hasItem() && infestor.each(this.itemsMap,function(idx,item){
+		
+			
+			(mode == 'num')  &&  !isNaN(idx) && fn.call(scope,idx,item);
+			(mode == 'name') && isNaN(idx) && fn.call(scope,idx,item);
+			(mode == 'all') && fn.call(scope,idx,item);
+		
+		
+		},this);
+		
+		return this;
+	
+	},
 
 	// 隐藏子元素
 	hideItem : function (name) {
 
-		!infestor.isUndefined(name) & this.itemsMap[name] && this.itemsMap[name].hnamee && this.itemsMap[name].hnamee();
+		!infestor.isUndefined(name) & this.itemsMap[name] && this.itemsMap[name].hide && this.itemsMap[name].hide();
 
 		// 隐藏所有子元素
-		infestor.isUndefined(name) && this.hasItem() && infestor.each(this.itemsMap, function (name) {
+		infestor.isUndefined(name) && this.eachItems(function(name){
+		
 			this.hideItem(name);
-		}, this);
+			
+		},this,'name');
+		
+		// infestor.isUndefined(name) && this.hasItem() && infestor.each(this.itemsMap, function (name) {
+			// this.hideItem(name);
+		// }, this);
 	},
 
 	// 显示子元素
@@ -749,10 +781,15 @@ infestor.define('infestor.Element', {
 
 		!infestor.isUndefined(name) && this.itemsMap[name] && this.itemsMap[name].show && this.itemsMap[name].show();
 
-		// 显示所有子元素
-		infestor.isUndefined(name) && this.hasItem() && infestor.each(this.itemsMap, function (name) {
+		// 显示所有子元素	
+		infestor.isUndefined(name) && this.eachItems(function(name){
+		
 			this.showItem(name);
-		}, this);
+			
+		},this,'name');
+		// infestor.isUndefined(name) && this.hasItem() && infestor.each(this.itemsMap, function (name) {
+			// this.showItem(name);
+		// }, this);
 	},
 
 	// 向上查找符合条件的父节点

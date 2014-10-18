@@ -114,6 +114,66 @@
 
 }
 
+
+/***************
+
+
+	model-captcha-field
+
+
+**********************/
+
+
+.infestor-model-captcha-field{
+
+	
+
+}
+
+.infestor-model-captcha-control-panel{
+
+	padding:5px;
+
+}
+
+.infestor-model-captcha-control-panel-head{
+
+
+}
+
+.infestor-model-captcha-control-panel-head-captcha{
+
+	margin-right:5px;
+	height:30px;
+	width:115px;
+	
+}
+
+.infestor-model-captcha-control-panel-head-backspace{
+
+	height:30px;
+	width:30px;
+	background-repeat:no-repeat;
+	background-image:url(../images/win-ctrl-icons-16.png);
+	background-position:-64px -4px;
+
+}
+
+.infestor-model-captcha-control-panel-body{
+
+	width:150px;
+
+}
+
+.infestor-model-captcha-control-panel-body-cell{
+
+	width:50px;
+	height:50px;
+
+}
+
+
+
 /********
 
 	combo-field
