@@ -469,15 +469,18 @@ infestor.define('infestor.Dom', {
 
 	//	attrs(p:padding m:margin b:border)
 	height : function (attrs) {
+	
+		if(!attrs) 
+			return infestor.parseNumeric(this.element.offsetHeight);
 
 		var m = /m/i.test(attrs),
-		b = /b/i.test(attrs),
-		p = /p/i.test(attrs),
-		oh = infestor.parseNumeric(this.element.offsetHeight),
-		ph = infestor.parseNumeric(this.css('padding-top')) + infestor.parseNumeric(this.css('padding-bottom')),
-		bh = infestor.parseNumeric(this.css('border-top-width')) + infestor.parseNumeric(this.css('border-bottom-width')),
-		mh = infestor.parseNumeric(this.css('margin-top')) + infestor.parseNumeric(this.css('margin-bottom')),
-		h = oh - ph - bh;
+			b = /b/i.test(attrs),
+			p = /p/i.test(attrs),
+			oh = infestor.parseNumeric(this.element.offsetHeight),
+			ph = infestor.parseNumeric(this.css('padding-top')) + infestor.parseNumeric(this.css('padding-bottom')),
+			bh = infestor.parseNumeric(this.css('border-top-width')) + infestor.parseNumeric(this.css('border-bottom-width')),
+			mh = infestor.parseNumeric(this.css('margin-top')) + infestor.parseNumeric(this.css('margin-bottom')),
+			h = oh - ph - bh;
 
 		if (!attrs)
 			return h < 0 ? 0 : h;
@@ -492,15 +495,18 @@ infestor.define('infestor.Dom', {
 
 	//	attrs(p:padding m:margin b:border)
 	width : function (attrs) {
+	
+		if(!attrs)
+			return infestor.parseNumeric(this.element.offsetWidth);
 
 		var m = /m/i.test(attrs),
-		b = /b/i.test(attrs),
-		p = /p/i.test(attrs),
-		ow = infestor.parseNumeric(this.element.offsetWidth),
-		pw = infestor.parseNumeric(this.css('padding-left')) + infestor.parseNumeric(this.css('padding-right')),
-		bw = infestor.parseNumeric(this.css('border-left')) + infestor.parseNumeric(this.css('border-right')),
-		mw = infestor.parseNumeric(this.css('margin-left')) + infestor.parseNumeric(this.css('margin-right')),
-		w = ow - pw - bw;
+			b = /b/i.test(attrs),
+			p = /p/i.test(attrs),
+			ow = infestor.parseNumeric(this.element.offsetWidth),
+			pw = infestor.parseNumeric(this.css('padding-left')) + infestor.parseNumeric(this.css('padding-right')),
+			bw = infestor.parseNumeric(this.css('border-left')) + infestor.parseNumeric(this.css('border-right')),
+			mw = infestor.parseNumeric(this.css('margin-left')) + infestor.parseNumeric(this.css('margin-right')),
+			w = ow - pw - bw;
 
 		if (!attrs)
 			return w < 0 ? 0 : w;

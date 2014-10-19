@@ -22,7 +22,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	// 验证字符数目
 	codeNum : 5,
 	// 备选字符数目
-	candidateNum : 9,	
+	candidateNum : 16,	
 	// 获取验证码的连接地址
 	captchaUrl : '',
 	// 验证验证码的连接地址
@@ -158,7 +158,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	
 		return {
 		
-			x:0,
+			x:-10,
 			y:0
 		};
 	
@@ -169,8 +169,8 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	
 		return {
 		
-			x:-40*index,
-			y:-40
+			x:-10-30*index,
+			y:-45
 		
 		};
 	

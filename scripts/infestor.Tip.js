@@ -110,7 +110,7 @@ infestor.define('infestor.Tip', {
 		return this;
 	},
 
-	setArrowPosition : function (pos, opposite) {
+	setArrowPosition : function (pos, opposite, drift ,topTrend,leftTrend) {
 
 		if(opposite)
 			pos = {
@@ -156,6 +156,20 @@ infestor.define('infestor.Tip', {
 		this.currentCls && this.elementArrow.removeClass(this.currentCls.triangle) && this.elementArrowMask.removeClass(this.currentCls.mask);
 		this.currentCls = this.posClsMap[this.arrowPosition];
 		this.elementArrow.addClass(this.currentCls.triangle) && this.elementArrowMask.addClass(this.currentCls.mask);
+		
+		/top|bottom/.test(pos) && drift && this.elementArrow.css({
+		
+			right : !leftTrend ? 'auto' : infestor.px(drift + 30),
+			left : leftTrend ? 'auto' : infestor.px(drift + 30)
+		
+		});
+		
+		/left|right/.test(pos) && drift && this.elementArrow.css({
+		
+			bottom : !topTrend ? 'auto' : infestor.px(drift + 10),
+			top : topTrend ? 'auto' : infestor.px(drift + 10)
+		
+		});
 
 		return this;
 
@@ -165,7 +179,7 @@ infestor.define('infestor.Tip', {
 
 		var pos = this.callParent();
 
-		this.setArrowPosition(pos, true);
+		pos && this.setArrowPosition(pos.pos, true, pos.drift, pos.topTrend,pos.leftTrend);
 
 		return pos;
 

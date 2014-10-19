@@ -143,8 +143,8 @@
 
 .infestor-model-captcha-control-panel-head-captcha{
 
-	margin-right:5px;
-	height:30px;
+	margin: 0 15px;
+	height:40px;
 	width:115px;
 	
 }
@@ -161,14 +161,16 @@
 
 .infestor-model-captcha-control-panel-body{
 
-	width:150px;
+	width:200px;
 
 }
 
 .infestor-model-captcha-control-panel-body-cell{
 
-	width:50px;
-	height:50px;
+	width:30px;
+	height:30px;
+	margin:10px;
+	cursor:pointer;
 
 }
 
