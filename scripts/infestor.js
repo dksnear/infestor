@@ -225,6 +225,26 @@ infestor js
 			return arr;
 
 		},
+		
+		// 生成一个数组
+		genArray : function (len,fn,scope){
+		
+			var i=0,arr=[];
+			
+			fn = fn || function(idx){
+			
+				return idx;
+			};
+			
+			for(;i<len;i++){
+			
+				arr.push(fn.call(scope,i));
+			
+			}
+			
+			return arr;
+		
+		},
 
 		uniqueArray : function (arr) {
 

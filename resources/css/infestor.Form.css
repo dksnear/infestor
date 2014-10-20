@@ -130,6 +130,29 @@
 
 }
 
+
+.infestor-model-captcha-input{
+
+	width:160px;
+	border:1px solid #bfbfbf;
+
+}
+
+.infestor-model-captcha-input:focus{
+
+	border-color: rgb(77, 144, 254);
+    outline: none;
+
+}
+
+.infestor-model-captcha-input-cell{
+
+	width:30px;
+	height:30px;
+	margin-left:2px;
+
+}
+
 .infestor-model-captcha-control-panel{
 
 	padding:5px;

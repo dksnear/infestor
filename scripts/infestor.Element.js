@@ -399,6 +399,8 @@ infestor.define('infestor.Element', {
 	//pos (north|south|west|center|east|north-east|south-east|north-west|north-east)
 	//mode (absolute|relative|fixed|clear)
 	setDock : function (dock, mode) {
+	
+		var wait = 800;
 
 		this.dock = dock || this.dock;
 		this.dockMode =  mode || this.dockMode;
@@ -426,7 +428,7 @@ infestor.define('infestor.Element', {
 			
 					this.element.addClass(this.cssClsElementPositionNorth).css('margin-left', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetWidth) / 2));
 					
-				},20).call(this);
+				},wait).call(this);
 				
 			},
 			south : function () {
@@ -435,7 +437,7 @@ infestor.define('infestor.Element', {
 			
 					this.element.addClass(this.cssClsElementPositionSouth).css('margin-left', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetWidth) / 2));
 					
-				},20).call(this);
+				},wait).call(this);
 		
 			},
 			west : function () {
@@ -444,7 +446,7 @@ infestor.define('infestor.Element', {
 			
 					this.element.addClass(this.cssClsElementPositionWest).css('margin-top', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetHeight) / 2));
 					
-				},20).call(this);
+				},wait).call(this);
 							
 			},
 			east : function () {
@@ -453,7 +455,7 @@ infestor.define('infestor.Element', {
 			
 					this.element.addClass(this.cssClsElementPositionEast).css('margin-top', infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetHeight) / 2));
 					
-				},20).call(this);
+				},wait).call(this);
 				
 			},
 			center : function () {
@@ -465,7 +467,7 @@ infestor.define('infestor.Element', {
 						'margin-top' : infestor.px(-1 * infestor.parseNumeric(this.element.element.offsetHeight) / 2)
 					});
 					
-				},20).call(this);
+				},wait).call(this);
 			},
 			'north-east' : function () {
 				this.element.addClass(this.cssClsElementPositionNorthEast);

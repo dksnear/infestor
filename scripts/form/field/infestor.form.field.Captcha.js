@@ -72,8 +72,8 @@ infestor.define('infestor.form.field.Captcha', {
 			
 			});
 
-			this.captchaTip.show();
 			this.captchaTip.autoPosition(this.element, 'right', 'middle');
+			this.captchaTip.show();
 
 		}, 100), this);
 		

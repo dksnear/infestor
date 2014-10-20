@@ -199,7 +199,9 @@ infestor.define('infestor.form.field.Combo',{
 		if(!this.dropDownPanel.hasItem())
 			return false;
 		
-		this.dropDownPanel.show(true).autoPosition(this.elementFieldContent,'bottom','0 2');
+		this.dropDownPanel.autoPosition(this.elementFieldContent,'bottom','0 2');
+		
+		this.dropDownPanel.show(true);
 		
 		return true;
 	
