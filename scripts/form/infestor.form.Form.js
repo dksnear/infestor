@@ -8,6 +8,7 @@ infestor.define('infestor.form.Form', {
 	extend : 'infestor.Panel',
 
 	uses : [
+		'infestor.Indicator',
 		'infestor.request', 
 		'infestor.form.field.Field',
 		'infestor.form.field.Captcha',
@@ -34,119 +35,117 @@ infestor.define('infestor.form.Form', {
 
 	},
 	
-	dataConfig:{
-		
-		submitConfig:{
-		
-			// mask:{
-				
-				// show:function(){
-				
-					// this.owner.owner.showMask();
-				
-				// },
-				// hide:function(){
-				
-					// this.owner.owner.hideMask();
-				
-				// }
-			
-			// },
-			mask:false,
-			indicator:{
-			
-				show:function(){
-				
-					var scope = this.owner.owner;
-				
-					scope.elementSubmitIndicator = scope.elementSubmitIndicator || this.createIndicator({
-					
-						position:'absolute',
-						bottom:0,
-						top:'auto',
-						'background-color':'green'
-					
-					}).appendTo(scope.getElement());
+	indicator:true,
+	
+	init : function () {
 
-					scope.elementSubmitIndicator.show();
-				
-				},
-				hide:function(){
-				
-					var scope = this.owner.owner;
-					
-					scope.elementSubmitIndicator && scope.elementSubmitIndicator.hide();
-				
-				},
-				change:function(value){
-				
-					var scope = this.owner.owner;
-					
-					scope.elementSubmitIndicator && scope.elementSubmitIndicator.css('width', value + '%');
-					
-				}
-			}
+		this.callParent();
+
+		this.initIndicator();
 		
-		},
+		this.feed();
+
+	},
+	
+	initIndicator : function(){
+	
+		if(!this.dataSet || !this.indicator) return;
 		
-		loadConfig:{
+		var me = this;
+	
+		this.dataSet.loadIndicator = infestor.create('infestor.Indicator',{
 		
-			// mask:{
+			mask : true,
+		
+			showMask : function(){
 				
-				// show:function(){
+				me.showMask();
 				
-					// this.owner.owner.showMask();
-				
-				// },
-				// hide:function(){
-				
-					// this.owner.owner.hideMask();
-				
-				// }
+			},
 			
-			// },
-			mask:false,
-			indicator:{
+			hideMask : function(){
 			
-				show:function(){
-				
-					var scope = this.owner.owner;
-				
-					scope.elementLoadIndicator = scope.elementLoadIndicator || this.createIndicator({
+				me.hideMask();
+			
+			},
+		
+			showIndicator:function(){
+			
+				var scope = me;
+			
+				scope.elementLoadIndicator = scope.elementLoadIndicator || this.createIndicator({
 					
 						position:'absolute'
 					
 					}).appendTo(scope.getElement());
 
-					scope.elementLoadIndicator.show();
+				scope.elementLoadIndicator.show();
+			
+			},
+			hideIndicator:function(){
+			
+				var scope = me;
 				
-				},
-				hide:function(){
+				scope.elementLoadIndicator && scope.elementLoadIndicator.hide();
+			
+			},
+			changeIndicator:function(value){
+			
+				var scope = me;
 				
-					var scope = this.owner.owner;
-					
-					scope.elementLoadIndicator && scope.elementLoadIndicator.hide();
+				scope.elementLoadIndicator && scope.elementLoadIndicator.css('width', value + '%');
 				
-				},
-				change:function(value){
-				
-					var scope = this.owner.owner;
-					
-					scope.elementLoadIndicator && scope.elementLoadIndicator.css('width', value + '%');
-					
-				}
 			}
+		
+		});
+		
+		this.dataSet.submitIndicator = infestor.create('infestor.Indicator',{
+		
+			showMask : function(){
 				
-		}
+				me.showMask();
+				
+			},
+			
+			hideMask : function(){
+			
+				me.hideMask();
+			
+			},
+		
+			showIndicator:function(){
+			
+				var scope = me;
+			
+				scope.elementSubmitIndicator = scope.elementSubmitIndicator || this.createIndicator({
+				
+					position:'absolute',
+					bottom:0,
+					top:'auto',
+					'background-color':'green'
+				
+				}).appendTo(scope.getElement());
+
+				scope.elementSubmitIndicator.show();
+			
+			},
+			hideIndicator:function(){
+			
+				var scope = me;
+				
+				scope.elementSubmitIndicator && scope.elementSubmitIndicator.hide();
+			
+			},
+			changeIndicator:function(value){
+			
+				var scope = me;
+				
+				scope.elementSubmitIndicator && scope.elementSubmitIndicator.css('width', value + '%');
+				
+			}
+		
+		});
 	
-	},
-
-	init : function () {
-
-		this.callParent();
-
-		this.feed();
-
 	},
 
 	initEvents : function () {

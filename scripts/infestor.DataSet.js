@@ -26,16 +26,13 @@ infestor.define('infestor.DataSet', {
 	// 当前数据
 	current : 0,
 
-	// 显示加载进度 (bool|options:{ show:fn ,change:fn(value) ,hide:fn ,scope:obj})
+	// 显示加载进度 (bool|infestor.Indicator|options:{})
 	indicator:true,
 	
-	// 显示加载遮罩 (bool|options:{ show:fn , hide:fn ,scope:obj })
-	mask:true,
-	
-	// 提交选项  options:{ url:string,params:obj,method:get|post|jsonp,indicator:options|true|false,mask:options|true|false}
+	// 提交选项  options:{ url:string,params:obj,method:get|post|jsonp,indicator:options|obj|true|false}
 	submitConfig:null,
 	
-	// 加载选项 options:{remote:true|false,url:string,params:obj,method:get|post|jsonp,indicator:options|true|false,mask:options|true|false}
+	// 加载选项 options:{remote:true|false,url:string,params:obj,method:get|post|jsonp,indicator:options|obj|true|false}
 	loadConfig:null,
 		
 	// 拥有者对象
@@ -87,8 +84,7 @@ infestor.define('infestor.DataSet', {
 			url:this.url,
 			params:this.params,
 			method:this.method,
-			indicator:this.indicator,
-			mask:this.mask
+			indicator:this.indicator
 			
 		},this.loadConfig);
 		
@@ -100,23 +96,27 @@ infestor.define('infestor.DataSet', {
 		},this.submitConfig);
 		
 		
-		this.loadIndicator =  this.loadIndicator || infestor.create('infestor.Indicator',{ 
-
-			indicator:this.loadConfig.indicator,
-			mask:this.loadConfig.mask,
-			owner:this
-
-		});
+		this.loadIndicator =  this.loadIndicator ||  this.initIndicator(this.loadConfig.indicator);
 		
-		this.submitIndicator = this.submitIndicator || infestor.create('infestor.Indicator',{
-		
-			indicator:this.submitConfig.indicator,
-			mask:this.submitConfig.mask,
-			owner:this
-		
-		});
+		this.submitIndicator = this.submitIndicator ||  this.initIndicator(this.submitConfig.indicator);
 		
 	},
+	
+	initIndicator : function(opts){
+	
+		if(infestor.isBoolean(opts) && opts)
+			return infestor.create('infestor.Indicator');
+			
+		if(infestor.isRawObject(opts))
+			infestor.create('infestor.Indicator',opts);
+		
+		if(opts instanceof infestor.Indicator)
+			return opts;
+			
+		return null;
+	
+	},
+
 
 	setData : function (data) {
 

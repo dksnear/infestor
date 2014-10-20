@@ -10,14 +10,8 @@ infestor.define('infestor.Indicator',{
 	
 	interval:100,
 	
-	// 显示加载进度 (bool|options:{ show:fn ,change:fn(value) ,hide:fn ,scope:obj})
-	indicator:null,
-	
-	// 显示遮罩 (bool|options:{ show:fn , hide:fn ,scope:obj })
-	mask:null,
-	
-	// 拥有者对象
-	owner:null,
+	// 显示遮罩 (bool)
+	mask:true,
 	
 	stopNodes:[70,100,150,250,350,450,550,650,750,850,950,999],
 		
@@ -26,14 +20,14 @@ infestor.define('infestor.Indicator',{
 	init:function(){
 			
 		this.on('start',function(){
+					
+			this.mask && this.showMask();
 				
-			this.mask && this.showMask.call(this.mask.scope);
-						
 			this.startPos = infestor.random(0, 10)/10;
 			this.stopPos = infestor.random(40, this.stopNodes[this.stopNeedle])/10;
-
-			this.indicator && this.showIndicator.call(this.indicator.scope);		
-			this.indicator && this.changeIndicator.call(this.indicator.scope,this.startPos);
+			
+			this.showIndicator();
+			this.changeIndicator(this.startPos);
 			
 		
 		},this);
@@ -49,59 +43,26 @@ infestor.define('infestor.Indicator',{
 
 			this.stopPos = infestor.random(this.stopPos*10,this.stopNodes[this.stopNeedle])/10;
 			this.startPos =	infestor.random(this.startPos*10, this.stopPos*10)/10;
-			this.changeIndicator.call(this.indicator.scope,this.startPos);
+			
+			this.changeIndicator(this.startPos);
 		
 		},this);
 		
 		this.on('stop',function(){
 	
-		
-			this.indicator && this.changeIndicator.call(this.indicator.scope,100);
+			this.changeIndicator(100);
+			
+			infestor.delay(function () {
 
-			this.indicator && infestor.delay(function () {
-
-				this.hideIndicator.call(this.indicator.scope);			
-				this.changeIndicator.call(this.indicator.scope,0);
+				this.hideIndicator();			
+				this.changeIndicator(0);
 
 			}, 200,this);
 			
-			this.mask && this.hideMask.call(this.mask.scope);
+			this.mask && this.hideMask();
 		
 		},this);
-		
-		this.initIndicator();
-		this.initMask();
-	
-	},
-	
-	initIndicator:function(){
-	
-		if(!this.indicator) return this;
-		
-		if(infestor.isBoolean(this.indicator) && this.indicator)
-			this.indicator = {};
-		
-		this.showIndicator = this.indicator.show || this.showIndicator;
-		this.hideIndicator = this.indicator.hide || this.hideIndicator;
-		this.changeIndicator = this.indicator.change || this.changeIndicator;
-		
-		this.indicator.scope = this.indicator.scope || this;
-		
-		return this;
-
-	},
-	
-	initMask:function(){
-	
-		if(!this.mask ||(infestor.isBoolean(this.mask) && this.mask)) return this;
-		
-		this.showMask = this.mask.show;
-		this.hideMask = this.mask.hide;
-		
-		this.mask.scope = this.mask.scope || this;
-		
-		return this;
-	
+			
 	},
 	
 	createIndicator:function(opts){
