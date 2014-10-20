@@ -166,7 +166,7 @@
 
 .infestor-model-captcha-control-panel-head-captcha{
 
-	margin: 0 15px;
+	margin: 0 5px 0 15px;
 	height:40px;
 	width:115px;
 	
@@ -174,13 +174,36 @@
 
 .infestor-model-captcha-control-panel-head-backspace{
 
-	height:30px;
-	width:30px;
-	background-repeat:no-repeat;
-	background-image:url(../images/win-ctrl-icons-16.png);
-	background-position:-64px -4px;
+	height:16px;
+	width:16px;
+	background : url(../images/undo.png) no-repeat;
+	margin:0 5px 15px 0;
+	cursor:pointer;
 
 }
+
+.infestor-model-captcha-control-panel-head-refresh {
+
+	height:16px;
+	width:16px;
+	background : url(../images/refresh.png) no-repeat;
+	margin:0 5px 15px 0;
+	cursor:pointer;
+	
+
+}
+
+.infestor-model-captcha-control-panel-head-cancel {
+
+
+	height:16px;
+	width:16px;
+	background : url(../images/cancel.png) no-repeat;
+	margin:0 5px 15px 0;
+	cursor:pointer;
+
+}
+
 
 .infestor-model-captcha-control-panel-body{
 

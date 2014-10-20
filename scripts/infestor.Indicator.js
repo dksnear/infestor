@@ -10,11 +10,11 @@ infestor.define('infestor.Indicator',{
 	
 	interval:100,
 	
+	stopNodes:[70,100,150,250,350,450,550,650,750,850,950,999],
+	
 	// 显示遮罩 (bool)
 	mask:true,
-	
-	stopNodes:[70,100,150,250,350,450,550,650,750,850,950,999],
-		
+			
 	stopNeedle:0,
 	
 	init:function(){

@@ -77,7 +77,7 @@ infestor.define('infestor.form.Form', {
 					
 						position:'absolute'
 					
-					}).appendTo(scope.getElement());
+				}).appendTo(scope.getElement());
 
 				scope.elementLoadIndicator.show();
 			

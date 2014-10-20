@@ -5,6 +5,8 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 
 	extend : 'infestor.form.field.Field',
 
+	uses : ['infestor.Indicator'],
+	
 	cssUses : ['infestor.Form'],
 
 	cssClsElement : 'infestor-field infestor-model-captcha-field',
@@ -29,9 +31,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	captchaVUrl: '',	
 	// 验证码缓存参数名
 	captchaCacheTagName : 'candidate-captcha-cache-tag',
-	
-	//checkInterval:2500,
-	
+
 	altText:'loading..',
 	
 	layout : 'table',
@@ -52,7 +52,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		
 		this.callParent();
 		
-		this.refresh();
+		//this.refresh();
 
 	},
 
@@ -69,19 +69,25 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		
 		this.on('focus',infestor.throttle(function () {
 		
-			if(this.disabled || this.readOnly) return;
+			if(this.disabled || this.readOnly || this.isFocus) return;
+			
+			this.isFocus = true;
 		
 			this.captchaTip.autoPosition(this.element, 'right', 'middle');
 			this.captchaTip.show();
+			
+			this.refresh();
 
 		}, 100), this);
 		
 		
-		// this.on('blur',function () {
+		this.on('blur',function () {
 
 			// this.captchaTip.hide();
+			
+			this.isFocus = false;
 
-		// }, this);
+		}, this);
 		
 		
 		this.controlPanel && this.delegate(this.controlPanel.body,'click',function(inst,e){
@@ -97,10 +103,32 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	
 		this.controlPanel && this.delegate(this.controlPanel.head,'click',function(inst,e){
 		
+			return inst && inst.element.hasClass('infestor-model-captcha-control-panel-head-backspace');
 		
 		},function(inst,e){
 		
+			this.clearValue(true);
 		
+		},this);
+		
+		
+		this.controlPanel && this.delegate(this.controlPanel.head,'click',function(inst,e){
+		
+			return inst && inst.element.hasClass('infestor-model-captcha-control-panel-head-refresh');
+		
+		},function(inst,e){
+		
+			this.refresh();
+		
+		},this);
+		
+		this.controlPanel && this.delegate(this.controlPanel.head,'click',function(inst,e){
+			
+			return inst && inst.element.hasClass('infestor-model-captcha-control-panel-head-cancel');
+		
+		},function(inst,e){
+		
+			this.captchaTip.hide();
 		
 		},this);
 	
@@ -120,8 +148,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 				return {
 				
 					cssClsElement:'infestor-model-captcha-input-cell ' + this.cssClsElementInlineBlock
-					
-				
+								
 				};
 				
 			
@@ -285,15 +312,36 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 					name:'captcha-image',
 					css:{
 					
-						backgroundImage:'url('+ this.currentUrl +')',
 						backgroundPosition:pos,
 						backgroundRepeat:'no-repeat'
+					},
+					attr:{
+					
+						title:'验证图片'
 					}
 					
 				
 				},{
 					cssClsElement:'infestor-model-captcha-control-panel-head-backspace',
-					name:'backspace'
+					name:'backspace',
+					attr:{
+					
+						title:'退格'
+					}
+				},{
+					cssClsElement:'infestor-model-captcha-control-panel-head-refresh',
+					name:'refresh',
+					attr:{
+					
+						title:'刷新验证码'
+					}
+				},{
+					cssClsElement:'infestor-model-captcha-control-panel-head-cancel',
+					name:'cancel',
+					attr:{
+					
+						title:'关闭'
+					}
 				}]
 			
 			},
@@ -308,7 +356,6 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 					pos:i,
 					css:{
 					
-						backgroundImage:'url('+ this.currentUrl +')',
 						backgroundPosition:infestor.px(pos.x) + ' ' + infestor.px(pos.y),
 						backgroundRepeat:'no-repeat'
 					
@@ -366,20 +413,83 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	
 	refresh : function () {
 
-		
-		// this.setError();
-		
+				
 		this.currentUrl = this.captchaUrl + '?' + this.captchaCacheTagName + '=' + this.getId();
+			
+		this.loadCaptchaImage(this.currentUrl,function(){
 		
-		this.controlPanel.head.getItem('captcha-image').element.css('backgroundImage','url('+ this.currentUrl +')');
 		
-		this.controlPanel.eachItems(function(idx,item){
+			this.controlPanel.head.getItem('captcha-image').element.css('backgroundImage','url('+ this.currentUrl +')');
 		
-			item.element.css('backgroundImage','url('+ this.currentUrl +')');
+			this.controlPanel.eachItems(function(idx,item){
+			
+				item.element.css('backgroundImage','url('+ this.currentUrl +')');
+			
+			},this,'num');
+			
+			this.clearValue();
+			
 		
-		},this,'num');
-
-
+		},function(){});
+		
+	
+	},
+	
+	loadCaptchaImage : function(src,onload,onerror){
+	
+		var me = this,tempImage = new Image();
+		
+		tempImage.src = src;
+			
+		this.imageLoadIndicator = this.imageLoadIndicator || infestor.create('infestor.Indicator',{
+		
+			showMask:function(){ me.controlPanel.showMask(); },
+			hideMask:function(){ me.controlPanel.hideMask(); },
+			showIndicator:function(){ 
+				me.elementImageLoadIndicator = me.elementImageLoadIndicator || infestor.create('infestor.Element',{ 
+					css:{  
+					
+						position : 'absolute',
+						width : '0%',
+						height : '5px',
+						bottom: 0,
+						left : 0,
+						'background-color' : 'orange'
+					
+					} 
+				}).renderTo(me.controlPanel); 
+				
+				me.elementImageLoadIndicator.show();
+			},
+			hideIndicator:function(){
+			
+				me.elementImageLoadIndicator && me.elementImageLoadIndicator.hide();
+			
+			},
+			changeIndicator:function(value){
+			
+				me.elementImageLoadIndicator && me.elementImageLoadIndicator.element.css('width', value + '%');
+			
+			}
+		
+		});
+		
+		this.imageLoadIndicator.start();
+		
+		tempImage.onload = function(){
+		
+			onload && onload.call(me);
+			me.imageLoadIndicator.stop();
+		
+		};
+		
+		tempImage.onerror = function(){
+		
+			onerror && onerror.call(me);
+			me.imageLoadIndicator.stop();
+		
+		};
+		
 	},
 	
 	// # rewite methods
