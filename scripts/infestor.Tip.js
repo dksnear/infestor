@@ -99,6 +99,9 @@ infestor.define('infestor.Tip', {
 		
 			this.hideWithResizeHandler = this.hideWithResizeHandler || infestor.throttle(function(){
 				
+				
+				if(this.hidden) return;
+				
 				this.emit('beforehide',[this,this.hideWithResize,this.hideWithBlur]);
 				this.hide();
 				this.emit('afterhide',[this,this.hideWithResize,this.hideWithBlur]);
@@ -113,6 +116,8 @@ infestor.define('infestor.Tip', {
 		
 			
 			this.hideWithBlurHandler = this.hideWithBlurHandler || infestor.throttle(function(){
+				
+				if(this.hidden) return;
 				
 				this.emit('beforehide',[this,this.hideWithResize,this.hideWithBlur]);
 				this.hide();

@@ -45,21 +45,29 @@ infestor.define('infestor.form.field.Field', {
 		
 		},
 	
-		getValidateShower:function(){
+		getValidateShower:function(news){
 		
-			infestor.form.field.Field.validateShower = infestor.form.field.Field.validateShower || infestor.create('infestor.Tip',{		
+			var create = function(){
+			
+				return infestor.create('infestor.Tip',{		
 		
-				width:200,
-				hidden:true,
-				hideWithResize:true,
-				//hideWithBlur:true,
-				items:[{
-				
-					alias:'vpanel',
-					name:'vpanel'
-				}]
+					width:200,
+					hidden:true,
+					hideWithResize:true,
+					items:[{
+					
+						alias:'vpanel',
+						name:'vpanel'
+					}]
+			
+				}).renderTo(infestor.Dom.getBody());
+			
+			
+			};
+			
+			if(news) return create();
 		
-			}).renderTo(infestor.Dom.getBody());
+			infestor.form.field.Field.validateShower = infestor.form.field.Field.validateShower || create();
 			
 			return infestor.form.field.Field.validateShower;
 		
@@ -522,11 +530,13 @@ infestor.define('infestor.form.field.Field', {
 					success:function(data){
 					
 						!this.blockCheck && afterFn.call(this,!!data,opts.errorMsg);
+						this.emit('remoteCheckSuccess',[data,this],this);
 						
 					},
 					complete:function(succeed){
 					
 						!this.blockCheck && !succeed && afterFn.call(this,false,'服务器未响应验证请求!');
+						this.emit('remoteCheckComplete',[succeed,this],this);
 					}
 				
 				};

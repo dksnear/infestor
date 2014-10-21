@@ -51,8 +51,6 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		this.captchaVUrl && this.validators.push(this.captchaVUrl);
 		
 		this.callParent();
-		
-		//this.refresh();
 
 	},
 
@@ -70,6 +68,8 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 			if(this.disabled || this.readOnly || this.isFocus) return;
 			
 			this.isFocus = true;
+			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.form.ValidatePanel.VALIDATED_PASS : infestor.form.ValidatePanel.VALIDATED_ERROR);
+			this.validateShower && this.validateShower.autoPosition(this.element, 'bottom', 'head') && this.validateShower.show();	
 		
 			this.captchaTip.autoPosition(this.element, 'right', 'middle');
 			this.captchaTip.show();
@@ -81,16 +81,30 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		}, 100), this);
 		
 		
-		this.on('blur',function () {
+		// this.on('blur',function () {
 		
-			this.isFocus = false;
+			// this.isFocus = false;
 
-		}, this);
+		// }, this);
+		
+		this.captchaTip.on('afterhide',function(){
+		
+			this.validateShower && this.validateShower.hide();
+		
+		},this);
 		
 		this.delegate(this.controlPanel,'click',true,function(inst,e){
 		
 			if(inst.element.hasClass('infestor-model-captcha-control-panel-body-cell')){
-			 	this.setValue(inst.pos);
+			 
+				this.setValue(inst.pos);
+				
+				if(this.valueSet && this.valueSet.length == this.codeNum){
+				
+					this.check();
+				
+				}
+				
 				return;
 			}
 			
@@ -109,8 +123,9 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 			}
 			
 			if(inst.element.hasClass('infestor-model-captcha-control-panel-head-cancel')){
-			
+				
 				this.captchaTip.hide();
+				//this.validateShower && this.validateShower.hide();
 				return;
 				
 			}
@@ -159,6 +174,16 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 			infestor.stopPropagation(e);
 			
 		});
+		
+		return this;
+	
+	},
+	
+	createValidateShower:function(){
+	
+	
+		this.validateShower = infestor.form.field.Field.getValidateShower(true);
+		this.validatePanel = this.validateShower.getItem('vpanel');
 		
 		return this;
 	
