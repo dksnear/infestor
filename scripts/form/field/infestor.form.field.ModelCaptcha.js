@@ -64,8 +64,6 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	},
 	
 	initEvents : function(){
-	
-		// this.callParent();
 		
 		this.on('focus',infestor.throttle(function () {
 		
@@ -76,61 +74,51 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 			this.captchaTip.autoPosition(this.element, 'right', 'middle');
 			this.captchaTip.show();
 			
-			this.refresh();
+			!this.isActive && this.refresh();
+			
+			this.isActive = true;
 
 		}, 100), this);
 		
 		
 		this.on('blur',function () {
-
-			// this.captchaTip.hide();
-			
+		
 			this.isFocus = false;
 
 		}, this);
 		
+		this.delegate(this.controlPanel,'click',true,function(inst,e){
 		
-		this.controlPanel && this.delegate(this.controlPanel.body,'click',function(inst,e){
-		
-			 return inst && inst.element.hasClass('infestor-model-captcha-control-panel-body-cell');
-		
-		},function(inst,e){
-		
-			this.setValue(inst.pos);
-		
-		},this);
-		
-	
-		this.controlPanel && this.delegate(this.controlPanel.head,'click',function(inst,e){
-		
-			return inst && inst.element.hasClass('infestor-model-captcha-control-panel-head-backspace');
-		
-		},function(inst,e){
-		
-			this.clearValue(true);
-		
-		},this);
-		
-		
-		this.controlPanel && this.delegate(this.controlPanel.head,'click',function(inst,e){
-		
-			return inst && inst.element.hasClass('infestor-model-captcha-control-panel-head-refresh');
-		
-		},function(inst,e){
-		
-			this.refresh();
-		
-		},this);
-		
-		this.controlPanel && this.delegate(this.controlPanel.head,'click',function(inst,e){
+			if(inst.element.hasClass('infestor-model-captcha-control-panel-body-cell')){
+			 	this.setValue(inst.pos);
+				return;
+			}
 			
-			return inst && inst.element.hasClass('infestor-model-captcha-control-panel-head-cancel');
+			if(inst.element.hasClass('infestor-model-captcha-control-panel-head-backspace')){
+			
+				this.clearValue(true);
+				return;
+			
+			}
+			
+			if(inst.element.hasClass('infestor-model-captcha-control-panel-head-refresh')){
+			
+				this.refresh();
+				return;
+			
+			}
+			
+			if(inst.element.hasClass('infestor-model-captcha-control-panel-head-cancel')){
+			
+				this.captchaTip.hide();
+				return;
+				
+			}
+			
+			
 		
-		},function(inst,e){
+		},this,true);
 		
-			this.captchaTip.hide();
-		
-		},this);
 	
 	},
 	
@@ -166,7 +154,11 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		
 			this.emit('blur',arguments,this);
 		
-		},this);
+		},this).click(function(e){
+		
+			infestor.stopPropagation(e);
+			
+		});
 		
 		return this;
 	
@@ -403,6 +395,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 			
 				hidden:true,
 				hideWithResize:true,
+				hideWithBlur:true,
 				items : this.controlPanel
 
 		}).renderTo(infestor.Dom.getBody());	

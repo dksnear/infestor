@@ -52,6 +52,7 @@ infestor.define('infestor.form.field.Field', {
 				width:200,
 				hidden:true,
 				hideWithResize:true,
+				//hideWithBlur:true,
 				items:[{
 				
 					alias:'vpanel',

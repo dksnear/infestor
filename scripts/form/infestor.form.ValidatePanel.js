@@ -47,8 +47,7 @@ infestor.define('infestor.form.ValidatePanel',{
 	
 	initElement:function(){
 	
-		this.callParent();		
-		
+		this.callParent();
 		this.createStatusPanel();
 		this.createErrorPanel();
 		this.createPromptPanel();

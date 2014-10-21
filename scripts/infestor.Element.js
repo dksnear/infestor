@@ -890,9 +890,12 @@ infestor.define('infestor.Element', {
 	//@pradicate 委托条件
 	//@handle 委托方法
 	//@scope 委托方法执行域
-	delegate : function (target, eventName, pradicate, handle, scope) {
+	//@pop 事件不冒泡
+	delegate : function (target, eventName, pradicate, handle, scope, bubble) {
 
 		var me = this;
+		
+		if(!target) return this;
 
 		if (target instanceof infestor.Element)
 			target = target.element;
@@ -900,9 +903,11 @@ infestor.define('infestor.Element', {
 		scope = scope || this;
 
 		target[eventName](function (e) {
+		
+			bubble && infestor.stopPropagation(e);
 
 			e.target = e.target || e.srcElement;
-
+		
 			var args = [e.target.$infestor].concat(infestor.argsToArray(arguments));
 
 			if (infestor.isFunction(pradicate))
@@ -911,6 +916,8 @@ infestor.define('infestor.Element', {
 			if(pradicate)
 				return handle.apply(scope, args);
 		});
+		
+		return this;
 
 	},
 
