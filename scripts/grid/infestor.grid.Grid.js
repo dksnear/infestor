@@ -104,6 +104,7 @@ infestor.define('infestor.grid.Grid',{
 		if(this.gridRows[id]) return this;
 		
 		this.gridRows[id] = {};
+		this.gridRows[id].id = id;
 		this.gridRows[id].data = rowData;
 		this.gridRows[id].container = infestor.create('infestor.Element',{ cssClsElement:this.cssClsGridBodyRow ,tagName:'tr'}).renderTo(this.gridBodyContainer);
 		this.gridRows[id].cells = {};

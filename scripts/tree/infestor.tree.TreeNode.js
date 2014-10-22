@@ -1,18 +1,22 @@
 infestor.define('infestor.tree.TreeNode',{
 
-	alias : 'treeNode',
+	alias : 'treenode',
 
 	extend : 'infestor.Element',
 
 	cssUses : 'infestor.Tree',
 
 	cssClsElement : 'infestor-tree-node',
+	
+	cssClsNodeCell : 'infestor-tree-node-cell',
 
-	cssClsNodeSpaceCell : 'infestor-tree-node-sapce-cell',
+	cssClsNodeSpaceCell : 'infestor-tree-node-space-cell',
 	
 	cssClsNodeExpandSwitchCell : 'infestor-tree-node-expand-switch-cell',
 	
 	cssClsNodeCollapseSwitchCell : 'infestor-tree-node-collapse-switch-cell',
+	
+	cssClsNodeNonSwichCell : 'infestor-tree-node-non-switch-cell',
 	
 	cssClsNodeCheckCell : 'infestor-tree-node-check-cell',
 	
@@ -60,13 +64,13 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	parentNodeId : null,
 	
-	prarentNode : null,
+	parentNode : null,
 	
 	previousSiblingNode : null,
 	
 	nextSiblingNode : null,
 	
-	lastNode : null,
+	lastChildNode : null,
 	
 	childNodes : null,
 	
@@ -97,17 +101,15 @@ infestor.define('infestor.tree.TreeNode',{
 	
 		this.nodeSpaceCells = this.nodeSpaceCells || [];
 		
-		for(var i=0;i<this.nodeDepth;i++)
-			this.nodeSpaceCells.push(infestor.create('infestor.Element',{ cssClsElement: this.cssClsElementInlineBlock  + ' ' + this.cssClsNodeSpaceCell }).renderTo(this));
+		for(var i=0;i<this.nodeDepth-1;i++)
+			this.nodeSpaceCells.push(infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeSpaceCell].join(' ') }).renderTo(this));
 	
 		return this;
 	},
 	
 	createNodeSwitchCell : function(){
 	
-		var cssCls = this.isExpand ? this.cssClsNodeExpandSwitchCell : this.cssClsNodeCollapseSwitchCell;
-	
-		this.switchCell = infestor.create('infestor.Element',{ cssClsElement: this.cssClsElementInlineBlock  + ' ' + cssCls }).renderTo(this);
+		this.nodeSwitchCell = infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeNonSwichCell].join(' ') }).renderTo(this);
 		
 		return this;
 	
@@ -124,7 +126,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 		var cssCls = this.cssClsNodeExpandIconCell;
 	
-		this.iconCell = infestor.create('infestor.Element',{ cssClsElement: this.cssClsElementInlineBlock  + ' ' + cssCls }).renderTo(this);
+		this.nodeIconCell = infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeNormalIconCell].join(' ') }).renderTo(this);
 		
 		return this;
 	
@@ -132,9 +134,19 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	createNodeTextCell : function(){
 	
-		this.textCell = infestor.create('infestor.Element',{ cssClsElement: this.cssClsElementInlineBlock  + ' ' + this.cssClsNodeTextCell }).renderTo(this);
+		this.nodeTextCell = infestor.create('infestor.Element',{ cssClsElement: this.cssClsElementInlineBlock  + ' ' + this.cssClsNodeTextCell }).renderTo(this);
 		
 		return this;
+	
+	
+	},
+	
+	changeNodeIcon :function(){
+	
+	
+	},
+	
+	changeNodeSwichIcon:function(){
 	
 	
 	},
@@ -143,31 +155,106 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	// construct node
 	
-	createNode : function(opts){
 	
-		return infestor.create('infestor.widget.TreeNode',infestor.append({
+	addChildNode : function(node,fn){
+	
+	
+		if(node instanceof infestor.tree.TreeNode) 
+			return false;
+	
+		this.childNodes = this.childNodes || [];
 		
-			childNodes : []
+		node.nodeDepth = this.nodeDepth + 1;
+		node.parentNode = this;
+		node.previousSiblingNode = this.isBranch ? this.childNodes[this.childNodes.length-1] : null;	
+		node.previousSiblingNode && (node.previousSiblingNode.nextSiblingNode = node) && (node.previousSiblingNode.isLast = false);
 		
-		},opts));
+		
+		this.lastChildNode = node;
+		this.isBranch = true;
+		this.isLeaf = false;
+		
+		
+		this.changeNodeIcon();
+		this.changeNodeSwichIcon();
+		
+		fn && fn.call(this,node);
+		
+		return node;
+		
 	
 	},
 	
-	addChildNode : function(opts){
 	
-		return this.childNodes.push(this.createNode(infestor.append({
+	// 删除一个节点标识为@nodeId子节点
+	// @nodeId为空则删除最后一个子节点
+	removeChildNode : function(nodeId,fn){
+	
+		var i=0,len,node;
+		
+		if(!this.childNodes) return false;
+		
+		len = this.childNodes.length;
+		
+		if(nodeId){
+		
+			for(;i<len;i++){
 			
-			parentNode : this,
-			nodeDepth : this.nodeDepth + 1
+				if(this.childNodes[i].nodeId == nodeId){
+					node = this.childNodes.splice(i,1);
+					break;
+				}
+			}
+		}
+		
+		if(!nodeId) 
+			node = this.childNodes.pop();
+		
+		
+		if(!node) return false;
+		
+		if(node.isBranch){
+		
+			len = node.childNodes.length;
+			while(len){
 			
-		},opts)));
+				node.removeChildNode(null,fn);
+				len--;
+			}
+		
+		};
+				
+			
+		node.nextSiblingNode && (node.nextSiblingNode.previousSiblingNode = node.previousSiblingNode);
+		
+		node.previousSiblingNode && (node.previousSiblingNode.nextSiblingNode = node.nextSiblingNode);
+		
+		if(node.isLast) {
+		
+			this.lastChildNode = node.previousSiblingNode;
+			this.lastChildNode.isLast = true;
+		}
+		
+		this.changeNodeIcon();
+		this.changeNodeSwichIcon();
+		
+		fn && fn.call(this,node);
+		
+		return node;
 	
 	},
 	
+	removeNode:function(fn){
 	
+		return this.parentNode && this.parentNode.removeChildNode(this.nodeId,fn);
+	
+	},
+		
 	// manipulate node
 	
 	nodeExpand : function(){
+	
+		
 	
 	},
 	

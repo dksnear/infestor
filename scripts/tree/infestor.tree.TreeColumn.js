@@ -7,7 +7,7 @@ infestor.define('infestor.tree.TreeColumn',{
 	
 	uses : 'infestor.tree.TreeNode',
 
-	cssUses : ['infestor.grid','infestor.tree'],
+	cssUses : ['infestor.Grid','infestor.Tree'],
 	
 
 	// 列单元格创建接口
@@ -15,12 +15,12 @@ infestor.define('infestor.tree.TreeColumn',{
 	
 		this.columnCells = this.columnCells || {};
 		
-		return this.columnCells[row.id] = infestor.create('infestor.TreeNode',{
+		return this.columnCells[row.id] = infestor.create('infestor.tree.TreeNode',{
 		
 			tagName:'td',	
 			width : this.columnOptions.width || 60,
-			text : cellData.text,
-			nodeDepth : cellData.depth,
+			text : cellData[this.columnOptions.name],// cellData.$text,
+			nodeDepth : row.depth,
 			hidden : this.columnOptions.hidden
 			
 		}).renderTo(cellsCt);

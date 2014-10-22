@@ -1,13 +1,20 @@
 
 .infestor-tree-node{
 
+	text-align:left;
 
 }
 
+.infestor-tree-node-cell{
+
+	height: 16px;
+	width: 16px;
+
+}
 
 .infestor-tree-node-space-cell{
 
-
+	background-color:red;
 
 }
 
@@ -21,6 +28,11 @@
 
 
 
+}
+
+.infestor-tree-node-non-switch-cell{
+
+	background-color:blue;
 }
 
 .infestor-tree-node-check-cell{
@@ -39,9 +51,13 @@
 }
 	
 .infestor-tree-node-normal-icon-cell{
-}
+
+	background-color:green;}
 
 .infestor-tree-node-text-cell{
-}
+
+	vertical-align:top;
+	margin: 0 5px;
+	}
 
 .

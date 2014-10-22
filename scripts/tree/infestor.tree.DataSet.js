@@ -28,6 +28,21 @@ infestor.define('infestor.tree.DataSet',{
 	
 	},
 	
+	// setData : function(data){
+		
+		// this.callParent();
+		
+		// if(data.type == 'tree')
+			
+	
+	// },
+	
+	setData : function(data){
+	
+		return this.format(data);
+	
+	},
+	
 	// 按照数据模型格式化一个数据行
 	map : function(rowData) {
 		
