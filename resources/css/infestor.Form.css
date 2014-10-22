@@ -118,20 +118,20 @@
 /***************
 
 
-	model-captcha-field
+	candidate-captcha-field
 
 
 **********************/
 
 
-.infestor-model-captcha-field{
+.infestor-candidate-captcha-field{
 
 	
 
 }
 
 
-.infestor-model-captcha-input{
+.infestor-candidate-captcha-input{
 
 	width:160px;
 	border:1px solid #bfbfbf;
@@ -139,7 +139,7 @@
 }
 
 
-.infestor-model-captcha-input-cell{
+.infestor-candidate-captcha-input-cell{
 
 	width:30px;
 	height:30px;
@@ -148,25 +148,25 @@
 
 }
 
-.infestor-model-captcha-input:focus,.infestor-model-captcha-input-cell:hover{
+.infestor-candidate-captcha-input:focus,.infestor-candidate-captcha-input-cell:hover{
 
 	border-color: rgb(77, 144, 254);
     outline: none;
 	
 }
 
-.infestor-model-captcha-control-panel{
+.infestor-candidate-captcha-control-panel{
 
 	padding:5px;
 
 }
 
-.infestor-model-captcha-control-panel-head{
+.infestor-candidate-captcha-control-panel-head{
 
 
 }
 
-.infestor-model-captcha-control-panel-head-captcha{
+.infestor-candidate-captcha-control-panel-head-captcha{
 
 	margin: 0 10px 0 15px;
 	height:40px;
@@ -175,7 +175,7 @@
 	
 }
 
-.infestor-model-captcha-control-panel-head-backspace{
+.infestor-candidate-captcha-control-panel-head-backspace{
 
 	height:16px;
 	width:16px;
@@ -185,7 +185,7 @@
 
 }
 
-.infestor-model-captcha-control-panel-head-refresh {
+.infestor-candidate-captcha-control-panel-head-refresh {
 
 	height:16px;
 	width:16px;
@@ -196,7 +196,7 @@
 
 }
 
-.infestor-model-captcha-control-panel-head-cancel {
+.infestor-candidate-captcha-control-panel-head-cancel {
 
 
 	height:16px;
@@ -208,13 +208,13 @@
 }
 
 
-.infestor-model-captcha-control-panel-body{
+.infestor-candidate-captcha-control-panel-body{
 
 	width:210px;
 
 }
 
-.infestor-model-captcha-control-panel-body-cell{
+.infestor-candidate-captcha-control-panel-body-cell{
 
 	width:30px;
 	height:30px;

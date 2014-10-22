@@ -12,7 +12,7 @@ infestor.define('infestor.form.Form', {
 		'infestor.request', 
 		'infestor.form.field.Field',
 		'infestor.form.field.Captcha',
-		'infestor.form.field.ModelCaptcha',
+		'infestor.form.field.CandidateCaptcha',
 		'infestor.form.field.Combo'
 	],
 

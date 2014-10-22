@@ -1,7 +1,7 @@
 
-infestor.define('infestor.form.field.ModelCaptcha', {
+infestor.define('infestor.form.field.CandidateCaptcha', {
 
-	alias : 'modelcaptcha',
+	alias : 'candidatecaptcha',
 
 	extend : 'infestor.form.field.Field',
 
@@ -9,16 +9,15 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	
 	cssUses : ['infestor.Form'],
 
-	cssClsElement : 'infestor-field infestor-model-captcha-field',
+	cssClsElement : 'infestor-field infestor-candidate-captcha-field',
 
 	// 字段名
 	fieldName : null,
 
-	promptMsg : '输入图片上显示的数字和字母[忽略大小写];点击图片或按[Enter]键可重新获取!',
+	promptMsg : '根据验证图片上的字符,使用字符按钮输入验证码',
 	errorMsg : '验证码错误!',
 
 	checked : false,
-
 	value : null,
 	
 	// 验证字符数目
@@ -31,13 +30,8 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	captchaVUrl: '',	
 	// 验证码缓存参数名
 	captchaCacheTagName : 'candidate-captcha-cache-tag',
-
-	altText:'loading..',
 	
 	layout : 'table',
-	
-	allowNull: false,
-
 	
 	// #rewite methods
 	
@@ -65,7 +59,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		
 		this.on('focus',infestor.throttle(function () {
 		
-			if(this.disabled || this.readOnly || this.isFocus) return;
+			if(this.disabled || this.readOnly || this.checked) return;
 			
 			this.isFocus = true;
 			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.form.ValidatePanel.VALIDATED_PASS : infestor.form.ValidatePanel.VALIDATED_ERROR);
@@ -80,6 +74,11 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 
 		}, 100), this);
 		
+		this.on('remoteCheckSuccess',function(succceed){
+		
+			succceed && this.captchaTip.hide() && infestor.delay(function(){ this.validateShower && this.validateShower.hide();  },1000,this);
+			
+		},this);
 		
 		// this.on('blur',function () {
 		
@@ -95,11 +94,11 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		
 		this.delegate(this.controlPanel,'click',true,function(inst,e){
 		
-			if(inst.element.hasClass('infestor-model-captcha-control-panel-body-cell')){
+			if(inst.element.hasClass('infestor-candidate-captcha-control-panel-body-cell')){
 			 
-				this.setValue(inst.pos);
+				 var succeed = this.setValue(inst.pos);
 				
-				if(this.valueSet && this.valueSet.length == this.codeNum){
+				if(succeed && this.valueSet.length == this.codeNum){
 				
 					this.check();
 				
@@ -108,21 +107,21 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 				return;
 			}
 			
-			if(inst.element.hasClass('infestor-model-captcha-control-panel-head-backspace')){
+			if(inst.element.hasClass('infestor-candidate-captcha-control-panel-head-backspace')){
 			
 				this.clearValue(true);
 				return;
 			
 			}
 			
-			if(inst.element.hasClass('infestor-model-captcha-control-panel-head-refresh')){
+			if(inst.element.hasClass('infestor-candidate-captcha-control-panel-head-refresh')){
 			
 				this.refresh();
 				return;
 			
 			}
 			
-			if(inst.element.hasClass('infestor-model-captcha-control-panel-head-cancel')){
+			if(inst.element.hasClass('infestor-candidate-captcha-control-panel-head-cancel')){
 				
 				this.captchaTip.hide();
 				//this.validateShower && this.validateShower.hide();
@@ -141,7 +140,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	
 		this.fieldInput = this.fieldInput || infestor.create('infestor.Element',{
 		
-			cssClsElement:'infestor-model-captcha-input',
+			cssClsElement:'infestor-candidate-captcha-input',
 			attr:{
 			
 				tabindex:-1
@@ -150,7 +149,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 			
 				return {
 				
-					cssClsElement:'infestor-model-captcha-input-cell ' + this.cssClsElementInlineBlock
+					cssClsElement:'infestor-candidate-captcha-input-cell ' + this.cssClsElementInlineBlock
 								
 				};
 				
@@ -218,11 +217,11 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		var pos,item;
 
 		if(infestor.isArray(value))
-			return infestor.each(value,function(v){ this.setValue(v); },this),this;
+			return infestor.each(value,function(v){ this.setValue(v); },this),true;
 			
 		this.valueSet = this.valueSet || [];
 		
-		if(!this.currentUrl || !infestor.isNumber(value) || value < 0 || this.valueSet.length >= this.codeNum) return this;
+		if(!this.currentUrl || !infestor.isNumber(value) || value < 0 || this.valueSet.length >= this.codeNum) return false;
 		
 		value = value > this.candidateNum ? this.candidateNum : value;
 			
@@ -230,7 +229,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		
 		item = this.fieldInput.getItem(this.valueSet.length);
 		
-		if(!item) return this;
+		if(!item) return false;
 			
 		item.element.css({
 		
@@ -243,7 +242,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		this.valueSet.push(value);
 		this.value = this.valueSet.join('');
 		
-		return this;
+		return true;
 	
 	},
 	
@@ -251,7 +250,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 	
 		var pos,item;
 		
-		if(!this.valueSet || this.valueSet.length < 1) return this;
+		if(!this.valueSet || this.valueSet.length < 1) return false;
 		
 		if(!last) {
 		
@@ -264,7 +263,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		
 		item = this.fieldInput.getItem(this.valueSet.length-1);
 		
-		if(!item) return this;
+		if(!item) return false;
 			
 		item.element.css({
 		
@@ -278,7 +277,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		this.value = this.valueSet.join('');
 		
 	
-		return this;
+		return true;
 	},
 	
 	setReadOnly : function(readOnly){
@@ -317,15 +316,15 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 		
 		this.controlPanel = this.controlPanel || infestor.create('infestor.Panel',{
 		
-			cssClsBody :'infestor-model-captcha-control-panel-body',
+			cssClsBody :'infestor-candidate-captcha-control-panel-body',
 		
 			head:{
 			
-				cssClsElement:'infestor-model-captcha-control-panel-head',
+				cssClsElement:'infestor-candidate-captcha-control-panel-head',
 				itemLayout:'horizon',
 				items:[{
 					
-					cssClsElement:'infestor-model-captcha-control-panel-head-captcha',
+					cssClsElement:'infestor-candidate-captcha-control-panel-head-captcha',
 					name:'captcha-image',
 					css:{
 					
@@ -339,21 +338,21 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 					
 				
 				},{
-					cssClsElement:'infestor-model-captcha-control-panel-head-backspace',
+					cssClsElement:'infestor-candidate-captcha-control-panel-head-backspace',
 					name:'backspace',
 					attr:{
 					
 						title:'退格'
 					}
 				},{
-					cssClsElement:'infestor-model-captcha-control-panel-head-refresh',
+					cssClsElement:'infestor-candidate-captcha-control-panel-head-refresh',
 					name:'refresh',
 					attr:{
 					
 						title:'刷新验证码'
 					}
 				},{
-					cssClsElement:'infestor-model-captcha-control-panel-head-cancel',
+					cssClsElement:'infestor-candidate-captcha-control-panel-head-cancel',
 					name:'cancel',
 					attr:{
 					
@@ -369,7 +368,7 @@ infestor.define('infestor.form.field.ModelCaptcha', {
 			
 				return {
 			
-					cssClsElement:'infestor-model-captcha-control-panel-body-cell ' + this.cssClsElementInlineBlock,
+					cssClsElement:'infestor-candidate-captcha-control-panel-body-cell ' + this.cssClsElementInlineBlock,
 					pos:i,
 					css:{
 					
