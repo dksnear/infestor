@@ -9,9 +9,7 @@ infestor.define('infestor.tree.TreeColumn',{
 
 	cssUses : ['infestor.grid','infestor.tree'],
 	
-	
 
-	
 	// 列单元格创建接口
 	createColumnCell : function(cellData,rowData,cellsCt,row){
 	

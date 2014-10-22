@@ -6,8 +6,8 @@ infestor.define('infestor.tree.DataSet',{
 	extend : 'infestor.DataSet',
 	
 	// 数据模型类型
-	// 数组数据模型 array { id:'',pid:'',text:'',...}
-	// 树对象数据模型 tree { text:'' ,children:[] ,..}
+	// 数组数据模型 array { id:'',pid:'',$text:'',...}
+	// 树对象数据模型 tree { $text:'' ,children:[] ,..}
 	type :'array',
 	
 	// 根节点数据父标识(数组数据模型)
@@ -16,9 +16,9 @@ infestor.define('infestor.tree.DataSet',{
 	// 数据模型(数组数据模型)
 	model : {
 	
-		nodeId : 'id',
-		parentNodeId: 'pId',
-		text : 'text'
+		$nodeId : 'id',
+		$parentNodeId: 'pId',
+		$text : 'text'
 	
 	},
 	
@@ -67,7 +67,7 @@ infestor.define('infestor.tree.DataSet',{
 		
 			for(var i=0;i<data.length;i++){
 			
-				if(data[i].parentNodeId === pId)
+				if(data[i].$parentNodeId === pId)
 				    return node = data.splice(i,1)[0] || false;
 			}
 			
@@ -85,7 +85,7 @@ infestor.define('infestor.tree.DataSet',{
 		
 			var child;
 		
-			while((child = getNode(node.nodeId))!==false){
+			while((child = getNode(node.$nodeId))!==false){
 			
 				node.children.push(child);
 				arguments.callee(child);
@@ -112,8 +112,8 @@ infestor.define('infestor.tree.DataSet',{
 			
 			if(!node.rawData){
 			
-				o[this.model.parentNodeId] =  pNode && pNode.nodeId || String(genId++);
-				o[this.model.nodeId] =  node.nodeId || String(genId++);
+				o[this.model.$parentNodeId] =  pNode && pNode.$nodeId || String(genId++);
+				o[this.model.$nodeId] =  node.$nodeId || String(genId++);
 
 				data.push(infestor.appendIf(o,node,['children'],null,true));
 			}
