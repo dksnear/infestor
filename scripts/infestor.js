@@ -219,7 +219,7 @@ infestor js
 
 			global.each(obj, function (idx, val) {
 
-				newObj.push(func.call(scope || val, idx, val));
+				arr.push(func.call(scope || val, idx, val));
 			});
 
 			return arr;

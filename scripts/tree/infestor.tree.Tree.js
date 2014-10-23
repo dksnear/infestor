@@ -4,7 +4,7 @@ infestor.define('infestor.tree.Tree',{
 	
 	extend : 'infestor.grid.Grid',
 	
-	uses : ['infestor.tree.DataSet','infestor.tree.TreeColumn'],
+	uses : ['infestor.tree.DataSet','infestor.tree.TreeColumn','infestor.tree.TreeNode'],
 	
 	dataSetClsName : 'infestor.tree.DataSet',
 	
@@ -21,11 +21,11 @@ infestor.define('infestor.tree.Tree',{
 		this.dataSet && this.dataSet.on('load', function (data) {
 		
 			this.rootPId = this.dataSet.rootPId;
-			this.addRow(data);
+			
+			!this.rootRow ? this.createTree(this.dataSet.map(data)) : this.addRow(this.dataSet.map(data));
 		
 		},this);
 		
-
 	},
 	
 	
@@ -48,15 +48,59 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
+	createTree : function(data){
+	
+		var data = data && infestor.map(data,function(){ return this; }),
+			getChildNode = function(pId){
+		
+				var node,i=0,len = data.length;
+			
+				for(;i<len;i++){
+				
+					if(data[i].$parentNodeId === pId)
+						return node = data.splice(i,1)[0] || false;
+				}
+				
+				return false;
+			
+			};
+		
+		this.gridRows = [];
+		
+		this.rootRow = this.addRow({
+		
+			$nodeId:this.rootPId,
+			$parentNodeId:null
+		});
+	
+		(function(pId){
+		
+			var child,row;
+		
+			while((child = getChildNode(pId))!==false){	
+		
+				row = this.addRow(child);
+				
+				row && arguments.callee.call(this,row.id);
+				
+			}
+
+		}).call(this,this.rootRow.id);
+		
+	
+	
+	},
+	
 	addRow : function(rowData){
 	
 		var id = rowData.$nodeId,
 			pId = rowData.$parentNodeId,
-			children = rowData.children,
-			hasChild = rowData.children && rowData.children.length > 0,
-			isRoot = this.rootPId == pId,
+			isRoot = infestor.isNull(pId),
 			row = {},
 			parentRow;
+			
+		if(infestor.isArray(rowData))
+			return infestor.each(rowData,function(idx,data){ this.addRow(data);  },this), true,
 				
 		this.gridRows = this.gridRows || {};
 		
@@ -90,17 +134,13 @@ infestor.define('infestor.tree.Tree',{
 		
 		infestor.each(this.gridColumns,function(name,column){
 		
-			row.cells[name] = column.createColumnCell(rowData.rawData[name],rowData.rawData,row.container,row);
+			row.cells[name] = column.createColumnCell(rowData.rawData && rowData.rawData[name],rowData.rawData,row.container,row);
 		
 		},this);
 		
 		this.gridRows[id] = row;
 		
-		hasChild && infestor.each(children,function(idx,node){
-		
-			this.addRow(node);
-		
-		},this);
+		return row;
 		
 	},
 	

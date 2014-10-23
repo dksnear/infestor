@@ -37,19 +37,13 @@ infestor.define('infestor.tree.DataSet',{
 	
 	// },
 	
-	setData : function(data){
-	
-		return this.format(data);
-	
-	},
 	
 	// 按照数据模型格式化一个数据行
 	map : function(rowData) {
 		
 		var set = [],o = {
 		
-			rawData : rowData,
-			children : []
+			rawData : rowData
 		
 		};
 	
@@ -73,14 +67,24 @@ infestor.define('infestor.tree.DataSet',{
 	
 	},
 	
+	// 按照数据模型反格式化一个数据行
+	reverse : function(rowData){
+	
+		if(infestor.isArray(rowData))
+			return infestor.map(rowData,function(){  return this.rawData; });
+		
+		return rowData.rawData;
+	
+	},
+	
 	// 将数组型数据结构转换为树型对象数据结构
-	format : function(data,rootPId) {
+	array2object : function(data,rootPId) {
 	
 		var data = data || this.data,rootNode,getNode = function(pId){
 		
-			var node;
+			var node,i=0,len = data.length;
 		
-			for(var i=0;i<data.length;i++){
+			for(;i<len;i++){
 			
 				if(data[i].$parentNodeId === pId)
 				    return node = data.splice(i,1)[0] || false;
@@ -102,6 +106,7 @@ infestor.define('infestor.tree.DataSet',{
 		
 			while((child = getNode(node.$nodeId))!==false){
 			
+				node.children = node.children || [];
 				node.children.push(child);
 				arguments.callee(child);
 			}
@@ -115,11 +120,11 @@ infestor.define('infestor.tree.DataSet',{
 	},
 
 	// 将树型对象数据结构转换为数组型数据结构
-	reverse : function(node){
+	object2array : function(node,map){
 	
 		var data = [],genId = 0;
 		
-		(function(node,pNode){
+		(function(node,pNode,scope){
 		
 			var caller = arguments.callee,o={};
 		
@@ -129,8 +134,12 @@ infestor.define('infestor.tree.DataSet',{
 			
 				o[this.model.$parentNodeId] =  pNode && pNode.$nodeId || String(genId++);
 				o[this.model.$nodeId] =  node.$nodeId || String(genId++);
-
-				data.push(infestor.appendIf(o,node,['children'],null,true));
+				
+				o = infestor.appendIf(o,node,['children'],null,true);
+				
+				map && (o = this.map(o));
+					
+				data.push(o);
 			}
 			
 			node.children && node.children.length && infestor.each(node.children,function(){
@@ -140,7 +149,7 @@ infestor.define('infestor.tree.DataSet',{
 			});
 			
 		
-		})(node,null);
+		})(node,null,this);
 		
 		
 		return data;
