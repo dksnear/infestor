@@ -26,6 +26,19 @@ infestor.define('infestor.tree.Tree',{
 		
 		},this);
 		
+		this.delegate(this,'click',true,function(inst,e){
+		
+		
+			if(inst.element.hasClass(infestor.tree.TreeNode.prototype.cssClsNodeSwitchCell)){
+				
+				 if(inst.parent.isExpand)
+					inst.parent.nodeCollapse();
+				 else inst.parent.nodeExpand();
+				
+			}
+		
+		},this);
+		
 	},
 	
 	
@@ -97,7 +110,9 @@ infestor.define('infestor.tree.Tree',{
 			pId = rowData.$parentNodeId,
 			isRoot = infestor.isNull(pId),
 			row = {},
-			parentRow;
+			parentRow,
+			finalNode,
+			rows;
 			
 		if(infestor.isArray(rowData))
 			return infestor.each(rowData,function(idx,data){ this.addRow(data);  },this), true,
@@ -110,25 +125,64 @@ infestor.define('infestor.tree.Tree',{
 		
 		if(!parentRow && !isRoot) return false;
 		
+		rows = this.gridRows;
+		
 		row.id = id;
 		row.depth = isRoot ? 1 : (parentRow.depth +1);
 		row.data = rowData;
 		row.cells = {};
-		row.container = infestor.create('infestor.Element',{ cssClsElement:this.cssClsGridBodyRow ,tagName:'tr'});
+		row.container = infestor.create('infestor.Element',{ hidden: !isRoot, cssClsElement:this.cssClsGridBodyRow ,tagName:'tr'});
 		
 		isRoot && row.container.renderTo(this.gridBodyContainer);
 		
 		if(!isRoot){
-		
-			if(parentRow.treeNode.lastChildNode)
-				row.container.element.after(this.gridRows[parentRow.treeNode.lastChildNode.nodeId].container.element);
+			
+			finalNode = parentRow.treeNode.getFinalNode();
+			
+			if(finalNode)
+				row.container.element.after(this.gridRows[finalNode.nodeId].container.element);
 			else row.container.element.after(parentRow.container.element);
 		
 		}
 			
 		row.treeNode = this.treeColumn.createColumnCell(rowData.rawData,rowData,row.container,row);
 		
+		row.treeNode.nodeId = row.id;
+		
 		row.treeNode.isRoot = isRoot;
+		
+		row.treeNode.on({
+		
+			addChildNode : function(){
+			
+				
+			},
+			removeChildNode :function(){
+			
+			
+			},		
+			nodeExpand : function(){
+			
+				infestor.each(this.childNodes,function(idx,node){
+				
+					node = rows[node.nodeId];
+					node && node.container && node.container.show();
+				
+				});
+			},
+			nodeCollapse : function(){
+			
+				infestor.each(this.childNodes,function(idx,node){
+				
+					node = rows[node.nodeId];
+					node && node.container && node.container.hide();
+					node && node.treeNode.nodeCollapse();
+				
+				});
+			
+			}
+		
+		});
 		
 		!isRoot && parentRow.treeNode.addChildNode(row.treeNode);
 		

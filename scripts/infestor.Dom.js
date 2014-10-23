@@ -532,6 +532,11 @@ infestor.define('infestor.Dom', {
 		return this.$transformStyle = null,
 		this;
 	},
+	
+	getClass : function(){
+	
+		return  this.element && this.element.className || '';
+	},
 
 	hasClass : function (cls) {
 
@@ -546,8 +551,7 @@ infestor.define('infestor.Dom', {
 
 	addClass : function (cls) {
 
-		var me = this,
-		mutiCls;
+		var mutiCls;
 
 		if (!this.element || !cls)
 			return this;
@@ -558,9 +562,9 @@ infestor.define('infestor.Dom', {
 		mutiCls = cls.split(' ');
 
 		if (mutiCls.length > 1)
-			return infestor.each(mutiCls, function () {
-				me.addClass(String(this));
-			}), this;
+			return infestor.each(mutiCls, function (idx,cls) {
+				this.addClass(String(cls));
+			},this), this;
 
 		cls = mutiCls[0];
 
@@ -571,8 +575,7 @@ infestor.define('infestor.Dom', {
 
 	removeClass : function (cls) {
 
-		var me = this,
-		mutiCls;
+		var mutiCls;
 
 		if (!this.element || !cls)
 			return this;
@@ -583,9 +586,9 @@ infestor.define('infestor.Dom', {
 		mutiCls = cls.split(' ');
 
 		if (mutiCls.length > 1)
-			return infestor.each(mutiCls, function () {
-				me.removeClass(String(this));
-			}), this;
+			return infestor.each(mutiCls, function (idx,cls) {
+				this.removeClass(String(cls));
+			},this), this;
 
 		cls = mutiCls[0];
 
@@ -760,9 +763,17 @@ infestor.define('infestor.Dom', {
 		return this.element && this.css('display', 'none'),this;
 	},
 
-	show : function () {
+	show : function (mode) {
 	
-		return this.element && this.css('display', 'block'),this;
+		var nodeName = this.element && this.element.nodeName.toLowerCase() || '',
+			map = {
+			
+				tr:'table-row'
+			};
+			
+		mode = mode || map[nodeName] || 'block';
+	
+		return this.element && this.css('display', mode),this;
 	},
 
 	remove : function () {

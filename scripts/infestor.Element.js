@@ -321,46 +321,7 @@ infestor.define('infestor.Element', {
 
 		return this;
 	},
-	
-	// @options 
-	changeCssCls:function(options){
-	
-	
-		var attrName,cssCls,actionFn,defaultFn = function(oldCssCls,newCssCls){
 		
-				return this.element.removeClass(oldCssCls).addClass(newCssCls);
-			
-			};
-		
-		if(!options) return this;
-		
-		if(infestor.isString(options)){
-			
-			attrName = 'cssClsElement';
-			cssCls = options;
-			actionFn = defaultFn;
-		};
-		
-		if(infestor.isFunction(options)){
-		
-			attrName = 'cssClsElement';
-			cssCls = this.cssClsElement;
-			actionFn = options;
-		};
-	
-		if(infestor.isRawObject(options)){
-		
-			attrName = options.attrName || 'cssClsElement';
-			cssCls = options.cssCls || this.cssClsElement;
-			actionFn = options.actionFn || defaultFn;
-		};
-			
-		/^cssCls.+/.test(attrName) && !infestor.isUndefined(this[attrName]) && actionFn.call(this,this[attrName],cssCls) && (this[attrName] = cssCls);
-		
-		return this;
-	
-	},
-	
 	setCss:function(list,opts){
 	
 		list = list || [];

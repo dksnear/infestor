@@ -14,25 +14,31 @@
 
 .infestor-tree-node-space-cell{
 
-	background-color:red;
+
+}
+
+.infestor-tree-node-switch-cell{
+
+	background-position:-2px -2px;
 
 }
 
 .infestor-tree-node-expand-switch-cell{
 
+	background-image:url(../images/arrow-down.gif);
 
 
 }
 
 .infestor-tree-node-collapse-switch-cell{
 
-
+	background-image:url(../images/arrow-right.gif);
 
 }
 
 .infestor-tree-node-non-switch-cell{
 
-	background-color:blue;
+
 }
 
 .infestor-tree-node-check-cell{
@@ -43,16 +49,23 @@
 	
 .infestor-tree-node-half-check-cell{
 }
+
+.infestor-tree-node-icon-cell{
+
+
+}
 	
 .infestor-tree-node-expand-icon-cell{
-}
+
+	background-image:url(../images/folder-page-white.png)}
 	
 .infestor-tree-node-collapse-icon-cell{
-}
+
+	background-image:url(../images/folder.png);}
 	
 .infestor-tree-node-normal-icon-cell{
 
-	background-color:green;}
+	background-image:url(../images/page-white.png);}
 
 .infestor-tree-node-text-cell{
 

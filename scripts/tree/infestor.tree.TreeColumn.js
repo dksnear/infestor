@@ -16,7 +16,7 @@ infestor.define('infestor.tree.TreeColumn',{
 		this.columnCells = this.columnCells || {};
 		
 		return this.columnCells[row.id] = infestor.create('infestor.tree.TreeNode',{
-		
+	
 			tagName:'td',	
 			width : this.columnOptions.width || 60,
 			text : cellData && cellData[this.columnOptions.name],// cellData.$text,
