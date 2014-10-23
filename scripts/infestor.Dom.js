@@ -763,17 +763,9 @@ infestor.define('infestor.Dom', {
 		return this.element && this.css('display', 'none'),this;
 	},
 
-	show : function (mode) {
+	show : function () {
 	
-		var nodeName = this.element && this.element.nodeName.toLowerCase() || '',
-			map = {
-			
-				tr:'table-row'
-			};
-			
-		mode = mode || map[nodeName] || 'block';
-	
-		return this.element && this.css('display', mode),this;
+		return this.element && this.css('display',''),this;
 	},
 
 	remove : function () {
