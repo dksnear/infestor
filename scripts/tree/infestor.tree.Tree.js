@@ -11,38 +11,55 @@ infestor.define('infestor.tree.Tree',{
 	async : false,
 	
 	// 表格树 
-	multiColumn : true,
+	multiColumn : false,
+
+	// 根节点可见
+	rootVisible : false,
 	
 	// 树结构列
 	treeColumn : null,
 	
 	// rewrite
-	
 	initEvents : function () {
 
 		this.dataSet && this.dataSet.on('load', function (data) {
 		
-			this.rootPId = this.dataSet.rootPId;
+			this.rootPId = this.rootPId || this.dataSet.rootPId;
 			
-			!this.rootRow ? this.createTree(this.dataSet.map(data)) : this.addRow(this.dataSet.map(data),true);
+			!this.rootRow && this.createTree(data);
+			
+			if(!this.async) return;
+			
+			this.addRow(data);
+			
+			if(!this.currentLoadingNode) return;
+			
+			this.currentLoadingNode.nodeExpand();
+			
+			infestor.each(this.currentLoadingNode.childNodes,function(idx,node){ this.loadNode(node); },this);
+			
+			this.currentLoadingNode = null;
+
 		
 		},this);
-		
-		
-		this.async && this.dataSet && this.dataSet.on('loadComplete',function(){
-		
-		
-		
-		}); 
-		
+			
 		this.delegate(this,'click',true,function(inst,e){
 		
+			var node = inst.parent;
 		
-			if(inst.element.hasClass(infestor.tree.TreeNode.prototype.cssClsNodeSwitchCell)){
+			if(node && inst.element.hasClass(infestor.tree.TreeNode.prototype.cssClsNodeSwitchCell)){
+			
+					
+				if(this.async && !node.isLeaf && !node.isLoaded){
+									
+					this.loadNode(node);
+					
+					this.currentLoadingNode = node;
+					
+					return;
+				}
 				
-				 if(inst.parent.isExpand)
-					inst.parent.nodeCollapse();
-				 else inst.parent.nodeExpand();
+				 node.isExpand ? node.nodeCollapse() : node.nodeExpand();
 				
 			}
 		
@@ -50,15 +67,38 @@ infestor.define('infestor.tree.Tree',{
 		
 	},
 	
+	createGridHead  : function(){
+	
+		if(!this.multiColumn) return;
+		
+		this.callParent();
+	
+	},
 	
 	createColumns : function(){
+	
+	
+		if(!this.multiColumn){
+		
+			this.treeColumn = infestor.grid.Grid.createColumn({
+			
+				type:'infestor.tree.TreeColumn',
+				name:this.dataSet.model.$text,
+				width:'100%'
+			
+			});
+		
+			return;
+		
+		}
+		
 	
 		this.gridColumns = this.gridColumns || {};
 	
 		infestor.each(this.columnsOptions,function(idx,options){
 		
-			if(options.type == 'infestor.tree.TreeColumn')
-				return this.treeColumn = infestor.create(options.type,{ columnOptions : options }),true;
+			if(options.type == 'infestor.tree.TreeColumn' || options.alias =='treecolumn')
+				return this.treeColumn = infestor.grid.Grid.createColumn(options),true;
 		
 			this.gridColumns[options.name] = infestor.create(options.type || 'infestor.grid.Column',{ columnOptions : options });
 			
@@ -72,20 +112,7 @@ infestor.define('infestor.tree.Tree',{
 	
 	createTree : function(data){
 	
-		var data = data && infestor.map(data,function(){ return this; }),
-			getChildNode = function(pId){
-		
-				var node,i=0,len = data.length;
-			
-				for(;i<len;i++){
-				
-					if(data[i].$parentNodeId === pId)
-						return node = data.splice(i,1)[0] || false;
-				}
-				
-				return false;
-			
-			};
+		var data,getChildNode;
 		
 		this.gridRows = [];
 		
@@ -94,7 +121,32 @@ infestor.define('infestor.tree.Tree',{
 			$nodeId:this.rootPId,
 			$parentNodeId:null
 			
-		},true);
+		},this.rootVisible);
+		
+		if(this.async){
+		
+			// 展开根节点
+			this.loadNode(this.rootRow.treeNode);				
+			this.currentLoadingNode = this.rootRow.treeNode;
+		
+			return;
+		
+		}
+				
+		data = data && infestor.map(data,function(){ return this; });
+		getChildNode = function(pId){
+		
+			var node,i=0,len = data.length;
+		
+			for(;i<len;i++){
+			
+				if(data[i].$parentNodeId === pId)
+					return node = data.splice(i,1)[0] || false;
+			}
+			
+			return false;
+		
+		};
 	
 		(function(pId){
 		
@@ -111,10 +163,25 @@ infestor.define('infestor.tree.Tree',{
 		}).call(this,this.rootRow.id);
 		
 	
+		// 展开根节点
+		this.rootRow.treeNode.nodeExpand();
 	
 	},
 	
-	addRow : function(rowData,shown){
+	loadNode : function(node){
+	
+		var params = {
+					
+			params:{}
+		};
+
+		params.params[this.dataSet.model.$parentNodeId || 'pId'] = node.nodeId;
+		
+		this.dataSet.load(params);
+	
+	},
+	
+	addRow : function(rowData,visible){
 	
 		var id = rowData.$nodeId,
 			pId = rowData.$parentNodeId,
@@ -125,7 +192,7 @@ infestor.define('infestor.tree.Tree',{
 			tree = this;
 			
 		if(infestor.isArray(rowData))
-			return infestor.each(rowData,function(idx,data){ this.addRow(data,shown);  },this), true,
+			return infestor.each(rowData,function(idx,data){ this.addRow(data,visible);  },this), true,
 				
 		this.gridRows = this.gridRows || {};
 		
@@ -139,7 +206,7 @@ infestor.define('infestor.tree.Tree',{
 		row.depth = isRoot ? 1 : (parentRow.depth +1);
 		row.data = rowData;
 		row.cells = {};
-		row.container = infestor.create('infestor.Element',{ hidden:!shown, cssClsElement:this.cssClsGridBodyRow ,tagName:'tr'});
+		row.container = infestor.create('infestor.Element',{ hidden:!visible, cssClsElement:this.cssClsGridBodyRow ,tagName:'tr'});
 		
 		isRoot && row.container.renderTo(this.gridBodyContainer);
 		
@@ -156,39 +223,14 @@ infestor.define('infestor.tree.Tree',{
 		row.treeNode = this.treeColumn.createColumnCell(rowData.rawData,rowData,row.container,row);
 	
 		row.treeNode.nodeId = row.id;
-		
 		row.treeNode.isRoot = isRoot;
-		
-		if(this.async){
-		
-			row.treeNode.isBranch = true;
-			row.treeNode.isLeaf = false;
-			row.treeNode.isExpand = false;
-			row.treeNode.isCollapse = true;
-			row.treeNode.changeNodeIcon().changeNodeSwitchIcon();
-			isRoot && (row.treeNode.isLoaded = true);
-		
-		}
-		
+		row.treeNode.isLeaf = !isRoot;
+			
 		row.treeNode.on({
 			
 			nodeExpand : function(){
 			
-			
-				if(!this.isLoaded && tree.async){
-					
-					tree.dataSet.load({
-					
-						params:{
-						
-							pId:this.nodeId
-						}
-					});
-						
-					this.isLoaded = true;
-					
-					return;
-				}
+				tree.async && (this.isLoaded = true);
 			
 				infestor.each(this.childNodes,function(idx,node){
 				
@@ -213,7 +255,7 @@ infestor.define('infestor.tree.Tree',{
 		
 		!isRoot && parentRow.treeNode.addChildNode(row.treeNode);
 		
-		infestor.each(this.gridColumns,function(name,column){
+		this.multiColumn && infestor.each(this.gridColumns,function(name,column){
 		
 			row.cells[name] = column.createColumnCell(rowData.rawData && rowData.rawData[name],rowData.rawData,row.container,row);
 		
@@ -224,8 +266,7 @@ infestor.define('infestor.tree.Tree',{
 		return row;
 		
 	},
-	
-	
+
 	removeRow : function(rowId){
 	
 		var row,delRow = function(row,gridRows){
@@ -234,6 +275,7 @@ infestor.define('infestor.tree.Tree',{
 
 			 row.container.destroy();
 			 
+			 // 此处还需要处理数据集里的数据 
 			 return delete gridRows[row.nodeId];
 			 
 		};
@@ -259,11 +301,10 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
-	
 	destroy : function(){
 	
-	
-	
+		this.removeRow();
+		this.callParent();	
 	}
 	
 });

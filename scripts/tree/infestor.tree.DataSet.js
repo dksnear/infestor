@@ -5,9 +5,9 @@ infestor.define('infestor.tree.DataSet',{
 
 	extend : 'infestor.DataSet',
 	
-	// 数据模型类型
-	// 数组数据模型 array { id:'',pid:'',$text:'',...}
-	// 树对象数据模型 tree { $text:'' ,children:[] ,..}
+	// 数据类型
+	// 数组数据类型 array { id:'',pid:'',$text:'',...}
+	// 树对象数据类型(不支持异步模式) tree { $text:'' ,children:[] ,..}
 	type :'array',
 	
 	// 根节点数据父标识(数组数据模型)
@@ -26,17 +26,16 @@ infestor.define('infestor.tree.DataSet',{
 	
 		this.callParent();
 	
+	},	
+	
+	setData : function(data){
+	
+		if(this.type =='array')
+			return this.map(data);
+		
+		if(this.type == 'tree')
+			return this.object2array(data,true);
 	},
-	
-	// setData : function(data){
-		
-		// this.callParent();
-		
-		// if(data.type == 'tree')
-			
-	
-	// },
-	
 	
 	// 按照数据模型格式化一个数据行
 	map : function(rowData) {
@@ -124,16 +123,16 @@ infestor.define('infestor.tree.DataSet',{
 	
 		var data = [],genId = 0;
 		
-		(function(node,pNode,scope){
+		(function(node,pNodeId){
 		
-			var caller = arguments.callee,o={};
+			var caller = arguments.callee,o={},scope = this,nodeId;
 		
 			node.rawData && data.push(node.rawData);
 			
 			if(!node.rawData){
 			
-				o[this.model.$parentNodeId] =  pNode && pNode.$nodeId || String(genId++);
-				o[this.model.$nodeId] =  node.$nodeId || String(genId++);
+				o[this.model.$parentNodeId] =  pNodeId || this.rootPId;
+				o[this.model.$nodeId] = nodeId = String(genId++);
 				
 				o = infestor.appendIf(o,node,['children'],null,true);
 				
@@ -144,12 +143,12 @@ infestor.define('infestor.tree.DataSet',{
 			
 			node.children && node.children.length && infestor.each(node.children,function(){
 			
-				caller(this,node);
+				caller.call(scope,this,nodeId);
 			
 			});
 			
 		
-		})(node,null,this);
+		}).call(this,node,this.rootPId);
 		
 		
 		return data;

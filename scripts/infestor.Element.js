@@ -215,6 +215,9 @@ infestor.define('infestor.Element', {
 		this.id && infestor.mgr.addInstance(this.id, this);
 		this.id = this.id || this.getId();
 		
+		// 数据对象初始化
+		this.initDataSet();
+		
 		// 元素初始化
 		this.initElement();
 		
@@ -229,9 +232,6 @@ infestor.define('infestor.Element', {
 	
 		// 设置停靠
 		this.setDock();
-		
-		// 初始化数据对象
-		this.initDataSet();
 		
 		// 初始化事件
 		this.initEvents && this.initEvents();
@@ -484,8 +484,7 @@ infestor.define('infestor.Element', {
 			
 		this.hidden = true;
 
-		return this.element && this.element.hide(),
-		this;
+		return this.element && this.element.hide(),this;
 	},
 
 	show : function (top) {
@@ -498,8 +497,7 @@ infestor.define('infestor.Element', {
 
 		this.hidden = false;
 
-		return this.element.show(),
-		this;
+		return this.element.show(),this;
 
 	},
 

@@ -9,6 +9,23 @@ infestor.define('infestor.grid.Grid',{
 	uses : ['infestor.grid.Column'],
 	
 	cssUses : 'infestor.Grid',
+	
+	statics : {
+	
+		// 通过类型或别名创建实例
+		createColumn : function (opts) {
+
+			!opts.type && !opts.alias && (opts.type = 'infestor.grid.Column');
+		
+			if (opts && opts.type)
+				return infestor.create(opts.type, { columnOptions : opts });
+				
+			if (opts && opts.alias)
+				return infestor.createByAlias(opts.alias,{ columnOptions : opts });
+
+		}
+	
+	},
 
 	cssClsElement : 'infestor-grid',
 	
@@ -29,6 +46,8 @@ infestor.define('infestor.grid.Grid',{
 	gridRows : null,
 	
 	gridColumns : null,
+	
+	autoLoad : true,
 
 	rowId : 1,
 		
@@ -61,7 +80,9 @@ infestor.define('infestor.grid.Grid',{
 		this.callParent();
 		
 		this.createGridHead();
+		this.createColumns();
 		this.createGridBody();
+		
 	
 	},
 	
@@ -69,8 +90,7 @@ infestor.define('infestor.grid.Grid',{
 	createGridHead : function(){
 	
 		this.gridHead = this.gridHead || infestor.create('infestor.Element',{ cssClsElement:this.cssClsGridHead }).renderTo(this);
-		this.createColumns();
-	
+			
 	},
 	
 	
@@ -87,7 +107,7 @@ infestor.define('infestor.grid.Grid',{
 	
 		infestor.each(this.columnsOptions,function(idx,options){
 		
-			this.gridColumns[options.name] = infestor.create(options.type || 'infestor.grid.Column',{ columnOptions : options });
+			this.gridColumns[options.name] = infestor.grid.Grid.createColumn(options);
 			
 			this.gridColumns[options.name].createColumnHead(this.gridHead);
 		
@@ -157,7 +177,8 @@ infestor.define('infestor.grid.Grid',{
 	
 	destroy:function(){
 	
-	
+		this.removeRow();
+		this.callParent();
 	}
 		
 });
