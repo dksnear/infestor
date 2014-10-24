@@ -24,7 +24,11 @@ infestor.define('infestor.grid.Column',{
 			cssClsElement: this.cssClsElementInlineBlock  + ' ' + this.cssClsColumnHeadCell,
 			width : this.columnOptions.width || 60,
 			text : this.columnOptions.title || '',
-			hidden : this.columnOptions.hidden
+			hidden : this.columnOptions.hidden,
+			css:{
+			
+				textAlign:this.columnOptions.textAlign || 'center'
+			}
 		
 		}).renderTo(headCt);
 	

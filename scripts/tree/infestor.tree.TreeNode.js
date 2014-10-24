@@ -235,7 +235,7 @@ infestor.define('infestor.tree.TreeNode',{
 			for(;i<len;i++){
 			
 				if(this.childNodes[i].nodeId == nodeId){
-					node = this.childNodes.splice(i,1);
+					node = this.childNodes.splice(i,1)[0];
 					break;
 				}
 			}
@@ -280,11 +280,38 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	removeNode:function(){
 	
-		return this.parentNode && this.parentNode.removeChildNode(this.nodeId);
+		if(this.parentNode)
+			return this.parentNode.removeChildNode(this.nodeId);
+		
+		this.eachChildNodes(function(node,pnode){
+		
+			pnode.emit('removeChildNode',[pnode,node]);
+		
+		});
+		
+		return this;
 	
 	},
 		
 	// manipulate node
+	
+	// 搜寻节点的所有子节点
+	eachChildNodes : function(fn,scope){
+	
+		if(!fn) return this;
+		 
+		this.childNodes && this.childNodes.length>0 && infestor.each(this.childNodes,function(idx,node){
+			
+			// 'this' is pnode
+			fn.call(scope,node,this);
+			node.eachChildNodes(fn,scope);
+			
+		},this);
+			
+		return this;
+			
+	
+	},
 	
 	getFinalNode : function(){
 	
@@ -301,7 +328,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	nodeExpand : function(){
 	
-		if(this.isExpand) return;
+		if(this.isExpand || this.isLeaf) return;
 	
 		this.isExpand = true;
 		this.isCollapse = false;
@@ -316,7 +343,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	nodeCollapse : function(){
 	
-		if(this.isCollapse) return;
+		if(this.isCollapse || this.isLeaf) return;
 	
 		this.isCollapse = true;
 		this.isExpand = false;

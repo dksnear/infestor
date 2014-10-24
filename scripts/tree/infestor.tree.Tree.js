@@ -8,6 +8,8 @@ infestor.define('infestor.tree.Tree',{
 	
 	dataSetClsName : 'infestor.tree.DataSet',
 	
+	async : false,
+	
 	// 表格树 
 	multiColumn : true,
 	
@@ -22,9 +24,16 @@ infestor.define('infestor.tree.Tree',{
 		
 			this.rootPId = this.dataSet.rootPId;
 			
-			!this.rootRow ? this.createTree(this.dataSet.map(data)) : this.addRow(this.dataSet.map(data));
+			!this.rootRow ? this.createTree(this.dataSet.map(data)) : this.addRow(this.dataSet.map(data),true);
 		
 		},this);
+		
+		
+		this.async && this.dataSet && this.dataSet.on('loadComplete',function(){
+		
+		
+		
+		}); 
 		
 		this.delegate(this,'click',true,function(inst,e){
 		
@@ -84,7 +93,8 @@ infestor.define('infestor.tree.Tree',{
 		
 			$nodeId:this.rootPId,
 			$parentNodeId:null
-		});
+			
+		},true);
 	
 		(function(pId){
 		
@@ -104,7 +114,7 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
-	addRow : function(rowData){
+	addRow : function(rowData,shown){
 	
 		var id = rowData.$nodeId,
 			pId = rowData.$parentNodeId,
@@ -112,10 +122,10 @@ infestor.define('infestor.tree.Tree',{
 			row = {},
 			parentRow,
 			finalNode,
-			rows;
+			tree = this;
 			
 		if(infestor.isArray(rowData))
-			return infestor.each(rowData,function(idx,data){ this.addRow(data);  },this), true,
+			return infestor.each(rowData,function(idx,data){ this.addRow(data,shown);  },this), true,
 				
 		this.gridRows = this.gridRows || {};
 		
@@ -125,13 +135,11 @@ infestor.define('infestor.tree.Tree',{
 		
 		if(!parentRow && !isRoot) return false;
 		
-		rows = this.gridRows;
-		
 		row.id = id;
 		row.depth = isRoot ? 1 : (parentRow.depth +1);
 		row.data = rowData;
 		row.cells = {};
-		row.container = infestor.create('infestor.Element',{ hidden: !isRoot, cssClsElement:this.cssClsGridBodyRow ,tagName:'tr'});
+		row.container = infestor.create('infestor.Element',{ hidden:!shown, cssClsElement:this.cssClsGridBodyRow ,tagName:'tr'});
 		
 		isRoot && row.container.renderTo(this.gridBodyContainer);
 		
@@ -146,35 +154,54 @@ infestor.define('infestor.tree.Tree',{
 		}
 			
 		row.treeNode = this.treeColumn.createColumnCell(rowData.rawData,rowData,row.container,row);
-		
+	
 		row.treeNode.nodeId = row.id;
 		
 		row.treeNode.isRoot = isRoot;
 		
-		row.treeNode.on({
+		if(this.async){
 		
-			addChildNode : function(){
+			row.treeNode.isBranch = true;
+			row.treeNode.isLeaf = false;
+			row.treeNode.isExpand = false;
+			row.treeNode.isCollapse = true;
+			row.treeNode.changeNodeIcon().changeNodeSwitchIcon();
+			isRoot && (row.treeNode.isLoaded = true);
+		
+		}
+		
+		row.treeNode.on({
 			
-				
-			},
-			removeChildNode :function(){
-			
-			
-			},		
 			nodeExpand : function(){
+			
+			
+				if(!this.isLoaded && tree.async){
+					
+					tree.dataSet.load({
+					
+						params:{
+						
+							pId:this.nodeId
+						}
+					});
+						
+					this.isLoaded = true;
+					
+					return;
+				}
 			
 				infestor.each(this.childNodes,function(idx,node){
 				
-					node = rows[node.nodeId];
+					node = tree.gridRows[node.nodeId];
 					node && node.container && node.container.show();
-				
+					
 				});
 			},
 			nodeCollapse : function(){
 			
 				infestor.each(this.childNodes,function(idx,node){
 				
-					node = rows[node.nodeId];
+					node = tree.gridRows[node.nodeId];
 					node && node.container && node.container.hide();
 					node && node.treeNode.nodeCollapse();
 				
@@ -196,6 +223,40 @@ infestor.define('infestor.tree.Tree',{
 		
 		return row;
 		
+	},
+	
+	
+	removeRow : function(rowId){
+	
+		var row,delRow = function(row,gridRows){
+			
+			 if(!row) return false;
+
+			 row.container.destroy();
+			 
+			 return delete gridRows[row.nodeId];
+			 
+		};
+	
+		if(!rowId)
+			return this.removeRow(this.rootRow.id);
+		
+		row = this.gridRows && this.gridRows[rowId];
+		
+		if(!row) return false;
+		
+		row.treeNode.eachChildNodes(function(node,pnode){
+		
+			delRow(this[node.nodeId],this);
+		
+		},this.gridRows);
+		
+		delRow(row,this.gridRows);
+		
+		row.treeNode.removeNode();
+			
+		return this;
+	
 	},
 	
 	

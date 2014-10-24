@@ -4,7 +4,7 @@ infestor.define('infestor.grid.Grid',{
 
 	alias : 'grid',
 
-	extend : 'infestor.Element',
+	extend : 'infestor.Panel',
 
 	uses : ['infestor.grid.Column'],
 	
