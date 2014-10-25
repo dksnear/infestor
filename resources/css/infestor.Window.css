@@ -36,5 +36,15 @@
 	
 }
 
+.infestor-window-autohide-plate{
+
+	position:absolute;
+	padding:0px 5px;
+	bottom:10px;
+	left:0;
+	background-color:purple;
+	color:white;
+}
+
 
 

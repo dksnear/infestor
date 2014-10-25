@@ -184,6 +184,7 @@ infestor.define('infestor.Window', {
 	cssClsBody : 'infestor-window-body',
 	cssClsRear : 'infestor-window-rear',
 	cssClsTitle : 'infestor-window-title',
+	cssClsAutoHidePlate :'infestor-window-autohide-plate',
 	boxShadow : true,
 	dock:'center',
 
@@ -193,9 +194,42 @@ infestor.define('infestor.Window', {
 	initElement : function () {
 
 		this.callParent();
-		
 		this.show();
 
+	},
+	
+		
+	initAutoHide : function(time,nonPlate){
+		
+		var taskId;
+		
+		time = time || 5;
+	
+		if(!nonPlate){
+		
+			this.countDownPlate = this.countDownPlate || infestor.create('infestor.Element',{
+			
+				cssClsElement : this.cssClsAutoHidePlate
+			
+			}).renderTo(this);
+		}
+		
+		taskId = infestor.task(function(){
+		
+			if(time==0){
+				
+				infestor.stopTask(taskId);
+				this.hide();
+			}
+		
+			!nonPlate && this.countDownPlate.setText(infestor.stringFormat('{0}将秒后将关闭窗口',time));
+		
+			time--;
+		
+		},1000,this);
+		
+		return this;
+	
 	},
 
 	show : function () {

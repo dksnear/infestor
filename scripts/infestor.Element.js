@@ -526,7 +526,7 @@ infestor.define('infestor.Element', {
 		
 		return this;
 	},
-
+	
 	// 初始化子元素
 	initItems : function () {
 

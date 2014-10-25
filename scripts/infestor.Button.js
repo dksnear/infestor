@@ -91,6 +91,4 @@ infestor.define('infestor.Button',{
 		return (this.icon != 'center') && this.callParent(),this;
 	}
 
-
-
 });
