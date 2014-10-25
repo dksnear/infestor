@@ -196,15 +196,15 @@ infestor.define('infestor.Tip', {
 		
 		/top|bottom/.test(pos) && drift && this.elementArrow.css({
 		
-			right : !leftTrend ? 'auto' : infestor.px(drift + 30),
-			left : leftTrend ? 'auto' : infestor.px(drift + 30)
+			right : !leftTrend ? 'auto' : infestor.px(drift),
+			left : leftTrend ? 'auto' : infestor.px(drift)
 		
 		});
 		
 		/left|right/.test(pos) && drift && this.elementArrow.css({
 		
-			bottom : !topTrend ? 'auto' : infestor.px(drift + 10),
-			top : topTrend ? 'auto' : infestor.px(drift + 10)
+			bottom : !topTrend ? 'auto' : infestor.px(drift),
+			top : topTrend ? 'auto' : infestor.px(drift)
 		
 		});
 

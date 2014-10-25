@@ -883,7 +883,7 @@ infestor.define('infestor.Element', {
 	// 使当前元素定位在目标元素附近
 	// @target 目标元素或坐标({ top:0,left:0,height:0,width:0})
 	// @pos 默认位置 (top|left|right|bottom)
-	// @offset 偏移量 浮动距离和分开距离  ({ drift:(0|head|middle|rear),depart:0})
+	// @offset  ({ drift:(0|head|middle|rear),depart:0}) 偏移量 drift决定了目标元素上的指示器出现的位置(如Tip的指示标签) , depart为当前元素和目标元素之间的分开距离
 	// @strict 按照默认位置定位 不自动左右/上下切换 (true|false)
 	// @mode 定位模式 (fixed|absolute|relative|static)
 	// #return 返回最终出现位置 @pos (top|left|right|bottom|false)
@@ -897,9 +897,9 @@ infestor.define('infestor.Element', {
 			bottom : 'auto'
 		},
 		driftMap = {
-			head : -17,
+			head : 3,
 			middle : 0,
-			rear : 0
+			rear : 0,
 		},
 		defaultDepart = 9,
 		clientHeight = document.documentElement.clientHeight,
@@ -930,37 +930,20 @@ infestor.define('infestor.Element', {
 
 		if (!strict && (pos == 'top' || pos == 'bottom'))
 			pos = target.topTrend ? 'top' : 'bottom';
-
+			
 		//处理offset参数
 		if (infestor.isString(offset))
 			offset = {
 				drift : offset.split(' ')[0],
 				depart : offset.split(' ')[1] || defaultDepart
 			};
-
-		if (pos == 'left' || pos == 'right') {
-
-			driftMap.middle = driftMap.head + Math.ceil(parseFloat(target.height) / 2);
-			driftMap.rear = driftMap.head + parseFloat(target.height);
-		}
-
-		if (pos == 'top' || pos == 'bottom') {
-
-			driftMap.middle = driftMap.head + Math.ceil(parseFloat(target.width) / 2);
-			driftMap.rear = driftMap.head + parseFloat(target.width);
-		}
-
-		offset.drift = driftMap[offset.drift] || offset.drift || 0;
-
-		offset = infestor.append({
-				drift : 0,
-				depart : defaultDepart
-			}, offset);
-
+		
+		offset.depart = offset.depart || defaultDepart;
+		
 		if (pos == 'right' && target.topTrend)
 			this.element.css(infestor.append(css, {
 
-					bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height) + parseFloat(offset.drift)),
+					bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height)),
 					left : infestor.px(parseFloat(target.left) + parseFloat(target.width) + parseFloat(offset.depart))
 
 				}));
@@ -968,7 +951,7 @@ infestor.define('infestor.Element', {
 		if (pos == 'right' && !target.topTrend)
 			this.element.css(infestor.append(css, {
 
-					top : infestor.px(parseFloat(target.top) + parseFloat(offset.drift)),
+					top : infestor.px(parseFloat(target.top)),
 					left : infestor.px(parseFloat(target.left) + parseFloat(target.width) + parseFloat(offset.depart))
 
 				}));
@@ -976,7 +959,7 @@ infestor.define('infestor.Element', {
 		if (pos == 'left' && target.topTrend)
 			this.element.css(infestor.append(css, {
 
-					bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height) + parseFloat(offset.drift)),
+					bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height)),
 					right : infestor.px(parseFloat(target.right) + parseFloat(offset.depart))
 				}));
 		
@@ -984,7 +967,7 @@ infestor.define('infestor.Element', {
 		if (pos == 'left' && !target.topTrend)
 			this.element.css(infestor.append(css, {
 
-					top : infestor.px(parseFloat(target.top) + parseFloat(offset.drift)),
+					top : infestor.px(parseFloat(target.top)),
 					right : infestor.px(parseFloat(target.right) + parseFloat(offset.depart))
 				}));
 				
@@ -992,7 +975,7 @@ infestor.define('infestor.Element', {
 		if(pos == 'top' && target.leftTrend)
 			this.element.css(infestor.append(css, {
 
-					right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width) + parseFloat(offset.drift)),
+					right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width)),
 					bottom : infestor.px(parseFloat(target.bottom) + parseFloat(offset.depart))
 
 				}));
@@ -1000,7 +983,7 @@ infestor.define('infestor.Element', {
 		if (pos == 'top' && !target.leftTrend)
 			this.element.css(infestor.append(css, {
 
-					left : infestor.px(parseFloat(target.left) + parseFloat(offset.drift)),
+					left : infestor.px(parseFloat(target.left)),
 					bottom : infestor.px(parseFloat(target.bottom) + parseFloat(offset.depart))
 
 				}));
@@ -1008,7 +991,7 @@ infestor.define('infestor.Element', {
 		if (pos == 'bottom' && target.leftTrend)
 			this.element.css(infestor.append(css, {
 
-					right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width) + parseFloat(offset.drift)),
+					right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width)),
 					top : infestor.px(parseFloat(target.top) + parseFloat(target.height) + parseFloat(offset.depart))
 
 				}));
@@ -1016,9 +999,24 @@ infestor.define('infestor.Element', {
 		if (pos == 'bottom' && !target.leftTrend)
 			this.element.css(infestor.append(css, {
 
-					left : infestor.px(parseFloat(target.left) + parseFloat(offset.drift)),
+					left : infestor.px(parseFloat(target.left)),
 					top : infestor.px(parseFloat(target.top) + parseFloat(target.height) + parseFloat(offset.depart))
 				}));
+				
+				
+		if (pos == 'left' || pos == 'right') {
+
+			driftMap.middle = Math.ceil(parseFloat(this.getDom().offsetHeight) / 2) - 10;
+			driftMap.rear = parseFloat(this.getDom().offsetHeight) - 21;
+		}
+
+		if (pos == 'top' || pos == 'bottom') {
+
+			driftMap.middle = Math.ceil(parseFloat(this.getDom().offsetWidth) / 2) - 10;
+			driftMap.rear = parseFloat(this.getDom().offsetWidth) - 21;
+		}
+		
+		offset.drift = driftMap[offset.drift] || offset.drift || 0;
 
 		return {
 		
@@ -1049,7 +1047,7 @@ infestor.define('infestor.Element', {
 
 					this.$tip.setText(this.tip);
 					this.$tip.show();
-					this.$tip.autoPosition(this.element, this.tipTrend, 'middle');
+					this.$tip.autoPosition(this.element, this.tipTrend, 'head');
 
 				},150), this);
 

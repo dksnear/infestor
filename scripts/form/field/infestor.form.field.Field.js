@@ -164,7 +164,7 @@ infestor.define('infestor.form.field.Field', {
 			
 			this.isFocus = true;
 			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.form.ValidatePanel.VALIDATED_PASS : infestor.form.ValidatePanel.VALIDATED_ERROR);
-			this.validateShower && this.validateShower.autoPosition(this.element, 'bottom', 'head') && this.validateShower.show();		
+			this.validateShower && this.validateShower.autoPosition(this.element, 'bottom', '13') && this.validateShower.show();		
 			this.$taskId = this.$taskId && infestor.stopTask(this.$taskId);
 			this.$taskId = infestor.task(function(){
 			

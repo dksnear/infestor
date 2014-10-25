@@ -63,9 +63,9 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 			
 			this.isFocus = true;
 			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.form.ValidatePanel.VALIDATED_PASS : infestor.form.ValidatePanel.VALIDATED_ERROR);
-			this.validateShower && this.validateShower.autoPosition(this.element, 'bottom', 'head') && this.validateShower.show();	
+			this.validateShower && this.validateShower.autoPosition(this.element, 'bottom', '13') && this.validateShower.show();	
 		
-			this.captchaTip.autoPosition(this.element, 'right', 'middle');
+			this.captchaTip.autoPosition(this.element, 'right', '13');
 			this.captchaTip.show();
 			
 			!this.isActive && this.refresh();
@@ -93,6 +93,8 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 		},this);
 		
 		this.delegate(this.controlPanel,'click',true,function(inst,e){
+		
+			if(!inst) return;
 		
 			if(inst.element.hasClass('infestor-candidate-captcha-control-panel-body-cell')){
 			 
@@ -124,7 +126,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 			if(inst.element.hasClass('infestor-candidate-captcha-control-panel-head-cancel')){
 				
 				this.captchaTip.hide();
-				//this.validateShower && this.validateShower.hide();
+				this.validateShower && this.validateShower.hide();
 				return;
 				
 			}
