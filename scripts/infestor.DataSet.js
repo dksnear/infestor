@@ -260,20 +260,20 @@ infestor.define('infestor.DataSet', {
 				params : config.params,
 				success : function (data) {
 
-					me.emit('load', [me.setData(data)],me);
-					me.emit('afterLoad',[me.data],me);
+					me.emit('load', [me.setData(data),opts.params],me);
+					me.emit('afterLoad',[me.data,opts.params],me);
 
 				},
 				error : function () {
 					
-					me.emit('loadError', arguments,me);
-					me.emit('error',arguments,me);
+					me.emit('loadError', [config.params].concat(infestor.argsToArray(arguments)),me);
+					me.emit('error',[config.params].concat(infestor.argsToArray(arguments)),me);
 					
 				},
 				complete : function () {
 
 					indicator && indicator.stop();
-					me.emit('loadComplete', arguments, me);
+					me.emit('loadComplete', [config.params].concat(infestor.argsToArray(arguments)), me);
 				}
 
 			}, opts);
@@ -324,20 +324,20 @@ infestor.define('infestor.DataSet', {
 				params : config.params,
 				success : function (data) {
 
-					me.emit('submit', data ,me);
-					me.emit('afterSubmit',data ,me);
+					me.emit('submit', [data,opts.params] ,me);
+					me.emit('afterSubmit',[data,opts.params] ,me);
 
 				},
 				error : function () {
 					
-					me.emit('submitError', arguments,me);
-					me.emit('error',arguments,me);
+					me.emit('submitError', [config.params].concat(infestor.argsToArray(arguments)),me);
+					me.emit('error',[config.params].concat(infestor.argsToArray(arguments)),me);
 					
 				},
 				complete : function () {
 
 					indicator && indicator.stop();
-					me.emit('submitComplete', arguments, me);
+					me.emit('submitComplete', [config.params].concat(infestor.argsToArray(arguments)), me);
 				}
 
 			}, opts);

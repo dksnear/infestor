@@ -22,7 +22,7 @@ infestor.define('infestor.tree.Tree',{
 	// rewrite
 	initEvents : function () {
 
-		this.dataSet && this.dataSet.on('load', function (data) {
+		this.dataSet && this.dataSet.on('load', function (data,params) {
 		
 			this.rootPId = this.rootPId || this.dataSet.rootPId;
 			
@@ -32,11 +32,14 @@ infestor.define('infestor.tree.Tree',{
 			
 			this.addRow(data);
 			
+			if(!data || data.length<1)			
+				this.fixNode(params[this.dataSet.model.$parentNodeId || 'pId']);
+					
 			if(!this.currentLoadingNode) return;
 			
 			this.currentLoadingNode.nodeExpand();
 			
-			infestor.each(this.currentLoadingNode.childNodes,function(idx,node){ this.loadNode(node); },this);
+			infestor.each(this.currentLoadingNode.childNodes,function(idx,node){ this.loadNode(node.nodeId); },this);
 			
 			this.currentLoadingNode = null;
 
@@ -47,12 +50,11 @@ infestor.define('infestor.tree.Tree',{
 		
 			var node = inst.parent;
 		
-			if(node && inst.element.hasClass(infestor.tree.TreeNode.prototype.cssClsNodeSwitchCell)){
-			
-					
+			if(node && inst.element.hasClass(infestor.tree.TreeNode.prototype.cssClsNodeSwitch)){
+				
 				if(this.async && !node.isLeaf && !node.isLoaded){
 									
-					this.loadNode(node);
+					this.loadNode(node.nodeId);
 					
 					this.currentLoadingNode = node;
 					
@@ -126,7 +128,7 @@ infestor.define('infestor.tree.Tree',{
 		if(this.async){
 		
 			// 展开根节点
-			this.loadNode(this.rootRow.treeNode);				
+			this.loadNode(this.rootRow.treeNode.nodeId);				
 			this.currentLoadingNode = this.rootRow.treeNode;
 		
 			return;
@@ -168,16 +170,22 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
-	loadNode : function(node){
+	loadNode : function(nodeId){
 	
 		var params = {
 					
 			params:{}
 		};
 
-		params.params[this.dataSet.model.$parentNodeId || 'pId'] = node.nodeId;
+		params.params[this.dataSet.model.$parentNodeId || 'pId'] = nodeId;
 		
 		this.dataSet.load(params);
+	
+	},
+	
+	fixNode : function(nodeId){
+	
+		this.gridRows[nodeId].treeNode.changeNodeIcon();
 	
 	},
 	
@@ -225,7 +233,7 @@ infestor.define('infestor.tree.Tree',{
 		row.treeNode.nodeId = row.id;
 		row.treeNode.isRoot = isRoot;
 		row.treeNode.isLeaf = !isRoot;
-			
+				
 		row.treeNode.on({
 			
 			nodeExpand : function(){
@@ -252,6 +260,8 @@ infestor.define('infestor.tree.Tree',{
 			}
 		
 		});
+		
+		this.async && row.treeNode.changeNodeIcon(true);
 		
 		!isRoot && parentRow.treeNode.addChildNode(row.treeNode);
 		

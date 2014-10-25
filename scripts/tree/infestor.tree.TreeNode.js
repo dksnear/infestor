@@ -10,31 +10,29 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	cssClsNodeCell : 'infestor-tree-node-cell',
 
-	cssClsNodeSpaceCell : 'infestor-tree-node-space-cell',
+	cssClsNodeSpace : 'infestor-tree-node-space',
 	
-	cssClsNodeSwitchCell : 'infestor-tree-node-switch-cell',
+	cssClsNodeSwitch : 'infestor-tree-node-switch',
 	
-	cssClsNodeExpandSwitchCell : 'infestor-tree-node-expand-switch-cell',
+	cssClsNodeExpandSwitch : 'infestor-tree-node-expand-switch',
 	
-	cssClsNodeCollapseSwitchCell : 'infestor-tree-node-collapse-switch-cell',
-	
-	cssClsNodeNonSwitchCell : 'infestor-tree-node-non-switch-cell',
-	
-	cssClsNodeCheckCell : 'infestor-tree-node-check-cell',
-	
-	cssClsNodeUnCheckCell : 'infestor-tree-node-uncheck-cell',
-	
-	cssClsNodeHalfCheckCell : 'infestor-tree-node-half-check-cell' ,
-	
-	cssClsNodeIconCell :'infestor-tree-node-icon-cell',
-	
-	cssClsNodeExpandIconCell : 'infestor-tree-node-expand-icon-cell',
-	
-	cssClsNodeCollapseIconCell : 'infestor-tree-node-collapse-icon-cell',
-	
-	cssClsNodeNormalIconCell : 'infestor-tree-node-normal-icon-cell',
+	cssClsNodeCollapseSwitch : 'infestor-tree-node-collapse-switch',
 
-	cssClsNodeTextCell : 'infestor-tree-node-text-cell',
+	cssClsNodeNonSwitch : 'infestor-tree-node-non-switch',
+	
+	cssClsNodeCheck : 'infestor-tree-node-check',
+	
+	cssClsNodeIcon :'infestor-tree-node-icon',
+	
+	cssClsNodeExpandIcon : 'infestor-tree-node-expand-icon',
+	
+	cssClsNodeCollapseIcon : 'infestor-tree-node-collapse-icon',
+	
+	cssClsNodeNormalIcon : 'infestor-tree-node-normal-icon',
+	
+	cssClsNodeLoadingIcon : 'infestor-tree-node-loading-icon',
+
+	cssClsNodeText : 'infestor-tree-node-text',
 	
 	nodeSpaceCells : null,
 	
@@ -107,14 +105,14 @@ infestor.define('infestor.tree.TreeNode',{
 		this.nodeSpaceCells = this.nodeSpaceCells || [];
 		
 		for(var i=0;i<this.nodeDepth-1;i++)
-			this.nodeSpaceCells.push(infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeSpaceCell].join(' ') }).renderTo(this));
+			this.nodeSpaceCells.push(infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeSpace].join(' ') }).renderTo(this));
 	
 		return this;
 	},
 	
 	createNodeSwitchCell : function(){
 	
-		this.nodeSwitchCell = infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeSwitchCell].join(' ') }).renderTo(this);
+		this.nodeSwitchCell = infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeSwitch].join(' ') }).renderTo(this);
 		
 		return this;
 	
@@ -129,9 +127,9 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	createNodeIconCell : function(){
 	
-		var cssCls = this.cssClsNodeExpandIconCell;
+		var cssCls = this.cssClsNodeExpandIcon;
 	
-		this.nodeIconCell = infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeIconCell].join(' ') }).renderTo(this);
+		this.nodeIconCell = infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeIcon].join(' ') }).renderTo(this);
 		
 		return this;
 	
@@ -139,20 +137,22 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	createNodeTextCell : function(){
 	
-		this.nodeTextCell = infestor.create('infestor.Element',{ cssClsElement: this.cssClsElementInlineBlock  + ' ' + this.cssClsNodeTextCell }).renderTo(this);
+		this.nodeTextCell = infestor.create('infestor.Element',{ cssClsElement: this.cssClsElementInlineBlock  + ' ' + this.cssClsNodeText }).renderTo(this);
 		
 		return this;
 	
 	
 	},
 	
-	changeNodeIcon :function(){
+	changeNodeIcon :function(loading){
 	
 		var cls = '';
 		
-		this.isLeaf && (cls = this.cssClsNodeNormalIconCell);
-		(this.isBranch || this.isRoot) && this.isExpand && (cls = this.cssClsNodeExpandIconCell);
-		(this.isBranch || this.isRoot) && this.isCollapse && (cls = this.cssClsNodeCollapseIconCell);
+		this.isLeaf && (cls = this.cssClsNodeNormalIcon);
+		(this.isBranch || this.isRoot) && this.isExpand && (cls = this.cssClsNodeExpandIcon);
+		(this.isBranch || this.isRoot) && this.isCollapse && (cls = this.cssClsNodeCollapseIcon);
+	
+		loading && !this.isRoot && (cls = this.cssClsNodeLoadingIcon);
 	
 		if(cls && this.currentNodeIconCls == cls)
 			return this;
@@ -169,9 +169,9 @@ infestor.define('infestor.tree.TreeNode',{
 	
 		var cls = '';
 		
-		this.isLeaf && (cls = this.cssClsNodeNonSwitchCell);
-		(this.isBranch || this.isRoot) && this.isExpand && (cls = this.cssClsNodeExpandSwitchCell);
-		(this.isBranch || this.isRoot) && this.isCollapse && (cls = this.cssClsNodeCollapseSwitchCell);
+		this.isLeaf && (cls = this.cssClsNodeNonSwitch);
+		(this.isBranch || this.isRoot) && this.isExpand && (cls = this.cssClsNodeExpandSwitch);
+		(this.isBranch || this.isRoot) && this.isCollapse && (cls = this.cssClsNodeCollapseSwitch);
 		
 		if(cls && this.currentNodeSwitchCls == cls)
 			return this;

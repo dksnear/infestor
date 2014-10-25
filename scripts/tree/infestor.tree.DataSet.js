@@ -5,6 +5,8 @@ infestor.define('infestor.tree.DataSet',{
 
 	extend : 'infestor.DataSet',
 	
+	indicator : false,
+	
 	// 数据类型
 	// 数组数据类型 array { id:'',pid:'',$text:'',...}
 	// 树对象数据类型(不支持异步模式) tree { $text:'' ,children:[] ,..}
