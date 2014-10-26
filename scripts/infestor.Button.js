@@ -74,7 +74,7 @@ infestor.define('infestor.Button',{
 		
 			this.emit('click',[inst,e],this);
 		
-		},this)
+		},this);
 	
 	},
 	
