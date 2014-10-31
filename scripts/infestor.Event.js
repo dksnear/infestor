@@ -18,7 +18,7 @@ infestor.define('infestor.Event', {
 		parentClass = !!ownerCls ? method.$ownerCls.$superClass : undefined,
 		methodName = method.$methodName;
 
-		return parentClass && parentClass[methodName].apply(this, arguments.length > 0 ? arguments : method.arguments);
+		return parentClass && parentClass[methodName] && parentClass[methodName].apply(this, arguments.length > 0 ? arguments : method.arguments);
 	},
 
 	// 添加侦听事件

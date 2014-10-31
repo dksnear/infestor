@@ -579,7 +579,7 @@ infestor.define('infestor.Element', {
 		
 		};
 
-		if (!this.items)
+		if (!this.items || !opts)
 			return null;
 
 		this.itemsMap = this.itemsMap || {};
@@ -835,7 +835,7 @@ infestor.define('infestor.Element', {
 
 		if (infestor.isBoolean(element) && element)
 			return renderTo.call(this, infestor.create(clsName, opts));
-
+		
 		if (infestor.isRawObject(element))
 			return renderTo.call(this, infestor.Element.create(infestor.append({},opts,element)));
 			
