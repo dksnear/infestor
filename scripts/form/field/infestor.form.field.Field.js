@@ -82,8 +82,11 @@ infestor.define('infestor.form.field.Field', {
 	cssClsFieldTop : 'infestor-field-top',
 	cssClsFieldContent : 'infestor-field-content',
 	cssClsFieldStatus : 'infestor-field-status',
+	cssClsFieldStatusLeft : 'infestor-field-status-left',
+	cssClsFieldStatusRight : 'infestor-field-status-right',
 	cssClsFieldStatusError : 'infestor-field-status-error',
 	cssClsFieldStatusPassed: 'infestor-field-status-passed',
+	cssClsFieldStatusNotNull:'infestor-field-status-not-null',
 
 	elementFieldLabel : null,
 	elementFieldContent : null,
@@ -124,7 +127,11 @@ infestor.define('infestor.form.field.Field', {
 	
 	readOnly:false,
 	
-	allowNull:false,
+	// 允许空
+	allowNull:true,
+	
+	// 允许显示验证状态
+	allowCheckStatus:true,
 	
 	// 获取表单值时去除空格
 	trim:false,
@@ -232,8 +239,11 @@ infestor.define('infestor.form.field.Field', {
 			type : 'text',
 			id : this.id,
 			name : this.fieldName
+			
 		});
 		
+		!this.allowNull && this.elementFieldInput.addClass(this.cssClsFieldStatusNotNull);
+ 		
 		this.elementFieldInput.change(function(){
 		
 			this.emit('change',arguments,this);
@@ -262,7 +272,10 @@ infestor.define('infestor.form.field.Field', {
 	
 	createStatusIcon:function(){
 	
-		this.elementStatus = this.createDomElement(this.elementFieldContent,this.cssClsFieldStatus);
+		if(!this.allowCheckStatus)
+			return this;
+	
+		this.elementStatus = this.elementStatus || this.createDomElement(this.elementFieldContent,[this.cssClsFieldStatus, this.labelPos=='right'? this.cssClsFieldStatusLeft : this.cssClsFieldStatusRight].join(' ') );
 		
 		return this;
 	
@@ -299,6 +312,8 @@ infestor.define('infestor.form.field.Field', {
 	// 
 	setStatus:function(status){
 	
+		if(!this.elementStatus) return this;
+	
 		this.status = status;
 		
 		this.elementStatus.removeClass([this.cssClsFieldStatusError,this.cssClsFieldStatusPassed].join(' '));
@@ -312,7 +327,6 @@ infestor.define('infestor.form.field.Field', {
 	
 	},
 
-	
 	getValue :function(){
 	
 		var value;

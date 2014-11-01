@@ -899,7 +899,7 @@ infestor.define('infestor.Element', {
 		driftMap = {
 			head : 3,
 			middle : 0,
-			rear : 0,
+			rear : 0
 		},
 		defaultDepart = 9,
 		clientHeight = document.documentElement.clientHeight,

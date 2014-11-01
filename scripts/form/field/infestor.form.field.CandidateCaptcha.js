@@ -33,6 +33,8 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	
 	layout : 'table',
 	
+	allowNull : false,
+	
 	// #rewite methods
 	
 	init : function () {
@@ -161,6 +163,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 		
 		}).renderTo(this.elementFieldContent);
 		
+		!this.allowNull && this.fieldInput.element.addClass(this.cssClsFieldStatusNotNull);
 		
 		this.fieldInput.element.focus(function(){
 		

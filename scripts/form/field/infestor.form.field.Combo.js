@@ -149,6 +149,8 @@ infestor.define('infestor.form.field.Combo',{
 		
 		this.elementDropDownTrigger = this.createDomElement(this.elementFieldContent,this.cssClsComboFieldDropDownTrigger);
 		
+		!this.allowNull && this.elementDropDownTrigger.addClass(this.cssClsFieldStatusNotNull);
+		
 		infestor.Dom.triangle({
 		
 			hypotenuse:5,

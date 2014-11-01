@@ -61,10 +61,26 @@
 
 	position:absolute;
 	top:5px;
-	right:-20px;
 	width:16px;
 	height:16px;
 
+}
+
+.infestor-field-status-left{
+
+	left:-20px;
+
+}
+
+.infestor-field-status-right{
+	
+	right:-20px;
+
+}
+
+.infestor-field-status-not-null{
+
+	border-color:purple;
 }
 
 .infestor-field-status-error{
@@ -136,6 +152,11 @@
 	width:160px;
 	border:1px solid #bfbfbf;
 
+}
+
+.infestor-candidate-captcha-input.infestor-field-status-not-null{
+
+	border-color:purple;
 }
 
 
@@ -244,7 +265,7 @@
 
 }
 
-.infestor-combo-field  .infestor-field-status{
+.infestor-combo-field  .infestor-field-status-right{
 
 	right:-42px;
 
@@ -263,6 +284,13 @@
 	cursor:pointer;
 
 }
+
+.infestor-combo-field-drop-down-trigger.infestor-field-status-not-null{
+
+	border-color:purple;
+
+}
+
 
 .infestor-combo-field-drop-down-panel{
 
