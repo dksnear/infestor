@@ -437,10 +437,11 @@ infestor js
 			if (!obj || global.isString(obj)) {
 
 				var url = obj || document.location.search,
-				url = url.replace(/&amp;/gi, '&'),
-				reg = /(?:^\?|&)(.*?)=(.*?)(?=&|$)/g,
-				temp,
-				args = {};
+					url = url.replace(/&amp;/gi, '&'),
+					reg = /(?:^\?|&)(.*?)=(.*?)(?=&|$)/g,
+					temp,
+					args = {};
+					
 				while ((temp = reg.exec(url)) != null) {
 					try {
 						args[decodeURIComponent(temp[1])] = decodeURIComponent(temp[2]);
@@ -467,6 +468,18 @@ infestor js
 
 		},
 
+		// uri/#/?key1=value1&key2=value2
+		hash : function(key){
+		
+			var hash = document.location.hash && /\#\/(.+)/.exec(location.hash),
+				hashArgs = hash && infestor.param(hash[1]);
+			
+			if(key)
+				return hashArgs && hashArgs[key];
+			
+			return hashArgs;
+		},
+		
 		browser : (function () {
 
 			var ua = navigator.userAgent.toLowerCase(),

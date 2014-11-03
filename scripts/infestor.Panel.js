@@ -96,7 +96,7 @@ infestor.define('infestor.Panel', {
 	
 		var container = this.element;
 	
-		if(this.layout == 'table' && this.head){
+		if(this.layout == 'table' && this.head && !this.elementHeadCellContainer){
 		
 			container = infestor.Dom.td().appendTo(this.elementInnerContainer);
 			this.elementHeadCellContainer = container;
@@ -104,8 +104,8 @@ infestor.define('infestor.Panel', {
 		}
 
 		this.head = this.createElement('head', container, {
-				cssClsElement : this.cssClsHead
-			});
+			cssClsElement : this.cssClsHead
+		});
 
 		return this;
 
@@ -115,7 +115,7 @@ infestor.define('infestor.Panel', {
 	
 		var container = this.element;
 	
-		if(this.layout == 'table' && this.body){
+		if(this.layout == 'table' && this.body && !this.elementBodyCellContainer){
 		
 			container = infestor.Dom.td().appendTo(this.elementInnerContainer);
 			this.elementBodyCellContainer = container;
@@ -123,8 +123,8 @@ infestor.define('infestor.Panel', {
 		}
 
 		this.body = this.createElement('body', container, {
-				cssClsElement : this.cssClsBody
-			});
+			cssClsElement : this.cssClsBody
+		});
 
 		return this;
 
@@ -134,7 +134,7 @@ infestor.define('infestor.Panel', {
 
 		var container = this.element;
 	
-		if(this.layout == 'table' && this.rear){
+		if(this.layout == 'table' && this.rear && !this.elementRearCellContainer){
 		
 			container = infestor.Dom.td().appendTo(this.elementInnerContainer);
 			this.elementRearCellContainer = container;
@@ -142,8 +142,8 @@ infestor.define('infestor.Panel', {
 		}
 	
 		this.rear = this.createElement('rear', container, {
-				cssClsElement : this.cssClsRear
-			});
+			cssClsElement : this.cssClsRear
+		});
 
 		return this;
 
@@ -158,9 +158,9 @@ infestor.define('infestor.Panel', {
 			(this.head = true) && this.createHead();
 
 		this.title = this.createElement('title', this.head, {
-				cssClsElement : this.cssClsTitle,
-				text : this.titleText
-			});
+			cssClsElement : this.cssClsTitle,
+			text : this.titleText
+		});
 
 		return this;
 

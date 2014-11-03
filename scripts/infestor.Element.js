@@ -754,7 +754,7 @@ infestor.define('infestor.Element', {
 	},
 
 	// 向上查找符合条件的父节点
-	parents : function (keyword, type) {
+	climbUp : function (keyword, type) {
 
 		var parent = this.parent,
 		max = 5;
@@ -817,15 +817,23 @@ infestor.define('infestor.Element', {
 			renderTo = function (element) {
 			
 				if(element.isRendered)
-					return element;
-
+					infestor.error(infestor.stringFormat('实例嵌入失败,{0}类id为{1}实例已经有父容器!', element.$clsName, element.id));
+				
 				if (container instanceof infestor.Element)
 					element.renderTo(container);
 				if (container instanceof infestor.Dom)
 					element.renderTo(container, this);
-
+				
+				this[attrName] = element;
+				
 				return element;
 			};
+		
+		
+		if(!attrName || this['is'+attrName+'created'])
+			return null;
+			
+		this['is'+attrName+'created'] = true;
 
 		if (!element || !container)
 			return element;
@@ -846,11 +854,11 @@ infestor.define('infestor.Element', {
 	//给一个对象委托事件
 	//@eventName 委托事件名
 	//@target 委托目标
-	//@pradicate 委托条件
-	//@handle 委托方法
+	//@pradicate :true|fn(inst,event) 委托条件
+	//@handle :fn(inst,event) 委托方法
 	//@scope 委托方法执行域
-	//@pop 事件不冒泡
-	delegate : function (target, eventName, pradicate, handle, scope, bubble) {
+	//@stopBubble 阻止事件冒泡
+	delegate : function (target, eventName, pradicate, handle, scope, stopBubble) {
 
 		var me = this;
 		
@@ -863,7 +871,7 @@ infestor.define('infestor.Element', {
 
 		target[eventName](function (e) {
 		
-			bubble && infestor.stopPropagation(e);
+			stopBubble && infestor.stopPropagation(e);
 
 			e.target = e.target || e.srcElement;
 		
