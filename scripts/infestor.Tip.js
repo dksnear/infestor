@@ -3,10 +3,7 @@
 infestor.define('infestor.Tip', {
 
 	alias:'tip',
-
 	extend : 'infestor.Element',
-
-	cssUses : ['infestor.Tip'],
 	
 	statics:{
 	

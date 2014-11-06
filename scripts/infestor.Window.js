@@ -6,7 +6,6 @@ infestor.define('infestor.Window', {
 	alias : 'window',
 	extend : 'infestor.Panel',
 	uses:'infestor.Button',
-	cssUses : ['infestor.Window'],
 
 	statics : {
 	

@@ -6,12 +6,13 @@ infestor.define('infestor.Checkbox',{
 
 	extend:'infestor.Element',
 	
-	cssUses:['infestor.Checkbox'],
+	//cssUses:['infestor.Checkbox'],
 		
 	cssClsElement:'infestor-checkbox',
 	cssClsChecked :'infestor-checkbox-checked',
 	cssClsHalfChecked :'infestor-checkbox-half-checked',
 	cssClsDisabled :'infestor-checkbox-disabed',
+	cssClsFocus:'infestor-checkbox-focus',
 	
 	disableEvent: false,
 	
@@ -19,7 +20,11 @@ infestor.define('infestor.Checkbox',{
 	
 	checked : false,
 	
+	isfocus : false,
+	
 	halfChecked :false,
+	
+	tabIndex :-1,
 	
 	events:{
 	
@@ -32,6 +37,7 @@ infestor.define('infestor.Checkbox',{
 	init:function(){
 	
 		this.callParent();
+		
 	
 	},
 	
@@ -51,6 +57,15 @@ infestor.define('infestor.Checkbox',{
 	initElement:function(){
 	
 		this.callParent(); 
+		
+		this.element.attr('tabindex',this.tabIndex);
+		
+		if(this.disabed)
+			return this.addClass(this.cssClsDisabled);
+		
+		this.isFocus && this.addClass(this.cssClsFocus);
+		this.checked && this.addClass(this.cssClsChecked);
+		this.halfChecked && this.addClass(this.cssClsHalfChecked);
 	
 	},
 	
@@ -59,16 +74,7 @@ infestor.define('infestor.Checkbox',{
 		return this;
 	},
 	
-	enable:function(){
-	
-		if(!this.disabled) return this;
 		
-		this.element.removeClass(this.cssClsDisabled);
-		
-		this.disabled = false;
-	
-	},
-	
 	disable:function(){
 	
 		if(this.disabled) return this;
@@ -76,8 +82,48 @@ infestor.define('infestor.Checkbox',{
 		this.element.addClass(this.cssClsDisabled);
 		
 		this.disabled = true;
+		
+		return this;
 	
 	},
+	
+	
+	enable:function(){
+	
+		if(!this.disabled) return this;
+		
+		this.element.removeClass(this.cssClsDisabled);
+		
+		this.disabled = false;
+		
+		return this;
+	
+	},
+	
+	focus:function(){
+	
+		if(this.disabed || this.isFocus) return this;
+		
+		this.element.addClass(this.cssClsFocus);
+		
+		this.isFocus = true;
+		
+		return this;
+	
+	},
+	
+	blur:function(){
+	
+		if(this.disabed || !this.isFocus) return this;
+		
+		this.element.removeClass(this.cssClsFocus);
+		
+		this.isFocus = false;
+		
+		return this;
+	
+	},
+
 	
 	check:function(){
 	
@@ -86,6 +132,8 @@ infestor.define('infestor.Checkbox',{
 		this.element.addClass(this.cssClsChecked);
 		
 		this.checked = true;
+		
+		return this;
 		
 	
 	},
@@ -97,6 +145,8 @@ infestor.define('infestor.Checkbox',{
 		this.element.removeClass(this.cssClsChecked);
 		
 		this.checked = false;
+		
+		return this;
 	
 	},
 	
@@ -107,6 +157,8 @@ infestor.define('infestor.Checkbox',{
 		this.element.addClass(this.cssClsHalfChecked);
 		
 		this.halfChecked = true;
+		
+		return this;
 	
 	},
 	
@@ -117,6 +169,8 @@ infestor.define('infestor.Checkbox',{
 		this.element.removeClass(this.cssClsHalfChecked);
 	
 		this.halfChecked = false;
+		
+		return this;
 	
 	}
 	

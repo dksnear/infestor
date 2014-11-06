@@ -3,11 +3,8 @@
 infestor.define('infestor.Button',{
 
 	alias:'button',
-
 	extend:'infestor.Panel',
-	
-	cssUses:['infestor.Button'],
-		
+
 	cssClsElement:'infestor-button',
 	
 	cssClsHead : 'infestor-button-head',

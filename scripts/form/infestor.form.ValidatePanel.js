@@ -6,7 +6,6 @@ infestor.define('infestor.form.ValidatePanel',{
 
 	alias : 'vpanel',
 	extend : 'infestor.Panel',
-	cssUses : 'infestor.Panel',
 	
 	statics:{
 	

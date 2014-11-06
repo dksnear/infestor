@@ -4,7 +4,6 @@ infestor.define('infestor.Panel', {
 
 	alias : 'panel',
 	extend : 'infestor.Element',
-	cssUses : 'infestor.Panel',
 
 	cssClsElement : 'infestor-panel',
 	cssClsPanelControl:'infestor-panel-control',
@@ -154,7 +153,7 @@ infestor.define('infestor.Panel', {
 		if (this.titleText && !this.title)
 			this.title = true;
 
-		if (this.title && !this.head)
+		if (this.title && !this.isHeadCreated)
 			(this.head = true) && this.createHead();
 
 		this.title = this.createElement('title', this.head, {

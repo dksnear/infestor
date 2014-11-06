@@ -4,7 +4,7 @@ infestor.define('infestor.tree.TreeNode',{
 
 	extend : 'infestor.Element',
 
-	cssUses : 'infestor.Tree',
+	cssUses : 'infestor.Grid',
 
 	cssClsElement : 'infestor-tree-node',
 	

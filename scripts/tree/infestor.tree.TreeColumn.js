@@ -7,7 +7,7 @@ infestor.define('infestor.tree.TreeColumn',{
 	
 	uses : 'infestor.tree.TreeNode',
 
-	cssUses : ['infestor.Grid','infestor.Tree'],
+	cssUses : ['infestor.Grid'],
 	
 
 	// 列单元格创建接口

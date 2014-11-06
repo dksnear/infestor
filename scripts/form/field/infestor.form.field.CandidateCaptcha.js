@@ -35,6 +35,8 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	
 	allowNull : false,
 	
+	tabIndex : -1,
+	
 	// #rewite methods
 	
 	init : function () {
@@ -147,7 +149,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 			cssClsElement:'infestor-candidate-captcha-input',
 			attr:{
 			
-				tabindex:-1
+				tabindex:this.tabIndex
 			},
 			items:infestor.genArray(this.codeNum,function(i){
 			

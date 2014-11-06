@@ -27,6 +27,8 @@ input:focus{
 
 }
 
+/* element */
+
 .infestor-element-remove-space{
 
 	font-size:0px;
@@ -247,6 +249,385 @@ input:focus{
 	white-space: normal;
 
 }
+
+/* tip */
+
+.infestor-tip {
+
+    padding: 5px 10px;
+	display: block;
+    border: 1px solid #B3B3B3;
+    border-radius: 5px;
+    background: #ffffff;
+    outline:none;
+	
+
+}
+
+.infestor-tip-content {
+
+	white-space: normal;
+	word-break: break-all;
+	line-height: 22px;
+
+	font-size: 12px;
+	color: #666666;
+}
+
+.infestor-tip-triangle{
+
+	position: absolute;
+	display: block;
+	height: 0;
+	width: 0;
+	font-size: 0;
+	line-height: 0;
+	border-style: dashed solid;
+	border-width: 8px;
+}
+
+.infestor-tip-triangle-chrome-fix{
+
+	border-width: 8px;
+
+}
+
+.infestor-tip-triangle-mask {
+
+	position: absolute;
+	left: -10px;
+	display: block;
+	height: 0;
+	width: 0;
+	font-size: 0;
+	line-height: 0;
+	border-style: dashed solid;
+	border-width: 10px;
+}
+
+.infestor-tip-triangle-bottom{
+
+	left: 8px;
+	bottom:-17px;
+	border-color: #888 transparent transparent transparent;
+	border-style:solid dashed;
+}
+
+.infestor-tip-triangle-mask-bottom{
+	top: -11px;
+	border-color: #fff transparent transparent transparent;
+	border-style:solid dashed;
+}
+
+.infestor-tip-triangle-top {
+
+	top: -17px;
+	left: 8px;
+	border-color: transparent transparent #888 transparent;
+	border-style:solid dashed;
+}
+
+.infestor-tip-triangle-mask-top {
+	top: -9px;
+	border-color: transparent transparent #fff transparent;
+	border-style:solid dashed;
+}
+
+.infestor-tip-triangle-left {
+	top: 8px;
+	left: -17px;
+	border-color: transparent #888 transparent transparent;
+}
+
+.infestor-tip-triangle-mask-left{
+	top: -10px;
+	left: -9px;
+	border-color: transparent #fff transparent transparent;
+}
+
+.infestor-tip-triangle-right {
+	top: 8px;
+	right: -17px;
+	border-color: transparent transparent transparent #888;
+}
+
+.infestor-tip-triangle-mask-right{
+	top: -10px;
+	left: -11px;
+	border-color: transparent transparent transparent #fff;
+}
+
+
+/* button */
+
+ .infestor-button{
+ 
+	
+	
+ }
+ 
+ .infestor-button-body{
+ 
+	vertical-align: middle; 
+	text-align:center;
+	cursor:pointer;
+	padding:5px 10px;
+	font-weight:bold;
+	background-color: #8A2BE2;
+	color:#FFFFFF;
+	letter-spacing: 0.1em;
+ 
+ }
+ 
+ .infestor-button-head{
+ 
+ 
+ }
+ 
+ .infestor-button-rear{
+ 
+ 
+ }
+ 
+ .infestor-button-icon{
+ 
+	padding:0px;
+	background-repeat:no-repeat;
+	background-position:center center;
+	cursor:auto;
+	background-color:transparent;
+	vertical-align:middle;
+	
+ }
+ 
+ .infestor-button-icon-image{
+ 
+	background-image:url(../images/chain-node-hover.png);
+	
+ }
+ 
+
+/* panel */
+
+.infestor-panel{
+
+	position:relative;
+
+}
+
+.infestor-panel-head{
+
+}
+
+.infestor-panel-body{
+
+	
+}
+
+.infestor-panel-rear{
+
+}
+
+.infestor-panel-content{
+
+	height: 100%;
+	position: relative;
+
+}
+
+.infestor-panel-title{
+
+	text-indent: 1em;
+	height:24px;
+	margin-bottom:15px;
+	font-size:12px;
+	font-weight:bold;
+	line-height:24px;
+	border-bottom:1px solid;
+
+}
+
+.infestor-panel-control{
+
+	position:absolute;
+	right:10px;
+	top:10px;
+
+}
+
+.infestor-panel-control-item-horizon{
+	
+	height:16px;
+	width:16px;
+	display: inline-block;
+	margin-left:10px;
+	*display: inline;
+	*zoom: 1;
+	background-image:url(../images/win-ctrl-icons-16.png);
+	background-repeat:no-repeat;
+	cursor:pointer;
+
+}
+
+.infestor-panel-control-item-vertical{
+
+	display:block;
+	width:16px;
+	height:16px;
+	margin-bottom:15px;
+	background-image:url(../images/win-ctrl-icons-16.png);
+	background-repeat:no-repeat;
+	cursor:pointer;
+}
+
+.infestor-panel-control-item-close{
+
+	background-position:-64px -4px;
+
+}
+
+.infestor-panel-control-item-max{
+
+	background-position:-24px -4px;
+}
+
+.infestor-panel-control-item-min{
+
+	background-position:-4px -4px;
+}
+
+.infestor-panel-control-item-restore{
+
+	display:none;
+	background-position:-44px -4px;
+
+}
+
+.infestor-validate-panel{
+
+	margin-bottom:5px;
+
+}
+
+.infestor-validate-panel-title{
+
+	text-indent: 1em;
+	height:24px;
+	font-size:12px;
+	font-weight:bold;
+	line-height:24px;
+
+}
+
+.infestor-validate-panel-body{
+
+	padding:10px;
+	text-indent: 2em;
+	line-height:24px;
+	word-wrap: break-word;
+	white-space: normal;
+	border-radius: 5px;
+
+}
+
+.infestor-validate-panel-error-text{
+
+	color:#FFFFFF;
+	background-color:#F00;
+
+}
+
+.infestor-validate-panel-prompt-text{
+	
+	color:#FFFFFF;
+	background-color:#FFA500;
+
+}
+
+.infestor-validate-status-panel{
+
+	padding:10px;
+
+}
+
+.infestor-validate-status-panel-head{
+
+	height:24px;
+	width:24px;
+
+}
+
+.infestor-validate-status-panel-body{
+
+	padding-left:10px;
+
+}
+
+.infestor-validate-panel-status-validating{
+
+	background-image:url(../images/gray-validating.gif);
+
+}
+
+.infestor-validate-panel-status-validated-pass{
+
+	background-image:url(../images/green-validated.png);
+
+}
+
+.infestor-validate-panel-status-validated-error{
+
+	background-image:url(../images/red-validated.png);
+}
+
+/* window */
+
+.infestor-window{
+
+	width:300px;
+	padding:10px;
+	background-color:#FFFFFF;
+
+}
+
+.infestor-window-head{
+
+	position: relative;
+	height: 45px;
+}
+
+.infestor-window-title{
+
+	line-height: 45px;
+	text-indent: 1em;
+	font-weight: bold;
+	font-size: 1.5em;
+
+}
+
+.infestor-window-body{
+
+	padding:10px;
+
+}
+
+.infestor-window-rear{
+
+	position: relative;
+	height:25px;
+	
+}
+
+.infestor-window-autohide-plate{
+
+	position:absolute;
+	padding:0px 5px;
+	bottom:10px;
+	left:0;
+	background-color:purple;
+	color:white;
+}
+
 
 
 
