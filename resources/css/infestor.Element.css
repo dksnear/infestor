@@ -628,6 +628,42 @@ input:focus{
 	color:white;
 }
 
+/* checkbox */
+
+.infestor-checkbox{
+
+	height:15px;
+	width:15px;
+	border:1px solid #000000;
+	vertical-align:middle;
+	cursor:default;
+
+}
+
+.infestor-checkbox:focus{
+
+	border-color: rgb(77, 144, 254);
+    outline: none;
+
+}
+
+.infestor-checkbox-checked{
+
+	background-position:-9px -11px;
+	background-image:url(../images/check32.png);
+}
+
+.infestor-checkbox-half-checked{
+
+	background-position:-31px -29px;
+	background-image:url(../images/square48.png);
+	
+}
+
+.infestor-checkbox-disabed{
+
+	border-color : gray;
+}
 
 
 
