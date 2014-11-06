@@ -898,20 +898,20 @@ infestor.define('infestor.Element', {
 	autoPosition : function (target, pos, offset, mode, strict) {
 
 		var css = {
-			position : mode || 'fixed',
-			top : 'auto',
-			left : 'auto',
-			right : 'auto',
-			bottom : 'auto'
-		},
-		driftMap = {
-			head : 3,
-			middle : 0,
-			rear : 0
-		},
-		defaultDepart = 9,
-		clientHeight = document.documentElement.clientHeight,
-		clientWidth = document.documentElement.clientWidth;
+				position : mode || 'fixed',
+				top : 'auto',
+				left : 'auto',
+				right : 'auto',
+				bottom : 'auto'
+			},
+			driftMap = {
+				head : 3,
+				middle : 0,
+				rear : 0
+			},
+			defaultDepart = 9,
+			clientHeight = document.documentElement.clientHeight,
+			clientWidth = document.documentElement.clientWidth;
 
 		if (!this.element)
 			return false;
@@ -922,11 +922,11 @@ infestor.define('infestor.Element', {
 			target = target.offset();
 
 		target = infestor.append({
-				top : 0,
-				left : 0,
-				height : 0,
-				width : 0
-			}, target);
+			top : 0,
+			left : 0,
+			height : 0,
+			width : 0
+		}, target);
 			
 		target.right = clientWidth - parseFloat(target.left);
 		target.bottom = clientHeight - parseFloat(target.top);
@@ -951,65 +951,65 @@ infestor.define('infestor.Element', {
 		if (pos == 'right' && target.topTrend)
 			this.element.css(infestor.append(css, {
 
-					bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height)),
-					left : infestor.px(parseFloat(target.left) + parseFloat(target.width) + parseFloat(offset.depart))
+				bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height)),
+				left : infestor.px(parseFloat(target.left) + parseFloat(target.width) + parseFloat(offset.depart))
 
-				}));
+			}));
 				
 		if (pos == 'right' && !target.topTrend)
 			this.element.css(infestor.append(css, {
 
-					top : infestor.px(parseFloat(target.top)),
-					left : infestor.px(parseFloat(target.left) + parseFloat(target.width) + parseFloat(offset.depart))
+				top : infestor.px(parseFloat(target.top)),
+				left : infestor.px(parseFloat(target.left) + parseFloat(target.width) + parseFloat(offset.depart))
 
-				}));
+			}));
 		
 		if (pos == 'left' && target.topTrend)
 			this.element.css(infestor.append(css, {
 
-					bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height)),
-					right : infestor.px(parseFloat(target.right) + parseFloat(offset.depart))
-				}));
+				bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height)),
+				right : infestor.px(parseFloat(target.right) + parseFloat(offset.depart))
+			}));
 		
 
 		if (pos == 'left' && !target.topTrend)
 			this.element.css(infestor.append(css, {
 
-					top : infestor.px(parseFloat(target.top)),
-					right : infestor.px(parseFloat(target.right) + parseFloat(offset.depart))
-				}));
+				top : infestor.px(parseFloat(target.top)),
+				right : infestor.px(parseFloat(target.right) + parseFloat(offset.depart))
+			}));
 				
 				
 		if(pos == 'top' && target.leftTrend)
 			this.element.css(infestor.append(css, {
 
-					right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width)),
-					bottom : infestor.px(parseFloat(target.bottom) + parseFloat(offset.depart))
+				right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width)),
+				bottom : infestor.px(parseFloat(target.bottom) + parseFloat(offset.depart))
 
-				}));
+			}));
 
 		if (pos == 'top' && !target.leftTrend)
 			this.element.css(infestor.append(css, {
 
-					left : infestor.px(parseFloat(target.left)),
-					bottom : infestor.px(parseFloat(target.bottom) + parseFloat(offset.depart))
+				left : infestor.px(parseFloat(target.left)),
+				bottom : infestor.px(parseFloat(target.bottom) + parseFloat(offset.depart))
 
-				}));
+			}));
 				
 		if (pos == 'bottom' && target.leftTrend)
 			this.element.css(infestor.append(css, {
 
-					right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width)),
-					top : infestor.px(parseFloat(target.top) + parseFloat(target.height) + parseFloat(offset.depart))
+				right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width)),
+				top : infestor.px(parseFloat(target.top) + parseFloat(target.height) + parseFloat(offset.depart))
 
-				}));
+			}));
 
 		if (pos == 'bottom' && !target.leftTrend)
 			this.element.css(infestor.append(css, {
 
-					left : infestor.px(parseFloat(target.left)),
-					top : infestor.px(parseFloat(target.top) + parseFloat(target.height) + parseFloat(offset.depart))
-				}));
+				left : infestor.px(parseFloat(target.left)),
+				top : infestor.px(parseFloat(target.top) + parseFloat(target.height) + parseFloat(offset.depart))
+			}));
 				
 				
 		if (pos == 'left' || pos == 'right') {

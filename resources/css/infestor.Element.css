@@ -41,7 +41,6 @@ input:focus{
 	
 }
 
-
 .infestor-element-inline-block-ie7minus{
 
 	display: inline;
@@ -636,7 +635,7 @@ input:focus{
 	width:15px;
 	border:1px solid #000000;
 	vertical-align:middle;
-	cursor:default;
+	cursor:pointer;
 
 }
 
