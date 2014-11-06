@@ -5,14 +5,11 @@ infestor.define('infestor.Checkbox',{
 	alias:'checkbox',
 
 	extend:'infestor.Element',
-	
-	//cssUses:['infestor.Checkbox'],
 		
 	cssClsElement:'infestor-checkbox',
 	cssClsChecked :'infestor-checkbox-checked',
 	cssClsHalfChecked :'infestor-checkbox-half-checked',
 	cssClsDisabled :'infestor-checkbox-disabed',
-	cssClsFocus:'infestor-checkbox-focus',
 	
 	disableEvent: false,
 	
@@ -49,6 +46,7 @@ infestor.define('infestor.Checkbox',{
 		
 			this.emit('click',[this.checked,inst,e],this);
 			this.checked ? this.unCheck() : this.check();
+			infestor.clearSelection();
 		
 		},this);
 	
@@ -63,7 +61,7 @@ infestor.define('infestor.Checkbox',{
 		if(this.disabed)
 			return this.addClass(this.cssClsDisabled);
 		
-		this.isFocus && this.addClass(this.cssClsFocus);
+		this.isFocus && this.element.element.focus();
 		this.checked && this.addClass(this.cssClsChecked);
 		this.halfChecked && this.addClass(this.cssClsHalfChecked);
 	
@@ -104,7 +102,7 @@ infestor.define('infestor.Checkbox',{
 	
 		if(this.disabed || this.isFocus) return this;
 		
-		this.element.addClass(this.cssClsFocus);
+		this.element.element.focus();
 		
 		this.isFocus = true;
 		
@@ -116,7 +114,7 @@ infestor.define('infestor.Checkbox',{
 	
 		if(this.disabed || !this.isFocus) return this;
 		
-		this.element.removeClass(this.cssClsFocus);
+		this.element.element.blur();
 		
 		this.isFocus = false;
 		

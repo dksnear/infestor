@@ -102,7 +102,7 @@ infestor.define('infestor.form.field.Field', {
 	// false 不创建标签对象
 	label : false,
 
-	labelWidth : 40,
+	labelWidth : 50,
 
 	//(top|left|right)
 	labelPos : 'left',

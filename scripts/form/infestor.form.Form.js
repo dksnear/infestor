@@ -13,7 +13,8 @@ infestor.define('infestor.form.Form', {
 		'infestor.form.field.Field',
 		'infestor.form.field.Captcha',
 		'infestor.form.field.CandidateCaptcha',
-		'infestor.form.field.Combo'
+		'infestor.form.field.Combo',
+		'infestor.form.field.Checkbox'
 	],
 
 	cssUses : ['infestor.Form'],

@@ -1,11 +1,11 @@
 
-infestor.define('infestor.form.field.CheckBox', {
+infestor.define('infestor.form.field.Checkbox', {
 
 	alias : 'checkboxfield',
 
 	extend : 'infestor.form.field.Field',
 
-	uses : ['infestor.CheckBox'],
+	uses : ['infestor.Checkbox'],
 	
 	cssUses : ['infestor.Form'],
 
@@ -17,9 +17,10 @@ infestor.define('infestor.form.field.CheckBox', {
 	checked : false,
 	value : null,	
 	layout : 'table',	
-	allowNull : false,
 	
 	tabIndex:-1,
+	
+	allowCheckStatus:false,
 	
 	// #rewite methods
 	
@@ -31,43 +32,14 @@ infestor.define('infestor.form.field.CheckBox', {
 	
 	createInput : function(){
 	
-		this.fieldInput = this.fieldInput || infestor.create('infestor.Element',{
+		this.fieldInput = this.fieldInput || infestor.create('infestor.Checkbox',{
 		
-			cssClsElement:'infestor-candidate-captcha-input',
-			attr:{
-			
-				tabindex:-1
-			},
-			items:infestor.genArray(this.codeNum,function(i){
-			
-				return {
+			tabIndex : this.tabIndex,
+			checked : this.value ? true : false,
+			disabled : this.disabled
+		
+		}).renderTo(this);
 				
-					cssClsElement:'infestor-candidate-captcha-input-cell ' + this.cssClsElementInlineBlock
-								
-				};
-				
-			
-			},this)
-				
-		
-		}).renderTo(this.elementFieldContent);
-		
-		!this.allowNull && this.fieldInput.element.addClass(this.cssClsFieldStatusNotNull);
-		
-		this.fieldInput.element.focus(function(){
-		
-			this.emit('focus',arguments,this);
-		
-		},this).blur(function(){
-		
-			this.emit('blur',arguments,this);
-		
-		},this).click(function(e){
-		
-			infestor.stopPropagation(e);
-			
-		});
-		
 		return this;
 	
 	},
@@ -75,6 +47,8 @@ infestor.define('infestor.form.field.CheckBox', {
 	focus:function(){
 	
 		this.isFocus = true;
+		
+		this.fieldInput.focus();
 		
 		return this;
 	
@@ -84,35 +58,50 @@ infestor.define('infestor.form.field.CheckBox', {
 	
 		this.isFocus = false;
 		
+		this.fieldInput.blur();
+		
 		return this;
 	
 	},
 	
 	getValue : function(){
 	
-		return this.value;
+		return this.value || 0;
 	
 	},
 	
 	setValue : function(value){
 	
+		this.value = value ? 1 : 0;
 		
+		this.value ? this.fieldInput.check() : this.fieldInput.unCheck();
+		
+		return this;
 	
 	},
 	
 	clearValue : function(last){
 	
+		this.setValue();
+		
+		return this;
 	},
 	
 	setReadOnly : function(readOnly){
 	
 		this.readOnly =  readOnly ? true : false;
+		
+		if(this.readOnly)
+			this.disable();
+		else this.enable();
 	
 		return this;
 	
 	},
 	
 	disable : function(){
+	
+		this.fieldInput.disable();
 	
 		this.disabled = true;
 		
@@ -121,6 +110,8 @@ infestor.define('infestor.form.field.CheckBox', {
 	
 	enable : function(){
 	
+		this.fieldInput.enable();
+	
 		this.disabled = false;
 		
 		return this;
@@ -128,13 +119,8 @@ infestor.define('infestor.form.field.CheckBox', {
 	},
 	
 	
-	// #new methods
-	
-	// # rewite methods
-	
 	destroy:function(){
 	
-		this.captchaTip = this.captchaTip && this.captchaTip.destroy();
 		this.callParent();
 	
 	}

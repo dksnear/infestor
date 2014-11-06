@@ -67,27 +67,30 @@ infestor.define('infestor.Panel', {
 			this.elementInnerContainer = this.elementContainerTableRow;
 		}
 		
-		if(layout == layoutMap['inline-block']){
-		
+		if(layout == layoutMap['inline-block'])
 			this.elementInnerContainer.addClass(this.cssClsElementRemoveSpace);
-			this.cssClsHead = (this.cssClsHead || '') + ' ' + this.cssClsElementInlineBlock;
-			this.cssClsBody = (this.cssClsBody || '') + ' ' + this.cssClsElementInlineBlock;
-			this.cssClsRear = (this.cssClsRear || '') + ' ' + this.cssClsElementInlineBlock;
-			
-		}
-		
-		if(layout == layoutMap['float']){
-		
-			this.cssClsHead = (this.cssClsHead || '') + ' ' + this.cssClsElementFloat;
-			this.cssClsBody = (this.cssClsBody || '') + ' ' + this.cssClsElementFloat;
-			this.cssClsRear = (this.cssClsRear || '') + ' ' + this.cssClsElementFloat;
-			
-		}
 		
 		this.isLayoutSet = true;
 			
 		this.createTitle().createHead().createBody().createRear().createControl();
 		this.elementInnerContainer = this.body.elementInnerContainer;
+		
+		
+		if(layout == layoutMap['inline-block']){
+		
+			this.head && this.head instanceof infestor.Element && this.head.element.addClass(this.cssClsElementInlineBlock);
+			this.body && this.body instanceof infestor.Element && this.body.element.addClass(this.cssClsElementInlineBlock);
+			this.rear && this.rear instanceof infestor.Element && this.rear.element.addClass(this.cssClsElementInlineBlock);
+			
+		}
+		
+		if(layout == layoutMap['float']){
+				
+			this.head && this.head instanceof infestor.Element && this.head.element.addClass(this.cssClsElementFloat);
+			this.body && this.body instanceof infestor.Element && this.body.element.addClass(this.cssClsElementFloat);
+			this.rear && this.rear instanceof infestor.Element && this.rear.element.addClass(this.cssClsElementFloat);
+	
+		}
 
 	},
 
