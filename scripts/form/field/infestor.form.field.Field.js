@@ -293,6 +293,8 @@ infestor.define('infestor.form.field.Field', {
 	
 	focus:function(){
 	
+		if(this.isFocus) return this;
+	
 		this.elementFieldInput && this.elementFieldInput.element.focus();
 		this.isFocus = true;
 		
@@ -301,6 +303,8 @@ infestor.define('infestor.form.field.Field', {
 	},
 	
 	blur:function(){
+	
+		if(!this.isFocus) return this;
 	
 		this.elementFieldInput && this.elementFieldInput.element.blur();		
 		this.isFocus = false;

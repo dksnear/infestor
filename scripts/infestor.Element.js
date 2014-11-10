@@ -754,10 +754,10 @@ infestor.define('infestor.Element', {
 	},
 
 	// 向上查找符合条件的父节点
-	climbUp : function (keyword, type) {
+	climbUp : function (keyword, type, max) {
 
-		var parent = this.parent,
-		max = 5;
+		var parent = this.parent, max = max || 10;
+		
 		while (parent && max > 0) {
 
 			if (infestor.isFunction(keyword) && keyword.call(this, parent))
@@ -932,6 +932,10 @@ infestor.define('infestor.Element', {
 		target.bottom = clientHeight - parseFloat(target.top);
 		target.leftTrend = (parseFloat(target.left) + parseFloat(target.width)) > parseFloat(target.right);
 		target.topTrend = (parseFloat(target.top) + parseFloat(target.height)) > parseFloat(target.bottom);
+		
+		target.topClose = parseFloat(target.top) < clientHeight/2;
+		target.topDock = target.topClose && (parseFloat(target.bottom) < this.getDom().offsetHeight);
+		target.bottomDock = !target.topClose && (parseFloat(target.top) < this.getDom().offsetHeight);
 
 		if (!strict && (pos == 'left' || pos == 'right'))
 			pos = target.leftTrend ? 'left' : 'right';
@@ -1023,8 +1027,24 @@ infestor.define('infestor.Element', {
 			driftMap.middle = Math.ceil(parseFloat(this.getDom().offsetWidth) / 2) - 10;
 			driftMap.rear = parseFloat(this.getDom().offsetWidth) - 21;
 		}
+			
 		
-		offset.drift = driftMap[offset.drift] || offset.drift || 0;
+		offset.drift = parseFloat(driftMap[offset.drift] || offset.drift || 0);
+		
+		target.topDock && this.element.css({
+			
+			top:0,
+			bottom:'auto'
+		
+		}) && (offset.drift += parseFloat(target.top));
+		
+		
+		target.bottomDock && this.element.css({
+		
+			top:'auto',
+			bottom:0
+			
+		}) && (offset.drift += this.getDom().offsetHeight - parseFloat(target.bottom));
 
 		return {
 		
@@ -1033,7 +1053,8 @@ infestor.define('infestor.Element', {
 			depart : offset.depart,
 			leftTrend : target.leftTrend,
 			topTrend : target.topTrend,
-			trend : target.topTrend || target.leftTrend || false
+			trend : target.topTrend || target.leftTrend || false,
+			dock : target.topDock || target.bottomDock || false
 		
 		};
 

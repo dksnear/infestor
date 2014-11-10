@@ -259,7 +259,7 @@ infestor.define('infestor.form.Form', {
 
 	getField : function (fieldName) {
 	
-		if(infestor.isUndefined(fieldName))
+		if(!fieldName)
 			return this.fieldsMap;
 	
 		return this.fieldsMap && this.fieldsMap[fieldName];

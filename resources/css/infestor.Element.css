@@ -255,12 +255,9 @@ input:focus{
 
     padding: 5px 10px;
 	display: block;
-    border: 1px solid #B3B3B3;
-    border-radius: 5px;
     background: #ffffff;
     outline:none;
 	
-
 }
 
 .infestor-tip-content {

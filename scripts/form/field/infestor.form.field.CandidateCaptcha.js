@@ -65,16 +65,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 		
 			if(this.disabled || this.readOnly || this.checked || this.isFocus) return;
 			
-			this.isFocus = true;
-			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.form.ValidatePanel.VALIDATED_PASS : infestor.form.ValidatePanel.VALIDATED_ERROR);
-			this.validateShower && this.validateShower.autoPosition(this.element, 'bottom', '13') && this.validateShower.show();	
-		
-			this.captchaTip.autoPosition(this.element, 'right', '13');
-			this.captchaTip.show();
-			
-			!this.isActive && this.refresh();
-			
-			this.isActive = true;
+			this.focus();
 
 		}, 100), this);
 		
@@ -86,8 +77,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 		
 		this.captchaTip.on('afterhide',function(){
 		
-			this.validateShower && this.validateShower.hide();
-			this.isFocus = false;
+			this.blur();
 		
 		},this);
 		
@@ -124,9 +114,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 			
 			if(inst.element.hasClass('infestor-candidate-captcha-control-panel-head-cancel')){
 				
-				this.captchaTip.hide();
-				this.validateShower && this.validateShower.hide();
-				this.isFocus = false;
+				this.blur();
 				return;
 				
 			}
@@ -186,7 +174,17 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	
 	focus:function(){
 	
-		this.fieldInput && this.fieldInput.getDom().focus();
+		if(this.isFocus) return this;
+	
+		this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.form.ValidatePanel.VALIDATED_PASS : infestor.form.ValidatePanel.VALIDATED_ERROR);
+		this.validateShower && this.validateShower.autoPosition(this.element, 'bottom', '13') && this.validateShower.show();	
+	
+		this.captchaTip.autoPosition(this.element, 'right', '13');
+		this.captchaTip.show();
+		
+		!this.isActive && this.refresh();
+		this.isActive = true;
+		
 		this.isFocus = true;
 		
 		return this;
@@ -195,7 +193,10 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	
 	blur:function(){
 	
-		this.fieldInput && this.fieldInput.getDom().blur();		
+		if(!this.isFocus) return this;
+	
+		this.captchaTip.hide();
+		this.validateShower && this.validateShower.hide();		
 		this.isFocus = false;
 		
 		return this;

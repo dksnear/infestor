@@ -71,6 +71,8 @@ infestor.define('infestor.Tip', {
 	
 	// 当设置丢失焦点自动隐藏时 阻塞tip Click事件的冒泡行为
 	blockBubble:true,
+	
+	boxShadow:true,
 
 	initElement : function () {
 
@@ -78,7 +80,7 @@ infestor.define('infestor.Tip', {
 		
 		this.elementArrow = this.createDomElement(this.element,this.cssClsArrow,'s');
 		
-		this.elementArrowMask = this.createDomElement(this.elementArrow,this.cssClsArrowMask,'i');
+		this.elementArrowMask = infestor.isIE9Minus() && this.createDomElement(this.elementArrow,this.cssClsArrowMask,'i');
 
 		this.elementContent = this.createDomElement(this.element, this.cssClsContent);
 
@@ -144,7 +146,7 @@ infestor.define('infestor.Tip', {
 	
 	},
 	
-	setArrowPosition : function (pos, opposite, drift ,topTrend,leftTrend) {
+	setArrowPosition : function (pos, opposite, drift ,topTrend,leftTrend,dock) {
 
 		if(opposite)
 			pos = {
@@ -187,9 +189,9 @@ infestor.define('infestor.Tip', {
 
 		};
 
-		this.currentCls && this.elementArrow.removeClass(this.currentCls.triangle) && this.elementArrowMask.removeClass(this.currentCls.mask);
+		this.currentCls && this.elementArrow.removeClass(this.currentCls.triangle) && this.elementArrowMask && this.elementArrowMask.removeClass(this.currentCls.mask);
 		this.currentCls = this.posClsMap[this.arrowPosition];
-		this.elementArrow.addClass(this.currentCls.triangle) && this.elementArrowMask.addClass(this.currentCls.mask);
+		this.elementArrow.addClass(this.currentCls.triangle) && this.elementArrowMask && this.elementArrowMask.addClass(this.currentCls.mask);
 		
 		/top|bottom/.test(pos) && drift && this.elementArrow.css({
 		
@@ -204,6 +206,13 @@ infestor.define('infestor.Tip', {
 			top : topTrend ? 'auto' : infestor.px(drift)
 		
 		});
+		
+		dock && drift && this.elementArrow.css({
+		
+			bottom :'auto',
+			top :infestor.px(drift)
+		
+		});
 
 		return this;
 
@@ -213,7 +222,7 @@ infestor.define('infestor.Tip', {
 
 		var pos = this.callParent();
 
-		pos && this.setArrowPosition(pos.pos, true, pos.drift, pos.topTrend,pos.leftTrend);
+		pos && this.setArrowPosition(pos.pos, true, pos.drift, pos.topTrend,pos.leftTrend,pos.dock);
 
 		return pos;
 

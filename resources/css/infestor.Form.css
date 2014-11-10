@@ -33,6 +33,7 @@
 	display: block;
 	cursor: pointer;
 	color: #333333;
+	text-align:left;
 }
 
 .infestor-field-left{
