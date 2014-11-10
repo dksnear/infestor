@@ -128,7 +128,7 @@ infestor.define('infestor.Tip', {
 			
 			},this);
 			
-			infestor.Dom.getWindow().on('click',this.hideWithBlurHandler,this);
+			infestor.Dom.getBody().on('click',this.hideWithBlurHandler,this);
 		
 		}
 		

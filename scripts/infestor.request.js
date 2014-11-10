@@ -81,6 +81,7 @@ infestor.namespace('infestor.request', {
 			},function(e){
 			
 				// ie8minus not support
+				timeoutId && clearTimeout(timeoutId);
 				error && error.call(scope,e);
 				complete && complete.call(scope,false,e);
 			

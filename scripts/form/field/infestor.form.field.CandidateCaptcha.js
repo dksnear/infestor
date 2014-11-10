@@ -61,9 +61,9 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	
 	initEvents : function(){
 		
-		this.on('focus',infestor.throttle(function () {
+		this.on('click',infestor.throttle(function () {
 		
-			if(this.disabled || this.readOnly || this.checked) return;
+			if(this.disabled || this.readOnly || this.checked || this.isFocus) return;
 			
 			this.isFocus = true;
 			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.form.ValidatePanel.VALIDATED_PASS : infestor.form.ValidatePanel.VALIDATED_ERROR);
@@ -84,15 +84,10 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 			
 		},this);
 		
-		// this.on('blur',function () {
-		
-			// this.isFocus = false;
-
-		// }, this);
-		
 		this.captchaTip.on('afterhide',function(){
 		
 			this.validateShower && this.validateShower.hide();
+			this.isFocus = false;
 		
 		},this);
 		
@@ -131,6 +126,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 				
 				this.captchaTip.hide();
 				this.validateShower && this.validateShower.hide();
+				this.isFocus = false;
 				return;
 				
 			}
@@ -167,19 +163,12 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 		
 		!this.allowNull && this.fieldInput.element.addClass(this.cssClsFieldStatusNotNull);
 		
-		this.fieldInput.element.focus(function(){
+		this.fieldInput.element.click(function(e){
 		
-			this.emit('focus',arguments,this);
-		
-		},this).blur(function(){
-		
-			this.emit('blur',arguments,this);
-		
-		},this).click(function(e){
-		
+			this.emit('click',arguments,this);
 			infestor.stopPropagation(e);
 			
-		});
+		},this);
 		
 		return this;
 	
@@ -395,7 +384,6 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	
 	},
 	
-	
 	// 获取验证码图片坐标（可根据需要在创建对象时重写）
 	getCaptchaPos : function(){
 	
@@ -419,7 +407,6 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	
 	},
 	
-	//
 	createCaptchaTip:function(){
 		
 		this.captchaTip = this.captchaTip || infestor.create('infestor.Tip',{ 

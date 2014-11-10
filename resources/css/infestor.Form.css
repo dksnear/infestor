@@ -1,16 +1,17 @@
 
-
 .infestor-form{
 
 	padding: 10px 0 5px 15px;
 
 }
 
+
 /**************
 	
 	field
 
 ***************/
+
 
 .infestor-field{
 	
@@ -31,17 +32,18 @@
 	
 	display: block;
 	cursor: pointer;
+	color: #333333;
 }
 
 .infestor-field-left{
 
-	padding:0 10px 0 0;
+	padding:0 5px 0 0;
 
 }
 
 .infestor-field-right{
 
-	padding:0 0 0 10px;
+	padding:0 0 0 5px;
 	
 }
 
@@ -105,10 +107,9 @@
 
 .infestor-captcha-field{
 
-	padding-right:10px;
+	padding-right:17px;
 
 }
-
 
 .infestor-captcha-field img{
 
@@ -146,7 +147,6 @@
 
 }
 
-
 .infestor-candidate-captcha-input{
 
 	width:160px;
@@ -159,7 +159,6 @@
 	border-color:purple;
 }
 
-
 .infestor-candidate-captcha-input-cell{
 
 	width:30px;
@@ -171,7 +170,7 @@
 
 .infestor-candidate-captcha-input:focus,.infestor-candidate-captcha-input-cell:hover{
 
-	border-color: rgb(77, 144, 254);
+	border-color: #4d90fe;
     outline: none;
 	
 }
@@ -228,7 +227,6 @@
 
 }
 
-
 .infestor-candidate-captcha-control-panel-body{
 
 	width:210px;
@@ -246,12 +244,12 @@
 }
 
 
-
 /********
 
 	combo-field
 
 ***********/
+
 
 .infestor-combo-field{
 
@@ -290,7 +288,6 @@
 	border-color:purple;
 
 }
-
 
 .infestor-combo-field-drop-down-panel{
 
