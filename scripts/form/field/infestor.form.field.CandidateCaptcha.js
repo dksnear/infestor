@@ -149,7 +149,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 		
 		}).renderTo(this.elementFieldContent);
 		
-		!this.allowNull && this.fieldInput.element.addClass(this.cssClsFieldStatusNotNull);
+		// !this.allowNull && this.fieldInput.element.addClass(this.cssClsFieldStatusNotNull);
 		
 		this.fieldInput.element.click(function(e){
 		

@@ -138,6 +138,8 @@ infestor.define('infestor.form.field.Field', {
 	
 	validators:null,
 	
+	inputType:'text',
+	
 	init:function(){
 	
 		this.fieldName = this.fieldName || this.getId();
@@ -236,13 +238,13 @@ infestor.define('infestor.form.field.Field', {
 		
 		this.elementFieldInput = this.createDomElement(this.elementFieldContent,'','input',{
 			
-			type : 'text',
+			type : this.inputType,
 			id : this.id,
 			name : this.fieldName
 			
 		});
 		
-		!this.allowNull && this.elementFieldInput.addClass(this.cssClsFieldStatusNotNull);
+		// !this.allowNull && this.elementFieldInput.addClass(this.cssClsFieldStatusNotNull);
  		
 		this.elementFieldInput.change(function(){
 		
@@ -522,8 +524,7 @@ infestor.define('infestor.form.field.Field', {
 				handle:validator
 			
 			});
-				
-				
+							
 			infestor.isString(validator) && infestor.append(opts,{
 				
 				type:'remote',
@@ -590,7 +591,7 @@ infestor.define('infestor.form.field.Field', {
 				if(infestor.isRawObject(checked)){
 					
 					errorMsg = checked.errorMsg || errorMsg;
-					promptMsg = check.promptMsg || promptMsg;
+					promptMsg = checked.promptMsg || promptMsg;
 					checked = checked.passed;
 				
 				}
@@ -610,7 +611,7 @@ infestor.define('infestor.form.field.Field', {
 		if(remote && checked)
 			return false;
 		
-		return afterFn.call(this,checked,errorMsg);
+		return afterFn.call(this,checked,errorMsg,promptMsg);
 		
 	},
 	
