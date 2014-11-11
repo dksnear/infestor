@@ -362,6 +362,15 @@ infestor.define('infestor.form.field.Field', {
 	
 	},
 	
+	reset:function(){
+	
+		this.clearValue();
+		this.check();
+		
+		return this;
+	
+	},
+	
 	setReadOnly:function(readOnly){
 	
 		if(readOnly){

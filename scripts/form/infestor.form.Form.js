@@ -319,6 +319,7 @@ infestor.define('infestor.form.Form', {
 			this.fieldsMap = this.fieldsMap || {};
 			this.fieldsMap[fieldName] = field;
 			field.formLevel = level;
+			field.form = this;
 
 		}),this;
 	},
