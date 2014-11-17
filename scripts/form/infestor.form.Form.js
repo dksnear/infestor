@@ -10,6 +10,7 @@ infestor.define('infestor.form.Form', {
 	uses : [
 		'infestor.Indicator',
 		'infestor.request', 
+		'infestor.form.DataSet',
 		'infestor.form.field.Field',
 		'infestor.form.field.Captcha',
 		'infestor.form.field.CandidateCaptcha',
@@ -21,6 +22,8 @@ infestor.define('infestor.form.Form', {
 
 	cssClsElement : 'infestor-form',
 	
+	dataSetClsName : 'infestor.form.DataSet',
+	
 	position:'relative',
 
 	// 字段深度
@@ -29,6 +32,10 @@ infestor.define('infestor.form.Form', {
 	checked : false,
 
 	fieldsMap : null,
+	
+	formName : null,
+	
+	autoLoad : false, 
 
 	itemsOpts : {
 
@@ -45,6 +52,8 @@ infestor.define('infestor.form.Form', {
 		this.initIndicator();
 		
 		this.feed();
+		
+		this.dataSet && (this.dataSet.submitParamName = this.formName);
 
 	},
 	
@@ -153,7 +162,7 @@ infestor.define('infestor.form.Form', {
 
 		this.dataSet && this.dataSet.on('load', function () {
 		
-			this.setField(this.dataSet.next());
+			this.setField(this.dataSet.getData());
 		
 		},this);
 		
@@ -378,8 +387,8 @@ infestor.define('infestor.form.Form', {
 
 	submit : function (opts,rewrite) {
 	
-		if(!this.check())
-			return false;
+		// if(!this.check())
+			// return false;
 			
 		// 同步数据集数据
 		this.getData();

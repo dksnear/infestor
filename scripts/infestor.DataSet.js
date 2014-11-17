@@ -74,8 +74,7 @@ infestor.define('infestor.DataSet', {
 		error:null
 
 	},
-	
-	
+		
 	init : function(){
 	
 		this.loadConfig = infestor.append({
@@ -108,7 +107,7 @@ infestor.define('infestor.DataSet', {
 			return infestor.create('infestor.Indicator');
 			
 		if(infestor.isRawObject(opts))
-			infestor.create('infestor.Indicator',opts);
+			return infestor.create('infestor.Indicator',opts);
 		
 		if(opts instanceof infestor.Indicator)
 			return opts;
@@ -116,7 +115,6 @@ infestor.define('infestor.DataSet', {
 		return null;
 	
 	},
-
 
 	setData : function (data) {
 
@@ -137,7 +135,7 @@ infestor.define('infestor.DataSet', {
 		return !!this.count;
 	},
 	
-	addData :function(item){
+	addData : function(item){
 	
 		this.data = this.data || [];
 	
@@ -219,6 +217,16 @@ infestor.define('infestor.DataSet', {
 
 	},
 
+	getSubmitParams : function(){
+		
+		return {
+		
+			data : infestor.jsonEncode(this.getData())
+		
+		};
+	
+	},
+	
 	setCurrent : function (current) {
 
 		this.current = infestor.isFunction(current) ? current.call(this) : (current || this.current);
@@ -311,11 +319,9 @@ infestor.define('infestor.DataSet', {
 
 		config.params = config.params || {};
 		
-		config.params.data = this.getData();	
-			
 		opts && opts.params && (opts.params = infestor.append({}, config.params, opts.params));
 		
-		config.params.data = infestor.jsonEncode(config.params.data);
+		config.params = infestor.append(config.params,this.getSubmitParams());
 		
 		opts = infestor.append({
 
