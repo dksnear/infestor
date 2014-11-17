@@ -130,6 +130,9 @@ infestor.define('infestor.form.field.Field', {
 	// 允许空
 	allowNull:true,
 	
+	// 允许由form提交
+	allowSubmit:true,
+	
 	// 允许显示验证状态
 	allowCheckStatus:true,
 	

@@ -45,6 +45,8 @@ infestor.define('infestor.form.Form', {
 	
 	indicator:true,
 	
+	dataConfig:true,
+	
 	init : function () {
 
 		this.callParent();
@@ -180,13 +182,16 @@ infestor.define('infestor.form.Form', {
 		
 		this.dataSet && this.dataSet.on('beforeSubmit', function () {
 		
+			this.lockSubmit = true;
 			this.setFieldReadOnly(true);
+
 		
 		},this);
 		
 		this.dataSet && this.dataSet.on('submitComplete', function () {
 		
 			this.setFieldReadOnly(false);
+			this.lockSubmit = false;
 		
 		},this);
 		
@@ -195,19 +200,22 @@ infestor.define('infestor.form.Form', {
 	
 	getData:function(name){
 	
-		var data = null,field;
+		var data = {},field;
 		
 		if(arguments.length<1)
 			return infestor.each(this.fieldsMap,function(fieldName,field){
 			
-				data = data || [];
+				if(!field.allowSubmit)
+					return true;
+					
 				data[fieldName] = field.getValue();
 			
-			}) && (data=infestor.append({},this.dataSet.next(),data)) && this.dataSet.setData(data) && this.dataSet.next();
-		
-		data = this.dataSet.next() || {};
-		
+			}) && this.dataSet.setData(data) && this.dataSet.getData();
+			
 		field = this.getField(name);
+		
+		if(!field.allowSubmit)
+			return field.getValue();
 		
 		return field && (data[field.fieldName] = field.getValue()) && this.dataSet.setData(data) && data[name];
 	
@@ -387,8 +395,8 @@ infestor.define('infestor.form.Form', {
 
 	submit : function (opts,rewrite) {
 	
-		// if(!this.check())
-			// return false;
+		if(this.lockSubmit || !this.check())
+			return false;
 			
 		// 同步数据集数据
 		this.getData();

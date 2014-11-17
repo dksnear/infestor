@@ -264,16 +264,22 @@ infestor.define('infestor.Element', {
 	
 	initDataSet : function () {
 	
-		var cls = this.$ownerCls.prototype;
+		var cls = this.$ownerCls.prototype,ownCfg,protoCfg;
 	
 		if(this.dataSet)
 			return this.dataSet.owner = this;
 				
 		if(this.hasOwnProperty('dataConfig') && cls.dataConfig){
 		
-			 this.dataConfig.loadConfig = infestor.append({},cls.dataConfig.loadConfig,this.dataConfig.loadConfig);
-			 this.dataConfig.submitConfig = infestor.append({},cls.dataConfig.submitConfig,this.dataConfig.submitConfig);
-			 this.dataConfig = infestor.append({},cls.dataConfig,this.dataConfig);
+			ownCfg = infestor.isRawObject(this.dataConfig) ? this.dataConfig.loadConfig : {};
+			protoCfg = infestor.isRawObject(cls.dataConfig) ? cls.dataConfig.loadConfig : {};
+			this.dataConfig.loadConfig = infestor.append({},protoCfg,ownCfg);
+			
+			ownCfg = infestor.isRawObject(this.dataConfig) ? this.dataConfig.submitConfig : {};
+			protoCfg = infestor.isRawObject(cls.dataConfig) ? cls.dataConfig.submitConfig : {};
+			this.dataConfig.submitConfig = infestor.append({},protoCfg,ownCfg);
+			
+			this.dataConfig = infestor.append({},cls.dataConfig,this.dataConfig);
 	
 		}		
 			

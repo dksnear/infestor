@@ -328,10 +328,10 @@ infestor.define('infestor.DataSet', {
 				url : config.url,
 				method : config.method,
 				params : config.params,
-				success : function (data) {
+				success : function (data,msg) {
 
-					me.emit('submit', [data,opts.params] ,me);
-					me.emit('afterSubmit',[data,opts.params] ,me);
+					me.emit('submit', [data,opts.params,msg] ,me);
+					me.emit('afterSubmit',[data,opts.params,msg] ,me);
 
 				},
 				error : function () {

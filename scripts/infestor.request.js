@@ -6,7 +6,7 @@ infestor.namespace('infestor.request', {
 
 		cache : true,
 		contentType : 'application/x-www-form-urlencoded',
-		timeout: 60*1000,
+		timeout: 30*1000,
 		error:null,
 		success:null,
 		complete:null

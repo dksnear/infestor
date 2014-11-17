@@ -9,6 +9,7 @@ infestor.define('infestor.form.DataSet',{
 
 		if(this.data)
 			this.addData(data);
+			
 		else this.data = data;
 		
 		return this.data;
