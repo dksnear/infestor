@@ -22,6 +22,27 @@ infestor.namespace('infestor.cross',{
 		
 		});
 	
+	},
+	
+	alert:function(){
+	
+	
+	},
+	
+	
+	error:function(msg){
+	
+		infestor.mgr.require('infestor.Window',function(){
+		
+			infestor.Window.alert(msg).show();
+		
+		});
+	
+	},
+	
+	prompt:function(){
+	
+	
 	}
 
 

@@ -15,10 +15,9 @@ infestor.define('infestor.Window', {
 			var win = infestor.create('infestor.Window',{
 
 				dock:'center',
-				modal:false,
 				closable:true,
 				titleText:'提示',
-				modal:false,
+				modal:true,
 				items:[{
 				
 					alias:'element',
@@ -45,10 +44,9 @@ infestor.define('infestor.Window', {
 			var win = infestor.create('infestor.Window',{
 
 				dock:'center',
-				modal:false,
+				modal:true,
 				closable:true,
 				titleText:'确认',
-				modal:false,
 				items:[{
 				
 					alias:'element',
@@ -100,10 +98,9 @@ infestor.define('infestor.Window', {
 			var win = infestor.create('infestor.Window',{
 
 				dock:'center',
-				modal:false,
+				modal:true,
 				closable:true,
 				titleText:'抉择',
-				modal:false,
 				items:[{
 				
 					alias:'element',

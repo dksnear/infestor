@@ -1142,35 +1142,35 @@ infestor.define('infestor.Element', {
 
 		!this.$resize && infestor.mgr.require('infestor.Resize', infestor.debounce(function () {
 
-				var me = this;
+			var me = this;
 
-				this.$resize = this.$resize || infestor.create('infestor.Resize', {
+			this.$resize = this.$resize || infestor.create('infestor.Resize', {
 
-						element : this.getDom(),
-						elementContainer : this.getLimitContainer(),
-						cssClsElementTrigger : this.cssClsResizableTrigger,
-						miniWidth : this.miniWidth,
-						miniHeight : this.miniHeight,
-						maxWidth : this.maxWidth,
-						maxHeight : this.maxHeight,
-						events : {
+				element : this.getDom(),
+				elementContainer : this.getLimitContainer(),
+				cssClsElementTrigger : this.cssClsResizableTrigger,
+				miniWidth : this.miniWidth,
+				miniHeight : this.miniHeight,
+				maxWidth : this.maxWidth,
+				maxHeight : this.maxHeight,
+				events : {
 
-							beforeStart : function () {
+					beforeStart : function () {
 
-								me.disableDraggable();
+						me.disableDraggable();
 
-							},
-							afterStop : function () {
+					},
+					afterStop : function () {
 
-								me.initDraggable();
+						me.initDraggable();
 
-							}
+					}
 
-						}
+				}
 
-					});
+			});
 
-			}, 100), this);
+		}, 100), this);
 
 		return this;
 	},
