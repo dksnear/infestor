@@ -74,7 +74,7 @@ infestor.define('infestor.form.DataSet',{
 		var params = {};
 		
 		if(!this.submitParamName)
-			return this.callParent();
+			return this.getData() || {};
 		
 		params[this.submitParamName] = infestor.jsonEncode(this.getData());
 	

@@ -321,7 +321,7 @@ infestor.define('infestor.DataSet', {
 		
 		opts && opts.params && (opts.params = infestor.append({}, config.params, opts.params));
 		
-		config.params = infestor.append(config.params,this.getSubmitParams());
+		config.params = infestor.append({},this.getSubmitParams(),config.params);
 		
 		opts = infestor.append({
 

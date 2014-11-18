@@ -14,7 +14,7 @@ infestor.define('infestor.form.field.Checkbox', {
 	// 字段名
 	fieldName : null,
 
-	checked : false,
+	checked : true,
 	value : null,	
 	layout : 'table',	
 	

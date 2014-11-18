@@ -551,8 +551,14 @@ infestor.define('infestor.form.field.Field', {
 			!opts.type && infestor.isFunction(opts.handle) && (opts.type = 'func');
 			!opts.type && infestor.isString(opts.handle) && (opts.type = 'remote');
 			
+			if(!opts.handle)
+				return null;
+			
 			if(opts.type.toLowerCase()=='remote' && !opts.isPrepared){
-					
+			
+				opts.url = opts.url || opts.handle;
+				opts.paramName = opts.paramName || this.fieldName;
+			
 				opts.handle={
 					
 					scope:this,
@@ -590,6 +596,10 @@ infestor.define('infestor.form.field.Field', {
 		infestor.each(this.validators,function(idx,validator){
 		
 			validator = prepareFn.call(this,validator);
+			
+			if(!validator)
+				return true;
+			
 			idx = validator.type.toLowerCase();
 			
 			errorMsg = validator.errorMsg || this.errorMsg;
