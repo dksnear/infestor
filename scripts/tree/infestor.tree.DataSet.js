@@ -15,8 +15,8 @@ infestor.define('infestor.tree.DataSet',{
 	// 根节点数据父标识(数组数据模型)
 	rootPId : '0',
 	
-	// 数据模型(数组数据模型)
-	model : {
+	// 数据模型映射(数组数据模型)
+	modelMap : {
 	
 		$nodeId : 'id',
 		$parentNodeId: 'pId',
@@ -28,19 +28,25 @@ infestor.define('infestor.tree.DataSet',{
 	
 		this.callParent();
 	
-	},	
+	},
 	
-	setData : function(data){
+	initData : function(){
 	
 		if(this.type =='array')
-			return this.map(data);
+			return this.mapData(data);
 		
 		if(this.type == 'tree')
 			return this.object2array(data,true);
+	
+	},
+	
+	setData : function(data){
+	
+		
 	},
 	
 	// 按照数据模型格式化一个数据行
-	map : function(rowData) {
+	mapData : function(rowData) {
 		
 		var set = [],o = {
 		
@@ -51,16 +57,16 @@ infestor.define('infestor.tree.DataSet',{
 		if(infestor.isArray(rowData))
 			return infestor.each(rowData,function(idx,rowData){
 				
-				set.push(this.map(rowData));
+				set.push(this.mapData(rowData));
 			
 			},this),set;
 			
-		this.$modelMap = this.$modeMap || infestor.kvSwap(this.model);
+		this.reverseModelMap = this.reverseModeMap || infestor.kvSwap(this.modelMap);
 			
 		return infestor.each(rowData,function(name,data){
 		
-			if(this.$modelMap.hasOwnProperty(name))
-				return o[this.$modelMap[name]] = data,true;
+			if(this.$reverseModelMap.hasOwnProperty(name))
+				return o[this.$reverseModelMap[name]] = data,true;
 			
 			o[name] = data;
 		
@@ -97,7 +103,7 @@ infestor.define('infestor.tree.DataSet',{
 		
 		if(!infestor.isArray(data)) return [];
 		
-		data = this.map(data);
+		data = this.mapData(data);
 		
 		rootNode = getNode(rootPId || this.rootPId);
 		
@@ -133,12 +139,12 @@ infestor.define('infestor.tree.DataSet',{
 			
 			if(!node.rawData){
 			
-				o[this.model.$parentNodeId] =  pNodeId || this.rootPId;
-				o[this.model.$nodeId] = nodeId = String(genId++);
+				o[this.modelMap.$parentNodeId] =  pNodeId || this.rootPId;
+				o[this.modelMap.$nodeId] = nodeId = String(genId++);
 				
 				o = infestor.appendIf(o,node,['children'],null,true);
 				
-				map && (o = this.map(o));
+				map && (o = this.mapData(o));
 					
 				data.push(o);
 			}

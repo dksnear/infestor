@@ -5,6 +5,14 @@ infestor.define('infestor.form.DataSet',{
 	
 	submitParamName : '',
 	
+	initData : function(rawData){
+	
+		this.data = rawData;
+		
+		return this.data;
+		
+	},
+	
 	setData : function (data) {
 
 		if(this.data)
@@ -39,6 +47,12 @@ infestor.define('infestor.form.DataSet',{
 		
 		return this.data && this.data[name];
 		
+	},
+	
+	searchData : function(key){
+	
+		return this.getData(key);
+	
 	},
 
 	removeData:function(name){

@@ -25,7 +25,13 @@ infestor.define('infestor.form.field.Combo',{
 	
 	dataConfig:{
 	
-		remote:false
+		remote:false,
+		modelMap : {
+		
+			text:'text',
+			value:'value'
+		
+		}
 	
 	},
 
@@ -111,7 +117,10 @@ infestor.define('infestor.form.field.Combo',{
 			this.activeItem = inst;
 			this.activeIndex = inst.$index;
 			inst.element.addClass(this.cssClsComboFieldDropDownActiveItem);
-			this.setValue(this.activeItem.text);
+			// this.setValue(this.activeItem.text);
+			
+			this.value = this.activeItem.value;
+			this.elementFieldInput.text(this.activeItem.text);
 		
 		},this);
 		
@@ -123,11 +132,13 @@ infestor.define('infestor.form.field.Combo',{
 		
 		this.on('keyup',function(e){
 	
-			var value = this.getValue();
+			// var value = this.getValue();
 			
-			if(this.value == value) return;
+			var text = this.elementFieldInput.text();
 			
-			this.dropDownPanel.items = !value ? this.dataSet.getData() : this.autoSearch(value,this.dataSet.getData(),function(idx,obj){ return obj.text;  });
+			//if(this.value == value) return;
+			
+			this.dropDownPanel.items = !text ? this.dataSet.getData() : this.autoSearch(text,this.dataSet.getData(),function(idx,obj){ return obj.text;  });
 			this.dropDownPanel.initItems();
 			
 			this.activeItem = this.dropDownPanel.getItem(0);
@@ -142,6 +153,45 @@ infestor.define('infestor.form.field.Combo',{
 		return this;
 	
 	},
+	
+	
+	getValue :function(){
+	
+		var value;
+		
+		if(this.disabled) return null;
+		
+		return this.value;
+	
+	},
+	
+	setValue:function(value){
+	
+		var text;
+		
+		if(this.disabled || infestor.isNull(value)|| infestor.isUndefined(value))
+			return;
+		
+		if(!this.dataSet)
+			return this.callParent();
+		
+		text = this.dataSet.searchData('value',value,'text');
+	
+		if(text!==null){
+		
+			this.value = value;
+			this.elementFieldInput && this.elementFieldInput.val(text);
+		}
+	},
+	
+	clearValue:function(){
+
+		this.setValue('');
+		
+		return this;
+	
+	},
+	
 	
 	createDropDownTrigger:function(){
 	

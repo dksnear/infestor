@@ -5,6 +5,9 @@ infestor.define('infestor.DataSet', {
 
 	uses : ['infestor.request','infestor.Indicator'],
 
+	// 数据模型映射
+	modelMap : null,
+	
 	// 远程加载请求
 	remote : true,
 
@@ -115,18 +118,32 @@ infestor.define('infestor.DataSet', {
 		return null;
 	
 	},
-
-	setData : function (data) {
-
+	
+	initData : function(rawData){
+	
 		this.current = 0;
 		
-		this.data = data;
-				
-		this.data = !infestor.isArray(this.data) ? [this.data] : this.data;
+		if(!rawData)
+			return this.data = null;
 			
-		this.count = this.data && this.data.length || 0;
-
+		this.data = infestor.isArray(rawData) ? rawData : [rawData];
+		
+		this.data = this.mapData(this.data);
+		
+		this.count = this.data.length;
+		
 		return this.data;
+	
+	},
+	
+	setData : function (data,idx,name) {
+
+		if(idx < this.count)
+			return null;
+		
+		this.data[idx][name] = data;
+
+		return data;
 
 	},
 	
@@ -139,6 +156,8 @@ infestor.define('infestor.DataSet', {
 	
 		this.data = this.data || [];
 	
+		item = this.mapData(item);
+	
 		this.data.push(item);
 		
 		this.count++;
@@ -147,7 +166,7 @@ infestor.define('infestor.DataSet', {
 	
 	},
 
-	getData : function (idx) {
+	getData : function (idx,name) {
 	
 		var data=[];
 	
@@ -173,9 +192,60 @@ infestor.define('infestor.DataSet', {
 		
 		this.current = idx;
 
-		return this.data[idx];
+		return name ? infestor.append({},this.data[idx]) : this.data[idx][name];
 	},
-
+	
+	searchData : function (sKey,sValue,rKey){
+	
+		var result = null;
+	
+		if(!sKey || !this.data) return result;
+	
+		infestor.each(this.data,function(idx,row){
+		
+			if(row.hasOwnProperty(sKey) && row[sKey] == sValue){
+				result = rKey ? row[rKey] : row;
+				return false;
+			}
+		
+		});
+		
+		return result;
+	
+	},
+	
+	mapData : function(rowData,reverse){
+	
+		var map = this.modelMap;
+	
+		if(!map) 
+			return rowData;
+		
+		if(infestor.isArray(rowData))
+			return infestor.each(rowData,function(idx,rowData){
+			
+				this.mapData(rowData,reverse);
+			
+			},this),rowData;
+		
+		if(reverse){
+		
+			this.reverseModelMap = this.reverseModelMap || infestor.kvSwap(this.modelMap);
+			map = this.reverseModelMap;
+		}
+		
+		infestor.each(map,function(name,mapName){
+		
+			rowData[mapName] = rowData[name];
+			delete rowData[name];
+		
+		});
+		
+		return rowData;
+		
+	
+	},
+	
 	removeData:function(idx){
 	
 		if(!this.data) return;
@@ -213,7 +283,11 @@ infestor.define('infestor.DataSet', {
 	
 	clearData : function () {
 
-		return this.setData([]);
+		this.count = 0;
+		this.current = 0;
+		this.data =[];
+		
+		return this.data;
 
 	},
 
@@ -255,7 +329,7 @@ infestor.define('infestor.DataSet', {
 
 		if (!config.remote) {
 
-			this.emit('load', [this.setData(opts || this.data)],this);
+			this.emit('load', [this.initData(opts || this.data)],this);
 			return;
 		}
 
@@ -268,7 +342,7 @@ infestor.define('infestor.DataSet', {
 			params : config.params,
 			success : function (data) {
 
-				me.emit('load', [me.setData(data),opts.params],me);
+				me.emit('load', [me.initData(data),opts.params],me);
 				me.emit('afterLoad',[me.data,opts.params],me);
 
 			},
