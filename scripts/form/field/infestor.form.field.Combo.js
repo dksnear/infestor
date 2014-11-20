@@ -54,19 +54,39 @@ infestor.define('infestor.form.field.Combo',{
 		},this);
 		
 		this.on('blur',function(){
-		
-			this.actived = false;		
-			this.dropDownPanel.hide();
+			
+			this.hideDropDown();
 			this.activeItem && this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActiveItem);
 			this.activeItem = null;
 		
 		});
 		
 		this.on('keydown',function(e){
-									
+			
+			if(e.keyCode == infestor.keyCode.enter){
+			
+				if(this.activeItem){
+				
+					this.value = this.activeItem.value;
+					this.elementFieldInput.val(this.activeItem.text);
+				}
+				
+				this.hideDropDown();
+				return;
+			}
+			
+			if(e.keyCode == infestor.keyCode.esc){
+			
+				this.hideDropDown();
+				return;
+			
+			}
+			
 			if(e.keyCode != infestor.keyCode.up && e.keyCode != infestor.keyCode.down)
 				return;
-				
+			
+			this.dropDownPanel.show();
+			
 			e.preventDefault();
 			
 			if(!this.actived){
@@ -76,7 +96,8 @@ infestor.define('infestor.form.field.Combo',{
 				this.activeItem = this.dropDownPanel.getItem(0);
 				this.activeIndex = 0;
 				this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActiveItem);
-				this.actived = true;
+				this.value = this.activeItem.value;
+				this.elementFieldInput.val(this.activeItem.text);
 				
 				return;
 			};
@@ -95,7 +116,10 @@ infestor.define('infestor.form.field.Combo',{
 			
 			this.activeItem = this.dropDownPanel.getItem(this.activeIndex);
 			
-			this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActiveItem) && this.setValue(this.activeItem.text);
+			this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActiveItem);
+			
+			this.value = this.activeItem.value;
+			this.elementFieldInput.val(this.activeItem.text);
 			
 		},this);
 		
@@ -112,15 +136,13 @@ infestor.define('infestor.form.field.Combo',{
 		
 		},function(inst,e){
 			
-			this.actived = true;
 			this.activeItem && this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActiveItem);
 			this.activeItem = inst;
 			this.activeIndex = inst.$index;
 			inst.element.addClass(this.cssClsComboFieldDropDownActiveItem);
-			// this.setValue(this.activeItem.text);
 			
 			this.value = this.activeItem.value;
-			this.elementFieldInput.text(this.activeItem.text);
+			this.elementFieldInput.val(this.activeItem.text);
 		
 		},this);
 		
@@ -132,19 +154,23 @@ infestor.define('infestor.form.field.Combo',{
 		
 		this.on('keyup',function(e){
 	
-			// var value = this.getValue();
-			
-			var text = this.elementFieldInput.text();
-			
-			//if(this.value == value) return;
-			
+			var text;
+				
+			if(e.keyCode != infestor.keyCode.backspace && !infestor.keyCode.isNumber(e.keyCode) && !infestor.keyCode.isLetter(e.keyCode))
+				return;
+					
+			text = this.elementFieldInput.val();
+						
 			this.dropDownPanel.items = !text ? this.dataSet.getData() : this.autoSearch(text,this.dataSet.getData(),function(idx,obj){ return obj.text;  });
+			
+			if(!this.dropDownPanel.items || this.dropDownPanel.items.length < 1)
+				return;
+			
 			this.dropDownPanel.initItems();
 			
 			this.activeItem = this.dropDownPanel.getItem(0);
 			this.activeIndex = 0;
 			this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActiveItem);
-			this.actived = true;
 		
 			this.showDropDown();
 		
@@ -211,7 +237,7 @@ infestor.define('infestor.form.field.Combo',{
 		
 		this.elementDropDownTrigger.on('click',function(){
 					
-			this.isFocus ? this.blur() : this.focus();
+			this.dropDownPanel.hidden ? this.showDropDown() : this.hideDropDown();
 		
 		},this);
 		
@@ -221,7 +247,7 @@ infestor.define('infestor.form.field.Combo',{
 	
 	createDropDownPanel:function(){
 	
-		var me=this;
+		var me = this;
 	
 		this.dropDownPanel = this.createElement('dropDownPanel', infestor.Dom.getBody(), {
 		
@@ -251,11 +277,26 @@ infestor.define('infestor.form.field.Combo',{
 		if(!this.dropDownPanel.hasItem())
 			return false;
 		
-		this.dropDownPanel.autoPosition(this.elementFieldContent,'bottom','0 2');
+		var dropWidth = this.dropDownPanel.element.width(),
+			contentWidth = this.elementFieldContent.width();
+			
+		if(dropWidth < contentWidth)
+			this.dropDownPanel.element.css('width',infestor.px(contentWidth));
 		
+		this.dropDownPanel.autoPosition(this.elementFieldContent,'bottom','0 2');
+			
 		this.dropDownPanel.show(true);
 		
+		this.actived = true;
+		
 		return true;
+	
+	},
+	
+	hideDropDown:function(){
+	
+		this.dropDownPanel.hide();
+		this.actived = false;
 	
 	},
 	

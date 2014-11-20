@@ -550,10 +550,7 @@ infestor.define('infestor.form.field.Field', {
 			!opts.type && infestor.isRegExp(opts.handle) && (opts.type = 'regexp');
 			!opts.type && infestor.isFunction(opts.handle) && (opts.type = 'func');
 			!opts.type && infestor.isString(opts.handle) && (opts.type = 'remote');
-			
-			if(!opts.handle)
-				return null;
-			
+					
 			if(opts.type.toLowerCase()=='remote' && !opts.isPrepared){
 			
 				opts.url = opts.url || opts.handle;
@@ -584,6 +581,9 @@ infestor.define('infestor.form.field.Field', {
 				
 			
 			};
+			
+			if(!opts.handle)
+				return null;
 			
 			!opts.isPrepared  && (opts.isPrepared = true);
 			

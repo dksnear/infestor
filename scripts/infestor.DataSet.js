@@ -234,8 +234,11 @@ infestor.define('infestor.DataSet', {
 			map = this.reverseModelMap;
 		}
 		
-		infestor.each(map,function(name,mapName){
+		infestor.each(map,function(mapName,name){
 		
+			if(!!name && name == mapName)
+				return true;
+			
 			rowData[mapName] = rowData[name];
 			delete rowData[name];
 		
