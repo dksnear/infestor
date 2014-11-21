@@ -63,15 +63,6 @@ infestor.define('infestor.Tip', {
 	//top,left,right,bottom
 	arrowPosition : 'bottom',
 	
-	// 当浏览器窗口大小改变时自动隐藏tip
-	hideWithResize:false,
-	
-	// 当丢失焦点时自动隐藏tip
-	hideWithBlur:false,
-	
-	// 当设置丢失焦点自动隐藏时 阻塞tip Click事件的冒泡行为
-	blockBubble:true,
-	
 	boxShadow:true,
 
 	initElement : function () {
@@ -88,62 +79,6 @@ infestor.define('infestor.Tip', {
 
 		this.setArrowPosition();
 				
-		this.bindHideEvent();
-	},
-	
-	
-	bindHideEvent : function(){
-	
-		if(this.hideWithResize){
-		
-			this.hideWithResizeHandler = this.hideWithResizeHandler || infestor.throttle(function(){
-				
-				
-				if(this.hidden) return;
-				
-				this.emit('beforehide',[this,this.hideWithResize,this.hideWithBlur]);
-				this.hide();
-				this.emit('afterhide',[this,this.hideWithResize,this.hideWithBlur]);
-					
-			});
-			
-			infestor.Dom.getWindow().on('resize',this.hideWithResizeHandler,this);
-		
-		}
-		
-		if(this.hideWithBlur){
-		
-			
-			this.hideWithBlurHandler = this.hideWithBlurHandler || infestor.throttle(function(){
-				
-				if(this.hidden) return;
-				
-				this.emit('beforehide',[this,this.hideWithResize,this.hideWithBlur]);
-				this.hide();
-				this.emit('afterhide',[this,this.hideWithResize,this.hideWithBlur]);
-					
-			});
-			
-			this.element.on('click',function(e){
-			
-				this.blockBubble && infestor.stopPropagation(e);
-			
-			},this);
-			
-			infestor.Dom.getBody().on('click',this.hideWithBlurHandler,this);
-		
-		}
-		
-		return this;
-	
-	},
-	
-	unbindHideEvent : function(){
-	
-		this.hideWithResizeHandler && infestor.Dom.getWindow().un('resize',this.hideWithResizeHandler);
-		this.hideWithBlurHandler && infestor.Dom.getWindow().un('resize',this.hideWithBlurHandler);
-		return this;
-	
 	},
 	
 	setArrowPosition : function (pos, opposite, drift ,topTrend,leftTrend,dock) {
@@ -235,8 +170,6 @@ infestor.define('infestor.Tip', {
 	
 	destroy:function(){
 	
-		//this.unbindHideWithResize();
-		this.unbindHideEvent();
 		this.callParent();
 	}
 

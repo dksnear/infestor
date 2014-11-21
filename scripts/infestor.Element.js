@@ -207,6 +207,15 @@ infestor.define('infestor.Element', {
 	// 自动加载数据
 	autoLoad:false,
 	
+	// 当浏览器窗口大小改变时自动隐藏元素
+	hideWithResize:false,
+	
+	// 当丢失焦点时自动隐藏元素
+	hideWithBlur:false,
+	
+	// 当设置丢失焦点自动隐藏(hideWithBlur=true)时 阻塞Click事件的冒泡行为
+	blockBubble:true,
+	
 	// 类初始化接口
 	init : function () {
 
@@ -235,6 +244,8 @@ infestor.define('infestor.Element', {
 		
 		// 初始化事件
 		this.initEvents && this.initEvents();
+		
+		this.bindGlobalEvents();
 		
 		// 自动加载数据
 		this.autoLoad && this.load();
@@ -1066,6 +1077,65 @@ infestor.define('infestor.Element', {
 
 	},
 
+	
+	// 绑定全局事件
+	
+	bindGlobalEvents : function(){
+	
+		if(this.hideWithResize){
+		
+			this.hideWithResizeHandler = this.hideWithResizeHandler || infestor.throttle(function(){
+				
+				
+				if(this.hidden) return;
+				
+				this.emit('beforehide',[this,this.hideWithResize,this.hideWithBlur]);
+				this.hide();
+				this.emit('afterhide',[this,this.hideWithResize,this.hideWithBlur]);
+					
+			});
+			
+			infestor.Dom.getWindow().on('resize',this.hideWithResizeHandler,this);
+		
+		}
+		
+		if(this.hideWithBlur){
+		
+			
+			this.hideWithBlurHandler = this.hideWithBlurHandler || infestor.throttle(function(){
+				
+				if(this.hidden) return;
+				
+				this.emit('beforehide',[this,this.hideWithResize,this.hideWithBlur]);
+				this.hide();
+				this.emit('afterhide',[this,this.hideWithResize,this.hideWithBlur]);
+					
+			});
+			
+			this.element.on('click',function(e){
+			
+				this.blockBubble && infestor.stopPropagation(e);
+			
+			},this);
+			
+			infestor.Dom.getBody().on('click',this.hideWithBlurHandler,this);
+		
+		}
+		
+		return this;
+	
+	
+	
+	},
+	
+	unBindGlobalEvents : function(){
+	
+		this.hideWithResizeHandler && infestor.Dom.getWindow().un('resize',this.hideWithResizeHandler);
+		this.hideWithBlurHandler && infestor.Dom.getWindow().un('resize',this.hideWithBlurHandler);
+		return this;
+	
+	},
+	
 	// 下面的方法为条件引入
 
 	// 条件引入Tip
@@ -1201,7 +1271,7 @@ infestor.define('infestor.Element', {
 		if(this.destroyed)
 			return null;
 
-		//  注销托管列表实例
+		// 注销托管列表实例
 		this.destroyList && infestor.each(this.destroyList, function () {
 
 			this.destroy && this.destroy();
@@ -1210,6 +1280,9 @@ infestor.define('infestor.Element', {
 
 		// 销毁子元素
 		this.removeItem();
+		
+		// 注销全局事件
+		this.unBindGlobalEvents();
 
 		// 注销移动和尺寸修改实例
 		this.disableDraggable();
