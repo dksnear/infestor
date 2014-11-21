@@ -12,10 +12,13 @@ infestor.define('infestor.form.field.Combo',{
 	cssClsComboFieldDropDownPanel:'infestor-combo-field-drop-down-panel',
 	cssClsComboFieldDropDownItem:'infestor-combo-field-drop-down-item',
 	cssClsComboFieldDropDownActiveItem:'infestor-combo-field-drop-down-active-item',
+	cssClsComboFieldShadowText:'infestor-combo-field-shadow-text',
 	
 	// 下拉按钮
 	dropDownTrigger:true,
 	dropDownPanel:true,
+	
+	shadowText:'',
 	
 	group:false,
 
@@ -41,6 +44,7 @@ infestor.define('infestor.form.field.Combo',{
 		
 		this.createDropDownTrigger();
 		this.createDropDownPanel();
+		this.createShadowText();
 	
 	},
 	
@@ -49,35 +53,50 @@ infestor.define('infestor.form.field.Combo',{
 		this.on('focus',function(){
 		
 			this.isFocus = true;
+
+			if(this.autoComplete){
+				
+				this.dropDownPanel.initItems(this.dataSet.getData());
+				if(!this.dropDownPanel.hasItem())
+					return;
+			}
+			
 			this.showDropDown();
-		
+
 		},this);
 		
-		this.on('blur',function(){
-			
-			this.hideDropDown();
-			this.activeItem && this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActiveItem);
-			this.activeItem = null;
-		
-		});
-		
 		this.on('keydown',function(e){
+		
+			if(!this.dropDownPanel.hasItem())
+				return;
 			
-			if(e.keyCode == infestor.keyCode.enter){
+			if(e.keyCode == infestor.keyCode.enter || e.keyCode == infestor.keyCode.right){
 			
+				e.preventDefault();
+			
+				if(this.dropDownPanel.hidden)
+					return;
+							
 				if(this.activeItem){
 				
 					this.value = this.activeItem.value;
 					this.elementFieldInput.val(this.activeItem.text);
 				}
 				
-				this.hideDropDown();
+				this.shadowTextElement.hide();
+				this.dropDownPanel.hide();
 				return;
 			}
 			
-			if(e.keyCode == infestor.keyCode.esc){
+			if(e.keyCode == infestor.keyCode.esc || e.keyCode == infestor.keyCode.left){
 			
-				this.hideDropDown();
+				e.preventDefault();
+		
+				if(this.dropDownPanel.hidden)
+					return;
+					
+				this.shadowTextElement.hide();		
+				this.dropDownPanel.hide();
 				return;
 			
 			}
@@ -85,41 +104,24 @@ infestor.define('infestor.form.field.Combo',{
 			if(e.keyCode != infestor.keyCode.up && e.keyCode != infestor.keyCode.down)
 				return;
 			
-			this.dropDownPanel.show();
-			
 			e.preventDefault();
 			
-			if(!this.actived){
-			
-				if(!this.showDropDown())
-					return;
-				this.activeItem = this.dropDownPanel.getItem(0);
-				this.activeIndex = 0;
-				this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActiveItem);
-				this.value = this.activeItem.value;
-				this.elementFieldInput.val(this.activeItem.text);
-				
-				return;
-			};
-			
-			
-			if(this.dropDownPanel.count<2)
-				return;
-			
-			this.activeItem && this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActiveItem);
+			if(this.dropDownPanel.hidden)
+				return this.dropDownPanel.show();
+						
+			if(!this.activeItem)
+				return this.active(0);
 			
 			if(e.keyCode == infestor.keyCode.up)
-				this.activeIndex = this.activeIndex==0 ? this.dropDownPanel.count-1 : this.activeIndex-1;
+				this.activeIndex = this.activeIndex==0 ? this.dropDownPanel.count-1 : this.activeIndex - 1;
 					
 			if(e.keyCode == infestor.keyCode.down)
-				this.activeIndex = this.activeIndex==this.dropDownPanel.count-1 ? 0 : this.activeIndex+1;
+				this.activeIndex = this.activeIndex==this.dropDownPanel.count-1 ? 0 : this.activeIndex + 1;
 			
-			this.activeItem = this.dropDownPanel.getItem(this.activeIndex);
+			this.active(this.activeIndex);
 			
-			this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActiveItem);
-			
-			this.value = this.activeItem.value;
-			this.elementFieldInput.val(this.activeItem.text);
+			this.shadowTextElement.show();
+			this.setShadowText(this.activeItem.text);
 			
 		},this);
 		
@@ -136,15 +138,23 @@ infestor.define('infestor.form.field.Combo',{
 		
 		},function(inst,e){
 			
-			this.activeItem && this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActiveItem);
-			this.activeItem = inst;
-			this.activeIndex = inst.$index;
-			inst.element.addClass(this.cssClsComboFieldDropDownActiveItem);
-			
-			this.value = this.activeItem.value;
-			this.elementFieldInput.val(this.activeItem.text);
+			this.active(inst.$index)		
+			this.shadowTextElement.show();
+			this.setShadowText(this.activeItem.text);
 		
 		},this);
+		
+		this.delegate(this.dropDownPanel,'click',true,function(){
+		
+			if(this.activeItem){
+				
+				this.value = this.activeItem.value;
+				this.elementFieldInput.val(this.activeItem.text);
+				this.shadowTextElement.hide();
+				this.dropDownPanel.hide();
+			}
+				
+		},this,true);
 		
 		
 		if(!this.autoComplete)
@@ -160,17 +170,13 @@ infestor.define('infestor.form.field.Combo',{
 				return;
 					
 			text = this.elementFieldInput.val();
-						
-			this.dropDownPanel.items = !text ? this.dataSet.getData() : this.autoSearch(text,this.dataSet.getData(),function(idx,obj){ return obj.text;  });
+								
+			this.dropDownPanel.initItems(!text ? this.dataSet.getData() : this.autoSearch(text,this.dataSet.getData(),function(idx,obj){ return obj.text;  }));
 			
-			if(!this.dropDownPanel.items || this.dropDownPanel.items.length < 1)
-				return;
+			if(!this.dropDownPanel.hasItem())
+				return this.dropDownPanel.hide();
 			
-			this.dropDownPanel.initItems();
-			
-			this.activeItem = this.dropDownPanel.getItem(0);
-			this.activeIndex = 0;
-			this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActiveItem);
+			this.active(0);
 		
 			this.showDropDown();
 		
@@ -180,7 +186,15 @@ infestor.define('infestor.form.field.Combo',{
 	
 	},
 	
+	active : function(index){
 	
+		this.activeItem && this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActiveItem);
+		this.activeIndex = index;
+		this.activeItem = this.dropDownPanel.getItem(index);	
+		this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActiveItem);
+	
+	},
+		
 	getValue :function(){
 	
 		var value;
@@ -210,14 +224,17 @@ infestor.define('infestor.form.field.Combo',{
 		}
 	},
 	
-	clearValue:function(){
-
-		this.setValue('');
+	setShadowText:function(text){
+	
+		if(infestor.isNull(text) || infestor.isUndefined(text))
+			return this;
+		
+		this.shadowText = String(text);
+		this.shadowTextElement.text(this.shadowText);
 		
 		return this;
 	
 	},
-	
 	
 	createDropDownTrigger:function(){
 	
@@ -235,9 +252,26 @@ infestor.define('infestor.form.field.Combo',{
 		
 		}).appendTo(this.elementDropDownTrigger);
 		
-		this.elementDropDownTrigger.on('click',function(){
-					
-			this.dropDownPanel.hidden ? this.showDropDown() : this.hideDropDown();
+		this.elementDropDownTrigger.on('click',function(e){
+			
+			infestor.stopPropagation(e);
+			
+			if(this.dropDownPanel.hidden){
+
+				if(this.autoComplete){
+				
+					this.dropDownPanel.initItems(this.dataSet.getData());
+					if(!this.dropDownPanel.hasItem())
+						return;
+				}
+				
+				this.showDropDown();
+				return;
+			};
+			
+			this.dropDownPanel.hide();
+			this.shadowTextElement.hide();
+			
 		
 		},this);
 		
@@ -252,9 +286,22 @@ infestor.define('infestor.form.field.Combo',{
 		this.dropDownPanel = this.createElement('dropDownPanel', infestor.Dom.getBody(), {
 		
 			hidden:true,
+			hideWithResize:true,
+			hideWithBlur:true,
+			blockBubble:false,
 			itemsConstructMode:'method',
 			cssClsElement:this.cssClsComboFieldDropDownPanel,
 			boxShadow:true,
+			events:{
+			
+				afterhide:function(p,tag){
+				
+					if(tag.hideWithBlur)
+						me.shadowTextElement.hide();
+				
+				}
+			
+			},
 			createItem:function(opts){
 			
 				return infestor.create('infestor.Element',infestor.append({
@@ -272,11 +319,16 @@ infestor.define('infestor.form.field.Combo',{
 	
 	},
 	
+	createShadowText:function(){
+	
+		this.shadowTextElement = this.createDomElement(this.elementFieldContent,this.cssClsComboFieldShadowText);
+	
+		return this;
+	
+	},
+	
 	showDropDown:function(){
 	
-		if(!this.dropDownPanel.hasItem())
-			return false;
-		
 		var dropWidth = this.dropDownPanel.element.width(),
 			contentWidth = this.elementFieldContent.width();
 			
@@ -287,19 +339,10 @@ infestor.define('infestor.form.field.Combo',{
 			
 		this.dropDownPanel.show(true);
 		
-		this.actived = true;
+		return this;
+	
+	},
 		
-		return true;
-	
-	},
-	
-	hideDropDown:function(){
-	
-		this.dropDownPanel.hide();
-		this.actived = false;
-	
-	},
-	
 	autoSearch:function(keyword,set,matchFilter,resultFilter,scope){
 		
 		var reg,match=[];

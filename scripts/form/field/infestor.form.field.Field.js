@@ -269,7 +269,11 @@ infestor.define('infestor.form.field.Field', {
 		
 			this.emit('keyup',arguments,this);
 		
-		},this);
+		},this).click(function(e){
+		
+			infestor.stopPropagation(e);
+		
+		});
 	
 		return this;
 	
@@ -318,7 +322,6 @@ infestor.define('infestor.form.field.Field', {
 	
 	},
 		
-	// 
 	setStatus:function(status){
 	
 		if(!this.elementStatus) return this;

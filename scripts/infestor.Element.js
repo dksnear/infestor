@@ -545,9 +545,9 @@ infestor.define('infestor.Element', {
 	},
 	
 	// 初始化子元素
-	initItems : function () {
+	initItems : function (items) {
 
-		this.items = this.items || [];
+		this.items = items || this.items || [];
 		
 		this.items = infestor.isArray(this.items) ? this.items : [this.items];
 		
@@ -1086,12 +1086,11 @@ infestor.define('infestor.Element', {
 		
 			this.hideWithResizeHandler = this.hideWithResizeHandler || infestor.throttle(function(){
 				
-				
 				if(this.hidden) return;
 				
-				this.emit('beforehide',[this,this.hideWithResize,this.hideWithBlur]);
+				this.emit('beforehide',[this,{ hideWithResize:true }]);
 				this.hide();
-				this.emit('afterhide',[this,this.hideWithResize,this.hideWithBlur]);
+				this.emit('afterhide',[this,{ hideWithResize:true }]);
 					
 			});
 			
@@ -1101,14 +1100,13 @@ infestor.define('infestor.Element', {
 		
 		if(this.hideWithBlur){
 		
-			
 			this.hideWithBlurHandler = this.hideWithBlurHandler || infestor.throttle(function(){
 				
 				if(this.hidden) return;
 				
-				this.emit('beforehide',[this,this.hideWithResize,this.hideWithBlur]);
+				this.emit('beforehide',[this,{ hideWithBlur:true }]);
 				this.hide();
-				this.emit('afterhide',[this,this.hideWithResize,this.hideWithBlur]);
+				this.emit('afterhide',[this,{ hideWithBlur:true }]);
 					
 			});
 			
@@ -1123,8 +1121,6 @@ infestor.define('infestor.Element', {
 		}
 		
 		return this;
-	
-	
 	
 	},
 	

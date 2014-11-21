@@ -1618,7 +1618,6 @@ infestor js
 			
 	});
 	
-	
 	global.keyCode={
 	
 		$names:['backspace','tab','clear','enter','shift','ctrl','alt','pause','caps','esc','space','pageup','pagedown','end','home','left','up','right','down','print','insert','delete','0','1','2','3','4','5','6','7','8','9',')','!','@','#','$','%','^','&','*','(','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','num0','num1','num2','num3','num4','num5','num6','num7','num8','num9','numMultiply','numAdd','numEnter','numSubtract','numDecimal','numDivide','F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12','print','numLock','scroll',';',':','=','+',',','<','-','_','.','>','/','?','`','~','[','{','\\','|',']','}','\'','\"'],
@@ -1645,9 +1644,6 @@ infestor js
 	
 	});
 	
-	
-	
-
 	// 定义加载器类
 	global.Loader = global.extend({
 
