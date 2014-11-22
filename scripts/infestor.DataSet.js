@@ -3,7 +3,7 @@ infestor.define('infestor.DataSet', {
 
 	extend : 'infestor.Object',
 
-	uses : ['infestor.request','infestor.Indicator'],
+	uses : ['infestor.request','infestor.Indicator','infestor.cookie'],
 
 	// 数据模型映射
 	modelMap : null,
@@ -30,16 +30,19 @@ infestor.define('infestor.DataSet', {
 	current : 0,
 
 	// 显示加载进度 (bool|infestor.Indicator|options:{})
-	indicator:true,
+	indicator : false,
 	
 	// 提交选项  options:{ url:string,params:obj,method:get|post|jsonp,indicator:options|obj|true|false}
-	submitConfig:null,
+	submitConfig : null,
 	
 	// 加载选项 options:{remote:true|false,url:string,params:obj,method:get|post|jsonp,indicator:options|obj|true|false}
-	loadConfig:null,
+	loadConfig : null,
+	
+	// 分页选项(远程加载有效) true|options:{ size:num,start:0|num,paramMap:{ size:string,current:string }  }
+	pageConfig : null,
 		
 	// 拥有者对象
-	owner:null,
+	owner : null,
 
 	events : {
 
@@ -80,17 +83,43 @@ infestor.define('infestor.DataSet', {
 		
 	init : function(){
 	
+		this.pageConfig = infestor.isBoolean(this.pageConfig) && this.pageConfig && {
+			
+			// 页面大小
+			size:10,
+			// 初始位置
+			start:0,
+			// 请求参数名映射
+			paramMap:{
+			
+				// 页面大小参数
+				size:'size',
+				// 当期位置参数
+				current:'current'
+			
+			}
+	
+		} || this.pageConfig;
+	
+		// 加载配置
 		this.loadConfig = infestor.append({
 		
+			// 远程请求
 			remote:this.remote,
+			// 请求地址 不要在地址中包含参数
 			url:this.url,
+			// 请求参数
 			params:this.params,
+			// 请求方法
 			method:this.method,
-			indicator:this.indicator
+			// 请求指示器
+			indicator:this.indicator,
+			// 分页配置
+			pageConfig:this.pageConfig
 			
 		},this.loadConfig);
 		
-		
+		// 提交配置
 		this.submitConfig = infestor.append({
 		
 			remote:true
@@ -336,16 +365,33 @@ infestor.define('infestor.DataSet', {
 			return;
 		}
 
+		// 设置自定义参数	
 		opts && opts.params && (opts.params = infestor.append({}, config.params, opts.params));
-
+		
+		// 设置分页参数
+		if(config.pageConfig){
+		
+			this.pageSize = this.pageSize || config.pageConfig.size || 10;
+			this.pageStart = this.pageStart || config.pageConfig.start || 0;
+			this.pageCurrent = this.pageCurrent || config.pageConfig.start || 0;
+			
+			opts.params[config.pageConfig.paramMap && config.pageConfig.paramMap.current || 'current'] = this.pageCurrent;
+			opts.params[config.pageConfig.paramMap && config.pageConfig.paramMap.size || 'size'] = this.pageSize;
+		}
+	
 		opts = infestor.append({
 
 			url : config.url,
 			method : config.method,
 			params : config.params,
 			success : function (data) {
-
-				me.emit('load', [me.initData(data),opts.params],me);
+				
+				me.initData(data);
+				
+				// 设置当前页面位置
+				me.pageSize && (this.pageCurrent =  me.hasData() ? (this.pageCurrent + this.pageSize) : 0);
+				
+				me.emit('load', [me.getData(),opts.params],me);
 				me.emit('afterLoad',[me.data,opts.params],me);
 
 			},
@@ -396,8 +442,10 @@ infestor.define('infestor.DataSet', {
 
 		config.params = config.params || {};
 		
+		// 设置自定义参数
 		opts && opts.params && (opts.params = infestor.append({}, config.params, opts.params));
 		
+		// 设置提交数据参数
 		config.params = infestor.append({},this.getSubmitParams(),config.params);
 		
 		opts = infestor.append({

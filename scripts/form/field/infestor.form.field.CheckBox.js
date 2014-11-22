@@ -26,7 +26,7 @@ infestor.define('infestor.form.field.Checkbox', {
 	
 	initEvents : function(){
 	
-		
+		return this;
 	
 	},
 	

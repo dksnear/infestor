@@ -7,30 +7,31 @@ infestor.namespace('infestor.cookie', {
 	secure : false,
 	domain : null,
 	//添加一个cookie主键 key,value
-	add : function (key, value) {
+	add : function (key, value, expires) {
 
 		var me = this,
-		innerAdd = function (opts) {
+			innerAdd = function (opts) {
 
-			var obj = {};
+				var obj = {};
 
-			obj[opts.key] = escape(opts.value);
-			obj.expires = me.$formatDate(opts.expires || me.expires);
-			obj.path = opts.path || me.path;
-			obj.domain = opts.domain || me.domain;
-			obj.secure = opts.secure || me.secure,
-			document.cookie = me.$concat(obj, '; ');
-		};
+				obj[opts.key] = escape(opts.value);
+				obj.expires = me.$formatDate(opts.expires || me.expires);
+				obj.path = opts.path || me.path;
+				obj.domain = opts.domain || me.domain;
+				obj.secure = opts.secure || me.secure,
+				document.cookie = me.$concat(obj, '; ');
+			};
 
 		if (infestor.isArray(key))
 			return infestor.each(key, function () {
-				innerAdd(this)
+				innerAdd(this);
 			}), true;
 
 		if (infestor.isString(key))
 			return innerAdd({
 				key : key,
-				value : value
+				value : value,
+				expires : expires
 			}), true;
 
 		if (infestor.isObject(key))
