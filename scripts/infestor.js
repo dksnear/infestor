@@ -499,7 +499,7 @@ infestor js
 				
 			// for tencent | 360 | maxthon | avant | sogou | the world	
 			// 这些webkit浏览器的ua有些带msie 7.0的字符串 会产生误判
-			/(tencent|360se|360ee|maxthon|avant|sogou|sogoumse|the world)/.test(ua) && (match[1]='webkit');
+			// /(tencent|360se|360ee|maxthon|avant|sogou|sogoumse|the world)/.test(ua) && (match[1]='webkit');
 			
 			// 没有匹配到 默认webkit
 			match[1] = match[1] || 'webkit';		

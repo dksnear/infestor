@@ -306,10 +306,15 @@
 
 }
 
-.infestor-combo-field-drop-down-active-item{
+.infestor-combo-field-drop-down-active{
 
 	background-color:orange;
 
+}
+
+.infestor-combo-field-drop-down-mouse-over{
+
+	background-color:aqua;
 }
 
 .infestor-combo-field-shadow-text{
@@ -319,7 +324,6 @@
 	bottom:4px;
 	left:6px;
 	background-color:#ffffff;
-	padding-right:5px;
 
 }
 

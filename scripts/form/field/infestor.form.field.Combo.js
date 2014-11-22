@@ -11,14 +11,12 @@ infestor.define('infestor.form.field.Combo',{
 	cssClsComboFieldDropDownTrigger:'infestor-combo-field-drop-down-trigger',
 	cssClsComboFieldDropDownPanel:'infestor-combo-field-drop-down-panel',
 	cssClsComboFieldDropDownItem:'infestor-combo-field-drop-down-item',
-	cssClsComboFieldDropDownActiveItem:'infestor-combo-field-drop-down-active-item',
-	cssClsComboFieldShadowText:'infestor-combo-field-shadow-text',
+	cssClsComboFieldDropDownActive:'infestor-combo-field-drop-down-active',
+	cssClsComboFieldDropDownMouseOver:'infestor-combo-field-drop-down-mouse-over',
 	
 	// 下拉按钮
 	dropDownTrigger:true,
 	dropDownPanel:true,
-	
-	shadowText:'',
 	
 	group:false,
 
@@ -44,7 +42,6 @@ infestor.define('infestor.form.field.Combo',{
 		
 		this.createDropDownTrigger();
 		this.createDropDownPanel();
-		this.createShadowText();
 	
 	},
 	
@@ -65,6 +62,12 @@ infestor.define('infestor.form.field.Combo',{
 
 		},this);
 		
+		this.on('blur',function(){
+		
+			this.checkText();
+		
+		},this);
+		
 		this.on('keydown',function(e){
 		
 			if(!this.dropDownPanel.hasItem())
@@ -83,7 +86,6 @@ infestor.define('infestor.form.field.Combo',{
 					this.elementFieldInput.val(this.activeItem.text);
 				}
 				
-				this.shadowTextElement.hide();
 				this.dropDownPanel.hide();
 				return;
 			}
@@ -94,8 +96,8 @@ infestor.define('infestor.form.field.Combo',{
 		
 				if(this.dropDownPanel.hidden)
 					return;
-					
-				this.shadowTextElement.hide();		
+						
+				this.checkText();
 				this.dropDownPanel.hide();
 				return;
 			
@@ -120,8 +122,8 @@ infestor.define('infestor.form.field.Combo',{
 			
 			this.active(this.activeIndex);
 			
-			this.shadowTextElement.show();
-			this.setShadowText(this.activeItem.text);
+			this.elementFieldInput.val(this.activeItem.text);
+			this.elementFieldInput.setSelectionRange(0,this.activeItem.text.length);
 			
 		},this);
 		
@@ -129,6 +131,7 @@ infestor.define('infestor.form.field.Combo',{
 		
 			this.dropDownPanel.items = this.dataSet.getData();
 			this.dropDownPanel.initItems();
+			this.setValue(this.value);
 		
 		},this);
 		
@@ -138,21 +141,26 @@ infestor.define('infestor.form.field.Combo',{
 		
 		},function(inst,e){
 			
-			this.active(inst.$index)		
-			this.shadowTextElement.show();
-			this.setShadowText(this.activeItem.text);
+			this.mouseOverItem  && this.mouseOverItem.element.removeClass(this.cssClsComboFieldDropDownMouseOver);
+			
+			if(inst.actived)
+				return this.mouseOverItem = null;
+			
+			this.mouseOverItem = inst;
+			this.mouseOverItem.element.addClass(this.cssClsComboFieldDropDownMouseOver);
 		
 		},this);
 		
-		this.delegate(this.dropDownPanel,'click',true,function(){
+		this.delegate(this.dropDownPanel,'click',function(inst,e){
 		
-			if(this.activeItem){
-				
-				this.value = this.activeItem.value;
-				this.elementFieldInput.val(this.activeItem.text);
-				this.shadowTextElement.hide();
-				this.dropDownPanel.hide();
-			}
+			return inst instanceof infestor.Element && inst.element.hasClass(this.cssClsComboFieldDropDownItem);
+		
+		},function(inst,e){
+		
+			this.active(inst.$index);
+			this.value = this.activeIndex.value;
+			this.elementFieldInput.val(this.activeItem.text);
+			this.dropDownPanel.hide();
 				
 		},this,true);
 		
@@ -179,6 +187,13 @@ infestor.define('infestor.form.field.Combo',{
 			this.active(0);
 		
 			this.showDropDown();
+			
+			if(e.keyCode == infestor.keyCode.backspace)
+				return;
+			
+			this.elementFieldInput.val(this.activeItem.text);
+			this.elementFieldInput.setSelectionRange(text.length,this.activeItem.text.length);
+			
 		
 		},this);
 		
@@ -188,11 +203,28 @@ infestor.define('infestor.form.field.Combo',{
 	
 	active : function(index){
 	
-		this.activeItem && this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActiveItem);
+		this.activeItem && this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActive) && (this.activeItem.actived = false);
 		this.activeIndex = index;
 		this.activeItem = this.dropDownPanel.getItem(index);	
-		this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActiveItem);
+		this.activeItem && this.activeItem.element.addClass(this.cssClsComboFieldDropDownActive) && (this.activeItem.actived = true);
 	
+	},
+	
+	checkText : function(){
+	
+		var text = this.elementFieldInput.val(),value;
+	
+		if(!text)
+			return this.value = '',this;
+		
+		value = this.dataSet.searchData('text',text,'value');
+	
+		if(infestor.isNull(value))
+			return this.elementFieldInput.val(this.activeItem ? this.activeItem.text : ''),this;
+	
+		this.value = value;
+		
+		return this;
 	},
 		
 	getValue :function(){
@@ -222,18 +254,6 @@ infestor.define('infestor.form.field.Combo',{
 			this.value = value;
 			this.elementFieldInput && this.elementFieldInput.val(text);
 		}
-	},
-	
-	setShadowText:function(text){
-	
-		if(infestor.isNull(text) || infestor.isUndefined(text))
-			return this;
-		
-		this.shadowText = String(text);
-		this.shadowTextElement.text(this.shadowText);
-		
-		return this;
-	
 	},
 	
 	createDropDownTrigger:function(){
@@ -270,9 +290,7 @@ infestor.define('infestor.form.field.Combo',{
 			};
 			
 			this.dropDownPanel.hide();
-			this.shadowTextElement.hide();
 			
-		
 		},this);
 		
 		return this;
@@ -297,7 +315,7 @@ infestor.define('infestor.form.field.Combo',{
 				afterhide:function(p,tag){
 				
 					if(tag.hideWithBlur)
-						me.shadowTextElement.hide();
+						me.checkText();
 				
 				}
 			
@@ -315,14 +333,6 @@ infestor.define('infestor.form.field.Combo',{
 		
 		}, 'infestor.Panel');
 		
-		return this;
-	
-	},
-	
-	createShadowText:function(){
-	
-		this.shadowTextElement = this.createDomElement(this.elementFieldContent,this.cssClsComboFieldShadowText);
-	
 		return this;
 	
 	},

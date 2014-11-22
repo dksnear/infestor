@@ -599,13 +599,47 @@ infestor.define('infestor.Dom', {
 
 	val : function (val) {
 
-		if (!this.element || this.element.tagName.toLowerCase() != 'input')
+		if (!this.element || !/input|textarea/i.test(this.element.tagName))
 			return this;
 
 		if (arguments.length > 0)
 			return this.element.value = val, this;
 
 		return this.element.value;
+	},
+	
+	setSelectionRange : function(start,end){
+	
+		var range;
+	
+		if (!this.element || !/input|textarea/i.test(this.element.tagName))
+			return this;
+			
+		start = parseInt(start);
+		end = parseInt(end);
+		
+		start = start < 0 ? 0 : start;
+		end = end < 0 ? 0 : end;
+		
+		if(start == end)
+			return this;
+ 			
+		if(this.element.createTextRange){
+			
+			range = this.element.createTextRange();
+			range.moveStart('character',start);
+			range.moveEnd('character',end);
+			range.select();
+		
+		}else{
+		
+			this.element.setSelectionRange(start,end);
+			this.element.focus();
+		
+		}	
+		
+		return this;
+	
 	},
 
 	html : function (html) {
