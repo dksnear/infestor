@@ -11,6 +11,8 @@ infestor.define('infestor.widget.IFramePanel', {
 	
 	iframeSrc:'#',
 	iframeName:'',
+	iframeHeight:'500px',
+	iframeWidth:'100%',
 	iframeTimeout:15*1000,
 	iframeAutoLoad:true,
 	iframeSandbox:false, 
@@ -47,7 +49,7 @@ infestor.define('infestor.widget.IFramePanel', {
 			switch(inst.name){
 				
 				case 'reload':
-					this.loadIFrame();
+					!this.body.hidden && this.loadIFrame();
 					break;
 				case 'visible':
 					if(this.body.hidden){
@@ -132,7 +134,14 @@ infestor.define('infestor.widget.IFramePanel', {
 		});
 		
 		this.elementIFrame.on('load',function(e){
-		
+			
+			this.elementIFrame.attr({
+			
+				height:this.iframeHeight,
+				width:this.iframeWidth
+			
+			});
+			
 			infestor.stopDelay(this.delayId);
 			this.iFrameLoadIndicator.stop();
 			this.emit('load',[e,this.elementIFrame,this]);
@@ -174,7 +183,7 @@ infestor.define('infestor.widget.IFramePanel', {
 					} 
 				}).renderTo(me.body); 
 				
-				me.elementIFrameLoadIndicator.show();
+				me.elementIFrameLoadIndicator.show(true);
 			},
 			hideIndicator:function(){
 			

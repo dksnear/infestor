@@ -471,7 +471,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 					} 
 				}).renderTo(me.controlPanel); 
 				
-				me.elementImageLoadIndicator.show();
+				me.elementImageLoadIndicator.show(true);
 			},
 			hideIndicator:function(){
 			

@@ -10,7 +10,7 @@
 .infestor-widget-iframe-panel-body{
 
 	position:relative;
-	height:400px;
+	overflow:hidden;
 
 
 }
