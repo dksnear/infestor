@@ -1,4 +1,3 @@
-/// <reference path="infestor.js"/>
 
 infestor.define('infestor.Panel', {
 

@@ -522,9 +522,7 @@ infestor.define('infestor.Element', {
 	
 		if(!this.element) return this;
 		
-		this.$orgElementPostion = this.element.css('position');
-		
-		!/absolute|fixed|relative/.test(this.$orgElementPostion) && this.element.css('position','relative');
+		!/absolute|fixed|relative/.test(this.element.css('position')) && this.element.css('position','relative');
 		
 		this.elementMask = this.elementMask || infestor.Dom.div().addClass(this.cssClsElementMask).appendTo(this.element);
 		
@@ -538,8 +536,6 @@ infestor.define('infestor.Element', {
 		if(!this.element) return this;
 
 		this.elementMask && this.elementMask.hide();
-		
-		!/absolute|fixed|relative/.test(this.$orgElementPostion) && this.element.css('position',this.$orgElementPostion);
 		
 		return this;
 	},

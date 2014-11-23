@@ -769,12 +769,23 @@ infestor js
 
 		delay : function (fn, time, scope) {
 
-			setTimeout(function () {
+			return setTimeout(function () {
 
 				fn.apply(scope || window);
 
 			}, time || 1);
 
+		},
+		
+		stopDelay : function(id){
+		
+			if (!id && id !== 0)
+				return false;
+			
+			clearTimeout(id);
+			
+			return true;
+		
 		},
 
 		task : function (fn, interval, scope) {
@@ -790,11 +801,11 @@ infestor js
 		stopTask : function (id) {
 
 			if (!id && id !== 0)
-				return;
+				return false;
 
 			clearInterval(id);
 			
-			return false;
+			return true;
 		},
 
 		// 防抖(方法被调用时 等待一定时间(wait)后再执行方法(fn))
@@ -850,8 +861,18 @@ infestor js
 
 			};
 
+		},
+		
+		// 反iframe引用
+		antiIFrameRef : function(){
+		
+			if (window.top.location != window.self.location) 
+				window.top.location = window.self.location;
+		
 		}
 
+		
+		
 	});
 
 	global.append({

@@ -511,6 +511,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 		this.fieldInput = this.fieldInput && this.fieldInput.destroy();
 		this.validateShower = this.validateShower && this.validateShower.destroy();
 		this.elementImageLoadIndicator = this.elementImageLoadIndicator && this.elementImageLoadIndicator.destroy();
+		this.imageLoadIndicator = this.imageLoadIndicator && this.imageLoadIndicator.destroy();
 		this.captchaTip = this.captchaTip && this.captchaTip.destroy();
 		this.callParent();
 	

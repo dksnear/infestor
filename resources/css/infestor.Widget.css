@@ -1,18 +1,47 @@
 
-.infestor-chain-menu{
+/* iframe */
+
+.infestor-widget-iframe-panel-head{
+
+	height:30px;
+
+}
+
+.infestor-widget-iframe-panel-body{
+
+	position:relative;
+	height:400px;
+
+
+}
+
+.infestor-widget-iframe-panel-head-item{
+
+	vertical-align:center;
+	line-height:25px;
+	padding:0 2px;
+	text-decoration: underline;
+	cursor:pointer;
+
+}
+
+
+/* chain-menu */
+
+.infestor-widget-chain-menu{
 
 	width: 35px;
 
 }
 
-.infestor-chain-menu-line{
+.infestor-widget-chain-menu-line{
 
 	width: 35px;
 	height: 23px;
 	text-align: center;
 }
 
-.infestor-chain-menu-line div{
+.infestor-widget-chain-menu-line div{
 
 	background-color: #1c62a3;
 	width: 6px;
@@ -23,7 +52,7 @@
 
 }
 
-.infestor-chain-menu-horizon-line{
+.infestor-widget-chain-menu-horizon-line{
 
 	width: 23px;
 	height: 23px;
@@ -32,7 +61,7 @@
 }
 
 
-.infestor-chain-menu-horizon-line div{
+.infestor-widget-chain-menu-horizon-line div{
 
 	background-color: #1c62a3;
 	width:23px;
@@ -43,7 +72,7 @@
 
 }
 
-.infestor-chain-menu-node{
+.infestor-widget-chain-menu-node{
 
 	background-image: url(../images/chain-node.png);
 	height: 35px;
@@ -52,7 +81,7 @@
 
 }
 
-.infestor-chain-menu-node-hover{
+.infestor-widget-chain-menu-node-hover{
 
 	background-image: url(../images/chain-node-hover.png);
 }

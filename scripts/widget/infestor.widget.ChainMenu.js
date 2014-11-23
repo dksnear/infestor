@@ -8,11 +8,11 @@ infestor.define('infestor.widget.ChainMenu', {
 
 	cssUses : 'infestor.Widget',
 
-	cssClsElement : 'infestor-chain-menu',
-	cssClsLine : 'infestor-chain-menu-line',
-	cssClsHorizonLine :'infestor-chain-menu-horizon-line',
-	cssClsNode : 'infestor-chain-menu-node',
-	cssClsNodeHover : 'infestor-chain-menu-node-hover',
+	cssClsElement : 'infestor-widget-chain-menu',
+	cssClsLine : 'infestor-widget-chain-menu-line',
+	cssClsHorizonLine :'infestor-widget-chain-menu-horizon-line',
+	cssClsNode : 'infestor-widget-chain-menu-node',
+	cssClsNodeHover : 'infestor-widget-chain-menu-node-hover',
 	
 	itemsConstructMode:'method',
 	
