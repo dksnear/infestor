@@ -7,6 +7,15 @@
 
 }
 
+.infestor-widget-iframe-panel-title{
+
+	text-indent: 1em;
+	vertical-align:center;
+	font-weight: bold;
+	line-height: 25px;
+
+}
+
 .infestor-widget-iframe-panel-body{
 
 	position:relative;

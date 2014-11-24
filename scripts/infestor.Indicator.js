@@ -10,6 +10,9 @@ infestor.define('infestor.Indicator',{
 	
 	interval:100,
 	
+	// 步长
+	step:0,
+	
 	stopNodes:[70,100,150,250,350,450,550,650,750,850,950,999],
 	
 	// 显示遮罩 (bool)
@@ -18,7 +21,9 @@ infestor.define('infestor.Indicator',{
 	stopNeedle:0,
 	
 	init:function(){
-			
+		
+		this.initStep();
+		
 		this.on('start',function(){
 					
 			this.mask && this.showMask();
@@ -31,13 +36,9 @@ infestor.define('infestor.Indicator',{
 			
 		
 		},this);
-		
-		
+				
 		this.on('tick',function(){
 		
-			if (!this.indicator)
-				return;
-			
 			if(this.stopPos * 10 >= this.stopNodes[this.stopNeedle] && this.stopNeedle < this.stopNodes.length-1)
 				this.stopNeedle++;
 
@@ -63,6 +64,28 @@ infestor.define('infestor.Indicator',{
 		
 		},this);
 			
+	},
+	
+	initStep:function(){
+	
+		var start = 50;
+		
+		if(!this.step)
+			return;
+		
+		this.stopNodes = [];
+		
+		this.step = this.step < 30 ? 30 : this.step;
+		this.step = this.step > 100 ? 100 : this.step;
+		
+		while(start<1000){
+		
+			start += this.step;
+			this.stopNodes.push(start);
+		
+		}
+		
+	
 	},
 	
 	createIndicator:function(opts){

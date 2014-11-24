@@ -6,6 +6,7 @@ infestor.define('infestor.widget.IFramePanel', {
 	uses : ['infestor.Indicator'],
 	
 	cssClsHead:'infestor-widget-iframe-panel-head',
+	cssClsTitle:'infestor-widget-iframe-panel-title',
 	cssClsBody:'infestor-widget-iframe-panel-body',
 	cssClsHeadItem:'infestor-widget-iframe-panel-head-item',
 	
@@ -14,8 +15,9 @@ infestor.define('infestor.widget.IFramePanel', {
 	iframeHeight:'500px',
 	iframeWidth:'100%',
 	iframeTimeout:15*1000,
-	iframeAutoLoad:true,
+	iframeAutoLoad:false,
 	iframeSandbox:false, 
+	iframeHidden:true,
 	
 	head:true,
 	
@@ -33,8 +35,8 @@ infestor.define('infestor.widget.IFramePanel', {
 
 		this.callParent();
 		this.createIFrameLoadIndicator();
-		this.createIFrame();
 		
+		this.iframeHidden && this.body.hide();
 		this.iframeAutoLoad && this.loadIFrame();
 
 	},
@@ -55,6 +57,7 @@ infestor.define('infestor.widget.IFramePanel', {
 					if(this.body.hidden){
 					
 						this.body.show();
+						!this.iframeLoaded && this.loadIFrame();
 						inst.setText('隐藏');
 						
 					} else {
@@ -78,6 +81,16 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 	},
 	
+	createTitle :function(){
+	
+		this.callParent();
+		
+		this.title && this.title.element.addClass(this.cssClsElementInlineBlock);
+		
+		return this;
+	
+	},
+	
 	createHead : function () {
 	
 		this.head = this.createElement('head', this, {
@@ -93,7 +106,7 @@ infestor.define('infestor.widget.IFramePanel', {
 			
 				cssClsElement : this.cssClsHeadItem,
 				name:'visible',
-				text:'隐藏'
+				text:this.iframeHidden ? '显示':'隐藏'
 			
 			},{
 			
@@ -116,6 +129,9 @@ infestor.define('infestor.widget.IFramePanel', {
 	
 	createIFrame : function(){
 	
+		if(this.elementIFrame)
+			return this;
+	
 		this.elementIFrame = this.createDomElement(this.body, null, 'iframe', {
 		
 			height:'100%',
@@ -135,6 +151,12 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 		this.elementIFrame.on('load',function(e){
 			
+			if(!this.iframeLoading)
+				return;
+			
+			this.iframeLoading = false;
+			this.iframeLoaded = true;
+			
 			this.elementIFrame.attr({
 			
 				height:this.iframeHeight,
@@ -152,6 +174,8 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 		this.elementIFrame.on('error',function(e){
 		
+			this.iframeLoading = false;
+			this.iframeLoaded = true;
 			infestor.stopDelay(this.delayId);
 			this.iFrameLoadIndicator.stop();
 			this.emit('error',[e,this.elementIFrame,this]);
@@ -167,6 +191,8 @@ infestor.define('infestor.widget.IFramePanel', {
 	
 		this.iFrameLoadIndicator = this.iFrameLoadIndicator || infestor.create('infestor.Indicator',{
 		
+			interval:50,
+			step:50,
 			showMask:function(){ me.body.showMask(); },
 			hideMask:function(){ me.body.hideMask(); },
 			showIndicator:function(){ 
@@ -206,6 +232,8 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 		if(!this.iframeSrc) return this;
 		
+		this.createIFrame();
+		
 		this.emit('beforeLoad',[this.elementIFrame,this]);
 		
 		infestor.stopDelay(this.delayId);
@@ -214,8 +242,12 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 		this.elementIFrame.attr('src',this.uniqueSrc(this.iframeSrc));
 		
+		this.iframeLoading = true;
+		
 		this.delayId = infestor.delay(function(){
 		
+			this.iframeLoading = false;
+			this.iframeLoaded = true;
 			this.iFrameLoadIndicator.stop();
 			this.elementIFrame.attr('src','#');
 			this.emit('timeout',[this.elementIFrame,this]);
