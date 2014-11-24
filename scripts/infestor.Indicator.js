@@ -13,7 +13,7 @@ infestor.define('infestor.Indicator',{
 	// 步长
 	step:0,
 	
-	stopNodes:[70,100,150,250,350,450,550,650,750,850,950,999],
+	stopNodes:[70,100,150,250,350,450,550,650,750,850,950],
 	
 	// 显示遮罩 (bool)
 	mask:true,
@@ -78,7 +78,7 @@ infestor.define('infestor.Indicator',{
 		this.step = this.step < 30 ? 30 : this.step;
 		this.step = this.step > 100 ? 100 : this.step;
 		
-		while(start<1000){
+		while(start<900){
 		
 			start += this.step;
 			this.stopNodes.push(start);

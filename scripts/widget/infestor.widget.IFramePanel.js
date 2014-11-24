@@ -14,7 +14,7 @@ infestor.define('infestor.widget.IFramePanel', {
 	iframeName:'',
 	iframeHeight:'500px',
 	iframeWidth:'100%',
-	iframeTimeout:15*1000,
+	iframeTimeout:60*1000,
 	iframeAutoLoad:false,
 	iframeSandbox:false, 
 	iframeHidden:true,
@@ -99,12 +99,6 @@ infestor.define('infestor.widget.IFramePanel', {
 			items:[{
 			
 				cssClsElement : this.cssClsHeadItem,
-				name:'reload',
-				text:'刷新'
-			
-			},{
-			
-				cssClsElement : this.cssClsHeadItem,
 				name:'visible',
 				text:this.iframeHidden ? '显示':'隐藏'
 			
@@ -113,6 +107,12 @@ infestor.define('infestor.widget.IFramePanel', {
 				cssClsElement : this.cssClsHeadItem,
 				name:'open',
 				text:'在新窗口中打开'
+			
+			},{
+			
+				cssClsElement : this.cssClsHeadItem,
+				name:'reload',
+				text:'刷新'
 			
 			},{
 			
@@ -242,6 +242,7 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 		this.elementIFrame.attr('src',this.uniqueSrc(this.iframeSrc));
 		
+		this.iframeLoaded = false;
 		this.iframeLoading = true;
 		
 		this.delayId = infestor.delay(function(){
@@ -249,9 +250,9 @@ infestor.define('infestor.widget.IFramePanel', {
 			this.iframeLoading = false;
 			this.iframeLoaded = true;
 			this.iFrameLoadIndicator.stop();
-			this.elementIFrame.attr('src','#');
+			//this.elementIFrame.attr('src','#');
 			this.emit('timeout',[this.elementIFrame,this]);
-			this.emit('error',[null,this.elementIFrame,this]);
+			//this.emit('error',[null,this.elementIFrame,this]);
 			this.emit('complete',[false,null,this.elementIFrame,this]);
 			
 			
