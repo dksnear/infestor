@@ -33,7 +33,7 @@ infestor.define('infestor.tree.Tree',{
 			this.addRow(data);
 			
 			if(!data || data.length<1)			
-				this.fixNode(params[this.dataSet.model.$parentNodeId || 'pId']);
+				this.fixNode(params[this.dataSet.modelMap.$parentNodeId || 'pId']);
 					
 			if(!this.currentLoadingNode) return;
 			
@@ -85,7 +85,7 @@ infestor.define('infestor.tree.Tree',{
 			this.treeColumn = infestor.grid.Grid.createColumn({
 			
 				type:'infestor.tree.TreeColumn',
-				name:this.dataSet.model.$text,
+				name:this.dataSet.modelMap.$text,
 				width:'100%'
 			
 			});
@@ -177,7 +177,7 @@ infestor.define('infestor.tree.Tree',{
 			params:{}
 		};
 
-		params.params[this.dataSet.model.$parentNodeId || 'pId'] = nodeId;
+		params.params[this.dataSet.modelMap.$parentNodeId || 'pId'] = nodeId;
 		
 		this.dataSet.load(params);
 	
