@@ -708,6 +708,13 @@ infestor.define('infestor.Element', {
 	},
 	
 	
+	lastItem : function (){
+	
+		return this.getItem(this.itemsIndex-1);
+	
+	},
+	
+	
 	// 遍历所有子元素
 	// @fn(idx[索引],item[元素]) 委托方法
 	// @scope @fn的作用域

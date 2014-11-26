@@ -29,6 +29,17 @@ infestor.namespace('infestor.cross',{
 	
 	},
 	
+	choice : function(msg,aye,nay,parent,scope){
+	
+		var args = arguments;
+	
+		infestor.mgr.require('infestor.Window',function(){
+		
+			infestor.Window.choice.apply(scope || window,args).show();
+		
+		});
+	
+	},
 	
 	error:function(msg){
 	

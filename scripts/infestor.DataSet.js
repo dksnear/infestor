@@ -61,6 +61,8 @@ infestor.define('infestor.DataSet', {
 		LoadError : null,
 		LoadComplete : null,
 		
+		// 页面溢出 (当分页加载数据为空时触发)
+		pageout : null,
 		
 		// for submit	
 
@@ -388,11 +390,13 @@ infestor.define('infestor.DataSet', {
 			success : function (data) {
 				
 				me.initData(data);
+							
+				me.emit('load', [me.getData(),opts.params],me);
 				
 				// 设置当前页面位置
-				me.pageSize && (me.pageCurrent =  me.hasData() ? (me.pageCurrent + me.pageSize) : 0);
+				me.pageSize && !me.hasData() && me.emit('pageout',[me.pageCurrent,opts.params],me);
+				me.pageSize && (me.pageCurrent =  me.hasData() ? (me.pageCurrent + me.count) : 0);
 				
-				me.emit('load', [me.getData(),opts.params],me);
 				me.emit('afterLoad',[me.data,opts.params],me);
 
 			},
