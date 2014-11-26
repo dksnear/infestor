@@ -94,7 +94,7 @@ infestor.define('infestor.DataSet', {
 			
 				// 页面大小参数
 				size:'size',
-				// 当期位置参数
+				// 当前位置参数
 				current:'current'
 			
 			}
@@ -366,7 +366,8 @@ infestor.define('infestor.DataSet', {
 		}
 
 		// 设置自定义参数	
-		opts && opts.params && (opts.params = infestor.append({}, config.params, opts.params));
+		opts = infestor.append({},opts);	
+		opts.params = infestor.append({}, config.params, opts.params);
 		
 		// 设置分页参数
 		if(config.pageConfig){
@@ -389,7 +390,7 @@ infestor.define('infestor.DataSet', {
 				me.initData(data);
 				
 				// 设置当前页面位置
-				me.pageSize && (this.pageCurrent =  me.hasData() ? (this.pageCurrent + this.pageSize) : 0);
+				me.pageSize && (me.pageCurrent =  me.hasData() ? (me.pageCurrent + me.pageSize) : 0);
 				
 				me.emit('load', [me.getData(),opts.params],me);
 				me.emit('afterLoad',[me.data,opts.params],me);
@@ -442,12 +443,13 @@ infestor.define('infestor.DataSet', {
 
 		config.params = config.params || {};
 		
-		// 设置自定义参数
-		opts && opts.params && (opts.params = infestor.append({}, config.params, opts.params));
-		
 		// 设置提交数据参数
 		config.params = infestor.append({},this.getSubmitParams(),config.params);
 		
+		// 设置自定义参数
+		opts = infestor.append({},opts);	
+		opts.params = infestor.append({}, config.params, opts.params);
+				
 		opts = infestor.append({
 
 			url : config.url,

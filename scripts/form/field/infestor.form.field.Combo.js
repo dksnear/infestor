@@ -125,6 +125,8 @@ infestor.define('infestor.form.field.Combo',{
 			this.elementFieldInput.val(this.activeItem.text);
 			this.elementFieldInput.setSelectionRange(0,this.activeItem.text.length);
 			
+			this.mouseOverItem && this.mouseOverItem.element.removeClass(this.cssClsComboFieldDropDownMouseOver);
+			
 		},this);
 		
 		this.dataSet && this.dataSet.on('load',function(){

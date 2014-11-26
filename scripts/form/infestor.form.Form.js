@@ -403,6 +403,17 @@ infestor.define('infestor.form.Form', {
 		
 		return this.dataSet.submit(opts,rewrite),true;
 	
+	},
+	
+	destroy:function(){
+	
+		this.elementLoadIndicator = this.elementLoadIndicator && this.elementLoadIndicator.destroy();
+		this.elementSubmitIndicator = this.elementSubmitIndicator && this.elementSubmitIndicator.destroy();
+		
+		this.callParent();
+		
+		return null;
+	
 	}
-
+	
 });
