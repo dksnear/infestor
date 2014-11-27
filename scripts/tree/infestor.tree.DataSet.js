@@ -20,7 +20,8 @@ infestor.define('infestor.tree.DataSet',{
 	
 		$nodeId : 'id',
 		$parentNodeId: 'pId',
-		$text : 'text'
+		$text : 'text',
+		$leaf : 'leaf'
 	
 	},
 	
@@ -43,9 +44,62 @@ infestor.define('infestor.tree.DataSet',{
 	
 	},
 	
-	setData : function(data){
+	setData : function(id,name,value){
 	
+		var rowData = this.searchData('$nodeId',id);
 		
+		if(infestor.isNull(rowData)) return false;
+		
+		if(rowData.$delete) return false;
+		
+		rowData[name] = value;
+		
+		if(!rowData.$add)
+			rowData.$update = true;
+			
+		return rowData;
+	},
+		
+	addData : function(rowData){
+	
+		if(!rowData) return null;
+		
+		rowData.$add = true;
+		
+		return this.callParent(rowData);
+	
+	},
+	
+	deleteData : function(id,force){
+	
+		var rowData = this.searchData('$nodeId',id);
+		
+		if(infestor.isNull(rowData)) return false;
+		
+		if(force || rowData.$add)
+			return this.removeData(rowData.$floatIdx);
+			
+		if(rowData.$update)
+			delete rowData.$update;
+		
+		return rowData.$delete = true,rowData;
+		
+	},
+	
+	getSubmitParams : function(){
+	
+		var set = [];
+		
+		infestor.each(this.data,function(idx,row){
+		
+			row = this.reverse(row);
+			if(row.$add || row.$update || row.$delete)
+				set.push(row);
+		
+		},this);
+		
+		return { data : infestor.jsonEncode(set) };
+	
 	},
 	
 	// 按照数据模型格式化一个数据行
@@ -80,10 +134,18 @@ infestor.define('infestor.tree.DataSet',{
 	// 按照数据模型反格式化一个数据行
 	reverse : function(rowData){
 	
+		var set = [],data = {};
+	
 		if(infestor.isArray(rowData))
-			return infestor.map(rowData,function(){  return this.rawData; });
+			return infestor.each(rowData,function(idx,row){  set.push(this.reverse(row));   },this),set;
 		
-		return rowData.rawData;
+		rowData.$add && (data.$add = rowData.$add);
+		rowData.$update && (data.$update = rowData.$update);
+		rowData.$delete && (data.$delete = rowData.$delete);
+		
+		infestor.append(data,rowData.rawData);
+		
+		return data;
 	
 	},
 	

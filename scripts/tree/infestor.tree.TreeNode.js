@@ -46,7 +46,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	nodeTextCell : null,
 
-	// Ê÷µÄÉî¶È ´Ó1¿ªÊ¼
+	// æ ‘çš„æ·±åº¦ ä»1å¼€å§‹
 	nodeDepth : 1,
 	
 	isRoot : false,
@@ -61,7 +61,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	isCollapse : true,
 	
-	// Òì²½¼ÓÔØ½ÚµãÍê³É
+	// å¼‚æ­¥åŠ è½½èŠ‚ç‚¹å®Œæˆ
 	isLoaded : false,
 	
 	isFocus : false,
@@ -265,7 +265,7 @@ infestor.define('infestor.tree.TreeNode',{
 		this.changeNodeIcon();
 		this.changeNodeSwitchIcon();
 	
-		this.emit('addChildNode',[this,node]);
+		this.emit('addNode',[this,node]);
 		
 		return node;
 		
@@ -273,8 +273,8 @@ infestor.define('infestor.tree.TreeNode',{
 	},
 	
 	
-	// É¾³ıÒ»¸ö½Úµã±êÊ¶Îª@nodeId×Ó½Úµã
-	// @nodeIdÎª¿ÕÔòÉ¾³ı×îºóÒ»¸ö×Ó½Úµã
+	// åˆ é™¤ä¸€ä¸ªèŠ‚ç‚¹æ ‡è¯†ä¸º@nodeIdå­èŠ‚ç‚¹
+	// @nodeIdä¸ºç©ºåˆ™åˆ é™¤æœ€åä¸€ä¸ªå­èŠ‚ç‚¹
 	removeChildNode : function(nodeId){
 	
 		var i=0,len,node;
@@ -319,13 +319,13 @@ infestor.define('infestor.tree.TreeNode',{
 		if(node.isLast) {
 		
 			this.lastChildNode = node.previousSiblingNode;
-			this.lastChildNode.isLast = true;
+			this.lastChildNode && (this.lastChildNode.isLast = true);
 		}
 		
 		this.changeNodeIcon();
 		this.changeNodeSwitchIcon();
 		
-		this.emit('removeChildNode',[this,node]);
+		this.emit('removeNode',[this,node]);
 		
 		return node;
 	
@@ -338,7 +338,7 @@ infestor.define('infestor.tree.TreeNode',{
 		
 		this.eachChildNodes(function(node,pnode){
 		
-			pnode.emit('removeChildNode',[pnode,node]);
+			pnode.emit('removeNode',[pnode,node]);
 		
 		});
 		
@@ -348,7 +348,7 @@ infestor.define('infestor.tree.TreeNode',{
 		
 	// manipulate node
 	
-	// ËÑÑ°½ÚµãµÄËùÓĞ×Ó½Úµã
+	// æœå¯»èŠ‚ç‚¹çš„æ‰€æœ‰å­èŠ‚ç‚¹
 	eachChildNodes : function(fn,scope){
 	
 		if(!fn) return this;

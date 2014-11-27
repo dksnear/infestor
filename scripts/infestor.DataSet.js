@@ -169,10 +169,12 @@ infestor.define('infestor.DataSet', {
 	
 	setData : function (data,idx,name) {
 
-		if(idx < this.count)
+		if(idx > this.count-1)
 			return null;
 		
-		this.data[idx][name] = data;
+		if(!name) 
+			this.data[idx] = data;	
+		else this.data[idx][name] = data;
 
 		return data;
 
@@ -183,17 +185,17 @@ infestor.define('infestor.DataSet', {
 		return !!this.count;
 	},
 	
-	addData : function(item){
+	addData : function(rowData){
 	
 		this.data = this.data || [];
 	
-		item = this.mapData(item);
+		rowData = this.mapData(rowData);
 	
-		this.data.push(item);
+		this.data.push(rowData);
 		
 		this.count++;
 		
-		return item;
+		return rowData;
 	
 	},
 
@@ -236,6 +238,7 @@ infestor.define('infestor.DataSet', {
 		
 			if(row.hasOwnProperty(sKey) && row[sKey] == sValue){
 				result = rKey ? row[rKey] : row;
+				result.$floatIdx = idx;
 				return false;
 			}
 		

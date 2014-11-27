@@ -47,27 +47,6 @@ infestor.define('infestor.tree.Tree',{
 
 		
 		},this);
-			
-		// this.delegate(this,'click',true,function(inst,e){
-		
-			// var node = inst.parent;
-		
-			// if(node && inst.element.hasClass(infestor.tree.TreeNode.prototype.cssClsNodeSwitch)){
-				
-				// if(this.async && !node.isLeaf && !node.isLoaded){
-									
-					// this.loadNode(node.nodeId);
-					
-					// this.currentLoadingNode = node;
-					
-					// return;
-				// }
-				
-				 // node.isExpand ? node.nodeCollapse() : node.nodeExpand();
-				
-			// }
-		
-		// },this);
 		
 	},
 	
@@ -172,6 +151,7 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
+	// 异步加载node
 	loadNode : function(nodeId){
 	
 		var params = {
@@ -190,12 +170,30 @@ infestor.define('infestor.tree.Tree',{
 		this.gridRows[nodeId].treeNode.changeNodeIcon();
 	
 	},
+
+	addNode : function(rawData,visible){
+		
+		var rowData = this.dataSet && this.dataSet.addData(rawData) || rawData;
+		
+		return this.addRow(rowData,visible).treeNode;
+	
+	},
+	
+	deleteNode : function(nodeId){
+	
+		if(arguments.length < 1)
+			nodeId = this.activeNode && this.activeNode.nodeId;
+	
+		return nodeId && this.removeRow(nodeId);
+	
+	},
 	
 	addRow : function(rowData,visible){
 	
 		var id = rowData.$nodeId,
 			pId = rowData.$parentNodeId,
 			isRoot = infestor.isNull(pId),
+			isBranch = rowData.hasOwnProperty('$leaf') ? !rowData.$leaf : false,
 			row = {},
 			parentRow,
 			finalNode,
@@ -237,6 +235,7 @@ infestor.define('infestor.tree.Tree',{
 		row.treeNode.isCollapse = !visible;
 		row.treeNode.isRoot = isRoot;
 		row.treeNode.isLeaf = !isRoot;
+		row.treeNode.isBranch = isBranch;
 				
 		row.treeNode.on({
 		
@@ -281,6 +280,7 @@ infestor.define('infestor.tree.Tree',{
 					
 				});
 			},
+			
 			nodeCollapse : function(){
 			
 				infestor.each(this.childNodes,function(idx,node){
@@ -291,11 +291,23 @@ infestor.define('infestor.tree.Tree',{
 				
 				});
 			
+			},
+			
+			removeNode : function(pnode,node){
+			
+				var row = tree.gridRows[node.nodeId];
+				
+				row.container.destroy();
+			 
+				delete tree.gridRows[node.nodeId];
+				
+				tree.dataSet.deleteData(node.nodeId);
+			
 			}
 		
 		});
 		
-		this.async && row.treeNode.changeNodeIcon(true);
+		row.treeNode.changeNodeIcon(this.async);
 		
 		!isRoot && parentRow.treeNode.addChildNode(row.treeNode);
 		
@@ -311,33 +323,11 @@ infestor.define('infestor.tree.Tree',{
 		
 	},
 
-	removeRow : function(rowId){
+	removeRow : function(rowId,force){
 	
-		var row,delRow = function(row,gridRows){
-			
-			 if(!row) return false;
-
-			 row.container.destroy();
-			 
-			 // 此处还需要处理数据集里的数据 
-			 return delete gridRows[row.nodeId];
-			 
-		};
-	
-		if(!rowId)
-			return this.removeRow(this.rootRow.id);
+		var row = this.gridRows && this.gridRows[rowId];
 		
-		row = this.gridRows && this.gridRows[rowId];
-		
-		if(!row) return false;
-		
-		row.treeNode.eachChildNodes(function(node,pnode){
-		
-			delRow(this[node.nodeId],this);
-		
-		},this.gridRows);
-		
-		delRow(row,this.gridRows);
+		if(!row) return this;
 		
 		row.treeNode.removeNode();
 			
