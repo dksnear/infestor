@@ -34,6 +34,8 @@ infestor.define('infestor.tree.TreeNode',{
 
 	cssClsNodeText : 'infestor-tree-node-text',
 	
+	cssClsNodeFocus : 'infestor-tree-node-focus',
+	
 	nodeSpaceCells : null,
 	
 	nodeSwitchCell : null,

@@ -233,6 +233,8 @@ infestor.define('infestor.tree.Tree',{
 		row.treeNode = this.treeColumn.createColumnCell(rowData.rawData,rowData,row.container,row);
 	
 		row.treeNode.nodeId = row.id;
+		row.treeNode.isExpand = visible;
+		row.treeNode.isCollapse = !visible;
 		row.treeNode.isRoot = isRoot;
 		row.treeNode.isLeaf = !isRoot;
 				
@@ -240,14 +242,16 @@ infestor.define('infestor.tree.Tree',{
 		
 			nodeTextClick : function(txt,e,node){
 			
+				tree.emit('nodeTextClick',[txt,e,node,tree]);
 			
 			},
 		
 			nodeIconClick : function(icon,e,node){
 			
-				tree.activeNode && tree.activeNode.blur();
-				
+				tree.activeNode && tree.activeNode.blur();			
 				tree.activeNode = node.focus();
+				
+				tree.emit('nodeIconClick',[icon,e,node,tree]);
 			
 			},
 			

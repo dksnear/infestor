@@ -19,7 +19,7 @@ infestor.define('infestor.tree.TreeColumn',{
 	
 			tagName:'td',	
 			width : this.columnOptions.width || 60,
-			text : cellData && cellData[this.columnOptions.name],// cellData.$text,
+			text : cellData && cellData[this.columnOptions.name] || rowData.$text,
 			nodeDepth : row.depth,
 			hidden : this.columnOptions.hidden
 			
