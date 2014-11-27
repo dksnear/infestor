@@ -30,13 +30,16 @@ infestor.define('infestor.tree.DataSet',{
 	
 	},
 	
-	initData : function(){
+	initData : function(data){
+	
+		if(!data)	
+			return this.data = [];
 	
 		if(this.type =='array')
-			return this.mapData(data);
+			return this.data = this.mapData(data);
 		
 		if(this.type == 'tree')
-			return this.object2array(data,true);
+			return this.data = this.object2array(data,true);
 	
 	},
 	
@@ -65,8 +68,8 @@ infestor.define('infestor.tree.DataSet',{
 			
 		return infestor.each(rowData,function(name,data){
 		
-			if(this.$reverseModelMap.hasOwnProperty(name))
-				return o[this.$reverseModelMap[name]] = data,true;
+			if(this.reverseModelMap.hasOwnProperty(name))
+				return o[this.reverseModelMap[name]] = data,true;
 			
 			o[name] = data;
 		

@@ -360,7 +360,7 @@ infestor.define('infestor.DataSet', {
 		var me = this,
 			config = this.loadConfig,
 			indicator = this.loadIndicator;
-
+			
 		if (!config.remote) {
 
 			this.emit('load', [this.initData(opts || this.data)],this);

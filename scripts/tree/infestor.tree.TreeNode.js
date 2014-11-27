@@ -62,6 +62,8 @@ infestor.define('infestor.tree.TreeNode',{
 	// 异步加载节点完成
 	isLoaded : false,
 	
+	isFocus : false,
+	
 	nodeId : null,
 	
 	parentNodeId : null,
@@ -75,17 +77,42 @@ infestor.define('infestor.tree.TreeNode',{
 	lastChildNode : null,
 	
 	childNodes : null,
-	
-	
+
 	// rewite
 	
-	initElement:function(){
+	initElement : function(){
 	
 		this.callParent();
 		
 		this.createNodeSpaceCells().createNodeSwitchCell().createNodeCheckCell().createNodeIconCell().createNodeTextCell();
 		this.changeNodeIcon().changeNodeSwitchIcon();
 		
+	
+	},
+	
+	initEvents : function(){
+	
+		this.delegate(this,'click',true,function(inst,e){
+		
+			var type;
+		
+			if(!inst || !inst.element) return;
+					
+			if(inst.element.hasClass(this.cssClsNodeSwitch))
+				(type = 'switch') && this.emit('nodeSwitchClick',[inst,e,this]);
+			
+			if(inst.element.hasClass(this.cssClsNodeIcon))
+				(type = 'icon') && this.emit('nodeIconClick',[inst,e,this]);
+			
+			if(inst.element.hasClass(this.cssClsNodeText))
+				(type = 'text') && this.emit('nodeTextClick',[inst,e,this]);
+				
+			this.emit('nodeClick',[type,inst,e,this]);
+			
+		
+		},this);
+		
+		return this;
 	
 	},
 	
@@ -183,7 +210,31 @@ infestor.define('infestor.tree.TreeNode',{
 		return this;
 	},
 	
-
+	focus:function(){
+	
+		if(this.isFocus)
+			return this;
+		
+		this.nodeIconCell.element.addClass(this.cssClsNodeFocus);
+		
+		this.isFocus = true;
+		
+		return this;
+	
+	},
+	
+	blur:function(){
+	
+		if(!this.isFocus)
+			return this;
+		
+		this.nodeIconCell.element.removeClass(this.cssClsNodeFocus);
+		
+		this.isFocus = false;
+		
+		return this;
+	
+	},
 	
 	// construct node
 	

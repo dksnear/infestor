@@ -4,7 +4,7 @@ infestor.define('infestor.tree.Tree',{
 	
 	extend : 'infestor.grid.Grid',
 	
-	uses : ['infestor.tree.DataSet','infestor.tree.TreeColumn','infestor.tree.TreeNode'],
+	uses : ['infestor.tree.DataSet','infestor.tree.TreeColumn'],
 	
 	dataSetClsName : 'infestor.tree.DataSet',
 	
@@ -28,6 +28,8 @@ infestor.define('infestor.tree.Tree',{
 			
 			!this.rootRow && this.createTree(data);
 			
+			if(!this.dataSet.remote) return;
+			
 			if(!this.async) return;
 			
 			this.addRow(data);
@@ -46,26 +48,26 @@ infestor.define('infestor.tree.Tree',{
 		
 		},this);
 			
-		this.delegate(this,'click',true,function(inst,e){
+		// this.delegate(this,'click',true,function(inst,e){
 		
-			var node = inst.parent;
+			// var node = inst.parent;
 		
-			if(node && inst.element.hasClass(infestor.tree.TreeNode.prototype.cssClsNodeSwitch)){
+			// if(node && inst.element.hasClass(infestor.tree.TreeNode.prototype.cssClsNodeSwitch)){
 				
-				if(this.async && !node.isLeaf && !node.isLoaded){
+				// if(this.async && !node.isLeaf && !node.isLoaded){
 									
-					this.loadNode(node.nodeId);
+					// this.loadNode(node.nodeId);
 					
-					this.currentLoadingNode = node;
+					// this.currentLoadingNode = node;
 					
-					return;
-				}
+					// return;
+				// }
 				
-				 node.isExpand ? node.nodeCollapse() : node.nodeExpand();
+				 // node.isExpand ? node.nodeCollapse() : node.nodeExpand();
 				
-			}
+			// }
 		
-		},this);
+		// },this);
 		
 	},
 	
@@ -235,6 +237,34 @@ infestor.define('infestor.tree.Tree',{
 		row.treeNode.isLeaf = !isRoot;
 				
 		row.treeNode.on({
+		
+			nodeTextClick : function(txt,e,node){
+			
+			
+			},
+		
+			nodeIconClick : function(icon,e,node){
+			
+				tree.activeNode && tree.activeNode.blur();
+				
+				tree.activeNode = node.focus();
+			
+			},
+			
+			nodeSwitchClick : function(sw,e,node){
+			
+				if(tree.async && !node.isLeaf && !node.isLoaded){
+									
+					tree.loadNode(node.nodeId);
+					
+					tree.currentLoadingNode = node;
+					
+					return;
+				}
+				
+				 node.isExpand ? node.nodeCollapse() : node.nodeExpand();
+			
+			},
 			
 			nodeExpand : function(){
 			
