@@ -21,7 +21,10 @@ infestor.define('infestor.tree.DataSet',{
 		$nodeId : 'id',
 		$parentNodeId: 'pId',
 		$text : 'text',
-		$leaf : 'leaf'
+		$root : 'root',
+		$branch: 'branch',
+		$leaf:'leaf',
+		$hasChild:'hasChild'
 	
 	},
 	
@@ -142,6 +145,7 @@ infestor.define('infestor.tree.DataSet',{
 		rowData.$add && (data.$add = rowData.$add);
 		rowData.$update && (data.$update = rowData.$update);
 		rowData.$delete && (data.$delete = rowData.$delete);
+		rowData.$$depth && (data.$$depth = rowData.$$depth);
 		
 		infestor.append(data,rowData.rawData);
 		

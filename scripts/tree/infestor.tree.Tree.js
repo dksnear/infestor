@@ -8,9 +8,15 @@ infestor.define('infestor.tree.Tree',{
 	
 	dataSetClsName : 'infestor.tree.DataSet',
 	
+	// 异步构造
 	async : false,
 	
+	// 异步构造请求父节点请求参数名 默认值为this.dataSet.modelMap.$parentNodeId
 	asyncParamName : '',
+	
+	// 异步构造严格模式 (每次异步加载请求只加载一层节点)
+	// 异步构造非严格模式 (每次异步加载请求加载两层节点 第2层为预加载 用于判定第一层是否有子节点)
+ 	asyncStrict : true,
 	
 	// 表格树 
 	multiColumn : false,
@@ -35,6 +41,9 @@ infestor.define('infestor.tree.Tree',{
 			if(!this.async) return;
 			
 			this.addRow(data);
+			
+			if(this.asyncStrict)
+				return;
 			
 			if(!data || data.length<1)			
 				this.fixNode(params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId']);
@@ -194,8 +203,10 @@ infestor.define('infestor.tree.Tree',{
 	
 		var id = rowData.$nodeId,
 			pId = rowData.$parentNodeId,
-			isRoot = infestor.isNull(pId),
-			isBranch = rowData.hasOwnProperty('$leaf') ? !rowData.$leaf : false,
+			isRoot = rowData.$root || infestor.isNull(pId),
+			isBranch = rowData.$branch,
+			isLeaf = rowData.$leaf,
+			hasChild = rowData.$hasChild,
 			row = {},
 			parentRow,
 			finalNode,
@@ -213,11 +224,10 @@ infestor.define('infestor.tree.Tree',{
 		if(!parentRow && !isRoot) return false;
 		
 		row.id = id;
-		row.depth = isRoot ? 1 : (parentRow.depth +1);
+		row.depth = rowData.$$depth = isRoot ? 1 : (parentRow.depth +1);
 		row.data = rowData;
 		row.cells = {};
 		row.container = infestor.create('infestor.Element',{ hidden:!visible, cssClsElement:this.cssClsGridBodyRow ,tagName:'tr'});
-		
 		isRoot && row.container.renderTo(this.gridBodyContainer);
 		
 		if(!isRoot){
@@ -236,9 +246,10 @@ infestor.define('infestor.tree.Tree',{
 		row.treeNode.isExpand = visible;
 		row.treeNode.isCollapse = !visible;
 		row.treeNode.isRoot = isRoot;
-		row.treeNode.isLeaf = !isRoot;
+		row.treeNode.isLeaf = isLeaf || !isRoot;
 		row.treeNode.isBranch = isBranch;
-				
+		row.treeNode.hasChild = hasChild;
+		
 		row.treeNode.on({
 		
 			nodeTextClick : function(txt,e,node){
@@ -258,14 +269,14 @@ infestor.define('infestor.tree.Tree',{
 			
 			nodeSwitchClick : function(sw,e,node){
 			
-				if(tree.async && !node.isLeaf && !node.isLoaded){
+				// if(tree.async && !node.isLeaf && !node.isLoaded){
 									
-					tree.asyncLoadNode(node.nodeId);
+					// tree.asyncLoadNode(node.nodeId);
 					
-					tree.currentLoadingNode = node;
+					// tree.currentLoadingNode = node;
 					
-					return;
-				}
+					// return;
+				// }
 				
 				 node.isExpand ? node.nodeCollapse() : node.nodeExpand();
 			
@@ -273,7 +284,18 @@ infestor.define('infestor.tree.Tree',{
 			
 			nodeExpand : function(){
 			
-				tree.async && (this.isLoaded = true);
+				if(tree.async && this.hasChild && !this.isLoaded){
+									
+					tree.asyncLoadNode(this.nodeId);
+					
+					tree.currentLoadingNode = this;
+					
+					this.isLoaded = true;
+					
+					return;
+				}
+			
+				// tree.async && (this.isLoaded = true);
 			
 				infestor.each(this.childNodes,function(idx,node){
 				
@@ -310,6 +332,7 @@ infestor.define('infestor.tree.Tree',{
 		});
 		
 		row.treeNode.changeNodeIcon(this.async);
+		row.treeNode.changeNodeSwitchIcon();
 		
 		!isRoot && parentRow.treeNode.addChildNode(row.treeNode);
 		

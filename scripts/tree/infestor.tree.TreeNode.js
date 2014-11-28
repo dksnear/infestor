@@ -51,8 +51,10 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	isRoot : false,
 	
+	// 控制分支节点的图标显示
 	isBranch : false,
 	
+	// 控制叶节点的图标显示
 	isLeaf : true,
 
 	isLast : true,
@@ -65,6 +67,9 @@ infestor.define('infestor.tree.TreeNode',{
 	isLoaded : false,
 	
 	isFocus : false,
+	
+	// 控制节点开关的显示
+	hasChild : false,
 	
 	nodeId : null,
 	
@@ -198,9 +203,13 @@ infestor.define('infestor.tree.TreeNode',{
 	
 		var cls = '';
 		
-		this.isLeaf && (cls = this.cssClsNodeNonSwitch);
-		(this.isBranch || this.isRoot) && this.isExpand && (cls = this.cssClsNodeExpandSwitch);
-		(this.isBranch || this.isRoot) && this.isCollapse && (cls = this.cssClsNodeCollapseSwitch);
+		// this.isLeaf && (cls = this.cssClsNodeNonSwitch);
+		// (this.isBranch || this.isRoot) && this.isExpand && (cls = this.cssClsNodeExpandSwitch);
+		// (this.isBranch || this.isRoot) && this.isCollapse && (cls = this.cssClsNodeCollapseSwitch);
+		
+		!this.hasChild && (cls = this.cssClsNodeNonSwitch);
+		this.hasChild && this.isExpand && (cls = this.cssClsNodeExpandSwitch);
+		this.hasChild && this.isCollapse && (cls = this.cssClsNodeCollapseSwitch);
 		
 		if(cls && this.currentNodeSwitchCls == cls)
 			return this;
@@ -259,6 +268,7 @@ infestor.define('infestor.tree.TreeNode',{
 		this.lastChildNode = node;
 		this.isBranch = true;
 		this.isLeaf = false;
+		this.hasChild = true;
 		
 		this.childNodes.push(node);
 		
@@ -320,6 +330,7 @@ infestor.define('infestor.tree.TreeNode',{
 		
 			this.lastChildNode = node.previousSiblingNode;
 			this.lastChildNode && (this.lastChildNode.isLast = true);
+			!this.lastChildNode && (this.hasChild = false);
 		}
 		
 		this.changeNodeIcon();
@@ -381,7 +392,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	nodeExpand : function(){
 	
-		if(this.isExpand || this.isLeaf) return;
+		if(this.isExpand || !this.hasChild) return;
 	
 		this.isExpand = true;
 		this.isCollapse = false;
@@ -396,7 +407,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	nodeCollapse : function(){
 	
-		if(this.isCollapse || this.isLeaf) return;
+		if(this.isCollapse || !this.hasChild) return;
 	
 		this.isCollapse = true;
 		this.isExpand = false;
