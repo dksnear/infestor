@@ -10,6 +10,8 @@ infestor.define('infestor.tree.Tree',{
 	
 	async : false,
 	
+	asyncParamName : '',
+	
 	// 表格树 
 	multiColumn : false,
 
@@ -35,13 +37,13 @@ infestor.define('infestor.tree.Tree',{
 			this.addRow(data);
 			
 			if(!data || data.length<1)			
-				this.fixNode(params[this.dataSet.modelMap.$parentNodeId || 'pId']);
+				this.fixNode(params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId']);
 					
 			if(!this.currentLoadingNode) return;
 			
 			this.currentLoadingNode.nodeExpand();
 			
-			infestor.each(this.currentLoadingNode.childNodes,function(idx,node){ this.loadNode(node.nodeId); },this);
+			infestor.each(this.currentLoadingNode.childNodes,function(idx,node){ this.asyncLoadNode(node.nodeId); },this);
 			
 			this.currentLoadingNode = null;
 
@@ -109,7 +111,7 @@ infestor.define('infestor.tree.Tree',{
 		if(this.async){
 		
 			// 展开根节点
-			this.loadNode(this.rootRow.treeNode.nodeId);				
+			this.asyncLoadNode(this.rootRow.treeNode.nodeId);				
 			this.currentLoadingNode = this.rootRow.treeNode;
 		
 			return;
@@ -152,14 +154,14 @@ infestor.define('infestor.tree.Tree',{
 	},
 	
 	// 异步加载node
-	loadNode : function(nodeId){
+	asyncLoadNode : function(nodeId){
 	
 		var params = {
 					
 			params:{}
 		};
 
-		params.params[this.dataSet.modelMap.$parentNodeId || 'pId'] = nodeId;
+		params.params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId'] = nodeId;
 		
 		this.dataSet.load(params);
 	
@@ -258,7 +260,7 @@ infestor.define('infestor.tree.Tree',{
 			
 				if(tree.async && !node.isLeaf && !node.isLoaded){
 									
-					tree.loadNode(node.nodeId);
+					tree.asyncLoadNode(node.nodeId);
 					
 					tree.currentLoadingNode = node;
 					
