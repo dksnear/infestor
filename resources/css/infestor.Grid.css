@@ -61,21 +61,27 @@
 
 .infestor-tree-node-switch{
 
+	background-repeat:no-repeat;
 	background-position:-2px -2px;
 
 }
 
 .infestor-tree-node-expand-switch{
 
-
 	background-image:url(../images/arrow-down.gif);
-
 
 }
 
 .infestor-tree-node-collapse-switch{
 
 	background-image:url(../images/arrow-right.gif);
+
+}
+
+.infestor-tree-node-loading-switch{
+
+	background-position:0 0;
+	background-image:url(../images/loading-tiny.gif);
 
 }
 
@@ -90,6 +96,7 @@
 	
 .infestor-tree-node-icon{
 
+	background-repeat:no-repeat;
 
 }
 	

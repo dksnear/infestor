@@ -550,7 +550,7 @@ infestor.define('infestor.Element', {
 		this.removeItem();
 		
 		infestor.each(this.items, function (idx, opts) {
-			this.addItem(opts);
+			opts && this.addItem(opts);
 		}, this);
 		
 		this.items = [];

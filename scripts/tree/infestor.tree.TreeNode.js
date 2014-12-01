@@ -20,6 +20,8 @@ infestor.define('infestor.tree.TreeNode',{
 
 	cssClsNodeNonSwitch : 'infestor-tree-node-non-switch',
 	
+	cssClsNodeLoadingSwitch : 'infestor-tree-node-loading-switch',
+	
 	cssClsNodeCheck : 'infestor-tree-node-check',
 	
 	cssClsNodeIcon :'infestor-tree-node-icon',
@@ -63,7 +65,10 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	isCollapse : true,
 	
-	// 异步加载节点完成
+	// 正在异步加载
+	isLoading : false,
+	
+	// 异步加载完成
 	isLoaded : false,
 	
 	isFocus : false,
@@ -178,15 +183,13 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	},
 	
-	changeNodeIcon :function(loading){
+	changeNodeIcon :function(){
 	
 		var cls = '';
 		
 		this.isLeaf && (cls = this.cssClsNodeNormalIcon);
 		(this.isBranch || this.isRoot) && this.isExpand && (cls = this.cssClsNodeExpandIcon);
 		(this.isBranch || this.isRoot) && this.isCollapse && (cls = this.cssClsNodeCollapseIcon);
-	
-		loading && !this.isRoot && (cls = this.cssClsNodeLoadingIcon);
 	
 		if(cls && this.currentNodeIconCls == cls)
 			return this;
@@ -203,13 +206,11 @@ infestor.define('infestor.tree.TreeNode',{
 	
 		var cls = '';
 		
-		// this.isLeaf && (cls = this.cssClsNodeNonSwitch);
-		// (this.isBranch || this.isRoot) && this.isExpand && (cls = this.cssClsNodeExpandSwitch);
-		// (this.isBranch || this.isRoot) && this.isCollapse && (cls = this.cssClsNodeCollapseSwitch);
-		
 		!this.hasChild && (cls = this.cssClsNodeNonSwitch);
 		this.hasChild && this.isExpand && (cls = this.cssClsNodeExpandSwitch);
 		this.hasChild && this.isCollapse && (cls = this.cssClsNodeCollapseSwitch);
+		
+		this.isLoading && !this.isRoot && (cls = this.cssClsNodeLoadingSwitch);
 		
 		if(cls && this.currentNodeSwitchCls == cls)
 			return this;
@@ -392,7 +393,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	nodeExpand : function(){
 	
-		if(this.isExpand || !this.hasChild) return;
+		if(this.isExpand || !this.hasChild || this.isLoading) return;
 	
 		this.isExpand = true;
 		this.isCollapse = false;
@@ -407,7 +408,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	nodeCollapse : function(){
 	
-		if(this.isCollapse || !this.hasChild) return;
+		if(this.isCollapse || !this.hasChild || this.isLoading) return;
 	
 		this.isCollapse = true;
 		this.isExpand = false;
