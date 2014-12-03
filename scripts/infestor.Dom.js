@@ -665,14 +665,19 @@ infestor.define('infestor.Dom', {
 			return null;
 
 		var top = this.element.offsetTop,
-		left = this.element.offsetLeft,
-		borderTop = infestor.parseNumeric(this.element.style.borderTopWidth),
-		borderLeft = infestor.parseNumeric(this.element.style.borderLeftWidth),
-		offsetParent = this.element.offsetParent;
+			left = this.element.offsetLeft,
+			borderTop = infestor.parseNumeric(this.element.style.borderTopWidth),
+			borderLeft = infestor.parseNumeric(this.element.style.borderLeftWidth),
+			scrollTop = this.element.scrollTop,
+			scrollLeft = this.element.scrollLeft,
+			offsetParent = this.element.offsetParent;
+			
 		while (offsetParent) {
 
 			top += offsetParent.offsetTop;
 			left += offsetParent.offsetLeft;
+			scrollTop += offsetParent.scrollTop;
+			scrollLeft += offsetParent.scrollLeft;
 			borderTop += infestor.parseNumeric(offsetParent.style.borderTopWidth);
 			borderLeft += infestor.parseNumeric(offsetParent.style.borderLeftWidth);
 			offsetParent = offsetParent.offsetParent;
@@ -684,38 +689,24 @@ infestor.define('infestor.Dom', {
 			rawLeft : this.element.offsetLeft,
 			top : top,
 			left : left,
+			height : this.element.offsetHeight,
+			width : this.element.offsetWidth,
 			rawBorderTop : infestor.parseNumeric(this.element.style.borderTopWidth),
 			rawBorderLeft : infestor.parseNumeric(this.element.style.borderLeftWidth),
 			borderTop : borderTop,
-			borderLeft : borderLeft,
-			height : this.element.offsetHeight,
-			width : this.element.offsetWidth
+			borderLeft : borderLeft,		
+			rawScrollTop: this.element.scrollTop,
+			rawScrollLeft : this.element.scrollLeft,
+			scrollTop: scrollTop,
+			scrollLeft : scrollLeft,
+			scrollHeight : this.element.scrollHeight,
+			scrollWidth : this.element.scrollWidth,
+			clientTop : this.element.clientTop,
+			clientLeft : this.element.clientLeft,
+			clientHeight : this.element.clientHeight,
+			clientWidth : this.element.clientWidth
 
 		};
-	},
-
-	scrollOffset : function () {
-
-		return this.element && {
-
-			top : this.element.scrollTop,
-			left : this.element.scrollLeft,
-			height : this.element.scrollHeight,
-			width : this.element.scrollWidth
-		};
-	},
-
-	clientOffset : function () {
-
-		return this.element && {
-
-			top : this.element.clientTop,
-			left : this.element.clientLeft,
-			height : this.element.clientHeight,
-			width : this.element.clientWidth
-
-		}
-
 	},
 
 	appendTo : function (parent) {

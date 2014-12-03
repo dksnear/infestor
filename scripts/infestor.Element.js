@@ -949,8 +949,8 @@ infestor.define('infestor.Element', {
 			width : 0
 		}, target);
 			
-		target.right = clientWidth - parseFloat(target.left);
-		target.bottom = clientHeight - parseFloat(target.top);
+		target.right = clientWidth - parseFloat(target.left) + parseFloat(target.scrollLeft);
+		target.bottom = clientHeight - parseFloat(target.top) + parseFloat(target.scrollTop);
 		target.leftTrend = (parseFloat(target.left) + parseFloat(target.width)) > parseFloat(target.right);
 		target.topTrend = (parseFloat(target.top) + parseFloat(target.height)) > parseFloat(target.bottom);
 		
