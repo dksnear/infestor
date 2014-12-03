@@ -133,6 +133,8 @@ infestor.define('infestor.tree.TreeNode',{
 		this.text = infestor.isUndefined(text) ? this.text : text;
 		this.nodeTextCell.setText(this.text);
 		
+		this.nodeTextCell.element.attr('title',this.text);
+		
 		return this;
 	},
 	
