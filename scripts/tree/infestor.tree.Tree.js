@@ -16,7 +16,13 @@ infestor.define('infestor.tree.Tree',{
 	
 	// 异步构造严格模式 (每次异步加载请求只加载一层节点)
 	// 异步构造非严格模式 (每次异步加载请求加载两层节点 第2层为预加载 用于判定第一层是否有子节点)
- 	asyncStrict : true,
+ 	asyncStrict : false,
+	
+	// 自动展开深度(int|bool)
+	// (int 0 | true) 展开所有节点
+	// (int x) 展开深度小于等于x的所有节点
+	// (false) 不展开任何节点
+	expandDepth : 1,
 	
 	// 表格树 
 	multiColumn : false,
@@ -42,37 +48,40 @@ infestor.define('infestor.tree.Tree',{
 
 		this.dataSet && this.dataSet.on('load', function (data,params) {
 	
-			var currentLoadingNode;
+			var currentLoadingNode,needPreload;
 	
-			if(!this.async)
-				return !this.rootRow && this.createTree(data);
+			if(!this.async) return !this.rootRow && this.createTree(data);
 
 			currentLoadingNode = this.getNode(params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId']);
-			currentLoadingNode.isLoading = false;
+			currentLoadingNode.isLoading = false;		
+			currentLoadingNode.changeNodeSwitchIcon();
 			
-			if(!data || data.length < 1)
-				return currentLoadingNode.changeNodeSwitchIcon();
+			if(!data || data.length < 1) return;
 
 			this.addRow(data);
-				
-			if(this.asyncStrict){
 			
-				currentLoadingNode.nodeExpand();
-				currentLoadingNode.changeNodeSwitchIcon();
-				return;
-			}
-							
-			if(params.$$loadDepth && !this.asyncStrict){
+			needPreload = !this.asyncStrict && this.expandDepth !==0 && this.expandDepth !== true && (this.expandDepth === false || currentLoadingNode.nodeDepth >= this.expandDepth);
 			
-				currentLoadingNode.nodeExpand();
-				
+			if(params.$$preLoadDepth && needPreload){
+			
 				infestor.each(currentLoadingNode.childNodes,function(idx,node){ 
-					this.asyncLoadNode(node.nodeId,params.$$loadDepth-1); 
+					this.asyncLoadNode(node.nodeId,params.$$preLoadDepth-1); 
 				},this);
-					
-			}
+									
+			}	
+	
+			if(this.expandDepth === true || this.expandDepth === 0 || currentLoadingNode.nodeDepth < this.expandDepth){
 			
-			currentLoadingNode.changeNodeSwitchIcon();
+				infestor.each(currentLoadingNode.childNodes,function(idx,node){ 
+					this.asyncStrict ? this.asyncLoadNode(node.nodeId) : this.asyncLoadNode(node.nodeId,(currentLoadingNode.nodeDepth + 1 == this.expandDepth) && !this.asyncStrict ? 1 : 0);
+				},this);
+				
+			}
+	
+			if(!params.$$preLoadDepth && needPreload)
+				return;	
+						
+			currentLoadingNode.nodeExpand();
 			
 		},this);
 		
@@ -213,8 +222,9 @@ infestor.define('infestor.tree.Tree',{
 				// async expand
 				if(tree.async && this.hasChild && !this.isLoaded){
 									
-					tree.asyncLoadNode(this.nodeId,this.asyncStrict ? 0 : 1);
-					
+					tree.asyncStrict ? tree.asyncLoadNode(this.nodeId) 
+						: tree.asyncLoadNode(this.nodeId , (tree.expandDepth!==0 && tree.expandDepth !==true && (tree.expandDepth === false || this.nodeDepth >= tree.expandDepth)) ? 1 : 0) ;
+									
 					this.isLoaded = true;
 					
 					// fix expand tag
@@ -259,8 +269,7 @@ infestor.define('infestor.tree.Tree',{
 		
 		});
 		
-		row.treeNode.changeNodeIcon();
-		row.treeNode.changeNodeSwitchIcon();
+		row.treeNode.refreshIcon();
 		
 		!isRoot && parentRow.treeNode.addChildNode(row.treeNode);
 		
@@ -337,21 +346,22 @@ infestor.define('infestor.tree.Tree',{
 		}).call(this,this.rootRow.id);
 	
 		// 展开根节点
-		this.rootRow.treeNode.nodeExpand();
-
-	
+		
+		this.expandDepth = this.expandDepth === true ? 0 : this.expandDepth;
+		if(this.expandDepth !== false)
+			this.expandNodeToDepth(this.rootRow.treeNode.nodeId,this.expandDepth);
 	},
 	
 	// 异步加载node
 	// @nodeId 节点id
-	// @depth 加载深度
+	// @depth 加载深度 (用于一次加载多层节点)
 	asyncLoadNode : function(nodeId,depth){
 	
 		var params = {
 					
 			params:{
 			
-				$$loadDepth:depth || 0
+				$$preLoadDepth:depth || 0
 			}
 		};
 
@@ -363,6 +373,9 @@ infestor.define('infestor.tree.Tree',{
 	
 	getNode : function(nodeId){
 	
+		if(!nodeId)
+			return this.rootRow && this.rootRow.treeNode;
+	
 		return this.gridRows[nodeId] && this.gridRows[nodeId].treeNode;
 	
 	},
@@ -372,6 +385,34 @@ infestor.define('infestor.tree.Tree',{
 		var rowData = this.dataSet && this.dataSet.addData(rawData) || rawData;
 		
 		return this.addRow(rowData,visible).treeNode;
+	
+	},
+	
+	expandNode : function(nodeId){
+	
+		var node = this.getNode(nodeId);
+		
+		if(!node) return false;
+		
+		return node.nodeExpand(),true;
+	
+	
+	},
+	
+	// 非异步加载有效
+	expandNodeToDepth : function(nodeId,depth){
+	
+		var node = this.getNode(nodeId);
+		
+		if(!node || !node.hasChild || (depth && node.nodeDepth > depth)) return;
+		
+		node.nodeExpand();
+		
+		infestor.each(node.childNodes,function(idx,node){
+		
+			this.expandNodeToDepth(node.nodeId,depth);
+			
+		},this);
 	
 	},
 	

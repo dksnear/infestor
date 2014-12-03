@@ -125,6 +125,12 @@
 	vertical-align:top;
 	margin: 0 5px;
 	
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow:hidden;
+	
+	max-width:200px;
+	
 }
 
 .infestor-tree-node-focus{

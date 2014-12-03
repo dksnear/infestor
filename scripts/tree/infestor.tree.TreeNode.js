@@ -183,6 +183,13 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	},
 	
+	refreshIcon : function(){
+	
+		this.changeNodeIcon();
+		this.changeNodeSwitchIcon();
+	
+	},
+	
 	changeNodeIcon :function(){
 	
 		var cls = '';
