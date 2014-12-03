@@ -918,6 +918,7 @@ infestor.define('infestor.Element', {
 	autoPosition : function (target, pos, offset, mode, strict) {
 
 		var css = {
+		
 				position : mode || 'fixed',
 				top : 'auto',
 				left : 'auto',

@@ -49,13 +49,23 @@ infestor.define('infestor.tree.DataSet',{
 	
 	setData : function(id,name,value){
 	
-		var rowData = this.searchData('$nodeId',id);
+		var rowData = this.searchData('$nodeId',id),newData={};
 		
 		if(infestor.isNull(rowData)) return false;
 		
 		if(rowData.$delete) return false;
 		
-		rowData[name] = value;
+		if(infestor.isString(name))
+			newData[name] = value;
+		else newData = infestor.append(newData,name);
+		
+		infestor.each(newData,function(name,value){
+		
+			if(!rowData.hasOwnProperty(name)) return true;	
+			rowData[name] = value;
+			rowData.rawData[this.modelMap[name]] = value;
+		
+		},this);
 		
 		if(!rowData.$add)
 			rowData.$update = true;
@@ -106,31 +116,31 @@ infestor.define('infestor.tree.DataSet',{
 	},
 	
 	// 按照数据模型格式化一个数据行
-	mapData : function(rowData) {
+	mapData : function(rawData,strict) {
 		
-		var set = [],o = {
+		var set = [],rowData = strict ? {} : {
 		
-			rawData : rowData
+			rawData : rawData
 		
 		};
 	
-		if(infestor.isArray(rowData))
-			return infestor.each(rowData,function(idx,rowData){
+		if(infestor.isArray(rawData))
+			return infestor.each(rawData,function(idx,rawData){
 				
-				set.push(this.mapData(rowData));
+				set.push(this.mapData(rawData));
 			
 			},this),set;
 			
 		this.reverseModelMap = this.reverseModeMap || infestor.kvSwap(this.modelMap);
 			
-		return infestor.each(rowData,function(name,data){
+		return infestor.each(rawData,function(name,data){
 		
 			if(this.reverseModelMap.hasOwnProperty(name))
-				return o[this.reverseModelMap[name]] = data,true;
+				return rowData[this.reverseModelMap[name]] = data,true;
 			
-			o[name] = data;
+			rowData[name] = data;
 		
-		},this),o;
+		},this),rowData;
 	
 	},
 	

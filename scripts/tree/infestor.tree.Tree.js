@@ -4,7 +4,13 @@ infestor.define('infestor.tree.Tree',{
 	
 	extend : 'infestor.grid.Grid',
 	
-	uses : ['infestor.tree.DataSet','infestor.tree.TreeColumn'],
+	uses : ['infestor.tree.DataSet','infestor.tree.TreeColumn','infestor.Tip'],
+
+	cssUses : 'infestor.Grid',
+	
+	cssClsNodeEditor : 'infestor-tree-node-editor',
+	cssClsNodeEditorItem : 'infestor-tree-node-editor-item',
+	cssClsNodeEditorItemInput : 'infestor-tree-node-editor-item-input',
 	
 	dataSetClsName : 'infestor.tree.DataSet',
 	
@@ -204,8 +210,7 @@ infestor.define('infestor.tree.Tree',{
 		
 			nodeIconClick : function(icon,e,node){
 			
-				tree.activeNode && tree.activeNode.blur();			
-				tree.activeNode = node.focus();
+				tree.activeNode(node.nodeId);
 				
 				tree.emit('nodeIconClick',[icon,e,node,tree]);
 			
@@ -352,6 +357,120 @@ infestor.define('infestor.tree.Tree',{
 			this.expandNodeToDepth(this.rootRow.treeNode.nodeId,this.expandDepth);
 	},
 	
+	createNodeEditor : function() {
+	
+		var tree = this;
+	
+		this.nodeEditor = this.nodeEditor || infestor.create('infestor.Tip',{
+		
+			hidden:true,
+			hideWithResize:true,
+			hideWithBlur:true,
+			initEvents:function(){
+			
+				this.on('afterhide',function(){
+				
+					tree.emit('nodeEditorAfterHide',this);
+					tree.hideMask();
+				
+				});
+				
+				this.getItem('node-editor').getItem('text-in').element.on('keydown',function(e){
+				
+					if(e.keyCode == infestor.keyCode.enter){
+						
+						tree.emit('nodeEditorBtnConfirmClick',this);
+						tree.hideMask();
+						this.hide();
+					}
+					
+					if(e.keyCode == infestor.keyCode.esc){
+						
+						tree.emit('nodeEditorBtnCancelClick',this);
+						tree.hideMask();
+						this.hide();
+					}
+		
+				},this);
+			
+				this.delegate(this.getItem('node-editor'),'click',true,function(inst,e){
+				
+					if(!inst || !inst.element) return;
+					
+					switch(inst.name){
+					
+						case 'btn-confirm':
+							tree.emit('nodeEditorBtnConfirmClick',this);
+							tree.hideMask();
+							this.hide();
+							break;
+						case 'btn-cancel':
+							tree.emit('nodeEditorBtnCancelClick',this);
+							tree.hideMask();
+							this.hide();
+							break;
+						default:
+							break;
+					
+					}
+					
+				
+				},this,true);
+			},
+			items:{
+			
+				name:'node-editor',
+				cssClsElement:this.cssClsNodeEditor,
+				items:[{
+				
+					name:'text-in',
+					cssClsElement:this.cssClsNodeEditorItem + ' ' + this.cssClsNodeEditorItemInput,
+					tagName:'input'
+				
+				},{
+				
+					name:'btn-confirm',
+					cssClsElement:this.cssClsNodeEditorItem,
+					text:'确定'
+				
+				},{
+				
+					name:'btn-cancel',
+					cssClsElement:this.cssClsNodeEditorItem,
+					text:'取消'
+				}]
+			
+			}
+		
+		}).renderTo();
+		
+		return this;
+	
+	},
+	
+	showNodeEditor : function(nodeId){
+	
+		var node = this.getNode(nodeId),text,input;
+		
+		if(!node) return false;
+		
+		!this.nodeEditor && this.createNodeEditor();
+	
+		this.showMask();
+		
+		text = node.nodeTextCell.text;
+		input = this.nodeEditor.getItem('node-editor').getItem('text-in');
+
+		input.element.val(text);
+		input.element.setSelectionRange(0,text.length);
+		
+		this.nodeEditor.autoPosition(node.nodeTextCell,'bottom','13');
+		this.nodeEditor.show(true);
+			
+		return true;
+	
+	},
+	
 	// 异步加载node
 	// @nodeId 节点id
 	// @depth 加载深度 (用于一次加载多层节点)
@@ -371,6 +490,19 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
+	activeNode : function(nodeId){
+	
+		var node = this.getNode(nodeId);
+		
+		if(!node)
+			return null;
+	
+		this.activedNode && this.activedNode.blur();			
+		this.activedNode = node.focus();
+		
+		return node;
+	},
+	
 	getNode : function(nodeId){
 	
 		if(!nodeId)
@@ -388,6 +520,31 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
+	updateNode : function(nodeId,rawData){
+	
+		var rowData,node = this.getNode(nodeId);
+	
+		if(!this.dataSet || !node) return false;
+		
+		rowData = this.dataSet.mapData(rawData,true);	
+		this.dataSet.setData(nodeId,rowData);
+		
+		if(rowData.$text)
+			node.setText(rowData.$text);
+	
+		return node;
+		
+	},
+	
+	deleteNode : function(nodeId){
+	
+		if(arguments.length < 1)
+			nodeId = this.activedNode && this.activedNode.nodeId;
+	
+		return nodeId && this.removeRow(nodeId);
+	
+	},
+	
 	expandNode : function(nodeId){
 	
 		var node = this.getNode(nodeId);
@@ -399,12 +556,14 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
-	// 非异步加载有效
+	// 展开一个节点到根节点的@depth深度
+	// @depth 为0则展开到根节点的最大深度
+	// 非异步加载有效(async=false)
 	expandNodeToDepth : function(nodeId,depth){
 	
 		var node = this.getNode(nodeId);
 		
-		if(!node || !node.hasChild || (depth && node.nodeDepth > depth)) return;
+		if(this.async || !node || !node.hasChild || (depth && node.nodeDepth > depth)) return;
 		
 		node.nodeExpand();
 		
@@ -413,15 +572,6 @@ infestor.define('infestor.tree.Tree',{
 			this.expandNodeToDepth(node.nodeId,depth);
 			
 		},this);
-	
-	},
-	
-	deleteNode : function(nodeId){
-	
-		if(arguments.length < 1)
-			nodeId = this.activeNode && this.activeNode.nodeId;
-	
-		return nodeId && this.removeRow(nodeId);
 	
 	},
 	

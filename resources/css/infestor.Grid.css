@@ -133,6 +133,27 @@
 	
 }
 
+.infestor-tree-node-editor{
+
+
+}
+
+.infestor-tree-node-editor-item{
+
+	display:inline;
+	margin:0 2px;
+	cursor:pointer;
+	text-decoration:underline;
+	
+}
+
+.infestor-tree-node-editor-item-input{
+
+	width:100px;
+	border:0;
+	cursor:auto;
+}
+
 .infestor-tree-node-focus{
 
 	background-image:url(../images/accept.png);

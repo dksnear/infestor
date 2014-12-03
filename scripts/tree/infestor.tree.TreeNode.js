@@ -318,7 +318,7 @@ infestor.define('infestor.tree.TreeNode',{
 		
 		if(!node) return false;
 		
-		if(node.isBranch){
+		if(node.hasChild){
 		
 			len = node.childNodes.length;
 			while(len){
