@@ -25,7 +25,8 @@ infestor.namespace('infestor.request', {
 			dataType = opts.dataType || 'json',
 			scope = opts.scope || window,
 			jsonpCallbackParamName = opts.jsonpCallbackParamName || 'callback',
-			jsonpCallbackFnName = opts.jsonpCallbackFnName || infestor.$$libName + '.request.$jsonp',
+			jsonpCallbackFnName = infestor.$$libName + '.request.$jsonp.set',
+			jsonpThread = null,
 			script = null,
 			request = this,
 			timeout = opts.timeout || this.settings.timeout,
@@ -56,7 +57,10 @@ infestor.namespace('infestor.request', {
 		(infestor.xdebug || params.$xdebug) && infestor.append(params,{ XDEBUG_SESSION_START:1 });
 		
 		// for jsonp
-		(method == 'jsonp') && (params[jsonpCallbackParamName] = jsonpCallbackFnName);
+		if(method == 'jsonp') {
+			jsonpThread = request.$jsonp.start();
+			params[jsonpCallbackParamName] = jsonpCallbackFnName + '*' + jsonpThread;
+		};
 		
 		// params obj to params string
 		params = infestor.param(params);
@@ -68,13 +72,23 @@ infestor.namespace('infestor.request', {
 			
 		}
 		
+		timeout && (timeoutId = setTimeout(function(){
+		
+			error && error.call(scope,{ timeout:true });
+			complete && complete.call(scope,false,{ timeout:true });
+			
+			success = null;
+			error = null;
+			complete = null;
+		
+		},timeout));
+		
 		if(method == 'jsonp'){
 		
 			script = infestor.loadScript(url, function () {
 
 				timeoutId && clearTimeout(timeoutId);
-				success && success.call(scope, request.$data);
-				request.$data = null;
+				success && success.call(scope, request.$jsonp.get(jsonpThread));
 				script.parentNode.removeChild(script);			
 				complete && complete.call(scope,true);
 					
@@ -90,17 +104,6 @@ infestor.namespace('infestor.request', {
 			return true;
 		
 		}
-		
-		timeout && (timeoutId = setTimeout(function(){
-		
-			error && error.call(scope,{ timeout:true });
-			complete && complete.call(scope,false,{ timeout:true });
-			
-			success = null;
-			error = null;
-			complete = null;
-		
-		},timeout));
 		
 		xhr = window.ActiveXObject ? activeXhr() : standardXhr();
 
@@ -173,9 +176,29 @@ infestor.namespace('infestor.request', {
 		});
 	},
 
-	$jsonp : function (data) {
-
-		this.$data = data;
+	$jsonp : {
+	
+		currentThread : 1,
+		threads : {},
+		start : function(){
+			
+			return this.currentThread++;
+			
+		},
+		// server call
+		set : function(data,thread){
+			
+			this.threads[thread] = data;
+		},
+		// client call
+		get : function(thread){
+		
+			var data = this.threads[thread] || null;
+			
+			delete this.threads[thread];
+			
+			return data;
+		}
 	}
-
+	
 });
