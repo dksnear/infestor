@@ -28,7 +28,7 @@ infestor.define('infestor.Panel', {
 	body : true,
 	
 	// 关闭类型(hide|destory)
-	closeType : 'hide',
+	closeType : 'destory',
 	closable:false,
 	maxable:false,
 	miniable:false,

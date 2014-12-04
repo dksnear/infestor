@@ -24,11 +24,6 @@ infestor.namespace('infestor.cross',{
 	
 	},
 	
-	alert:function(){
-	
-	
-	},
-	
 	choice : function(msg,aye,nay,parent,scope){
 	
 		var args = arguments;
@@ -51,8 +46,13 @@ infestor.namespace('infestor.cross',{
 	
 	},
 	
-	prompt:function(){
+	prompt:function(msg){
 	
+		infestor.mgr.require('infestor.Window',function(){
+		
+			infestor.Window.alert(msg).show().initAutoHide(30);
+		
+		});
 	
 	}
 
