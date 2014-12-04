@@ -180,9 +180,33 @@ infestor.define('infestor.DataSet', {
 
 	},
 	
-	hasData : function(){
+	hasData : function(filter){
 	
-		return !!this.count;
+		var matched = true;
+	
+		if(!this.count)
+			return false;
+		
+		if(!filter && this.count)
+			return true;
+	
+		infestor.each(this.data,function(idx,row){
+
+			matched = true;
+		
+			infestor.each(filter,function(name,value){
+			
+				if(row[name]!==value)
+					return matched = false;
+						
+			});
+			
+			if(matched) return false;
+		
+		});
+		
+		return matched;
+		
 	},
 	
 	addData : function(rowData){

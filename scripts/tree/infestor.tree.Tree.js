@@ -80,6 +80,7 @@ infestor.define('infestor.tree.Tree',{
 			
 				infestor.each(currentLoadingNode.childNodes,function(idx,node){ 
 					this.asyncStrict ? this.asyncLoadNode(node.nodeId) : this.asyncLoadNode(node.nodeId,(currentLoadingNode.nodeDepth + 1 == this.expandDepth) && !this.asyncStrict ? 1 : 0);
+					node.isLoaded = true;
 				},this);
 				
 			}
@@ -229,7 +230,7 @@ infestor.define('infestor.tree.Tree',{
 									
 					tree.asyncStrict ? tree.asyncLoadNode(this.nodeId) 
 						: tree.asyncLoadNode(this.nodeId , (tree.expandDepth!==0 && tree.expandDepth !==true && (tree.expandDepth === false || this.nodeDepth >= tree.expandDepth)) ? 1 : 0) ;
-									
+					
 					this.isLoaded = true;
 					
 					// fix expand tag
@@ -476,14 +477,17 @@ infestor.define('infestor.tree.Tree',{
 	// @depth 加载深度 (用于一次加载多层节点)
 	asyncLoadNode : function(nodeId,depth){
 	
-		var params = {
+		// var node = this.getNode(nodeId),
+		var	params = {
 					
-			params:{
+			params : {
 			
 				$$preLoadDepth:depth || 0
 			}
 		};
-
+		
+		// node.isLoaded = true;
+	
 		params.params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId'] = nodeId;
 		
 		this.dataSet.load(params);
@@ -538,8 +542,12 @@ infestor.define('infestor.tree.Tree',{
 	
 	deleteNode : function(nodeId){
 	
-		if(arguments.length < 1)
+		if(arguments.length < 1){
+		
 			nodeId = this.activedNode && this.activedNode.nodeId;
+			this.activedNode = this.activedNode && this.activedNode.previousSiblingNode || this.activedNode.parentNode || null;
+			this.activedNode && this.activedNode.focus();
+		}
 	
 		return nodeId && this.removeRow(nodeId);
 	

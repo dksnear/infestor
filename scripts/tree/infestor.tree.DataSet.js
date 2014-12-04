@@ -36,14 +36,32 @@ infestor.define('infestor.tree.DataSet',{
 	
 	initData : function(data){
 	
+		if(!this.data || !infestor.isArray(this.data))
+			this.data = [];
+	
 		if(!data)	
-			return this.data = [];
+			return this.data;
 	
 		if(this.type =='array')
-			return this.data = this.mapData(data);
+			data = this.mapData(data);
 		
 		if(this.type == 'tree')
-			return this.data = this.object2array(data,true);
+			data = this.object2array(data,true);
+		
+		if(this.data.length < 1)
+			this.data = data;
+		else this.data = this.data.concat(data);
+		
+		return this.data;
+	
+	},
+	
+	hasData : function(filter,map){
+	
+		if(!map || !filter)
+			return this.callParent(filter);
+		
+		return this.callParent(this.mapData(filter,true));
 	
 	},
 	
