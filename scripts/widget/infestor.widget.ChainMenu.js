@@ -2,7 +2,7 @@
 
 infestor.define('infestor.widget.ChainMenu', {
 
-	alias : 'chainMenu',
+	alias : 'chainmenu',
 
 	extend : 'infestor.Element',
 

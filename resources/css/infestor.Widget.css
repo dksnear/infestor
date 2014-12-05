@@ -69,7 +69,6 @@
 
 }
 
-
 .infestor-widget-chain-menu-horizon-line div{
 
 	background-color: #1c62a3;
@@ -94,3 +93,82 @@
 
 	background-image: url(../images/chain-node-hover.png);
 }
+
+/* circular-menu */
+
+.infestor-widget-circular-menu{
+
+	position:fixed;
+	top:50px;
+	left:50px;
+	
+	height:35px;
+	width:35px;
+	
+	background-color:blue;
+	
+}
+
+.infestor-widget-circular-menu-container{
+
+	position:absolute;
+	
+	top:-35px;
+	left:-35px;
+
+	height:105px;
+	width:105px;
+	
+	background-color:transparent;
+	outline:1px solid green;
+
+}
+
+.infestor-widget-circular-menu-item{
+
+	height:35px;
+	width:35px;
+	background-color:transparent;
+	outline:1px solid orange;
+
+}
+
+.infestor-widget-circular-menu-item-center{
+
+}
+
+.infestor-widget-circular-menu-item-north{
+
+}
+
+.infestor-widget-circular-menu-item-south{
+
+}
+
+.infestor-widget-circular-menu-item-west{
+
+}
+
+.infestor-widget-circular-menu-item-east{
+
+}
+
+.infestor-widget-circular-menu-item-nw{
+
+}
+
+.infestor-widget-circular-menu-item-ne{
+
+}
+
+.infestor-widget-circular-menu-item-sw{
+
+}
+
+.infestor-widget-circular-menu-item-se{
+
+}
+
+
+
+
