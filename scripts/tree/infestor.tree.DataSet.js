@@ -52,6 +52,8 @@ infestor.define('infestor.tree.DataSet',{
 			this.data = data;
 		else this.data = this.data.concat(data);
 		
+		this.count = this.data.length;
+		
 		return this.data;
 	
 	},
@@ -95,9 +97,11 @@ infestor.define('infestor.tree.DataSet',{
 	
 		if(!rowData) return null;
 		
+		rowData = this.callParent(rowData);
+		
 		rowData.$add = true;
 		
-		return this.callParent(rowData);
+		return rowData;
 	
 	},
 	
@@ -115,6 +119,23 @@ infestor.define('infestor.tree.DataSet',{
 		
 		return rowData.$delete = true,rowData;
 		
+	},
+	
+	clearDataTag : function(){
+	
+		infestor.each(this.data,function(idx,row){
+		
+			if(row.$add)
+				delete row.$add;
+			if(row.$update)
+				delete row.$update;
+			if(row.$delete){
+				delete row.$delete;
+				row.$unusable = true;
+			}
+		
+		});
+	
 	},
 	
 	getSubmitParams : function(){

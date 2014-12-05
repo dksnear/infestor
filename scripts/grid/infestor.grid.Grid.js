@@ -115,6 +115,15 @@ infestor.define('infestor.grid.Grid',{
 	
 	},
 	
+	getRow : function(id){
+	
+		if(arguments.length < 1)
+			return this.gridRows;
+	
+		return this.gridRows && this.gridRows[id];
+	
+	},
+	
 	addRow : function(rowData,id){
 	
 		id = id || this.rowId ++;

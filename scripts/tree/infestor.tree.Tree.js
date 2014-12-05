@@ -516,6 +516,26 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
+	getNodeByDepth : function(depth){
+	
+		var nodes = [];
+		
+		if(!this.rootRow) return nodes;
+		
+		this.rootRow.treeNode.eachChildNodes(function(node){
+		
+			if(node.nodeDepth === depth)
+				nodes.push(node);
+			
+			if(node.nodeDepth > depth)
+				return false;
+		
+		});
+		
+		return nodes;
+	
+	},
+	
 	addNode : function(rawData,visible){
 		
 		var rowData = this.dataSet && this.dataSet.addData(rawData) || rawData;

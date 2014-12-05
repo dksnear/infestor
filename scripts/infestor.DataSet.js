@@ -475,7 +475,7 @@ infestor.define('infestor.DataSet', {
 		config.params = config.params || {};
 		
 		// 设置提交数据参数
-		config.params = infestor.append({},this.getSubmitParams(),config.params);
+		config.params = infestor.append({},config.params,this.getSubmitParams());
 		
 		// 设置自定义参数
 		opts = infestor.append({},opts);	

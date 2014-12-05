@@ -183,6 +183,7 @@ infestor.define('infestor.Window', {
 	cssClsAutoHidePlate :'infestor-window-autohide-plate',
 	boxShadow : true,
 	dock:'center',
+	head:true,
 
 	// 模态窗口(bool)
 	modal : true,
@@ -218,7 +219,7 @@ infestor.define('infestor.Window', {
 				this.hide();
 			}
 		
-			!nonPlate && this.countDownPlate.setText(infestor.stringFormat('{0}将秒后将关闭窗口',time));
+			!nonPlate && this.countDownPlate.setText(infestor.stringFormat('{0}秒后将关闭窗口',time));
 		
 			time--;
 		

@@ -291,8 +291,7 @@ infestor.define('infestor.tree.TreeNode',{
 		
 	
 	},
-	
-	
+
 	// 删除一个节点标识为@nodeId子节点
 	// @nodeId为空则删除最后一个子节点
 	removeChildNode : function(nodeId){
@@ -320,7 +319,7 @@ infestor.define('infestor.tree.TreeNode',{
 		
 		if(!node) return false;
 		
-		if(node.hasChild){
+		if(node.hasChild && node.childNodes){
 		
 			len = node.childNodes.length;
 			while(len){
@@ -377,7 +376,8 @@ infestor.define('infestor.tree.TreeNode',{
 		this.childNodes && this.childNodes.length>0 && infestor.each(this.childNodes,function(idx,node){
 			
 			// 'this' is pnode
-			fn.call(scope,node,this);
+			if(fn.call(scope,node,this) === false)
+				return false;
 			node.eachChildNodes(fn,scope);
 			
 		},this);
@@ -413,8 +413,7 @@ infestor.define('infestor.tree.TreeNode',{
 		this.emit('nodeExpand',this);
 	
 	},
-	
-	
+		
 	nodeCollapse : function(){
 	
 		if(this.isCollapse || !this.hasChild || this.isLoading) return;
