@@ -709,6 +709,32 @@ infestor.define('infestor.Dom', {
 		};
 	},
 
+	// 返回元素位置在以浏览器中心为坐标原点的平面直角坐标系中的所属象限
+	// @return 0:无法判定  1:右上 2:左上 3:左下 4:右下
+	clientQuadrant : function(){
+	
+		var clientWidth = document.documentElement.clientWidth,
+			clientHeight = document.documentElement.clientHeight,
+			offset = this.offset(),
+			y = offset.top + offset.height/2,
+			x = offset.left + offset.width/2;
+			
+		if(x < clientWidth/2 && y < clientHeight/2)
+			return 2;
+		
+		if(x >= clientWidth/2 && y < clientHeight/2)
+			return 1;
+		
+		if(x < clientWidth/2 && y >= clientHeight/2)
+			return 3;
+		
+		if(x >=clientWidth/2 && y >= clientHeight/2)
+			return 4;
+		
+		return 0;
+			
+	},
+	
 	appendTo : function (parent) {
 
 		parent.append(this);

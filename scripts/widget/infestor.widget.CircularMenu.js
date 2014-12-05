@@ -21,6 +21,8 @@ infestor.define('infestor.widget.CircularMenu', {
 	cssClsCMenuItemSouthWest:'infestor-widget-circular-menu-item-sw',
 	cssClsCMenuItemSouthEast:'infestor-widget-circular-menu-item-se',
 	
+	draggable : true,
+	
 	initElement : function(){
 	
 		this.callParent();
@@ -35,15 +37,32 @@ infestor.define('infestor.widget.CircularMenu', {
 		
 		},this,true);
 		
+		// this.delegate(this,'mouseover',true,function(inst,e){
+		
+			// this.circularContainer.show(true);
+		
+		// },this);
+		
+		// this.delegate(this,'mouseout',true,function(inst,e){
+		
+			// this.circularContainer.hide(true);
+		
+		// },this);
+		
 		this.delegate(this.circularContainer,'click',true,function(inst,e){
 		
 			if(!inst || !inst.element || !inst.element.hasClass(this.cssClsCMenuItem))
 				return;
+				
+
 			
 			switch(inst.name){
 			
 				case 'center':
 					this.circularContainer.hide();
+					break;
+				case 'west':
+					alert(this.element.clientQuadrant());
 					break;
 				default:
 					break;
