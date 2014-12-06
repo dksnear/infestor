@@ -728,7 +728,7 @@ infestor.define('infestor.Dom', {
 		if(x < clientWidth/2 && y >= clientHeight/2)
 			return 3;
 		
-		if(x >=clientWidth/2 && y >= clientHeight/2)
+		if(x >= clientWidth/2 && y >= clientHeight/2)
 			return 4;
 		
 		return 0;

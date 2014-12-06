@@ -39,13 +39,13 @@
 
 .infestor-widget-chain-menu{
 
-	width: 35px;
+	width: 36px;
 
 }
 
 .infestor-widget-chain-menu-line{
 
-	width: 35px;
+	width: 36px;
 	height: 23px;
 	text-align: center;
 }
@@ -82,15 +82,17 @@
 
 .infestor-widget-chain-menu-node{
 
+	background-repeat:no-repeat;
 	background-image: url(../images/chain-node.png);
-	height: 35px;
-	width: 35px;
+	height: 36px;
+	width: 36px;
 	cursor: pointer;
 
 }
 
 .infestor-widget-chain-menu-node-hover{
 
+	background-repeat:no-repeat;
 	background-image: url(../images/chain-node-hover.png);
 }
 
@@ -102,9 +104,10 @@
 	top:50px;
 	left:50px;
 	
-	height:35px;
-	width:35px;
+	height:36px;
+	width:36px;
 	
+	background-repeat:no-repeat;
 	background-image: url(../images/chain-node.png);
 }
 
@@ -112,28 +115,30 @@
 
 	position:absolute;
 	
-	top:-35px;
-	left:-35px;
+	top:-36px;
+	left:-36px;
 
-	height:105px;
-	width:105px;
+	height:108px;
+	width:108px;
 	
+	background-repeat:no-repeat;
 	background-color:transparent;
-	/* outline:1px solid green; */
 
 }
 
 .infestor-widget-circular-menu-item{
 
-	height:35px;
-	width:35px;
+	height:36px;
+	width:36px;
 	background-color:transparent;
-	/* outline:1px solid black; */
+	background-repeat:no-repeat;
+	cursor:pointer;
 
 }
 
 .infestor-widget-circular-menu-item-center{
 
+	background-repeat:no-repeat;
 	background-image: url(../images/chain-node-hover.png);
 	
 }

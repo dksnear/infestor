@@ -130,7 +130,7 @@ infestor.define('infestor.Element', {
 	tip:null,
 	
 	// 贴士出现位置 (top|left|bottom|right)
-	tipTrend:'left',
+	tipTrend:'bottom',
 
 	// 元素尺寸属性(#styleFormat|auto)
 
@@ -1143,18 +1143,32 @@ infestor.define('infestor.Element', {
 
 		if (!this.tip)
 			return this;
+			
+		this.tipDisabled = false;
 
 		infestor.mgr.require('infestor.Tip', function () {
+		
+			if(this.$tip) return;
 
 			this.$tip = this.$tip || infestor.Tip.init();
 
 			this.element.on('mouseover', infestor.throttle(function () {
 
-					this.$tip.setText(this.tip);
-					this.$tip.show();
-					this.$tip.autoPosition(this.element, this.tipTrend, 'head');
+				if(this.tipDisabled)
+					return;
+		
+				this.$tip.setText(this.tip);
+				this.$tip.autoPosition(this.element, this.tipTrend, 'head');
+				this.$tip.show(true);
 
-				},150), this);
+			},150), this);
+			
+			this.element.on('click',function(){
+			
+				this.$tip.setText('');
+				this.$tip.hide();
+			
+			},this);
 
 			this.element.on('mouseleave', function () {
 
@@ -1171,6 +1185,7 @@ infestor.define('infestor.Element', {
 
 	disableTip : function () {
 
+		this.tipDisabled = true;
 		return this;
 
 	},

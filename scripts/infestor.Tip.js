@@ -16,6 +16,7 @@ infestor.define('infestor.Tip', {
 				infestor.Tip.globalTip = infestor.create('infestor.Tip',{ 
 				
 					hidden:true,
+					hideWithBlur:true,
 					hideWithResize:true 
 					
 				}).renderTo(infestor.Dom.getBody());
