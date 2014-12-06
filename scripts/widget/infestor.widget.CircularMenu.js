@@ -73,31 +73,31 @@ infestor.define('infestor.widget.CircularMenu', {
 			name:'center',
 			disabled:true
 		
-		},
-		northWest:{
-		
-			name:'north-west',
-			prompt:'north-west-prompt'
-			
-		},
-		northEast:{
-		
-			name:'north-east',
-			prompt:'north-east-prompt'
-			
-		},
-		southWest:{
-		
-			name:'south-west',
-			prompt:'south-west-prompt'
-			
-		},
-		southEast:{
-		
-			name:'south-east',
-			prompt:'south-east-prompt'
-			
 		}
+		// northWest:{
+		
+			// name:'north-west',
+			// prompt:'north-west-prompt'
+			
+		// },
+		// northEast:{
+		
+			// name:'north-east',
+			// prompt:'north-east-prompt'
+			
+		// },
+		// southWest:{
+		
+			// name:'south-west',
+			// prompt:'south-west-prompt'
+			
+		// },
+		// southEast:{
+		
+			// name:'south-east',
+			// prompt:'south-east-prompt'
+			
+		// }
 	
 	},
 	

@@ -108,7 +108,8 @@
 	width:36px;
 	
 	background-repeat:no-repeat;
-	background-image: url(../images/chain-node.png);
+	background-position:-332px -437px;
+	background-image:url('../images/loops.png');
 }
 
 .infestor-widget-circular-menu-container{
@@ -133,54 +134,64 @@
 	background-color:transparent;
 	background-repeat:no-repeat;
 	cursor:pointer;
+	
+/* 	outline: 1px solid orange; */
+	background-image:url('../images/loops.png');
 
 }
 
 .infestor-widget-circular-menu-item-center{
 
 	background-repeat:no-repeat;
-	background-image: url(../images/chain-node-hover.png);
-	
+	background-position:-382px -437px;
 }
 
 .infestor-widget-circular-menu-item-north{
 
-	background-color: purple;
+	background-position:-32px -37px;
+
 }
 
 .infestor-widget-circular-menu-item-south{
 
-	background-color: red;
+	background-position:-82px -37px;
+
 }
 
 .infestor-widget-circular-menu-item-west{
 
-	background-color: blue;
+	background-position:-132px -37px;
+
 }
 
 .infestor-widget-circular-menu-item-east{
 
-	background-color: orange;
+	background-position:-182px -37px;
+
 }
 
 .infestor-widget-circular-menu-item-nw{
 
-	background-color: aqua;
+	background-position:-232px -37px;
+
 }
 
 .infestor-widget-circular-menu-item-ne{
 
-	background-color: yellow;
+	background-position:-282px -37px;
+
 }
 
 .infestor-widget-circular-menu-item-sw{
+	
+	background-position:-332px -37px;
 
-	background-color: green;
 }
 
 .infestor-widget-circular-menu-item-se{
 
-	background-color: gray;
+	background-position:-382px -37px;
+
 }
 
 
