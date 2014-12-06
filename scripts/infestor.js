@@ -1019,8 +1019,14 @@ infestor js
 		},
 
 		clearSelection : function () {
-
-			window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+		
+			if(window.getSelection)
+				return window.getSelection().removeAllRanges();
+			
+			if(global.isFunction(document.selection.empty))
+				document.selection.empty();
+			
+			// window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
 		}
 
 	});

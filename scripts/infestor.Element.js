@@ -1158,7 +1158,7 @@ infestor.define('infestor.Element', {
 					return;
 		
 				this.$tip.setText(this.tip);
-				this.$tip.autoPosition(this.element, this.tipTrend, 'head');
+				this.$tip.autoPosition(this.element, this.tipTrend, '14');
 				this.$tip.show(true);
 
 			},150), this);

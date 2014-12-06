@@ -165,14 +165,21 @@
 	width:30px;
 	height:30px;
 	margin-left:1px;
+	vertical-align:middle;
 	
 
 }
 
-.infestor-candidate-captcha-input:focus,.infestor-candidate-captcha-input-cell:hover{
+.infestor-candidate-captcha-input:focus{
 
-	border-color: #4d90fe;
-    outline: none;
+	outline: none;
+
+}
+
+.infestor-candidate-captcha-input-cell:hover{
+
+	outline: 1px solid #4d90fe;
+    
 	
 }
 
@@ -241,6 +248,12 @@
 	margin:10px;
 	border:1px solid #bfbfbf;
 	cursor:pointer;
+
+}
+
+.infestor-candidate-captcha-control-panel-body-cell:hover{
+
+	border:1px solid #4d90fe;
 
 }
 

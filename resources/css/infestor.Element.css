@@ -637,7 +637,7 @@ input:focus{
 
 }
 
-.infestor-checkbox:focus{
+.infestor-checkbox:hover{
 
 	border-color: #4d90fe;
     outline: none;

@@ -104,23 +104,23 @@
 	top:50px;
 	left:50px;
 	
-	height:36px;
-	width:36px;
+	height:44px;
+	width:44px;
 	
 	background-repeat:no-repeat;
-	background-position:-332px -437px;
-	background-image:url('../images/loops.png');
+	background-position:-328px -432px;
+	background-image:url('../images/def-suit-32.png');
 }
 
 .infestor-widget-circular-menu-container{
 
 	position:absolute;
 	
-	top:-36px;
-	left:-36px;
+	top:-44px;
+	left:-44px;
 
-	height:108px;
-	width:108px;
+	height:132px;
+	width:132px;
 	
 	background-repeat:no-repeat;
 	background-color:transparent;
@@ -129,68 +129,83 @@
 
 .infestor-widget-circular-menu-item{
 
-	height:36px;
-	width:36px;
-	background-color:transparent;
-	background-repeat:no-repeat;
+	height:44px;
+	width:44px;
+	
 	cursor:pointer;
 	
-/* 	outline: 1px solid orange; */
-	background-image:url('../images/loops.png');
+	background-color:transparent;
+	background-repeat:no-repeat;
+	background-image:url('../images/def-suit-32.png');
+
+}
+
+.infestor-widget-circular-menu-item:hover,
+.infestor-widget-circular-menu:hover,
+.infestor-widget-circular-menu-hover,
+.infestor-widget-circular-menu-item-hover{
+
+	background-image:url('../images/def-suit-hover-32.png');
+
+}
+
+.infestor-widget-circular-menu-item-hidden,
+.infestor-widget-circular-menu-item-hidden:hover{
+
+	background-image:none;
 
 }
 
 .infestor-widget-circular-menu-item-center{
 
-	background-repeat:no-repeat;
-	background-position:-382px -437px;
+	background-position:-378px -432px;
 }
 
 .infestor-widget-circular-menu-item-north{
 
-	background-position:-32px -37px;
+	background-position:-28px -32px;
 
 }
 
 .infestor-widget-circular-menu-item-south{
 
-	background-position:-82px -37px;
+	background-position:-78px -32px;
 
 }
 
 .infestor-widget-circular-menu-item-west{
 
-	background-position:-132px -37px;
+	background-position:-128px -32px;
 
 }
 
 .infestor-widget-circular-menu-item-east{
 
-	background-position:-182px -37px;
+	background-position:-178px -32px;
 
 }
 
 .infestor-widget-circular-menu-item-nw{
 
-	background-position:-232px -37px;
+	background-position:-228px -32px;
 
 }
 
 .infestor-widget-circular-menu-item-ne{
 
-	background-position:-282px -37px;
+	background-position:-278px -32px;
 
 }
 
 .infestor-widget-circular-menu-item-sw{
 	
-	background-position:-332px -37px;
+	background-position:-328px -32px;
 
 }
 
 .infestor-widget-circular-menu-item-se{
 
-	background-position:-382px -37px;
+	background-position:-378px -32px;
 
 }
 

@@ -11,6 +11,7 @@ infestor.define('infestor.widget.CircularMenu', {
 	cssClsElement : 'infestor-widget-circular-menu',
 	cssClsCMenuContainer :'infestor-widget-circular-menu-container',
 	cssClsCMenuItem:'infestor-widget-circular-menu-item',
+	cssClsCMenuItemHidden:'infestor-widget-circular-menu-item-hidden',
 	
 	cssClsCMenuItems:{
 	
@@ -73,31 +74,31 @@ infestor.define('infestor.widget.CircularMenu', {
 			name:'center',
 			disabled:true
 		
+		},
+		northWest:{
+		
+			name:'north-west',
+			prompt:'north-west-prompt'
+			
+		},
+		northEast:{
+		
+			name:'north-east',
+			prompt:'north-east-prompt'
+			
+		},
+		southWest:{
+		
+			name:'south-west',
+			prompt:'south-west-prompt'
+			
+		},
+		southEast:{
+		
+			name:'south-east',
+			prompt:'south-east-prompt'
+			
 		}
-		// northWest:{
-		
-			// name:'north-west',
-			// prompt:'north-west-prompt'
-			
-		// },
-		// northEast:{
-		
-			// name:'north-east',
-			// prompt:'north-east-prompt'
-			
-		// },
-		// southWest:{
-		
-			// name:'south-west',
-			// prompt:'south-west-prompt'
-			
-		// },
-		// southEast:{
-		
-			// name:'south-east',
-			// prompt:'south-east-prompt'
-			
-		// }
 	
 	},
 	
@@ -163,7 +164,7 @@ infestor.define('infestor.widget.CircularMenu', {
 			items:infestor.map(['northWest','north','northEast','west','center','east','southWest','south','southEast'],function(idx,name){
 			
 				var config = this.btnConfig[name],
-					cls = config ? (config.cssCls || this.cssClsCMenuItems[name]) : '';
+					cls = config ? (config.cssCls || this.cssClsCMenuItems[name]) : this.cssClsCMenuItemHidden;
 				
 				config && (config.cssCls = cls);
 				
@@ -171,6 +172,7 @@ infestor.define('infestor.widget.CircularMenu', {
 				
 					cssClsElement:[this.cssClsElementInlineBlock,this.cssClsCMenuItem,cls].join(' '),
 					name:name,
+					// hidden:!config,
 					tip:config && config.prompt || false,
 					floatData : config || false
 					
@@ -199,7 +201,7 @@ infestor.define('infestor.widget.CircularMenu', {
 		
 		}
 	
-		if(!si || si.name == mi.name || !mi.floatData || !si.floatData || mi.floatData.disabled || si.floatData.disabled)
+		if(!mi || !si || si.name == mi.name || !mi.floatData || !si.floatData || mi.floatData.disabled || si.floatData.disabled)
 			return mi;
 		
 		mi.element.removeClass(mi.floatData.cssCls);
