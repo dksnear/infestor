@@ -89,6 +89,14 @@ infestor.define('infestor.Element', {
 	cssClsElementPositionNorthWest : 'infestor-element-position-north-west',
 	cssClsResizableTrigger : 'infestor-element-resizable-trigger',
 	cssClsDraggableTrigger : 'infestor-element-draggable-trigger',
+	cssClsIcon16 : 'infestor-icon-16',
+	cssClsIconHover16 : 'infestor-icon-hover-16',
+	cssClsIconFocus16 : 'infestor-icon-focus-16',
+	cssClsIconDisabled16 : 'infestor-icon-disabled-16',
+	cssClsIcon32 : 'infestor-icon-32',
+	cssClsIconHover32 : 'infestor-icon-hover-32',
+	cssClsIconFocus32 : 'infestor-icon-focus-32',
+	cssClsIconDisabled32 : 'infestor-icon-disabled-32',
 
 	// 控件元素的容器接口(infestor.Dom)
 	element : null,

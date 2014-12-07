@@ -1,14 +1,3 @@
-/*
- 
-x(25)14
-y(40)16 
-
-(function(x,y){ return { x:14+(x-1)*25,y:16+(y-1)*40 };  })(x,y);
-(function(x,y){ return  ['-',(14+(x-1)*25),'px,-',(16+(y-1)*40),'px'].join('');  })(x,y);
-
- */
- 
- 
 *{
 	margin: 0;
 	padding: 0;
@@ -258,6 +247,82 @@ input:focus{
 	word-wrap: break-word;
 	white-space: normal;
 
+}
+
+
+/* icons */
+
+/*
+	adapt:22(16);
+ 
+	x(25)14
+	y(40)16 
+
+	(function(x,y){ return { x:14+(x-1)*25,y:16+(y-1)*40 };  })(x,y);
+	(function(x,y){ return  ['-',(14+(x-1)*25),'px,-',(16+(y-1)*40),'px'].join('');  })(x,y);
+
+ */
+
+.infestor-icon-16{
+
+	background-image:url('../images/def-suit-16.png');
+
+}
+
+.infestor-icon-16:hover,
+.infestor-icon-hover-16{
+
+	background-image:url('../images/def-suit-hover-16.png');
+
+}
+
+.infestor-icon-16:focus,
+.infestor-icon-focus-16{
+
+	background-image:url('../images/def-suit-focus-16.png');
+}
+
+.infestor-icon-16:disabled,
+.infestor-icon-disabed-16{
+
+	background-image:url('../images/def-suit-disabled-16.png');
+}
+
+/*
+
+	adapt:44(32);
+ 
+	x(25*2)14*2
+	y(40*2)16*2 
+
+	(function(x,y){ return { x:14*2+(x-1)*25*2,y:16*2+(y-1)*40*2 };  })(x,y);
+	(function(x,y){ return  ['-',(14*2+(x-1)*25*2),'px,-',(16*2+(y-1)*40*2),'px'].join('');  })(x,y);
+
+ */
+
+.infestor-icon-32{
+
+	background-image:url('../images/def-suit-32.png');
+
+}
+
+.infestor-icon-32:hover,
+.infestor-icon-hover-32{
+
+	background-image:url('../images/def-suit-hover-32.png');
+
+}
+
+.infestor-icon-32:focus,
+.infestor-icon-focus-32{
+
+	background-image:url('../images/def-suit-focus-32.png');
+}
+
+.infestor-icon-32:disabled,
+.infestor-icon-disabed-32{
+
+	background-image:url('../images/def-suit-disabled-32.png');
 }
 
 /* tip */
