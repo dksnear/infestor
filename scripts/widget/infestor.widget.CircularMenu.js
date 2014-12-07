@@ -172,7 +172,8 @@ infestor.define('infestor.widget.CircularMenu', {
 				
 					cssClsElement:[this.cssClsElementInlineBlock,this.cssClsCMenuItem,cls].join(' '),
 					name:name,
-					// hidden:!config,
+					tipTrend:'bottom',
+					tipDrift:'14',
 					tip:config && config.prompt || false,
 					floatData : config || false
 					

@@ -124,6 +124,14 @@ infestor.define('infestor.Tip', {
 			}
 
 		};
+		
+		this.elementArrow.css({
+		
+			top:'',
+			bottom:'',
+			right : '',
+			left :''
+		});
 
 		this.currentCls && this.elementArrow.removeClass(this.currentCls.triangle) && this.elementArrowMask && this.elementArrowMask.removeClass(this.currentCls.mask);
 		this.currentCls = this.posClsMap[this.arrowPosition];

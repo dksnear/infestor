@@ -75,7 +75,9 @@ infestor.define('infestor.widget.ChainMenu', {
 					alias : 'element',
 					cssClsElement : this.cssClsNode +' ' + (opts.cssClsTarget || ''),
 					targetName:opts.name,
-					tip: opts.tip
+					tip: opts.tip,
+					tipTrend:'left',
+					tipDrift:'8'
 				}]
 
 			},opts,'tip',null,true));
@@ -97,7 +99,9 @@ infestor.define('infestor.widget.ChainMenu', {
 				alias : 'element',
 				cssClsElement : this.cssClsNode +' '+ (opts.cssClsTarget || ''),
 				targetName:opts.name,
-				tip: opts.tip
+				tip: opts.tip,
+				tipTrend:'left',
+				tipDrift:'8'
 			}]
 
 		},opts,'tip',null,true));
@@ -128,7 +132,9 @@ infestor.define('infestor.widget.ChainMenu', {
 								alias:'element',
 								cssClsElement:this.cssClsNode +' '+ (opts.cssClsTarget || ''),
 								targetName:opts.name,
-								tip:opts.Tip
+								tip:opts.Tip,
+								tipTrend:'bottom',
+								tipDrift:'8'
 							
 							}]
 						
@@ -176,7 +182,9 @@ infestor.define('infestor.widget.ChainMenu', {
 							alias:'element',
 							cssClsElement:this.cssClsNode +' '+ (opts.cssClsTarget || ''),
 							targetName:opts.name,
-							tip:opts.Tip
+							tip:opts.Tip,
+							tipTrend:'bottom',
+							tipDrift:'8'
 						
 						}]
 					

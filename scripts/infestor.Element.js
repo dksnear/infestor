@@ -130,7 +130,10 @@ infestor.define('infestor.Element', {
 	tip:null,
 	
 	// 贴士出现位置 (top|left|bottom|right)
-	tipTrend:'bottom',
+	tipTrend:'left',
+	
+	// 控制贴士指针位置
+	tipDrift:'head',
 
 	// 元素尺寸属性(#styleFormat|auto)
 
@@ -1158,7 +1161,7 @@ infestor.define('infestor.Element', {
 					return;
 		
 				this.$tip.setText(this.tip);
-				this.$tip.autoPosition(this.element, this.tipTrend, '14');
+				this.$tip.autoPosition(this.element, this.tipTrend, this.tipDrift);
 				this.$tip.show(true);
 
 			},150), this);
