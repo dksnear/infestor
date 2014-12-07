@@ -178,7 +178,8 @@
 
 .infestor-candidate-captcha-input-cell:hover{
 
-	outline: 1px solid #4d90fe;
+	/* outline: 1px solid #4d90fe; */
+	outline: 1px solid #ffa500;
     
 	
 }
@@ -253,7 +254,8 @@
 
 .infestor-candidate-captcha-control-panel-body-cell:hover{
 
-	border:1px solid #4d90fe;
+	/* border:1px solid #4d90fe; */
+	border:1px solid #ffa500;
 
 }
 

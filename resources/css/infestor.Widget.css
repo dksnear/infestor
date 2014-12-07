@@ -148,6 +148,13 @@
 
 }
 
+.infestor-widget-circular-menu-item:focus,
+.infestor-widget-circular-menu-item-focus{
+
+	background-image:url('../images/def-suit-focus-32.png');
+
+}
+
 .infestor-widget-circular-menu-item-pos-center{
 
 	top:0;
@@ -209,6 +216,7 @@
 	right:-36px;
 }
 
+/* xb:-28 yb:-32  xs:50 ys:80 */
 
 .infestor-widget-circular-menu-item-icon-center{
 

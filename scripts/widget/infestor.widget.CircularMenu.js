@@ -1,5 +1,4 @@
 
-
 infestor.define('infestor.widget.CircularMenu', {
 
 	alias : 'circularmenu',
@@ -11,6 +10,7 @@ infestor.define('infestor.widget.CircularMenu', {
 	cssClsElement : 'infestor-widget-circular-menu',
 	cssClsCMenuContainer :'infestor-widget-circular-menu-container',
 	cssClsCMenuItem:'infestor-widget-circular-menu-item',
+	cssClsCMenuItemFocus:'infestor-widget-circular-menu-item-focus',
 	
 	cssClsCMenuItemPosMap:{
 	
@@ -41,6 +41,10 @@ infestor.define('infestor.widget.CircularMenu', {
 	},
 	
 	draggable : true,
+	
+	tipTrend:'bottom',
+	tipDrift:'14',
+	tip:'菜单',
 	
 	btnConfig:{
 	
@@ -75,6 +79,7 @@ infestor.define('infestor.widget.CircularMenu', {
 		center:{
 			
 			name:'center',
+			prompt:'center-promt',
 			disabled:true
 		
 		},
@@ -124,7 +129,10 @@ infestor.define('infestor.widget.CircularMenu', {
 			if(!inst || !inst.element || !inst.element.hasClass(this.cssClsCMenuItem))
 				return;
 			
-			this.swapFloat(inst);
+			this.focusBtn && this.focusBtn.element.removeClass(this.cssClsCMenuItemFocus);
+			
+			this.focusBtn = this.swapFloat(inst);
+			this.focusBtn.element.addClass(this.cssClsCMenuItemFocus);
 			
 			switch(inst.name){
 			
@@ -209,13 +217,14 @@ infestor.define('infestor.widget.CircularMenu', {
 		mi.element.addClass(mi.floatData.cssClsIcon);
 		si.element.addClass(si.floatData.cssClsIcon);
 	
-		return mi;
+		return si;
 	
 	},
 	
 	expand:function(){
 	
 		this.disableDraggable();
+		this.disableTip();
 		this.circularContainer && this.circularContainer.show(true);
 	
 	},
@@ -223,7 +232,9 @@ infestor.define('infestor.widget.CircularMenu', {
 	collapse:function(){
 	
 		this.initDraggable();
+		this.initTip();
 		this.circularContainer && this.circularContainer.hide();
+		this.focusBtn && this.focusBtn.element.removeClass(this.cssClsCMenuItemFocus);
 	
 	},
 	

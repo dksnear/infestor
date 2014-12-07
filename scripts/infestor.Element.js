@@ -1168,6 +1168,9 @@ infestor.define('infestor.Element', {
 			
 			this.element.on('click',function(){
 			
+				if(this.tipDisabled)
+					return;
+			
 				this.$tip.setText('');
 				this.$tip.hide();
 			
@@ -1175,6 +1178,9 @@ infestor.define('infestor.Element', {
 
 			this.element.on('mouseleave', function () {
 
+				if(this.tipDisabled)
+					return;
+					
 				this.$tip.setText('');
 				this.$tip.hide();
 
@@ -1188,6 +1194,12 @@ infestor.define('infestor.Element', {
 
 	disableTip : function () {
 
+		if(this.$tip){
+		
+			this.$tip.setText('');
+			this.$tip.hide();
+		}
+	
 		this.tipDisabled = true;
 		return this;
 
