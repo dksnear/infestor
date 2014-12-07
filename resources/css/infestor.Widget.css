@@ -114,13 +114,10 @@
 
 .infestor-widget-circular-menu-container{
 
-	position:absolute;
+	position:relative;
 	
-	top:-44px;
-	left:-44px;
-
-	height:132px;
-	width:132px;
+	height:44px;
+	width:44px;
 	
 	background-repeat:no-repeat;
 	background-color:transparent;
@@ -128,6 +125,8 @@
 }
 
 .infestor-widget-circular-menu-item{
+
+	position:absolute;
 
 	height:44px;
 	width:44px;
@@ -149,65 +148,121 @@
 
 }
 
-.infestor-widget-circular-menu-item-hidden,
-.infestor-widget-circular-menu-item-hidden:hover{
+.infestor-widget-circular-menu-item-pos-center{
 
-	background-image:none;
+	top:0;
+	left:0;
+}
+
+.infestor-widget-circular-menu-item-pos-north{
+
+	top:-50px;
+	left:0;
 
 }
 
-.infestor-widget-circular-menu-item-center{
+.infestor-widget-circular-menu-item-pos-south{
+
+	bottom:-50px;
+	left:0;
+
+}
+
+.infestor-widget-circular-menu-item-pos-west{
+
+	left:-50px;
+	top:0;
+	
+}
+
+.infestor-widget-circular-menu-item-pos-east{
+
+	right:-50px;
+	top:0;
+
+}
+
+.infestor-widget-circular-menu-item-pos-nw{
+
+	top:-36px;
+	left:-36px;
+
+}
+
+.infestor-widget-circular-menu-item-pos-ne{
+
+	top:-36px;
+	right:-36px;
+
+}
+
+.infestor-widget-circular-menu-item-pos-sw{
+	
+	bottom:-36px;
+	left:-36px;
+
+}
+
+.infestor-widget-circular-menu-item-pos-se{
+
+	bottom:-36px;
+	right:-36px;
+}
+
+
+.infestor-widget-circular-menu-item-icon-center{
 
 	background-position:-378px -432px;
 }
 
-.infestor-widget-circular-menu-item-north{
+.infestor-widget-circular-menu-item-icon-north{
 
 	background-position:-28px -32px;
 
 }
 
-.infestor-widget-circular-menu-item-south{
+.infestor-widget-circular-menu-item-icon-south{
 
 	background-position:-78px -32px;
 
 }
 
-.infestor-widget-circular-menu-item-west{
+.infestor-widget-circular-menu-item-icon-west{
 
 	background-position:-128px -32px;
 
 }
 
-.infestor-widget-circular-menu-item-east{
+.infestor-widget-circular-menu-item-icon-east{
 
 	background-position:-178px -32px;
 
 }
 
-.infestor-widget-circular-menu-item-nw{
+.infestor-widget-circular-menu-item-icon-nw{
 
 	background-position:-228px -32px;
 
 }
 
-.infestor-widget-circular-menu-item-ne{
+.infestor-widget-circular-menu-item-icon-ne{
 
 	background-position:-278px -32px;
 
 }
 
-.infestor-widget-circular-menu-item-sw{
+.infestor-widget-circular-menu-item-icon-sw{
 	
 	background-position:-328px -32px;
 
 }
 
-.infestor-widget-circular-menu-item-se{
+.infestor-widget-circular-menu-item-icon-se{
 
 	background-position:-378px -32px;
 
 }
+
 
 
 

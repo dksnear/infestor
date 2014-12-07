@@ -11,31 +11,34 @@ infestor.define('infestor.widget.CircularMenu', {
 	cssClsElement : 'infestor-widget-circular-menu',
 	cssClsCMenuContainer :'infestor-widget-circular-menu-container',
 	cssClsCMenuItem:'infestor-widget-circular-menu-item',
-	cssClsCMenuItemHidden:'infestor-widget-circular-menu-item-hidden',
 	
-	cssClsCMenuItems:{
+	cssClsCMenuItemPosMap:{
 	
-		center:'infestor-widget-circular-menu-item-center',
-		north:'infestor-widget-circular-menu-item-north',
-		south:'infestor-widget-circular-menu-item-south',
-		east:'infestor-widget-circular-menu-item-east',
-		west:'infestor-widget-circular-menu-item-west',
-		northEast:'infestor-widget-circular-menu-item-ne',
-		northWest:'infestor-widget-circular-menu-item-nw',
-		southEast:'infestor-widget-circular-menu-item-se',
-		southWest:'infestor-widget-circular-menu-item-sw'
+		center:'infestor-widget-circular-menu-item-pos-center',
+		north:'infestor-widget-circular-menu-item-pos-north',
+		south:'infestor-widget-circular-menu-item-pos-south',
+		east:'infestor-widget-circular-menu-item-pos-east',
+		west:'infestor-widget-circular-menu-item-pos-west',
+		northEast:'infestor-widget-circular-menu-item-pos-ne',
+		northWest:'infestor-widget-circular-menu-item-pos-nw',
+		southEast:'infestor-widget-circular-menu-item-pos-se',
+		southWest:'infestor-widget-circular-menu-item-pos-sw'
 	
 	},
 	
-	// cssClsCMenuItemCenter:'infestor-widget-circular-menu-item-center',
-	// cssClsCMenuItemNorth:'infestor-widget-circular-menu-item-north',
-	// cssClsCMenuItemSouth:'infestor-widget-circular-menu-item-south',
-	// cssClsCMenuItemEast:'infestor-widget-circular-menu-item-east',
-	// cssClsCMenuItemWest:'infestor-widget-circular-menu-item-west',
-	// cssClsCMenuItemNorthWest:'infestor-widget-circular-menu-item-nw',
-	// cssClsCMenuItemNorthEast:'infestor-widget-circular-menu-item-ne',
-	// cssClsCMenuItemSouthWest:'infestor-widget-circular-menu-item-sw',
-	// cssClsCMenuItemSouthEast:'infestor-widget-circular-menu-item-se',
+	cssClsCMenuItemIconMap:{
+	
+		center:'infestor-widget-circular-menu-item-icon-center',
+		north:'infestor-widget-circular-menu-item-icon-north',
+		south:'infestor-widget-circular-menu-item-icon-south',
+		east:'infestor-widget-circular-menu-item-icon-east',
+		west:'infestor-widget-circular-menu-item-icon-west',
+		northEast:'infestor-widget-circular-menu-item-icon-ne',
+		northWest:'infestor-widget-circular-menu-item-icon-nw',
+		southEast:'infestor-widget-circular-menu-item-icon-se',
+		southWest:'infestor-widget-circular-menu-item-icon-sw'
+	
+	},
 	
 	draggable : true,
 	
@@ -44,28 +47,28 @@ infestor.define('infestor.widget.CircularMenu', {
 		north:{
 		
 			name:'north',
-			cssCls:'infestor-widget-circular-menu-item-north',
+			cssClsIcon:'infestor-widget-circular-menu-item-icon-north',
 			prompt:'north-prompt'
 			
 		},
 		south:{
 			
 			name:'south',
-			cssCls:'infestor-widget-circular-menu-item-south',
+			cssClsIcon:'infestor-widget-circular-menu-item-icon-south',
 			prompt:'south-prompt'
 		
 		},
 		west:{
 			
 			name:'west',
-			cssCls:'infestor-widget-circular-menu-item-west',
+			cssClsIcon:'infestor-widget-circular-menu-item-icon-west',
 			prompt:'west-prompt'
 		
 		},
 		east:{
 		
 			name:'east',
-			cssCls:'infestor-widget-circular-menu-item-east',
+			cssClsIcon:'infestor-widget-circular-menu-item-icon-east',
 			prompt:'east-prompt'
 			
 		},
@@ -115,28 +118,13 @@ infestor.define('infestor.widget.CircularMenu', {
 			this.expand();
 		
 		},this,true);
-		
-		// this.delegate(this,'mouseover',true,function(inst,e){
-		
-			// this.circularContainer.show(true);
-		
-		// },this);
-		
-		// this.delegate(this,'mouseout',true,function(inst,e){
-		
-			// this.circularContainer.hide(true);
-		
-		// },this);
-		
+				
 		this.delegate(this.circularContainer,'click',true,function(inst,e){
 		
 			if(!inst || !inst.element || !inst.element.hasClass(this.cssClsCMenuItem))
 				return;
 			
 			this.swapFloat(inst);
-			
-			
-			
 			
 			switch(inst.name){
 			
@@ -163,19 +151,22 @@ infestor.define('infestor.widget.CircularMenu', {
 			
 			items:infestor.map(['northWest','north','northEast','west','center','east','southWest','south','southEast'],function(idx,name){
 			
-				var config = this.btnConfig[name],
-					cls = config ? (config.cssCls || this.cssClsCMenuItems[name]) : this.cssClsCMenuItemHidden;
+				var config = this.btnConfig[name];
 				
-				config && (config.cssCls = cls);
+				if(!config)
+					return null;
+				
+				config.cssClsIcon = config.cssClsIcon || this.cssClsCMenuItemIconMap[name];
+				config.cssClsPos = this.cssClsCMenuItemPosMap[name];
 				
 				return {
 				
-					cssClsElement:[this.cssClsElementInlineBlock,this.cssClsCMenuItem,cls].join(' '),
+					cssClsElement:[this.cssClsElementInlineBlock,this.cssClsCMenuItem,config.cssClsPos,config.cssClsIcon].join(' '),
 					name:name,
 					tipTrend:'bottom',
 					tipDrift:'14',
-					tip:config && config.prompt || false,
-					floatData : config || false
+					tip:config.prompt || false,
+					floatData : config
 					
 				};
 			
@@ -205,9 +196,9 @@ infestor.define('infestor.widget.CircularMenu', {
 		if(!mi || !si || si.name == mi.name || !mi.floatData || !si.floatData || mi.floatData.disabled || si.floatData.disabled)
 			return mi;
 		
-		mi.element.removeClass(mi.floatData.cssCls);
-		si.element.removeClass(si.floatData.cssCls);
-		
+		mi.element.removeClass(mi.floatData.cssClsIcon);
+		si.element.removeClass(si.floatData.cssClsIcon);
+			
 		sw = mi.floatData;
 		mi.floatData = si.floatData;
 		si.floatData = sw;
@@ -215,8 +206,8 @@ infestor.define('infestor.widget.CircularMenu', {
 		mi.tip = mi.floatData.prompt;
 		si.tip = si.floatData.prompt;
 	
-		mi.element.addClass(mi.floatData.cssCls);
-		si.element.addClass(si.floatData.cssCls);
+		mi.element.addClass(mi.floatData.cssClsIcon);
+		si.element.addClass(si.floatData.cssClsIcon);
 	
 		return mi;
 	
@@ -239,7 +230,6 @@ infestor.define('infestor.widget.CircularMenu', {
 	destroy : function(){
 	
 		this.circularContainer = this.circularContainer && this.circularContainer.destroy();
-		
 		this.callParent();
 	
 	}
