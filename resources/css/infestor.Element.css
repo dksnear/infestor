@@ -1,3 +1,14 @@
+/*
+ 
+x(25)14
+y(40)16 
+
+(function(x,y){ return { x:14+(x-1)*25,y:16+(y-1)*40 };  })(x,y);
+(function(x,y){ return  ['-',(14+(x-1)*25),'px,-',(16+(y-1)*40),'px'].join('');  })(x,y);
+
+ */
+ 
+ 
 *{
 	margin: 0;
 	padding: 0;
@@ -523,7 +534,7 @@ input:focus{
 	line-height:24px;
 	word-wrap: break-word;
 	white-space: normal;
-	border-radius: 5px;
+	/* border-radius: 5px; */
 
 }
 
@@ -537,7 +548,7 @@ input:focus{
 .infestor-validate-panel-prompt-text{
 	
 	color:#FFFFFF;
-	background-color:#FFA500;
+	background-color:#ff6600;
 
 }
 
@@ -640,7 +651,7 @@ input:focus{
 .infestor-checkbox:hover{
 
 	/* border-color: #4d90fe; */
-	border-color: #ffa500;
+	border-color: #ff6600;
     outline: none;
 
 }

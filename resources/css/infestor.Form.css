@@ -179,7 +179,7 @@
 .infestor-candidate-captcha-input-cell:hover{
 
 	/* outline: 1px solid #4d90fe; */
-	outline: 1px solid #ffa500;
+	outline: 1px solid #ff6600;
     
 	
 }
@@ -197,7 +197,7 @@
 
 .infestor-candidate-captcha-control-panel-head-captcha{
 
-	margin: 0 10px 0 15px;
+	margin: 0 5px 0 15px;
 	height:40px;
 	width:115px;
 	border-bottom: 1px solid #bfbfbf;
@@ -206,20 +206,24 @@
 
 .infestor-candidate-captcha-control-panel-head-backspace{
 
-	height:16px;
-	width:16px;
-	background : url(../images/undo.png) no-repeat;
-	margin:0 5px 10px 0;
+	height:22px;
+	width:22px;
+	background-image:url(../images/def-suit-16.png);
+	background-repeat:no-repeat;
+	background-position:-164px -56px;
+	margin:0 0 5px 0;
 	cursor:pointer;
 
 }
 
 .infestor-candidate-captcha-control-panel-head-refresh {
 
-	height:16px;
-	width:16px;
-	background : url(../images/refresh.png) no-repeat;
-	margin:0 5px 10px 0;
+	height:22px;
+	width:22px;
+	background-image:url(../images/def-suit-16.png);
+	background-repeat:no-repeat;
+	background-position:-264px -256px;
+	margin:0 0 5px 0;
 	cursor:pointer;
 	
 
@@ -228,13 +232,23 @@
 .infestor-candidate-captcha-control-panel-head-cancel {
 
 
-	height:16px;
-	width:16px;
-	background : url(../images/cancel.png) no-repeat;
-	margin:0 5px 10px 0;
+	height:22px;
+	width:22px;
+	background-image:url(../images/def-suit-16.png);
+	background-repeat:no-repeat;
+	background-position:-339px -56px;
+	margin:0 0 5px 0;
 	cursor:pointer;
 
 }
+
+.infestor-candidate-captcha-control-panel-head-backspace:hover,
+.infestor-candidate-captcha-control-panel-head-refresh:hover,
+.infestor-candidate-captcha-control-panel-head-cancel:hover{
+
+	background-image:url(../images/def-suit-hover-16.png);
+}
+
 
 .infestor-candidate-captcha-control-panel-body{
 
@@ -255,7 +269,7 @@
 .infestor-candidate-captcha-control-panel-body-cell:hover{
 
 	/* border:1px solid #4d90fe; */
-	border:1px solid #ffa500;
+	border:1px solid #ff6600;
 
 }
 
