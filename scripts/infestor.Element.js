@@ -68,12 +68,15 @@ infestor.define('infestor.Element', {
 	cssClsElementBFC : 'infestor-element-bfc',
 	cssClsElementTable:'infestor-element-table',
 	cssClsElementTableCell:'infestor-element-table-cell',
+	
 	cssClsElementBoxShadow : infestor.boe({ 
 		 ie9minus:'infestor-element-box-shadow-ie9minus',
 		 otherwise: 'infestor-element-box-shadow'
 	}),
+	
 	cssClsElementText:'infestor-element-text',
 	cssClsElementBorder : 'infestor-element-border',
+	
 	cssClsElementPositionAbsolute : 'infestor-element-position-absolute',
 	cssClsElementPositionRelative : 'infestor-element-position-relative',
 	cssClsElementPositionFixed : 'infestor-element-position-fixed',
@@ -87,16 +90,23 @@ infestor.define('infestor.Element', {
 	cssClsElementPositionSouthWest : 'infestor-element-position-south-west',
 	cssClsElementPositionNorthEast : 'infestor-element-position-north-east',
 	cssClsElementPositionNorthWest : 'infestor-element-position-north-west',
+	
 	cssClsResizableTrigger : 'infestor-element-resizable-trigger',
 	cssClsDraggableTrigger : 'infestor-element-draggable-trigger',
-	cssClsIcon16 : 'infestor-icon-16',
-	cssClsIconHover16 : 'infestor-icon-hover-16',
-	cssClsIconFocus16 : 'infestor-icon-focus-16',
-	cssClsIconDisabled16 : 'infestor-icon-disabled-16',
-	cssClsIcon32 : 'infestor-icon-32',
-	cssClsIconHover32 : 'infestor-icon-hover-32',
-	cssClsIconFocus32 : 'infestor-icon-focus-32',
-	cssClsIconDisabled32 : 'infestor-icon-disabled-32',
+	
+	cssClsGlobalIcon16 : 'infestor-global-icon-16',
+	cssClsGlobalIconHover16 : 'infestor-global-icon-hover-16',
+	cssClsGlobalIconFocus16 : 'infestor-global-icon-focus-16',
+	cssClsGlobalIconDisabled16 : 'infestor-global-icon-disabled-16',
+	cssClsGlobalIcon32 : 'infestor-global-icon-32',
+	cssClsGlobalIconHover32 : 'infestor-global-icon-hover-32',
+	cssClsGlobalIconFocus32 : 'infestor-global-icon-focus-32',
+	cssClsGlobalIconDisabled32 : 'infestor-global-icon-disabled-32',
+	
+	cssClsGlobalIconBlockPseudo : 'infestor-global-icon-block-pseudo',	
+	cssClsGlobalIconBlockPseudoHover : 'infestor-global-icon-block-pseudo-hover',
+	cssClsGlobalIconBlockPseudoFocus : 'infestor-global-icon-block-pseudo-focus',
+	cssClsGlobalIconBlockPseudoDisabled : 'infestor-global-icon-block-pseudo-disabled',
 
 	// 控件元素的容器接口(infestor.Dom)
 	element : null,

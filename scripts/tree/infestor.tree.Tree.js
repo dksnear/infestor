@@ -11,6 +11,8 @@ infestor.define('infestor.tree.Tree',{
 	cssClsNodeEditor : 'infestor-tree-node-editor',
 	cssClsNodeEditorItem : 'infestor-tree-node-editor-item',
 	cssClsNodeEditorItemInput : 'infestor-tree-node-editor-item-input',
+	cssClsNodeEditorItemConfirm:'infestor-tree-node-editor-item-confirm',
+	cssClsNodeEditorItemCancel:'infestor-tree-node-editor-item-cancel',
 	
 	dataSetClsName : 'infestor.tree.DataSet',
 	
@@ -431,14 +433,14 @@ infestor.define('infestor.tree.Tree',{
 				},{
 				
 					name:'btn-confirm',
-					cssClsElement:this.cssClsNodeEditorItem,
-					text:'确定'
+					cssClsElement:[this.cssClsElementInlineBlock,this.cssClsGlobalIcon16,this.cssClsNodeEditorItem,this.cssClsNodeEditorItemConfirm].join(' '),
+					attr:{ title:'确定' }
 				
 				},{
 				
 					name:'btn-cancel',
-					cssClsElement:this.cssClsNodeEditorItem,
-					text:'取消'
+					cssClsElement:[this.cssClsElementInlineBlock,this.cssClsGlobalIcon16,this.cssClsNodeEditorItem,this.cssClsNodeEditorItemCancel].join(' '),
+					attr:{ title:'取消' }
 				}]
 			
 			}

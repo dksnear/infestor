@@ -84,8 +84,8 @@ infestor.define('infestor.form.field.Field', {
 	cssClsFieldStatus : 'infestor-field-status',
 	cssClsFieldStatusLeft : 'infestor-field-status-left',
 	cssClsFieldStatusRight : 'infestor-field-status-right',
-	cssClsFieldStatusError : 'infestor-field-status-error',
-	cssClsFieldStatusPassed: 'infestor-field-status-passed',
+	cssClsFieldStatusError : 'infestor-global-icon-disabled-16 infestor-field-status-error',
+	cssClsFieldStatusPassed: 'infestor-global-icon-focus-16 infestor-field-status-passed',
 	cssClsFieldStatusNotNull:'infestor-field-status-not-null',
 
 	elementFieldLabel : null,

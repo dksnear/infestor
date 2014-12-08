@@ -39,62 +39,41 @@
 
 .infestor-widget-chain-menu{
 
-	width: 36px;
 
 }
 
-.infestor-widget-chain-menu-line{
+.infestor-widget-chain-menu-separator-h{
 
-	width: 36px;
-	height: 23px;
-	text-align: center;
+	height:44px;
+	width:8px;
+	/* background-color:blue; */
 }
 
-.infestor-widget-chain-menu-line div{
+.infestor-widget-chain-menu-separator-v{
 
-	background-color: #1c62a3;
-	width: 6px;
-	height: 23px;
-	display: inline-block;
-	*display: inline;
-	*zoom: 1;
-
+	height:8px;
+	width:44px;
+	/* background-color:green; */
 }
 
-.infestor-widget-chain-menu-horizon-line{
+.infestor-widget-chain-menu-item{
 
-	width: 23px;
-	height: 23px;
-	text-align: center;
-
-}
-
-.infestor-widget-chain-menu-horizon-line div{
-
-	background-color: #1c62a3;
-	width:23px;
-	height:6px;
-	display:inline-block;
-	*display: inline;
-	*zoom: 1;
 
 }
 
 .infestor-widget-chain-menu-node{
 
-	background-repeat:no-repeat;
-	background-image: url(../images/chain-node.png);
-	height: 36px;
-	width: 36px;
 	cursor: pointer;
+	background-position: -578px -112px;
 
 }
 
-.infestor-widget-chain-menu-node-hover{
+.infestor-widget-chain-menu-item-vertical{
 
-	background-repeat:no-repeat;
-	background-image: url(../images/chain-node-hover.png);
+	width:44px;
+
 }
+
 
 /* circular-menu */
 
@@ -103,13 +82,9 @@
 	position:fixed;
 	top:50px;
 	left:50px;
-	
-	height:44px;
-	width:44px;
-	
-	background-repeat:no-repeat;
+		
 	background-position:-328px -432px;
-	background-image:url('../images/def-suit-32.png');
+	
 }
 
 .infestor-widget-circular-menu-container{
@@ -118,40 +93,13 @@
 	
 	height:44px;
 	width:44px;
-	
-	background-repeat:no-repeat;
-	background-color:transparent;
 
 }
 
 .infestor-widget-circular-menu-item{
 
 	position:absolute;
-
-	height:44px;
-	width:44px;
-	
 	cursor:pointer;
-	
-	background-color:transparent;
-	background-repeat:no-repeat;
-	background-image:url('../images/def-suit-32.png');
-
-}
-
-.infestor-widget-circular-menu-item:hover,
-.infestor-widget-circular-menu:hover,
-.infestor-widget-circular-menu-hover,
-.infestor-widget-circular-menu-item-hover{
-
-	background-image:url('../images/def-suit-hover-32.png');
-
-}
-
-.infestor-widget-circular-menu-item:focus,
-.infestor-widget-circular-menu-item-focus{
-
-	background-image:url('../images/def-suit-focus-32.png');
 
 }
 

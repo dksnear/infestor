@@ -250,79 +250,125 @@ input:focus{
 }
 
 
-/* icons */
+/* global icon */
 
 /*
+
+	图标坐标计算规则
+	
 	adapt:22(16);
  
 	x(25)14
 	y(40)16 
 
-	(function(x,y){ return { x:14+(x-1)*25,y:16+(y-1)*40 };  })(x,y);
-	(function(x,y){ return  ['-',(14+(x-1)*25),'px,-',(16+(y-1)*40),'px'].join('');  })(x,y);
+	(function(x,y){ return { x:14+(x-1)*25,y:16+(y-1)*40 }; })(x,y);
+	(function(x,y){ return ['-',(14+(x-1)*25),'px -',(16+(y-1)*40),'px;'].join(''); })(x,y);
 
  */
 
-.infestor-icon-16{
+.infestor-global-icon-16{
 
+	height:22px;
+	width:22px;
+	background-color:transparent;
+	background-repeat:no-repeat;
 	background-image:url('../images/def-suit-16.png');
 
 }
 
-.infestor-icon-16:hover,
-.infestor-icon-hover-16{
+.infestor-global-icon-16:hover,
+.infestor-global-icon-hover-16{
 
 	background-image:url('../images/def-suit-hover-16.png');
 
 }
 
-.infestor-icon-16:focus,
-.infestor-icon-focus-16{
+.infestor-global-icon-16:focus,
+.infestor-global-icon-focus-16{
 
 	background-image:url('../images/def-suit-focus-16.png');
 }
 
-.infestor-icon-16:disabled,
-.infestor-icon-disabed-16{
+.infestor-global-icon-16:disabled,
+.infestor-global-icon-disabled-16{
 
 	background-image:url('../images/def-suit-disabled-16.png');
 }
 
 /*
+	图标坐标计算规则
 
 	adapt:44(32);
  
 	x(25*2)14*2
 	y(40*2)16*2 
 
-	(function(x,y){ return { x:14*2+(x-1)*25*2,y:16*2+(y-1)*40*2 };  })(x,y);
-	(function(x,y){ return  ['-',(14*2+(x-1)*25*2),'px,-',(16*2+(y-1)*40*2),'px'].join('');  })(x,y);
+	(function(x,y){ return { x:14*2+(x-1)*25*2,y:16*2+(y-1)*40*2 }; })(x,y);
+	(function(x,y){ return ['-',(14*2+(x-1)*25*2),'px -',(16*2+(y-1)*40*2),'px;'].join(''); })(x,y);
 
  */
 
-.infestor-icon-32{
+.infestor-global-icon-32{
 
+	height:44px;
+	width:44px;
+	background-color:transparent;
+	background-repeat:no-repeat;
 	background-image:url('../images/def-suit-32.png');
 
 }
 
-.infestor-icon-32:hover,
-.infestor-icon-hover-32{
+.infestor-global-icon-32:hover,
+.infestor-global-icon-hover-32{
 
 	background-image:url('../images/def-suit-hover-32.png');
 
 }
 
-.infestor-icon-32:focus,
-.infestor-icon-focus-32{
+.infestor-global-icon-32:focus,
+.infestor-global-icon-focus-32{
 
 	background-image:url('../images/def-suit-focus-32.png');
 }
 
-.infestor-icon-32:disabled,
-.infestor-icon-disabed-32{
+.infestor-global-icon-32:disabled,
+.infestor-global-icon-disabed-32{
 
 	background-image:url('../images/def-suit-disabled-32.png');
+}
+
+
+.infestor-global-icon-block-pseudo-16:hover,
+.infestor-global-icon-block-pseudo-16:focus,
+.infestor-global-icon-block-pseudo-16:disabled,
+.infestor-global-icon-block-pseudo-16-hover:hover,
+.infestor-global-icon-block-pseudo-16-focus:focus,
+.infestor-global-icon-block-pseudo-16-disabled:disabled{
+
+	background-image:url('../images/def-suit-16.png');
+
+}
+
+.infestor-global-icon-block-pseudo-32:hover,
+.infestor-global-icon-block-pseudo-32:focus,
+.infestor-global-icon-block-pseudo-32:disabled,
+.infestor-global-icon-block-pseudo-32-hover:hover,
+.infestor-global-icon-block-pseudo-32-focus:focus,
+.infestor-global-icon-block-pseudo-32-disabled:disabled{
+
+	background-image:url('../images/def-suit-32.png');
+
+}
+
+.infestor-global-icon-block-pseudo:hover,
+.infestor-global-icon-block-pseudo:focus,
+.infestor-global-icon-block-pseudo:disabled,
+.infestor-global-icon-block-pseudo-hover:hover,
+.infestor-global-icon-block-pseudo-focus:focus,
+.infestor-global-icon-block-pseudo-disabled:disabled{
+
+	background-image:none;
+
 }
 
 /* tip */
@@ -530,14 +576,9 @@ input:focus{
 
 .infestor-panel-control-item-horizon{
 	
-	height:16px;
-	width:16px;
-	display: inline-block;
+	height:22px;
+	width:22px;
 	margin-left:10px;
-	*display: inline;
-	*zoom: 1;
-	background-image:url(../images/win-ctrl-icons-16.png);
-	background-repeat:no-repeat;
 	cursor:pointer;
 
 }
@@ -545,34 +586,31 @@ input:focus{
 .infestor-panel-control-item-vertical{
 
 	display:block;
-	width:16px;
-	height:16px;
+	width:22px;
+	height:22px;
 	margin-bottom:15px;
-	background-image:url(../images/win-ctrl-icons-16.png);
-	background-repeat:no-repeat;
 	cursor:pointer;
 }
 
 .infestor-panel-control-item-close{
 
-	background-position:-64px -4px;
+	background-position:-339px -56px;
 
 }
 
 .infestor-panel-control-item-max{
 
-	background-position:-24px -4px;
+	background-position:-264px -56px;
 }
 
 .infestor-panel-control-item-min{
 
-	background-position:-4px -4px;
+	background-position:-39px -56px;
 }
 
 .infestor-panel-control-item-restore{
 
-	display:none;
-	background-position:-44px -4px;
+	background-position:-164px -96px;
 
 }
 
@@ -594,26 +632,24 @@ input:focus{
 
 .infestor-validate-panel-body{
 
-	padding:10px;
+	padding: 0px 15px;
 	text-indent: 2em;
-	line-height:24px;
+	line-height: 20px;
 	word-wrap: break-word;
 	white-space: normal;
-	/* border-radius: 5px; */
 
 }
 
 .infestor-validate-panel-error-text{
 
-	color:#FFFFFF;
-	background-color:#F00;
+	color:#F00;
+
 
 }
 
 .infestor-validate-panel-prompt-text{
 	
-	color:#FFFFFF;
-	background-color:#ff6600;
+	color:#008000;
 
 }
 
@@ -627,30 +663,32 @@ input:focus{
 
 	height:24px;
 	width:24px;
+	vertical-align:middle;
 
 }
 
 .infestor-validate-status-panel-body{
 
-	padding-left:10px;
+	padding-left:0.5em;
+	vertical-align:middle;
 
 }
 
 .infestor-validate-panel-status-validating{
 
-	background-image:url(../images/gray-validating.gif);
+	background-image:url(../images/validating-24.gif);
 
 }
 
 .infestor-validate-panel-status-validated-pass{
 
-	background-image:url(../images/green-validated.png);
+	background-position:-314px -56px;
 
 }
 
 .infestor-validate-panel-status-validated-error{
 
-	background-image:url(../images/red-validated.png);
+	background-position:-114px -96px;
 }
 
 /* window */

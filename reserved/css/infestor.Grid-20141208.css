@@ -49,35 +49,32 @@
 
 .infestor-tree-node-cell{
 
-	height: 22px;
-	width: 22px;
+	height: 16px;
+	width: 16px;
 
 }
 
 .infestor-tree-node-space{
 
-	background-image:none;
-}
-
-.infestor-tree-node-space:hover{
-
-	background-image:none;
 
 }
 
 .infestor-tree-node-switch{
 
+	background-repeat:no-repeat;
+	background-position:-2px -2px;
+
 }
 
 .infestor-tree-node-expand-switch{
 
-	background-position:-314px -216px;
+	background-image:url(../images/arrow-down.gif);
 
 }
 
 .infestor-tree-node-collapse-switch{
 
-	background-position:-364px -216px;
+	background-image:url(../images/arrow-right.gif);
 
 }
 
@@ -90,13 +87,6 @@
 
 .infestor-tree-node-non-switch{
 
-	background-image:none;
-
-}
-
-.infestor-tree-node-non-switch:hover{
-
-	background-image:none;
 
 }
 
@@ -106,24 +96,23 @@
 	
 .infestor-tree-node-icon{
 
+	background-repeat:no-repeat;
 
 }
 	
 .infestor-tree-node-expand-icon{
 
-	background-position:-339px -16px;
-
+	background-image:url(../images/folder-page-white.png)
 }
 	
 .infestor-tree-node-collapse-icon{
 
-	background-position:-289px -56px;
-	
+	background-image:url(../images/folder.png);
 }
 	
 .infestor-tree-node-normal-icon{
 
-	background-position:-364px -16px;
+	background-image:url(../images/page-white.png);
 }
 
 .infestor-tree-node-loading-icon{
@@ -140,11 +129,8 @@
 	text-overflow: ellipsis;
 	overflow:hidden;
 	
-	line-height:22px;
 	max-width:200px;
 	cursor:default;
-	
-	text-decoration:underline;
 	
 }
 
@@ -155,10 +141,10 @@
 
 .infestor-tree-node-editor-item{
 
+	display:inline;
 	margin:0 2px;
 	cursor:pointer;
 	text-decoration:underline;
-	vertical-align:middle;
 	
 }
 
@@ -169,18 +155,10 @@
 	cursor:auto;
 }
 
-.infestor-tree-node-editor-item-confirm{
+.infestor-tree-node-focus{
 
-	background-position:-314px -56px;
-
-}
-
-.infestor-tree-node-editor-item-cancel{
-
-	background-position:-339px -56px;
+	background-image:url(../images/accept.png);
 
 }
-
-
 
 .

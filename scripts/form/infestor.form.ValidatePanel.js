@@ -26,8 +26,8 @@ infestor.define('infestor.form.ValidatePanel',{
 	cssClsValidateStatusPanelHead:'infestor-validate-status-panel-head',
 	cssClsValidateStatusPanelBody:'infestor-validate-status-panel-body',
 	cssClsValidateStatusValidating:'infestor-validate-panel-status-validating',
-	cssClsValidateStatusValidatedPass:'infestor-validate-panel-status-validated-pass',
-	cssClsValidateStatusValidatedError:'infestor-validate-panel-status-validated-error',
+	cssClsValidateStatusValidatedPass:'infestor-global-icon-focus-16 infestor-validate-panel-status-validated-pass',
+	cssClsValidateStatusValidatedError:'infestor-global-icon-hover-16 infestor-validate-panel-status-validated-error',
 	
 	// 用于显示提示
 	promptPanel:true,

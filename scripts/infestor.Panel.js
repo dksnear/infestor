@@ -170,7 +170,7 @@ infestor.define('infestor.Panel', {
 	createControl:function(){
 	
 		var sizable = this.closable || this.maxable || this.miniable,
-			cssClsItem = this.controlLayout == 'horizon' ? this.cssClsPanelControlItemHorizon : this.cssClsPanelControlItemVertical;
+			cssClsItem = this.controlLayout == 'horizon' ? (this.cssClsPanelControlItemHorizon + ' ' + this.cssClsElementInlineBlock) : this.cssClsPanelControlItemVertical;
 	
 		if(!sizable) return this;
 		
@@ -178,19 +178,21 @@ infestor.define('infestor.Panel', {
 		
 		this.sizeControl = this.createElement('sizeControl',this.element,{
 		
-			cssClsElement:this.cssClsPanelControl
+			cssClsElement:this.cssClsPanelControl + ' ' + this.cssClsElementRemoveSpace
 		
 		});
 		
+		cssClsItem = this.cssClsGlobalIcon16 + ' ' + cssClsItem;
+		
 		if(this.miniable)
-			this.sizeControl.elementMini = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemMin).click(function(){
+			this.sizeControl.elementMini = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemMin,null,{ title:'最小化' }).click(function(){
 			
 				this.min();
 			
 			},this);
 		
 		if(this.maxable)
-			this.sizeControl.elementMax = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemMax).click(function(){
+			this.sizeControl.elementMax = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemMax,null,{ title:'最大化' }).click(function(){
 			
 				this.max();
 			
@@ -198,14 +200,14 @@ infestor.define('infestor.Panel', {
 		
 		// 还原
 		if(this.miniable || this.maxable)
-			this.sizeControl.elementRestore = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemRestore).click(function(){
+			this.sizeControl.elementRestore = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemRestore,null,{ title:'还原' }).click(function(){
 			
 				this.restore();
 			
 			},this);
 			
 		if(this.closable)
-			this.sizeControl.elementClose = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemClose).click(function(){
+			this.sizeControl.elementClose = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemClose,null,{ title:'关闭' }).click(function(){
 			
 				this.close();
 			

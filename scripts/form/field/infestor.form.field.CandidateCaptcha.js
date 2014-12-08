@@ -335,21 +335,21 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 					
 				
 				},{
-					cssClsElement:'infestor-candidate-captcha-control-panel-head-backspace',
+					cssClsElement:this.cssClsGlobalIcon16 + ' infestor-candidate-captcha-control-panel-head-backspace',
 					name:'backspace',
 					attr:{
 					
 						title:'退格'
 					}
 				},{
-					cssClsElement:'infestor-candidate-captcha-control-panel-head-refresh',
+					cssClsElement:this.cssClsGlobalIcon16 + ' infestor-candidate-captcha-control-panel-head-refresh',
 					name:'refresh',
 					attr:{
 					
 						title:'刷新验证码'
 					}
 				},{
-					cssClsElement:'infestor-candidate-captcha-control-panel-head-cancel',
+					cssClsElement:this.cssClsGlobalIcon16 + ' infestor-candidate-captcha-control-panel-head-cancel',
 					name:'cancel',
 					attr:{
 					

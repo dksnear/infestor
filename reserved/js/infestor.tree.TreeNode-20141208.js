@@ -7,8 +7,8 @@ infestor.define('infestor.tree.TreeNode',{
 	cssUses : 'infestor.Grid',
 
 	cssClsElement : 'infestor-tree-node',
-
-	cssClsNodeCell : 'infestor-global-icon-16 infestor-tree-node-cell',
+	
+	cssClsNodeCell : 'infestor-tree-node-cell',
 
 	cssClsNodeSpace : 'infestor-tree-node-space',
 	
@@ -36,7 +36,7 @@ infestor.define('infestor.tree.TreeNode',{
 
 	cssClsNodeText : 'infestor-tree-node-text',
 	
-	// cssClsNodeFocus : 'infestor-tree-node-focus',
+	cssClsNodeFocus : 'infestor-tree-node-focus',
 	
 	nodeSpaceCells : null,
 	
@@ -236,7 +236,7 @@ infestor.define('infestor.tree.TreeNode',{
 		if(this.isFocus)
 			return this;
 		
-		this.nodeIconCell.element.addClass(this.cssClsGlobalIconFocus16);
+		this.nodeIconCell.element.addClass(this.cssClsNodeFocus);
 		
 		this.isFocus = true;
 		
@@ -249,7 +249,7 @@ infestor.define('infestor.tree.TreeNode',{
 		if(!this.isFocus)
 			return this;
 		
-		this.nodeIconCell.element.removeClass(this.cssClsGlobalIconFocus16);
+		this.nodeIconCell.element.removeClass(this.cssClsNodeFocus);
 		
 		this.isFocus = false;
 		
