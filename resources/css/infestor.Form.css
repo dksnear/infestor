@@ -88,14 +88,12 @@
 
 .infestor-field-status-error{
 
-	/* background-image:url(../images/delete.png); */
 	background-position:-339px -176px;
 
 }
 
 .infestor-field-status-passed{
 
-	/* background-image:url(../images/accept.png); */
 	background-position:-314px -56px;
 
 }

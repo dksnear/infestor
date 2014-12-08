@@ -71,7 +71,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 		
 		this.on('remoteCheckSuccess',function(succceed){
 		
-			succceed && this.captchaTip.hide() && infestor.delay(function(){ this.validateShower && this.validateShower.hide();  },1000,this);
+			succceed && this.captchaTip.hide() && infestor.delay(function(){ this.hideValidateMonitor();  },500,this);
 			
 		},this);
 		
@@ -162,11 +162,11 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	
 	},
 	
-	createValidateShower:function(){
+	createValidateMonitor:function(){
 	
 	
-		this.validateShower = infestor.form.field.Field.getValidateShower(true);
-		this.validatePanel = this.validateShower.getItem('vpanel');
+		this.validateMonitor = infestor.form.field.Field.getValidateMonitor(true);
+		this.validatePanel = this.validateMonitor.getItem('vpanel');
 		
 		return this;
 	
@@ -174,11 +174,11 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	
 	focus:function(){
 	
-		if(this.isFocus) return this;
+		if(this.isFocus || this.checked) return this;
 	
 		this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.form.ValidatePanel.VALIDATED_PASS : infestor.form.ValidatePanel.VALIDATED_ERROR);
-		this.validateShower && this.validateShower.autoPosition(this.element, 'bottom', '13') && this.validateShower.show();	
-	
+		this.showValidateMonitor();
+		
 		this.captchaTip.autoPosition(this.element, 'right', '13');
 		this.captchaTip.show();
 		
@@ -196,7 +196,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 		if(!this.isFocus) return this;
 	
 		this.captchaTip.hide();
-		this.validateShower && this.validateShower.hide();		
+		this.validateMonitor && this.validateMonitor.hide();		
 		this.isFocus = false;
 		
 		return this;
@@ -509,7 +509,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	destroy:function(){
 	
 		this.fieldInput = this.fieldInput && this.fieldInput.destroy();
-		this.validateShower = this.validateShower && this.validateShower.destroy();
+		this.validateMonitor = this.validateMonitor && this.validateMonitor.destroy();
 		this.elementImageLoadIndicator = this.elementImageLoadIndicator && this.elementImageLoadIndicator.destroy();
 		this.imageLoadIndicator = this.imageLoadIndicator && this.imageLoadIndicator.destroy();
 		this.captchaTip = this.captchaTip && this.captchaTip.destroy();

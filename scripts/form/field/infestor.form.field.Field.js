@@ -45,7 +45,7 @@ infestor.define('infestor.form.field.Field', {
 		
 		},
 	
-		getValidateShower:function(news){
+		getValidateMonitor:function(news){
 		
 			var create = function(){
 			
@@ -67,9 +67,9 @@ infestor.define('infestor.form.field.Field', {
 			
 			if(news) return create();
 		
-			infestor.form.field.Field.validateShower = infestor.form.field.Field.validateShower || create();
+			infestor.form.field.Field.validateMonitor = infestor.form.field.Field.validateMonitor || create();
 			
-			return infestor.form.field.Field.validateShower;
+			return infestor.form.field.Field.validateMonitor;
 		
 		}
 	
@@ -85,7 +85,7 @@ infestor.define('infestor.form.field.Field', {
 	cssClsFieldStatusLeft : 'infestor-field-status-left',
 	cssClsFieldStatusRight : 'infestor-field-status-right',
 	cssClsFieldStatusError : 'infestor-global-icon-disabled-16 infestor-field-status-error',
-	cssClsFieldStatusPassed: 'infestor-global-icon-focus-16 infestor-field-status-passed',
+	cssClsFieldStatusPassed: 'infestor-global-icon-disabled-16 infestor-field-status-passed',
 	cssClsFieldStatusNotNull:'infestor-field-status-not-null',
 
 	elementFieldLabel : null,
@@ -166,7 +166,7 @@ infestor.define('infestor.form.field.Field', {
 
 		this.callParent();
 		
-		this.createLabel().createContent().createInput().createStatusIcon().createValidateShower();
+		this.createLabel().createContent().createInput().createStatusIcon().createValidateMonitor();
 		
 	},
 	
@@ -176,13 +176,15 @@ infestor.define('infestor.form.field.Field', {
 			
 			this.isFocus = true;
 			this.validatePanel && this.validatePanel.setError(!this.checked && this.currentErrorMsg).setPrompt(this.promptMsg).setStatus(this.checked ? infestor.form.ValidatePanel.VALIDATED_PASS : infestor.form.ValidatePanel.VALIDATED_ERROR);
-			this.validateShower && this.validateShower.autoPosition(this.element, 'bottom', '13') && this.validateShower.show();		
+			this.showValidateMonitor()
 			this.$taskId = this.$taskId && infestor.stopTask(this.$taskId);
 			this.$taskId = infestor.task(function(){
 			
 				if(!this.isFocus) return;
 				
 			    (this.value !== this.getValue()) && ((this.checked = false) || this.check());
+				
+				this.showValidateMonitor()
 
 			},this.checkInterval || 600,this);
 		
@@ -192,7 +194,7 @@ infestor.define('infestor.form.field.Field', {
 		
 			this.isFocus = false;
 			this.$taskId = infestor.stopTask(this.$taskId);		
-			this.validateShower && this.validateShower.hide();
+			this.hideValidateMonitor();
 			(this.value !== this.getValue()) && ((this.checked = false) || this.check());
 		
 		},this);
@@ -290,14 +292,28 @@ infestor.define('infestor.form.field.Field', {
 	
 	},
 	
-	createValidateShower:function(){
+	createValidateMonitor:function(){
 	
 	
-		this.validateShower = infestor.form.field.Field.getValidateShower();
-		this.validatePanel = this.validateShower.getItem('vpanel');
+		this.validateMonitor = infestor.form.field.Field.getValidateMonitor();
+		this.validatePanel = this.validateMonitor.getItem('vpanel');
 		
 		return this;
 	
+	},
+	
+	showValidateMonitor:function(){
+	
+		!this.checked && this.validateMonitor && this.validateMonitor.autoPosition(this.element, 'bottom', '10') && this.validateMonitor.show();
+		
+		return this;
+	},
+	
+	hideValidateMonitor:function(){
+	
+		this.validateMonitor && this.validateMonitor.hide();
+		
+		return this;
 	},
 	
 	focus:function(){
@@ -471,7 +487,7 @@ infestor.define('infestor.form.field.Field', {
 	
 	},
 	
-	check:function(){
+	check : function(){
 	
 		var value,checked = true,errorMsg,promptMsg,remote = false,prepareFn,afterFn;
 		
@@ -500,6 +516,9 @@ infestor.define('infestor.form.field.Field', {
 			//checked && (this.value = value);
 			
 			this.value = value;
+			
+			if(checked)
+				infestor.delay(function(){ this.hideValidateMonitor(); },500,this);
 			
 			return checked;
 		
