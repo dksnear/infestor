@@ -322,6 +322,12 @@ infestor.define('infestor.form.Form', {
 	
 	},
 	
+	blurField:function(fieldName){
+	
+		return this.callFieldMethod(fieldName,'blur');
+	
+	},
+	
 	setFieldReadOnly:function(fieldName,readOnly){
 	
 		return this.callFieldMethod(fieldName,'setReadOnly',[readOnly]);
@@ -380,7 +386,6 @@ infestor.define('infestor.form.Form', {
 			if(!this.checked){
 			
 				checked = false;
-				//this.emit('focus');
 				this.focus();
 				return false;
 			}
@@ -402,6 +407,15 @@ infestor.define('infestor.form.Form', {
 		this.getData();
 		
 		return this.dataSet.submit(opts,rewrite),true;
+	
+	},
+	
+	
+	hide : function(){
+	
+		this.blurField();
+	
+		return this.callParent();
 	
 	},
 	

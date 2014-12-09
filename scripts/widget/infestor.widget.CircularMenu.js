@@ -2,15 +2,12 @@
 infestor.define('infestor.widget.CircularMenu', {
 
 	alias : 'circularmenu',
-
 	extend : 'infestor.Element',
-
 	cssUses : 'infestor.Widget',
 
 	cssClsElement : 'infestor-widget-circular-menu infestor-global-icon-32',
-	cssClsCMenuContainer :'infestor-widget-circular-menu-container',
-	cssClsCMenuItem:'infestor-widget-circular-menu-item',
-	// cssClsCMenuItemFocus:'infestor-widget-circular-menu-item-focus',
+	cssClsCMenuContainer : 'infestor-widget-circular-menu-container',
+	cssClsCMenuItem : 'infestor-widget-circular-menu-item',
 	
 	cssClsCMenuItemPosMap:{
 	
@@ -131,7 +128,7 @@ infestor.define('infestor.widget.CircularMenu', {
 			
 			this.focusBtn && this.focusBtn.element.removeClass(this.cssClsGlobalIconFocus32);
 			
-			this.focusBtn = this.swapFloat(inst);
+			this.focusBtn = this.swapFloatData(inst);
 			this.focusBtn.element.addClass(this.cssClsGlobalIconFocus32);
 			
 			switch(inst.name){
@@ -142,6 +139,8 @@ infestor.define('infestor.widget.CircularMenu', {
 				default:
 					break;
 			}
+			
+			this.emit('itemClick',[this.focusBtn && this.focusBtn.floatData.name,this.focusBtn,inst]);
 			
 		
 		},this,true);
@@ -186,7 +185,7 @@ infestor.define('infestor.widget.CircularMenu', {
 	
 	},
 	
-	swapFloat : function(mi,si){
+	swapFloatData : function(mi,si){
 	
 		var sw,quadrant;
 		
@@ -226,7 +225,8 @@ infestor.define('infestor.widget.CircularMenu', {
 		this.disableDraggable();
 		this.disableTip();
 		this.circularContainer && this.circularContainer.show(true);
-	
+		infestor.clearSelection();
+		
 	},
 	
 	collapse:function(){
@@ -235,6 +235,7 @@ infestor.define('infestor.widget.CircularMenu', {
 		this.initTip();
 		this.circularContainer && this.circularContainer.hide();
 		this.focusBtn && this.focusBtn.element.removeClass(this.cssClsGlobalIconFocus32);
+		infestor.clearSelection();
 	
 	},
 	
