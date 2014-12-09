@@ -154,9 +154,9 @@ infestor js
 		each : function (object, callback, scope) {
 
 			var name,
-			i = 0,
-			length = object && object.length,
-			isObj = length === undefined || typeof object === 'function';
+				i = 0,
+				length = object && object.length,
+				isObj = length === undefined || typeof object === 'function';
 
 			if (!object)
 				return true;
@@ -1277,12 +1277,11 @@ infestor js
 				options = superClass;
 				superClass = Object;
 			}
-
-			var $class = function () {},
 			
-			$instance = options.constructor != Object.prototype.constructor ? options.constructor : function () {
-				superClass.apply(this, arguments);
-			};
+			var $class = function () {},
+				$instance = options.constructor != Object.prototype.constructor ? options.constructor : function () {
+					superClass.apply(this, arguments);
+				};
 
 			$class.prototype = $instance.$superClass = superClass.prototype;
 
@@ -1320,9 +1319,9 @@ infestor js
 					if (isExtend && cls.prototype[name]) {
 
 						var ofn = cls.prototype[name],
-						nfn = obj,
-						or,
-						nr;
+							nfn = obj,
+							or,
+							nr;
 
 						obj = function () {
 

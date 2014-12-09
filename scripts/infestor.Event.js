@@ -14,9 +14,9 @@ infestor.define('infestor.Event', {
 	callParent : function () {
 
 		var method = this.callParent.caller,
-		ownerCls = method.$ownerCls,
-		parentClass = !!ownerCls ? method.$ownerCls.$superClass : undefined,
-		methodName = method.$methodName;
+			ownerCls = method.$ownerCls,
+			parentClass = !!ownerCls ? method.$ownerCls.$superClass : undefined,
+			methodName = method.$methodName;
 
 		return parentClass && parentClass[methodName] && parentClass[methodName].apply(this, arguments.length > 0 ? arguments : method.arguments);
 	},
