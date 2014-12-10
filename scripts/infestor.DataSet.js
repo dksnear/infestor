@@ -196,12 +196,18 @@ infestor.define('infestor.DataSet', {
 		
 			infestor.each(filter,function(name,value){
 			
-				if(row[name]!==value)
+				if(row[name] !== value)
 					return matched = false;
 						
 			});
 			
-			if(matched) return false;
+			if(matched) 
+				return matched = {
+				
+					index : idx,
+					data : row
+				
+				}, false;
 		
 		});
 		

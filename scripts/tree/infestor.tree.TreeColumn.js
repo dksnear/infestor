@@ -11,7 +11,7 @@ infestor.define('infestor.tree.TreeColumn',{
 	
 
 	// 列单元格创建接口
-	createColumnCell : function(cellData,rowData,cellsCt,row){
+	createColumnCell : function(cellData,rowData,cellsCt,row,floatSpace){
 	
 		this.columnCells = this.columnCells || {};
 		
@@ -21,7 +21,8 @@ infestor.define('infestor.tree.TreeColumn',{
 			width : this.columnOptions.width || 60,
 			text : cellData && cellData[this.columnOptions.name] || rowData.$text,
 			nodeDepth : row.depth,
-			hidden : this.columnOptions.hidden
+			hidden : this.columnOptions.hidden,
+			nodeFloatSpace : floatSpace || 0
 			
 		}).renderTo(cellsCt);
 			

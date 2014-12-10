@@ -63,7 +63,7 @@ infestor.define('infestor.Window', {
 						boxShadow:true,
 						position:'absolute',
 						top:0,
-						right:0,
+						right:3,
 						text:'确定',
 						events:{
 						
@@ -117,7 +117,7 @@ infestor.define('infestor.Window', {
 						itemLayout:'horizon',
 						position:'absolute',
 						top:0,
-						right:0,
+						right:3,
 						itemsOpts:{
 					
 							alias:'button',
@@ -126,7 +126,7 @@ infestor.define('infestor.Window', {
 						},
 						items:[{
 							
-							margin:'0 10 0 0',
+							margin:'0 5 0 0',
 							text:'是',
 							events:{
 							

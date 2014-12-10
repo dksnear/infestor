@@ -489,7 +489,7 @@ input:focus{
 	vertical-align: middle; 
 	text-align:center;
 	cursor:pointer;
-	padding:5px 10px;
+	padding:2px 10px;
 	font-weight:bold;
 	background-color: #8A2BE2;
 	color:#FFFFFF;
@@ -726,6 +726,7 @@ input:focus{
 
 	position: relative;
 	height:25px;
+	margin-top:15px;
 	
 }
 
@@ -767,14 +768,12 @@ input:focus{
 
 .infestor-checkbox-checked{
 
-	background-position:-9px -11px;
-	background-image:url(../images/check32.png);
+	background:url(../images/check-16.png) no-repeat -1px 0;
 }
 
 .infestor-checkbox-half-checked{
 
-	background-position:-31px -29px;
-	background-image:url(../images/square48.png);
+	background:url(../images/half-check-16.png) no-repeat -1px 0;
 	
 }
 

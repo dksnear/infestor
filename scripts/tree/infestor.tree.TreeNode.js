@@ -51,6 +51,9 @@ infestor.define('infestor.tree.TreeNode',{
 	// 树的深度 从1开始
 	nodeDepth : 1,
 	
+	// 节点前置空格偏移值
+	nodeFloatSpace : 0,
+	
 	isRoot : false,
 	
 	// 控制分支节点的图标显示
@@ -143,9 +146,11 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	createNodeSpaceCells : function(){
 	
+		var i=0,len = this.nodeDepth - 1 + this.nodeFloatSpace;
+	
 		this.nodeSpaceCells = this.nodeSpaceCells || [];
 		
-		for(var i=0;i<this.nodeDepth-1;i++)
+		for(; i<len; i++)
 			this.nodeSpaceCells.push(infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeSpace].join(' ') }).renderTo(this));
 	
 		return this;
@@ -355,12 +360,14 @@ infestor.define('infestor.tree.TreeNode',{
 	
 		if(this.parentNode)
 			return this.parentNode.removeChildNode(this.nodeId);
-		
+				
 		this.eachChildNodes(function(node,pnode){
 		
 			pnode.emit('removeNode',[pnode,node]);
 		
 		});
+		
+		this.emit('removeNode',[null,this]);
 		
 		return this;
 	

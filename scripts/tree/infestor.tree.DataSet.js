@@ -99,7 +99,7 @@ infestor.define('infestor.tree.DataSet',{
 		
 		rowData = this.callParent(rowData);
 		
-		rowData.$add = true;
+		!rowData.$$clearTag && (rowData.$add = true);
 		
 		return rowData;
 	

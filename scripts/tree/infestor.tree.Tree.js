@@ -107,7 +107,24 @@ infestor.define('infestor.tree.Tree',{
 			this.createTree();
 		else this.callParent();
 		
+		this.loaded = true;
+		
 		return this;		
+	
+	},
+	
+	reload : function(){
+	
+		if(!this.loaded)
+			return this.load();
+		
+		this.removeRow();
+		this.rootRow = null;
+		this.activedNode = null;
+		
+		this.dataSet.clearData();
+		
+		return this.load();
 	
 	},
 	
@@ -195,7 +212,7 @@ infestor.define('infestor.tree.Tree',{
 		
 		}
 			
-		row.treeNode = this.treeColumn.createColumnCell(rowData.rawData,rowData,row.container,row);
+		row.treeNode = this.treeColumn.createColumnCell(rowData.rawData,rowData,row.container,row,this.rootVisible ? 0 : -1);
 	
 		row.treeNode.nodeId = row.id;
 		row.treeNode.isRoot = isRoot;
@@ -293,9 +310,10 @@ infestor.define('infestor.tree.Tree',{
 		
 	},
 
-	removeRow : function(rowId,force){
+	removeRow : function(rowId){
 	
-		var row = this.gridRows && this.gridRows[rowId];
+		var rowId = infestor.isUndefined(rowId) && this.rootRow && this.rootRow.id || rowId,
+			row = this.gridRows && this.gridRows[rowId];
 		
 		if(!row) return this;
 		
@@ -345,17 +363,16 @@ infestor.define('infestor.tree.Tree',{
 		
 			while((child = getChildNode(pId))!==false){	
 		
-				row = this.addRow(child);
-				
+				row = this.addRow(child);			
 				row && arguments.callee.call(this,row.id);
 				
 			}
 
 		}).call(this,this.rootRow.id);
 	
-		// 展开根节点
-		
+		// 展开根节点		
 		this.expandDepth = this.expandDepth === true ? 0 : this.expandDepth;
+		
 		if(this.expandDepth !== false)
 			this.expandNodeToDepth(this.rootRow.treeNode.nodeId,this.expandDepth);
 	},
@@ -479,7 +496,6 @@ infestor.define('infestor.tree.Tree',{
 	// @depth 加载深度 (用于一次加载多层节点)
 	asyncLoadNode : function(nodeId,depth){
 	
-		// var node = this.getNode(nodeId),
 		var	params = {
 					
 			params : {
@@ -488,8 +504,6 @@ infestor.define('infestor.tree.Tree',{
 			}
 		};
 		
-		// node.isLoaded = true;
-	
 		params.params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId'] = nodeId;
 		
 		this.dataSet.load(params);
