@@ -764,7 +764,7 @@ infestor js
 			if (window.JSON)
 				return window.JSON.parse(str);
 
-			return eval(str);
+			return eval('('+str+')');
 		},
 
 		delay : function (fn, time, scope) {

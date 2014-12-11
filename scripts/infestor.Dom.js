@@ -201,8 +201,7 @@ infestor.define('infestor.Dom', {
 	getElement : function () {
 
 		return this.element;
-	},
-	
+	},	
 	
 	fixEventName:function(eventName){
 		
@@ -756,7 +755,6 @@ infestor.define('infestor.Dom', {
 		return parentElement.appendChild(childElement),this;
 	},
 	
-	
 	before : function(afterSibling){
 	
 		return afterSibling.insertBefore(this);
@@ -830,8 +828,7 @@ infestor.define('infestor.Dom', {
 
 	}
 
-},
-	function (cls) {
+},function (cls) {
 
 	//类创建完成后回调方法
 

@@ -69,7 +69,7 @@ infestor.define('infestor.widget.ChainMenu', {
 			items : [{
 
 				name:'saparator',
-				cssClsElement : this.orientedCssClsFix(this.orientation == 'vertical' ? this.cssClsChnMenuVSeparator : this.cssClsChnMenuHSeparator),
+				cssClsElement : this.orientedCssClsFix(this.orientation == 'vertical' ? this.cssClsChnMenuVSeparator : this.cssClsChnMenuHSeparator)
 			
 			}, {
 

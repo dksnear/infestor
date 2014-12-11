@@ -18,8 +18,12 @@ infestor.define('infestor.Element', {
 
 	statics : {
 	
-		cssClsElementGlobalMask:'infestor-element-global-mask',
-
+		cssClsElementGlobalMask:infestor.boe({ 
+		
+			 ie7minus : 'infestor-element-global-mask-ie7minus',
+			 otherwise : 'infestor-element-global-mask'
+		}),
+		
 		// 通过类型或别名创建实例
 		create : function (opts, name) {
 
@@ -94,6 +98,8 @@ infestor.define('infestor.Element', {
 	cssClsResizableTrigger : 'infestor-element-resizable-trigger',
 	cssClsDraggableTrigger : 'infestor-element-draggable-trigger',
 	
+	
+	// #icon
 	cssClsGlobalIcon16 : 'infestor-global-icon-16',
 	cssClsGlobalIconHover16 : 'infestor-global-icon-hover-16',
 	cssClsGlobalIconFocus16 : 'infestor-global-icon-focus-16',
@@ -107,6 +113,15 @@ infestor.define('infestor.Element', {
 	cssClsGlobalIconBlockPseudoHover : 'infestor-global-icon-block-pseudo-hover',
 	cssClsGlobalIconBlockPseudoFocus : 'infestor-global-icon-block-pseudo-focus',
 	cssClsGlobalIconBlockPseudoDisabled : 'infestor-global-icon-block-pseudo-disabled',
+	
+	// #button
+	cssClsGlobalButton : 'infestor-global-button',
+	cssClsGlobalButtonHover : 'infestor-global-button-hover',
+	cssClsGlobalButtonFocus : 'infestor-global-button-focus',
+	cssClsGlobalButtonDisabled : 'infestor-global-button-disabled',	
+	cssClsGlobalButtonInline :'infestor-global-inline-button',
+	cssClsGlobalButtonHorizon : 'infestor-global-horizon-button',
+	
 
 	// 控件元素的容器接口(infestor.Dom)
 	element : null,

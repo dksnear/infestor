@@ -71,7 +71,7 @@ infestor.define('infestor.Panel', {
 		
 		this.isLayoutSet = true;
 			
-		this.createHead().createTitle().createBody().createRear().createControl();
+		this.createTitle().createHead().createBody().createRear().createControl();
 		this.elementInnerContainer = this.body.elementInnerContainer;
 		
 		
@@ -155,10 +155,7 @@ infestor.define('infestor.Panel', {
 		if (this.titleText && !this.title)
 			this.title = true;
 
-		if(this.title && !this.head)
-			(this.head = true) && this.createHead();
-			
-		this.title = this.createElement('title', this.head, {
+		this.title = this.createElement('title', this.element, {
 			cssClsElement : this.cssClsTitle,
 			text : this.titleText
 		});
