@@ -54,14 +54,14 @@ infestor.define('infestor.widget.ChainMenu', {
 				
 					cssClsElement : this.orientedCssClsFix(this.cssClsChnMenuNode) + ' ' + (opts.cssClsTarget || ''),
 					targetName:opts.name,
-					icon:'list',
+					icon:opts.icon || 'list',
 					iconSize:32,
 					tip: opts.tip,
 					tipTrend:this.orientation == 'vertical' ? 'left' : 'bottom',
 					tipDrift:this.orientation == 'vertical' ? 'head' : '15'
 				}]
 
-			},opts,'tip',null,true));
+			},opts,['tip','icon'],null,true));
 		}
 
 		return infestor.create('infestor.Element', infestor.appendIf({
@@ -77,14 +77,14 @@ infestor.define('infestor.widget.ChainMenu', {
 
 				cssClsElement : this.orientedCssClsFix(this.cssClsChnMenuNode) +' '+ (opts.cssClsTarget || ''),
 				targetName:opts.name,
-				icon:'list',
+				icon:opts.icon || 'list',
 				iconSize:32,
 				tip: opts.tip,
 				tipTrend:this.orientation == 'vertical' ? 'left' : 'bottom',
 				tipDrift:this.orientation == 'vertical' ? 'head' : '15'
 			}]
 
-		},opts,'tip',null,true));
+		},opts,['tip','icon'],null,true));
 
 	},
 	
