@@ -69,6 +69,17 @@
 
 }
 
+.infestor-tree-node-expand-switch{
+
+	background-position:-314px -216px;
+
+}
+
+.infestor-tree-node-collapse-switch{
+
+	background-position:-364px -216px;
+
+}
 
 .infestor-tree-node-loading-switch{
 
@@ -96,6 +107,23 @@
 .infestor-tree-node-icon{
 
 
+}
+	
+.infestor-tree-node-expand-icon{
+
+	background-position:-339px -16px;
+
+}
+	
+.infestor-tree-node-collapse-icon{
+
+	background-position:-289px -56px;
+	
+}
+	
+.infestor-tree-node-normal-icon{
+
+	background-position:-364px -16px;
 }
 
 .infestor-tree-node-loading-icon{

@@ -8,18 +8,30 @@ infestor.define('infestor.tree.TreeNode',{
 
 	cssClsElement : 'infestor-tree-node',
 
-	cssClsNodeCell : 'infestor-tree-node-cell',
+	cssClsNodeCell : 'infestor-global-icon-16 infestor-tree-node-cell',
 
 	cssClsNodeSpace : 'infestor-tree-node-space',
 	
 	cssClsNodeSwitch : 'infestor-tree-node-switch',
-		
+	
+	cssClsNodeExpandSwitch : 'infestor-tree-node-expand-switch',
+	
+	cssClsNodeCollapseSwitch : 'infestor-tree-node-collapse-switch',
+
+	cssClsNodeNonSwitch : 'infestor-tree-node-non-switch',
+	
 	cssClsNodeLoadingSwitch : 'infestor-tree-node-loading-switch',
 	
 	cssClsNodeCheck : 'infestor-tree-node-check',
 	
 	cssClsNodeIcon :'infestor-tree-node-icon',
-
+	
+	cssClsNodeExpandIcon : 'infestor-tree-node-expand-icon',
+	
+	cssClsNodeCollapseIcon : 'infestor-tree-node-collapse-icon',
+	
+	cssClsNodeNormalIcon : 'infestor-tree-node-normal-icon',
+	
 	cssClsNodeLoadingIcon : 'infestor-tree-node-loading-icon',
 
 	cssClsNodeText : 'infestor-tree-node-text',
@@ -181,36 +193,42 @@ infestor.define('infestor.tree.TreeNode',{
 		this.changeNodeSwitchIcon();
 	
 	},
-	
+
 	changeNodeIcon :function(){
+	
+		var cls = '';
 		
-		// normal
-		this.isLeaf && this.nodeIconCell.setIcon('document');
-		// expand
-		(this.isBranch || this.isRoot) && this.isExpand && this.nodeIconCell.setIcon('folder'); 
-		// collapse
-		(this.isBranch || this.isRoot) && this.isCollapse && this.nodeIconCell.setIcon('portfolio'); 
-			
+		this.isLeaf && (cls = this.cssClsNodeNormalIcon);
+		(this.isBranch || this.isRoot) && this.isExpand && (cls = this.cssClsNodeExpandIcon);
+		(this.isBranch || this.isRoot) && this.isCollapse && (cls = this.cssClsNodeCollapseIcon);
+	
+		if(cls && this.currentNodeIconCls == cls)
+			return this;
+	
+		this.nodeIconCell && this.nodeIconCell.element.removeClass(this.currentNodeIconCls || '').addClass(cls);
+		
+		this.currentNodeIconCls = cls;
+		
 		return this;
 		
 	},
 	
 	changeNodeSwitchIcon:function(){
 	
-		!this.isLoading && this.nodeSwitchCell.element.removeClass(this.cssClsNodeLoadingSwitch);
+		var cls = '';
 		
-		// normal
-		!this.hasChild && this.nodeSwitchCell.element.addClass(this.cssClsNodeNonSwitch);
+		!this.hasChild && (cls = this.cssClsNodeNonSwitch);
+		this.hasChild && this.isExpand && (cls = this.cssClsNodeExpandSwitch);
+		this.hasChild && this.isCollapse && (cls = this.cssClsNodeCollapseSwitch);
 		
-		// expand
-		this.hasChild && this.isExpand && this.nodeSwitchCell.setIcon('down');
-		 
-		// collapse
-		this.hasChild && this.isCollapse && this.nodeSwitchCell.setIcon('front');
+		this.isLoading && !this.isRoot && (cls = this.cssClsNodeLoadingSwitch);
 		
-		// loading
-		this.isLoading && !this.isRoot && this.nodeSwitchCell.element.css('background-position','').removeClass(this.cssClsNodeNonSwitch).addClass(this.cssClsNodeLoadingSwitch);
+		if(cls && this.currentNodeSwitchCls == cls)
+			return this;
 		
+		this.nodeSwitchCell && this.nodeSwitchCell.element.removeClass(this.currentNodeSwitchCls || '').addClass(cls);
+	
+		this.currentNodeSwitchCls = cls;
 		
 		return this;
 	},
