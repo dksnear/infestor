@@ -160,7 +160,17 @@ infestor.define('infestor.Element', {
 	text : null,
 
 	// tip
-	tip:null,
+	tip : null,
+	
+	// 图标名 
+	// 设置该项后将提供系统图标背景
+	// 系统图标设定函数setIcon
+	// 系统图标定义
+	icon : null,
+	
+	// 图标大小
+	// 系统只提供 16|32
+	iconSize : 16,
 	
 	// 贴士出现位置 (top|left|bottom|right)
 	tipTrend:'left',
@@ -191,9 +201,6 @@ infestor.define('infestor.Element', {
 
 	// 允许调整大小
 	resizable : false,
-
-	// 大小调整及移动限制容器(Dom|infestor.Dom|infestor.Element|fn)
-	limitContainer : null,
 
 	// 大小调整限制尺寸
 	minHeight : 100,
@@ -307,6 +314,8 @@ infestor.define('infestor.Element', {
 
 		this.boxShadow && this.element.addClass(this.cssClsElementBoxShadow);
 		
+		this.setIcon();
+		
 	},
 	
 	initDataSet : function () {
@@ -375,7 +384,7 @@ infestor.define('infestor.Element', {
 		return this;
 	},
 		
-	setCss:function(list,opts){
+	setCss : function(list,opts){
 	
 		list = list || [];
 	
@@ -394,6 +403,34 @@ infestor.define('infestor.Element', {
 	
 	},
 
+	// 设置图标 
+	setIcon : function(name,size){
+	
+		var logicPos,realPos;
+	
+		this.icon = name || this.icon;
+	
+		if(!this.icon) return false;
+		
+		logicPos = infestor.isRawObject(this.icon) ? this.icon : this.$iconNameMap[this.icon];
+		
+		if(!logicPos) return false;
+		
+		this.iconSize = parseInt(size || this.iconSize);
+		this.iconSize = /16|32/.test(this.iconSize) && this.iconSize || 16;
+		
+		realPos = this.$iconRealPosConvertor(logicPos,this.iconSize);
+		
+		if(!realPos) return false;
+
+		this.element.addClass(this.iconSize == 16 ? this.cssClsGlobalIcon16 : this.cssClsGlobalIcon32);
+		this.element.css('background-position',realPos);
+		
+		return true;
+		
+	
+	},
+	
 	// 设定元素尺寸样式
 	// opts { width|height|padding|border|margin }
 	setDimension : function (opts) {
@@ -743,13 +780,11 @@ infestor.define('infestor.Element', {
 	
 	},
 	
-	
 	lastItem : function (){
 	
 		return this.getItem(this.itemsIndex-1);
 	
 	},
-	
 	
 	// 遍历所有子元素
 	// @fn(idx[索引],item[元素]) 委托方法
@@ -1174,7 +1209,7 @@ infestor.define('infestor.Element', {
 	
 	// 下面的方法为条件引入
 
-	// 条件引入Tip
+	// 条件引入Tip组件
 	initTip : function (tip) {
 
 		if (!this.tip)
@@ -1238,6 +1273,7 @@ infestor.define('infestor.Element', {
 
 	},
 
+	// 条件引入Drag组件
 	initDraggable : function () {
 
 		if (!this.draggable)
@@ -1266,6 +1302,7 @@ infestor.define('infestor.Element', {
 
 	},
 
+	// 条件引入Resize组件
 	initResizable : function () {
 
 		if (!this.resizable)
@@ -1317,14 +1354,7 @@ infestor.define('infestor.Element', {
 	// 动态获取大小调整及移动的限制容器(Dom)
 	getLimitContainer : function () {
 
-		var container = infestor.isFunction(this.limitContainer) ? this.limitContainer() : this.limitContainer;
-
-		if (container instanceof infestor.Element)
-			container = container.getDom();
-		if (container instanceof infestor.Dom)
-			container = container.getElement();
-
-		return container || document.documentElement;
+		return document.documentElement;
 
 	},
 
@@ -1369,5 +1399,60 @@ infestor.define('infestor.Element', {
 		return null;
 
 	}
+
+},function(Element){
+
+	// # icon
+
+	var iconNameMap = {},iconLogicPosMap = {};
+
+	infestor.each(('flag expand share love comment list arrange folder eyes clock link sun moon contrast document'
+		+	' ' + 'add minus multiply divide upload download rewind forward play pause stop record accept decline move'
+		+	' ' + 'notes shutdown monitor music warning lock photographs stats location calendar battery mail drop star wayfinder'
+		+	' ' + 'sound dashboard bookmark search film inbox game locate transform send lighting cloud zip settings smiley'
+		+	' ' + 'experiments activity credit-card gear phone balance music-player image camera calculator mic compass temperature edit columns'
+		+	' ' + 'wallet cube drawer conversation headphone wrong zoom shrink user users terminal up down back front'
+		+	' ' + 'rss twitter dribbble facebook portfolio skype anchor film-reel analytics home transfer video wrench alarm eject').split(' '),
+			
+	function(idx,name){
+	
+		var logicPos = {
+		
+			x : idx%15 + 1 || idx,
+			y : Math.floor(idx/15) + 1,
+			name : name
+		
+		};
+	
+		iconNameMap[name] = logicPos;
+		
+		iconLogicPosMap[logicPos.y] = iconLogicPosMap[logicPos.y] || {};
+		iconLogicPosMap[logicPos.y][logicPos.x] = logicPos;
+	
+	});
+				
+	infestor.override(Element,{
+	
+		$iconNameMap : iconNameMap,
+		$iconLogicPosMap : iconLogicPosMap,
+		$iconRealPosConvertor : function(logicPos,size){
+		
+			var x=logicPos.x,y=logicPos.y;
+		
+			if(!this.$iconLogicPosMap[y][x])
+				return false;
+			
+			if(size == 16)
+				return ['-',(14+(x-1)*25),'px -',(16+(y-1)*40),'px'].join(''); 
+			
+			if(size == 32)
+				return ['-',(14*2+(x-1)*25*2),'px -',(16*2+(y-1)*40*2),'px'].join('');
+			
+			return false;
+		
+		}
+	
+	});
+
 
 });

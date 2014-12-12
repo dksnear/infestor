@@ -36,7 +36,7 @@ infestor.define('infestor.widget.ChainMenu', {
 			
 		},function(inst,e){
 		
-			this.emit('itemClick',[this.getItem(inst.targetName),inst,e],this);
+			this.emit('itemClick',[this.getItem(inst.targetName),inst,e]);
 		
 		},this);
 	
@@ -52,8 +52,10 @@ infestor.define('infestor.widget.ChainMenu', {
 				
 				items : [{
 				
-					cssClsElement : this.orientedCssClsFix(this.cssClsGlobalIcon32 + ' '+ this.cssClsChnMenuNode) + ' ' + (opts.cssClsTarget || ''),
+					cssClsElement : this.orientedCssClsFix(this.cssClsChnMenuNode) + ' ' + (opts.cssClsTarget || ''),
 					targetName:opts.name,
+					icon:'list',
+					iconSize:32,
 					tip: opts.tip,
 					tipTrend:this.orientation == 'vertical' ? 'left' : 'bottom',
 					tipDrift:this.orientation == 'vertical' ? 'head' : '15'
@@ -73,8 +75,10 @@ infestor.define('infestor.widget.ChainMenu', {
 			
 			}, {
 
-				cssClsElement : this.orientedCssClsFix(this.cssClsGlobalIcon32 + ' '+ this.cssClsChnMenuNode) +' '+ (opts.cssClsTarget || ''),
+				cssClsElement : this.orientedCssClsFix(this.cssClsChnMenuNode) +' '+ (opts.cssClsTarget || ''),
 				targetName:opts.name,
+				icon:'list',
+				iconSize:32,
 				tip: opts.tip,
 				tipTrend:this.orientation == 'vertical' ? 'left' : 'bottom',
 				tipDrift:this.orientation == 'vertical' ? 'head' : '15'

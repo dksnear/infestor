@@ -5,17 +5,14 @@ infestor.define('infestor.Panel', {
 	extend : 'infestor.Element',
 
 	cssClsElement : 'infestor-panel',
-	cssClsPanelControl:'infestor-panel-control',
-	cssClsPanelControlItemHorizon:'infestor-panel-control-item-horizon',
-	cssClsPanelControlItemVertical:'infestor-panel-control-item-vertical',
-	cssClsPanelControlItemClose:'infestor-panel-control-item-close',
-	cssClsPanelControlItemMax:'infestor-panel-control-item-max',
-	cssClsPanelControlItemMin:'infestor-panel-control-item-min',
-	cssClsPanelControlItemRestore:'infestor-panel-control-item-restore',
+
 	cssClsHead : 'infestor-panel-head',
 	cssClsBody : 'infestor-panel-body',
 	cssClsRear : 'infestor-panel-rear',
 	cssClsTitle : 'infestor-panel-title',
+	
+	cssClsPanelSizeControl : 'infestor-panel-size-control',
+	cssClsPanelSizeControlItem : 'infestor-panel-size-control-item',
 
 	height : null,
 	width : null,
@@ -27,17 +24,15 @@ infestor.define('infestor.Panel', {
 	rear : null,
 	body : true,
 	
-	// 关闭类型(hide|destory)
-	closeType : 'destory',
+	// # sizable
 	closable:false,
 	maxable:false,
 	miniable:false,
-	// vertical|horizon
-	controlLayout:'horizon',
-		
-	// 内部元素布局模式 (vertical|horizon|table|inline-block|float|block)
-	// vertical = block
-	// horizon = inline-block
+	
+	// 关闭类型(hide|destory)
+	closeType : 'destory',
+
+	// head rear body三个元素布的局模式 (vertical|horizon|table|inline-block|float|block), vertical as block, horizon as inline-block
 	layout : 'block',
 
 	initElement : function () {
@@ -71,7 +66,7 @@ infestor.define('infestor.Panel', {
 		
 		this.isLayoutSet = true;
 			
-		this.createTitle().createHead().createBody().createRear().createControl();
+		this.createTitle().createHead().createBody().createRear().createSizeControl();
 		this.elementInnerContainer = this.body.elementInnerContainer;
 		
 		
@@ -164,52 +159,86 @@ infestor.define('infestor.Panel', {
 
 	},
 	
-	createControl:function(){
+	createSizeControl:function(){
 	
-		var sizable = this.closable || this.maxable || this.miniable,
-			cssClsItem = this.controlLayout == 'horizon' ? (this.cssClsPanelControlItemHorizon + ' ' + this.cssClsElementInlineBlock) : this.cssClsPanelControlItemVertical;
-	
+		var sizable = this.closable || this.maxable || this.miniable;
+		
 		if(!sizable) return this;
+	
+		this.sizeControl = infestor.create('infestor.Element',{
 		
-		this.sizeControl = true;
+			cssClsElement : this.cssClsPanelSizeControl,
+			itemLayout : 'horizon',
+			itemsOpts : {
+				
+				cssClsElement : this.cssClsPanelSizeControlItem
+			},
+			initEvents : function(){
+			
+				this.delegate(this,'click',true,function(inst,e){
+				
+					if(!inst || !inst.element || !inst.element.hasClass(this.itemsOpts.cssClsElement))
+						return;
+					
+					switch(inst.name){
+					
+						case 'min':
+							this.parent.min();
+							break;
+						case 'max':
+							this.parent.max();
+							break;
+						case 'restore':
+							this.parent.restore();
+							break;
+						case 'close':
+							this.parent.close();
+							break;
+						default:
+							break;
+					
+					}
+					
+				},this);
+			
+			}
+			
+		}).renderTo(this);
 		
-		this.sizeControl = this.createElement('sizeControl',this.element,{
-		
-			cssClsElement:this.cssClsPanelControl + ' ' + this.cssClsElementRemoveSpace
+		this.miniable && this.sizeControl.addItem({
+			
+			name:'min',
+			icon:'minus',
+			attr:{ title : '最小化' }
 		
 		});
 		
-		cssClsItem = this.cssClsGlobalIcon16 + ' ' + cssClsItem;
+		this.maxable && this.sizeControl.addItem({
+			
+			name:'max',
+			icon:'record',
+			attr:{ title : '最大化' }
+			
+		});
 		
-		if(this.miniable)
-			this.sizeControl.elementMini = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemMin,null,{ title:'最小化' }).click(function(){
-			
-				this.min();
-			
-			},this);
 		
-		if(this.maxable)
-			this.sizeControl.elementMax = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemMax,null,{ title:'最大化' }).click(function(){
+		(this.miniable || this.maxable) && this.sizeControl.addItem({
 			
-				this.max();
-			
-			},this);
+			name:'restore',
+			icon:'photographs',
+			attr:{ title : '还原' }
 		
-		// 还原
-		if(this.miniable || this.maxable)
-			this.sizeControl.elementRestore = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemRestore,null,{ title:'还原' }).click(function(){
-			
-				this.restore();
-			
-			},this);
-			
-		if(this.closable)
-			this.sizeControl.elementClose = this.sizeControl.createDomElement(null,cssClsItem+' '+this.cssClsPanelControlItemClose,null,{ title:'关闭' }).click(function(){
-			
-				this.close();
-			
-			},this);
+		});
 		
+		this.closable && this.sizeControl.addItem({
+			
+			name:'close',
+			icon:'multiply',
+			attr:{ title : '关闭' }
+		
+		});
+	
+				
 		return this;
 			
 	},

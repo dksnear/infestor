@@ -26,8 +26,6 @@ infestor.define('infestor.form.ValidatePanel',{
 	cssClsValidateStatusPanelHead:'infestor-validate-status-panel-head',
 	cssClsValidateStatusPanelBody:'infestor-validate-status-panel-body',
 	cssClsValidateStatusValidating:'infestor-validate-panel-status-validating',
-	cssClsValidateStatusValidatedPass:'infestor-global-icon-focus-16 infestor-validate-panel-status-validated-pass',
-	cssClsValidateStatusValidatedError:'infestor-global-icon-hover-16 infestor-validate-panel-status-validated-error',
 	
 	// 用于显示提示
 	promptPanel:true,
@@ -93,7 +91,7 @@ infestor.define('infestor.form.ValidatePanel',{
 		this.statusPanel = this.createElement('statusPanel',this,{
 		
 			cssClsElement : this.cssClsValidateStatusPanel,
-			cssClsHead: [this.cssClsValidateStatusPanelHead,[this.cssClsValidateStatusValidating,this.cssClsValidateStatusValidatedPass,this.cssClsValidateStatusValidatedError][this.status]||''].join(' '),
+			cssClsHead:this.cssClsValidateStatusPanelHead,
 			cssClsBody: this.cssClsValidateStatusPanelBody,
 			head:true,
 			text:this.statusTexts[this.status],
@@ -132,22 +130,22 @@ infestor.define('infestor.form.ValidatePanel',{
 	
 		if(!this.statusPanel || this.status === status) return this;
 		
-		var allStatusCssCls = [this.cssClsValidateStatusValidating,this.cssClsValidateStatusValidatedPass,this.cssClsValidateStatusValidatedError].join(' ');
-		
 		switch(status){
 		
 			case infestor.form.ValidatePanel.VALIDATING:
-				this.statusPanel.head.element.removeClass(allStatusCssCls).addClass(this.cssClsValidateStatusValidating);
+				this.statusPanel.head.element.css('background-position','').addClass(this.cssClsValidateStatusValidating);
 				this.statusPanel.setText(this.statusTexts[infestor.form.ValidatePanel.VALIDATING]);
 				this.status = status;
 				break;
 			case infestor.form.ValidatePanel.VALIDATED_PASS:
-				this.statusPanel.head.element.removeClass(allStatusCssCls).addClass(this.cssClsValidateStatusValidatedPass);
+				this.statusPanel.head.element.removeClass(this.cssClsValidateStatusValidating).removeClass(this.cssClsGlobalIconHover16).addClass(this.cssClsGlobalIconFocus16);
+				this.statusPanel.head.setIcon('accept');
 				this.statusPanel.setText(this.statusTexts[infestor.form.ValidatePanel.VALIDATED_PASS]);
 				this.status = status;
 				break;
 			case infestor.form.ValidatePanel.VALIDATED_ERROR:
-				this.statusPanel.head.element.removeClass(allStatusCssCls).addClass(this.cssClsValidateStatusValidatedError);
+				this.statusPanel.head.element.removeClass(this.cssClsValidateStatusValidating).removeClass(this.cssClsGlobalIconFocus16).addClass(this.cssClsGlobalIconHover16);
+				this.statusPanel.head.setIcon('warning');
 				this.statusPanel.setText(this.statusTexts[infestor.form.ValidatePanel.VALIDATED_ERROR]);
 				this.status = status;
 				break;

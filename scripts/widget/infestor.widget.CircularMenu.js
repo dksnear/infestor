@@ -5,7 +5,7 @@ infestor.define('infestor.widget.CircularMenu', {
 	extend : 'infestor.Element',
 	cssUses : 'infestor.Widget',
 
-	cssClsElement : 'infestor-widget-circular-menu infestor-global-icon-32',
+	cssClsElement : 'infestor-widget-circular-menu',
 	cssClsCMenuContainer : 'infestor-widget-circular-menu-container',
 	cssClsCMenuItem : 'infestor-widget-circular-menu-item',
 	
@@ -23,19 +23,22 @@ infestor.define('infestor.widget.CircularMenu', {
 	
 	},
 	
-	cssClsCMenuItemIconMap:{
+	cMenuIconMap:{
 	
-		center:'infestor-widget-circular-menu-item-icon-center',
-		north:'infestor-widget-circular-menu-item-icon-north',
-		south:'infestor-widget-circular-menu-item-icon-south',
-		east:'infestor-widget-circular-menu-item-icon-east',
-		west:'infestor-widget-circular-menu-item-icon-west',
-		northEast:'infestor-widget-circular-menu-item-icon-ne',
-		northWest:'infestor-widget-circular-menu-item-icon-nw',
-		southEast:'infestor-widget-circular-menu-item-icon-se',
-		southWest:'infestor-widget-circular-menu-item-icon-sw'
+		center : 'shrink',
+		north : {x:2,y:1},
+		south : {x:3,y:1},
+		east : {x:4,y:1},
+		west : {x:5,y:1},
+		northEast : {x:6,y:1},
+		northWest : {x:7,y:1},
+		southEast : {x:8,y:1},
+		southWest : {x:9,y:1},
 	
 	},
+	
+	icon:'zoom',
+	iconSize:32,
 	
 	draggable : true,
 	
@@ -43,33 +46,30 @@ infestor.define('infestor.widget.CircularMenu', {
 	tipDrift:'14',
 	tip:'菜单',
 	
+	// direction:{ name:(必须),prompt:(可选),icon:(可选),cssClsIcon:(可选) }	
 	btnConfig:{
 	
 		north:{
 		
 			name:'north',
-			cssClsIcon:'infestor-widget-circular-menu-item-icon-north',
 			prompt:'north-prompt'
 			
 		},
 		south:{
 			
 			name:'south',
-			cssClsIcon:'infestor-widget-circular-menu-item-icon-south',
 			prompt:'south-prompt'
 		
 		},
 		west:{
 			
 			name:'west',
-			cssClsIcon:'infestor-widget-circular-menu-item-icon-west',
 			prompt:'west-prompt'
 		
 		},
 		east:{
 		
 			name:'east',
-			cssClsIcon:'infestor-widget-circular-menu-item-icon-east',
 			prompt:'east-prompt'
 			
 		},
@@ -163,13 +163,15 @@ infestor.define('infestor.widget.CircularMenu', {
 				if(!config)
 					return null;
 				
-				config.cssClsIcon = config.cssClsIcon || this.cssClsCMenuItemIconMap[name];
+				config.icon = config.icon || this.cMenuIconMap[name],
 				config.cssClsPos = this.cssClsCMenuItemPosMap[name];
 				
 				return {
 				
-					cssClsElement:[this.cssClsElementInlineBlock,this.cssClsGlobalIcon32,this.cssClsCMenuItem,config.cssClsPos,config.cssClsIcon].join(' '),
+					cssClsElement:[this.cssClsCMenuItem,config.cssClsPos,config.cssClsIcon].join(' '),
 					name:name,
+					iconSize:32,
+					icon:config.icon,
 					tipTrend:'bottom',
 					tipDrift:'14',
 					tip:config.prompt || false,
@@ -215,6 +217,9 @@ infestor.define('infestor.widget.CircularMenu', {
 	
 		mi.element.addClass(mi.floatData.cssClsIcon);
 		si.element.addClass(si.floatData.cssClsIcon);
+		
+		mi.setIcon(mi.floatData.icon);
+		si.setIcon(si.floatData.icon);
 	
 		return si;
 	

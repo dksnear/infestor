@@ -12,14 +12,20 @@
 
 ***************/
 
+.infestor-field-ie7minus{
 
-.infestor-field{
+	display:inline;
+	zoom:1;
+
+}
+
+.infestor-field,
+.infestor-field-ie7minus {
 	
 	position: relative;
 	margin: 0 15px 5px 0;
 	padding: 5px 34px 5px 10px;
-	*display:inline;
-	*zoom:1;
+
 }
 
 .infestor-field input{
@@ -84,18 +90,6 @@
 .infestor-field-status-not-null{
 
 	border-color:purple;
-}
-
-.infestor-field-status-error{
-
-	background-position:-339px -176px;
-
-}
-
-.infestor-field-status-passed{
-
-	background-position:-314px -56px;
-
 }
 
 
@@ -205,26 +199,8 @@
 	
 }
 
-.infestor-candidate-captcha-control-panel-head-backspace{
+.infestor-candidate-captcha-control-panel-head-item{
 
-	background-position:-164px -56px;
-	margin:0 0 5px 0;
-	cursor:pointer;
-
-}
-
-.infestor-candidate-captcha-control-panel-head-refresh {
-
-	background-position:-264px -256px;
-	margin:0 0 5px 0;
-	cursor:pointer;
-	
-
-}
-
-.infestor-candidate-captcha-control-panel-head-cancel {
-
-	background-position:-339px -56px;
 	margin:0 0 5px 0;
 	cursor:pointer;
 

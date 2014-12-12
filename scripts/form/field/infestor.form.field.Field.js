@@ -75,7 +75,10 @@ infestor.define('infestor.form.field.Field', {
 	
 	},
 	
-	cssClsElement : 'infestor-field',
+	cssClsElement : infestor.boe({ 	
+		 ie7minus : 'infestor-field-ie7minus',
+		 otherwise : 'infestor-field'
+	}),
 	cssClsFieldLabel : 'infestor-field-label',
 	cssClsFieldLeft:'infestor-field-left',
 	cssClsFieldRight : 'infestor-field-right',
@@ -84,8 +87,6 @@ infestor.define('infestor.form.field.Field', {
 	cssClsFieldStatus : 'infestor-field-status',
 	cssClsFieldStatusLeft : 'infestor-field-status-left',
 	cssClsFieldStatusRight : 'infestor-field-status-right',
-	cssClsFieldStatusError : 'infestor-global-icon-disabled-16 infestor-field-status-error',
-	cssClsFieldStatusPassed: 'infestor-global-icon-disabled-16 infestor-field-status-passed',
 	cssClsFieldStatusNotNull:'infestor-field-status-not-null',
 
 	elementFieldLabel : null,
@@ -166,7 +167,7 @@ infestor.define('infestor.form.field.Field', {
 
 		this.callParent();
 		
-		this.createLabel().createContent().createInput().createStatusIcon().createValidateMonitor();
+		this.createLabel().createContent().createInput().createStatusIndicator().createValidateMonitor();
 		
 	},
 	
@@ -213,10 +214,7 @@ infestor.define('infestor.form.field.Field', {
 	
 		if(!this.label || !parent) return this;
 		
-		this.elementFieldLabel = this.createDomElement(parent,this.cssClsFieldLabel,'label',{
-		
-			'for':this.id
-		});
+		this.elementFieldLabel = this.createDomElement(parent,this.cssClsFieldLabel,'label',{ 'for':this.id });
 		
 		this.labelWidth && this.elementFieldLabel.css('width',infestor.styleFormat(this.labelWidth));
 		
@@ -281,12 +279,17 @@ infestor.define('infestor.form.field.Field', {
 	
 	},
 	
-	createStatusIcon:function(){
+	createStatusIndicator:function(){
 	
 		if(!this.allowCheckStatus)
 			return this;
 	
-		this.elementStatus = this.elementStatus || this.createDomElement(this.elementFieldContent,[this.cssClsFieldStatus, this.labelPos=='right'? this.cssClsFieldStatusLeft : this.cssClsFieldStatusRight].join(' ') );
+		this.statusIndicator = infestor.create('infestor.Element',{
+		
+			cssClsElement : [this.cssClsGlobalIconDisabled16,this.cssClsFieldStatus, this.labelPos=='right'? this.cssClsFieldStatusLeft : this.cssClsFieldStatusRight].join(' '),
+			icon : this.checked ? 'accept' : 'edit'
+		
+		}).renderTo(this.elementFieldContent);
 		
 		return this;
 	
@@ -340,16 +343,14 @@ infestor.define('infestor.form.field.Field', {
 		
 	setStatus:function(status){
 	
-		if(!this.elementStatus) return this;
+		if(!this.statusIndicator) return this;
 	
 		this.status = status;
 		
-		this.elementStatus.removeClass([this.cssClsFieldStatusError,this.cssClsFieldStatusPassed].join(' '));
-		
 		if(this.status == 'error')
-			this.elementStatus.addClass(this.cssClsFieldStatusError);
+			this.statusIndicator.setIcon('edit');
 		if(this.status == 'passed')
-			this.elementStatus.addClass(this.cssClsFieldStatusPassed);
+			this.statusIndicator.setIcon('accept');
 		
 		return this;
 	

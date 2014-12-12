@@ -64,7 +64,6 @@
 .infestor-widget-chain-menu-node{
 
 	cursor: pointer;
-	background-position: -578px -112px;
 
 }
 
@@ -81,10 +80,7 @@
 
 	position:fixed;
 	top:50px;
-	left:50px;
-		
-	background-position:-328px -432px;
-	
+	left:50px;	
 }
 
 .infestor-widget-circular-menu-container{
@@ -162,61 +158,6 @@
 
 	bottom:-36px;
 	right:-36px;
-}
-
-/* xb:-28 yb:-32  xs:50 ys:80 */
-
-.infestor-widget-circular-menu-item-icon-center{
-
-	background-position:-378px -432px;
-}
-
-.infestor-widget-circular-menu-item-icon-north{
-
-	background-position:-28px -32px;
-
-}
-
-.infestor-widget-circular-menu-item-icon-south{
-
-	background-position:-78px -32px;
-
-}
-
-.infestor-widget-circular-menu-item-icon-west{
-
-	background-position:-128px -32px;
-
-}
-
-.infestor-widget-circular-menu-item-icon-east{
-
-	background-position:-178px -32px;
-
-}
-
-.infestor-widget-circular-menu-item-icon-nw{
-
-	background-position:-228px -32px;
-
-}
-
-.infestor-widget-circular-menu-item-icon-ne{
-
-	background-position:-278px -32px;
-
-}
-
-.infestor-widget-circular-menu-item-icon-sw{
-	
-	background-position:-328px -32px;
-
-}
-
-.infestor-widget-circular-menu-item-icon-se{
-
-	background-position:-378px -32px;
-
 }
 
 

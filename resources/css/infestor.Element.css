@@ -285,13 +285,17 @@ input:focus{
 }
 
 .infestor-global-icon-16:focus,
-.infestor-global-icon-focus-16{
+.infestor-global-icon-focus-16,
+.infestor-global-icon-focus-16:hover{
 
 	background-image:url('../images/def-suit-focus-16.png');
 }
 
 .infestor-global-icon-16:disabled,
-.infestor-global-icon-disabled-16{
+.infestor-global-icon-disabled-16,
+.infestor-global-icon-disabled-16:focus,
+.infestor-global-icon-disabled-16:hover,
+.infestor-global-icon-disabled-16:disabled{
 
 	background-image:url('../images/def-suit-disabled-16.png');
 }
@@ -327,13 +331,17 @@ input:focus{
 }
 
 .infestor-global-icon-32:focus,
-.infestor-global-icon-focus-32{
+.infestor-global-icon-focus-32,
+.infestor-global-icon-focus-32:hover{
 
 	background-image:url('../images/def-suit-focus-32.png');
 }
 
 .infestor-global-icon-32:disabled,
-.infestor-global-icon-disabed-32{
+.infestor-global-icon-disabled-32,
+.infestor-global-icon-disabled-32:focus,
+.infestor-global-icon-disabled-32:hover,
+.infestor-global-icon-disabled-32:disabled{
 
 	background-image:url('../images/def-suit-disabled-32.png');
 }
@@ -342,8 +350,7 @@ input:focus{
 .infestor-global-icon-block-pseudo-16:focus,
 .infestor-global-icon-block-pseudo-16:disabled,
 .infestor-global-icon-block-pseudo-16-hover:hover,
-.infestor-global-icon-block-pseudo-16-focus:focus,
-.infestor-global-icon-block-pseudo-16-disabled:disabled{
+.infestor-global-icon-block-pseudo-16-focus:focus{
 
 	background-image:url('../images/def-suit-16.png');
 
@@ -580,7 +587,7 @@ input:focus{
 
 }
 
-.infestor-panel-control{
+.infestor-panel-size-control{
 
 	position:absolute;
 	right:10px;
@@ -588,43 +595,9 @@ input:focus{
 
 }
 
-.infestor-panel-control-item-horizon{
-	
-	height:22px;
-	width:22px;
-	margin-left:10px;
-	cursor:pointer;
+.infestor-panel-size-control-item{
 
-}
-
-.infestor-panel-control-item-vertical{
-
-	display:block;
-	width:22px;
-	height:22px;
-	margin-bottom:15px;
-	cursor:pointer;
-}
-
-.infestor-panel-control-item-close{
-
-	background-position:-339px -56px;
-
-}
-
-.infestor-panel-control-item-max{
-
-	background-position:-264px -56px;
-}
-
-.infestor-panel-control-item-min{
-
-	background-position:-39px -56px;
-}
-
-.infestor-panel-control-item-restore{
-
-	background-position:-164px -96px;
+	margin-left:5px;
 
 }
 
@@ -658,13 +631,12 @@ input:focus{
 
 	color:#F00;
 
-
 }
 
 .infestor-validate-panel-prompt-text{
 	
 	color:#008000;
-
+	
 }
 
 .infestor-validate-status-panel{
@@ -692,17 +664,6 @@ input:focus{
 
 	background-image:url(../images/validating-24.gif);
 
-}
-
-.infestor-validate-panel-status-validated-pass{
-
-	background-position:-314px -56px;
-
-}
-
-.infestor-validate-panel-status-validated-error{
-
-	background-position:-114px -96px;
 }
 
 /* window */

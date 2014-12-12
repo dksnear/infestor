@@ -98,21 +98,21 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 				return;
 			}
 			
-			if(inst.element.hasClass('infestor-candidate-captcha-control-panel-head-backspace')){
+			if(inst.name == 'backspace'){
 			
 				this.clearValue(true);
 				return;
 			
 			}
 			
-			if(inst.element.hasClass('infestor-candidate-captcha-control-panel-head-refresh')){
+			if(inst.name == 'refresh'){
 			
 				this.refresh();
 				return;
 			
 			}
 			
-			if(inst.element.hasClass('infestor-candidate-captcha-control-panel-head-cancel')){
+			if(inst.name == 'cancel'){
 				
 				this.blur();
 				return;
@@ -335,22 +335,25 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 					
 				
 				},{
-					cssClsElement:this.cssClsGlobalIcon16 + ' infestor-candidate-captcha-control-panel-head-backspace',
+					cssClsElement:'infestor-candidate-captcha-control-panel-head-item',
 					name:'backspace',
+					icon:'rewind',
 					attr:{
 					
 						title:'退格'
 					}
 				},{
-					cssClsElement:this.cssClsGlobalIcon16 + ' infestor-candidate-captcha-control-panel-head-refresh',
+					cssClsElement:'infestor-candidate-captcha-control-panel-head-item',
 					name:'refresh',
+					icon:'transfer',
 					attr:{
 					
 						title:'刷新验证码'
 					}
 				},{
-					cssClsElement:this.cssClsGlobalIcon16 + ' infestor-candidate-captcha-control-panel-head-cancel',
+					cssClsElement:'infestor-candidate-captcha-control-panel-head-item',
 					name:'cancel',
+					icon:'multiply',
 					attr:{
 					
 						title:'关闭'
@@ -359,13 +362,15 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 			
 			},
 			
+			itemLayout : 'horizon',
+			
 			items:infestor.genArray(this.candidateNum,function(i){
 			
 				var pos = this.getCandidatePos(i);
 			
 				return {
 			
-					cssClsElement:'infestor-candidate-captcha-control-panel-body-cell ' + this.cssClsElementInlineBlock,
+					cssClsElement:'infestor-candidate-captcha-control-panel-body-cell',
 					pos:i,
 					css:{
 					
