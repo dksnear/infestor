@@ -112,7 +112,15 @@ infestor.define('infestor.Dom', {
 			
 			infestor.Dom.$scrollTaskId = infestor.task(function(){
 			
-				var scroll = infestor.Dom.getBody().scrollOffset(),
+				var offset = infestor.Dom.getBody().offset(),
+					scroll = {
+					
+						top : offset.rawScrollTop,
+						left : offset.rawScrollLeft,
+						height : offset.scrollHeight,
+						width : offset.scrollWidth
+					
+					},
 					isXend = opts.xForward ? scroll.left == scroll.width - infestor.Dom.clientWidth() : scroll.left == 0,
 					isYend = opts.yForward ? scroll.top == scroll.height - infestor.Dom.clientHeight() : scroll.top == 0;
 				
