@@ -1412,8 +1412,7 @@ infestor.define('infestor.Element', {
 		+	' ' + 'sound dashboard bookmark search film inbox game locate transform send lighting cloud zip settings smiley'
 		+	' ' + 'experiments activity credit-card gear phone balance music-player image camera calculator mic compass temperature edit columns'
 		+	' ' + 'wallet cube drawer conversation headphone wrong zoom shrink user users terminal up down back front'
-		+	' ' + 'rss twitter dribbble facebook portfolio skype anchor film-reel analytics home transfer video wrench alarm eject').split(' '),
-			
+		+	' ' + 'rss twitter dribbble facebook portfolio skype anchor film-reel analytics home transfer video wrench alarm eject').split(' '),		
 	function(idx,name){
 	
 		var logicPos = {

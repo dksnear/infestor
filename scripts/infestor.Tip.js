@@ -124,18 +124,10 @@ infestor.define('infestor.Tip', {
 			}
 
 		};
-		
-		this.elementArrow.css({
-		
-			top:'',
-			bottom:'',
-			right : '',
-			left :''
-		});
-
+				
 		this.currentCls && this.elementArrow.removeClass(this.currentCls.triangle) && this.elementArrowMask && this.elementArrowMask.removeClass(this.currentCls.mask);
 		this.currentCls = this.posClsMap[this.arrowPosition];
-		this.elementArrow.addClass(this.currentCls.triangle) && this.elementArrowMask && this.elementArrowMask.addClass(this.currentCls.mask);
+		this.elementArrow.cssClear('top bottom right left').addClass(this.currentCls.triangle) && this.elementArrowMask && this.elementArrowMask.addClass(this.currentCls.mask);
 		
 		/top|bottom/.test(pos) && drift && this.elementArrow.css({
 		

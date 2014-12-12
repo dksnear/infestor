@@ -209,7 +209,7 @@ infestor.define('infestor.tree.TreeNode',{
 		this.hasChild && this.isCollapse && this.nodeSwitchCell.setIcon('front');
 		
 		// loading
-		this.isLoading && !this.isRoot && this.nodeSwitchCell.element.css('background-position','').removeClass(this.cssClsNodeNonSwitch).addClass(this.cssClsNodeLoadingSwitch);
+		this.isLoading && !this.isRoot && this.nodeSwitchCell.element.cssClear('background-position').removeClass(this.cssClsNodeNonSwitch).addClass(this.cssClsNodeLoadingSwitch);
 		
 		
 		return this;

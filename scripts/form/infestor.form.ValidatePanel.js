@@ -133,7 +133,7 @@ infestor.define('infestor.form.ValidatePanel',{
 		switch(status){
 		
 			case infestor.form.ValidatePanel.VALIDATING:
-				this.statusPanel.head.element.css('background-position','').addClass(this.cssClsValidateStatusValidating);
+				this.statusPanel.head.element.cssClear('background-position').addClass(this.cssClsValidateStatusValidating);
 				this.statusPanel.setText(this.statusTexts[infestor.form.ValidatePanel.VALIDATING]);
 				this.status = status;
 				break;

@@ -410,20 +410,18 @@ infestor.define('infestor.Dom', {
 	css : function (name, value) {
 
 		var element = this.element,
-		filter = function (name) {
-			return name.replace(/-\w?/g, function (s) {
-				return s.substring(1).toUpperCase();
-			});
-		},
-		getStyle = function (name) {
-			return element && (window.getComputedStyle ? window.getComputedStyle(element, null) : element.currentStyle)[filter(name)];
-		},
-		setStyle = function (name, value) {
+			filter = function (name) {
+				return name.replace(/-\w?/g, function (s) { return s.substring(1).toUpperCase(); });
+			},
+			getStyle = function (name) {
+				return element && (window.getComputedStyle ? window.getComputedStyle(element, null) : element.currentStyle)[filter(name)];
+			},
+			setStyle = function (name, value) {
 
-			try {
-				element && (element.style[filter(name)] = value);
-			} catch (err) {}
-		};
+				try {
+					element && (element.style[filter(name)] = value);
+				} catch (err) {}
+			};
 
 		if (infestor.isString(name) && infestor.isUndefined(value))
 			return getStyle(name);
@@ -432,9 +430,7 @@ infestor.define('infestor.Dom', {
 			return setStyle(name, value), this;
 
 		if (infestor.isObject(name))
-			return element && infestor.each(name, function (name, value) {
-				setStyle(name, value);
-			}), this;
+			return element && infestor.each(name, function (name, value) { setStyle(name, value); }), this;
 
 		return this;
 
@@ -466,6 +462,26 @@ infestor.define('infestor.Dom', {
 
 	},
 
+	// 清除样式
+	cssClear : function(name){
+	
+		var css;
+		
+		if(!this.element)
+			return this;
+	
+		if(arguments.length < 1)
+			return infestor.each(this.element.style,function(name,value){ this.element.style[name] = '';  },this),this;
+		
+		name = infestor.isString(name) ? name.split(' ') : name;
+		
+		if(name.length < 1)
+			return this;
+		
+		return this.css((css = {}) && infestor.each(name,function(){ css[String(this)] = ''; }) && css);
+
+	},
+	
 	//	attrs(p:padding m:margin b:border)
 	height : function (attrs) {
 	
