@@ -42,7 +42,7 @@ infestor.define('infestor.Tip', {
 	},
 	
 	cssClsElement : 'infestor-tip',
-	cssClsArrow : infestor.boe({
+	cssClsArrow : infestor.bRouter({
 		webkit : 'infestor-tip-triangle infestor-tip-triangle-chrome-fix',
 		otherwise : 'infestor-tip-triangle'
 	}),

@@ -18,6 +18,7 @@ input{
 	border: 1px solid #bfbfbf;
 	color: #444;
 	height: 25px;	
+	width:150px;
 
 }
 
@@ -670,7 +671,6 @@ input:focus{
 
 .infestor-window{
 
-	width:300px;
 	padding:10px;
 	background-color:#FFFFFF;
 
@@ -694,6 +694,8 @@ input:focus{
 .infestor-window-body{
 
 	padding:10px;
+	overflow:auto;
+	overflow-x:hidden;
 
 }
 
@@ -701,7 +703,6 @@ input:focus{
 
 	position: relative;
 	height:25px;
-	margin-top:15px;
 	
 }
 

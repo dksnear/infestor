@@ -75,7 +75,7 @@ infestor.define('infestor.form.field.Field', {
 	
 	},
 	
-	cssClsElement : infestor.boe({ 	
+	cssClsElement : infestor.bRouter({ 	
 		 ie7minus : 'infestor-field-ie7minus',
 		 otherwise : 'infestor-field'
 	}),

@@ -580,7 +580,7 @@ infestor.define('infestor.Dom', {
 			return this;
 
 		if (infestor.isObject(cls))
-			return this.addClass(infestor.boe(cls));
+			return this.addClass(infestor.bRouter(cls));
 
 		mutiCls = cls.split(' ');
 
@@ -604,7 +604,7 @@ infestor.define('infestor.Dom', {
 			return this;
 
 		if (infestor.isObject(cls))
-			return this.removeClass(infestor.boe(cls));
+			return this.removeClass(infestor.bRouter(cls));
 
 		mutiCls = cls.split(' ');
 

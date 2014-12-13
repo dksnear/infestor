@@ -1443,7 +1443,7 @@ infestor js
 	// 根据配置中的浏览器类型选择执行相应的方法
 	// @option(obj) 匹配列表 {ie:fn|value,ie6:fn|value,chrome:fn|value....,otherwise:fn|value}
 	// @greedy(bool)  false:匹配到就停止|true:匹配所有选项
-	global.boe = global.browser.optionExec = function (option, greedy) {
+	global.bRouter = global.browser.router = function (option, greedy) {
 
 		var matched = false,
 		result;
@@ -1472,7 +1472,7 @@ infestor js
 
 	// 根据配置中的浏览器类型选择生成相应的方法
 	// @option(obj) 匹配列表 {ie:fn,ie6:fn,chrome:fn....,otherwise:fn}
-	global.bof = global.browser.optionFunc = function (option) {
+	global.bRouterf = global.browser.routeFunc = function (option) {
 
 		var fn = function () {
 

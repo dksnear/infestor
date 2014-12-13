@@ -171,8 +171,7 @@ infestor.define('infestor.tree.TreeNode',{
 		this.nodeTextCell = infestor.create('infestor.Element',{ cssClsElement: this.cssClsElementInlineBlock  + ' ' + this.cssClsNodeText }).renderTo(this);
 		
 		return this;
-	
-	
+
 	},
 	
 	refreshIcon : function(){
@@ -241,8 +240,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	},
 	
-	// construct node
-	
+	//# construct node
 	
 	addChildNode : function(node){
 	
@@ -313,8 +311,7 @@ infestor.define('infestor.tree.TreeNode',{
 			}
 		
 		};
-				
-			
+						
 		node.nextSiblingNode && (node.nextSiblingNode.previousSiblingNode = node.previousSiblingNode);
 		
 		node.previousSiblingNode && (node.previousSiblingNode.nextSiblingNode = node.nextSiblingNode);

@@ -33,7 +33,7 @@ infestor.define('infestor.widget.CircularMenu', {
 		northEast : {x:6,y:1},
 		northWest : {x:7,y:1},
 		southEast : {x:8,y:1},
-		southWest : {x:9,y:1},
+		southWest : {x:9,y:1}
 	
 	},
 	

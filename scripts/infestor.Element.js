@@ -18,7 +18,7 @@ infestor.define('infestor.Element', {
 
 	statics : {
 	
-		cssClsElementGlobalMask:infestor.boe({ 
+		cssClsElementGlobalMask:infestor.bRouter({ 
 		
 			 ie7minus : 'infestor-element-global-mask-ie7minus',
 			 otherwise : 'infestor-element-global-mask'
@@ -60,7 +60,7 @@ infestor.define('infestor.Element', {
 	// 元素样式
 	cssClsElement : '',
 	cssClsElementMask : 'infestor-element-mask',
-	cssClsElementInlineBlock : infestor.boe({ 
+	cssClsElementInlineBlock : infestor.bRouter({ 
 		 ie7minus:'infestor-element-inline-block-ie7minus',
 		 otherwise: 'infestor-element-inline-block'
 	}),
@@ -73,7 +73,7 @@ infestor.define('infestor.Element', {
 	cssClsElementTable:'infestor-element-table',
 	cssClsElementTableCell:'infestor-element-table-cell',
 	
-	cssClsElementBoxShadow : infestor.boe({ 
+	cssClsElementBoxShadow : infestor.bRouter({ 
 		 ie9minus:'infestor-element-box-shadow-ie9minus',
 		 otherwise: 'infestor-element-box-shadow'
 	}),
@@ -273,25 +273,30 @@ infestor.define('infestor.Element', {
 		// 元素初始化
 		this.initElement();
 		
-		// 设置 内容/位置/尺寸 
-		this.setText().setPosition().setDimension();
-
-		// 条件初始化
-		this.initTip().initDraggable().initResizable();
-
 		// 子元素初始化
 		this.initItems();
+		
+		// 设置 内容/位置/尺寸 
+		this.setText();
+		this.setPosition();
+		this.setDimension();
 	
 		// 设置停靠
 		this.setDock();
+			
+		// 初始化全局事件(body)
+		this.initGlobalEvents();
 		
-		// 初始化事件
+		// 初始化自定义事件
 		this.initEvents && this.initEvents();
-		
-		this.bindGlobalEvents();
-		
+	
 		// 自动加载数据
 		this.autoLoad && this.load();
+		
+		// 条件初始化
+		this.initTip();
+		this.initDraggable();
+		this.initResizable();
 
 	},
 
@@ -654,16 +659,20 @@ infestor.define('infestor.Element', {
 	// 添加子元素
 	addItem : function (opts) {
 
-		var item,container=this,inner = this.elementInnerContainer,layout='block',layoutMap={
+		var item,
+			container = this,
+			inner = this.elementInnerContainer,
+			layout='block',
+			layoutMap={
 		
-			vertical:'block',
-			horizon:'inline-block',
-			table:'table',
-			block:'block',
-			'inline-block':'inline-block',
-			'float':'float'
-		
-		};
+				vertical:'block',
+				horizon:'inline-block',
+				table:'table',
+				block:'block',
+				'inline-block':'inline-block',
+				'float':'float'
+			
+			};
 
 		if (!this.items || !opts)
 			return null;
@@ -823,9 +832,6 @@ infestor.define('infestor.Element', {
 			
 		},this,'name');
 		
-		// infestor.isUndefined(name) && this.hasItem() && infestor.each(this.itemsMap, function (name) {
-			// this.hideItem(name);
-		// }, this);
 	},
 
 	// 显示子元素
@@ -839,9 +845,7 @@ infestor.define('infestor.Element', {
 			this.showItem(name);
 			
 		},this,'name');
-		// infestor.isUndefined(name) && this.hasItem() && infestor.each(this.itemsMap, function (name) {
-			// this.showItem(name);
-		// }, this);
+		
 	},
 
 	// 向上查找符合条件的父节点
@@ -1153,9 +1157,9 @@ infestor.define('infestor.Element', {
 	},
 
 	
-	// 绑定全局事件
+	// 初始化全局事件
 	
-	bindGlobalEvents : function(){
+	initGlobalEvents : function(){
 	
 		if(this.hideWithResize){
 		
@@ -1199,7 +1203,7 @@ infestor.define('infestor.Element', {
 	
 	},
 	
-	unBindGlobalEvents : function(){
+	RemoveGlobalEvents : function(){
 	
 		this.hideWithResizeHandler && infestor.Dom.getWindow().un('resize',this.hideWithResizeHandler);
 		this.hideWithBlurHandler && infestor.Dom.getWindow().un('resize',this.hideWithBlurHandler);
@@ -1375,7 +1379,7 @@ infestor.define('infestor.Element', {
 		this.removeItem();
 		
 		// 注销全局事件
-		this.unBindGlobalEvents();
+		this.RemoveGlobalEvents();
 
 		// 注销移动和尺寸修改实例
 		this.disableDraggable();

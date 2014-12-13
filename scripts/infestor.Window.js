@@ -5,155 +5,7 @@ infestor.define('infestor.Window', {
 
 	alias : 'window',
 	extend : 'infestor.Panel',
-
-	// statics : {
 	
-		// // 提醒
-		// alert : function(msg,parent){
-		
-			// return infestor.create('infestor.Window',{
-
-				// dock:'center',
-				// closable:true,
-				// titleText:'提示',
-				// modal:true,
-				// items:{
-				
-					// name:'monitor-msg',
-					// cssClsElement:this.cssClsElementText,
-					// text:msg
-				
-				// }
-				
-			// }).renderTo(parent);
-				
-		
-		// },
-	
-		// // 确认
-		// confirm : function(msg,confirmFn,parent,scope){
-			
-			// return infestor.create('infestor.Window',{
-
-				// dock:'center',
-				// modal:true,
-				// closable:true,
-				// titleText:'确认',
-				// items:{
-				
-					// name:'monitor-msg',
-					// cssClsElement:this.cssClsElementText,
-					// text:msg
-				
-				// },
-				// rear:{
-				
-					// items:{
-					
-						// name:'btn-confirm',
-						// cssClsElement:this.cssClsGlobalButton,
-						// boxShadow:true,
-						// position:'absolute',
-						// top:0,
-						// right:3,
-						// text:'确定'					
-					// }
-					
-				// },
-				
-				// initEvents:function(){
-				
-					// this.delegate(this.rear.getItem('btn-confirm'),'click',true,function(){
-					
-						// confirmFn && confirmFn.call(scope || this,this.rear.getItem('btn-confirm'));
-						// this.close();
-					
-					// },this);
-				
-				// }
-
-			// }).renderTo(parent);
-			
-		// },
-		
-		// // 抉择
-		// choice:function(msg,ayeFn,nayFn,parent,scope){
-		
-			// return infestor.create('infestor.Window',{
-
-				// dock:'center',
-				// modal:true,
-				// closable:true,
-				// titleText:'抉择',
-				// items:[{
-			
-					// name:'msg-monitor',
-					// cssClsElement:this.cssClsElementText,
-					// text:msg
-				
-				// }],
-				// rear:{
-					
-					// items:[{
-					
-						// name:'btn-group',
-						// itemLayout:'horizon',
-						// position:'absolute',
-						// top:0,
-						// right:3,
-						// itemsOpts:{
-					
-							// cssClsElement:this.cssClsGlobalButtonHorizon
-							// boxShadow:true
-					
-						// },
-						// items:[{
-							
-							// name:'btn-aye',
-							// text:'是'
-						// },{
-							
-							// name:'btn-nay',
-							// text:'否'
-						
-						// }]
-								
-					// }]
-					
-				// },
-				// initEvents:function(){
-				
-				
-					// this.delegate(this.rear.getItem('btn-group'),'click',true,function(inst,e){
-					
-						// if(!inst || !inst.element || !inst.element.hasClass(this.cssClsGlobalButtonHorizon))
-							// return;
-							
-						// switch(inst.name){
-						
-							// case 'btn-aye':
-								// ayeFn && ayeFn.call(scope || this,inst);
-								// break;
-							// case 'btn-nay':
-								// nayFn && nayFn.call(scope || this,inst);
-								// break;
-							// default:
-								// break;
-						
-						// }
-						
-						// this.close();
-					
-					// },this);
-				
-				// }
-
-			// }).renderTo(parent);
-			
-		// }
-		
-	// },
-
 	cssClsElement : 'infestor-window',
 	cssClsHead : 'infestor-window-head',
 	cssClsBody : 'infestor-window-body',
@@ -162,6 +14,11 @@ infestor.define('infestor.Window', {
 	cssClsAutoHidePlate :'infestor-window-autohide-plate',
 	boxShadow : true,
 	dock:'center',
+	
+	bodyHeight : null,
+	bodyWidth : null,
+	
+	hidden : true,
 
 	// 模态窗口(bool)
 	modal : true,
@@ -169,7 +26,6 @@ infestor.define('infestor.Window', {
 	initElement : function () {
 
 		this.callParent();
-		this.show();
 
 	},
 		
@@ -206,6 +62,22 @@ infestor.define('infestor.Window', {
 	
 	},
 
+	setDimension : function (opts) {
+	
+		this.bodyHeight = opts && opts.bodyHeight || this.bodyHeight;
+		this.bodyWidth = opts && opts.bodyWidth || this.bodyWidth;
+
+		this.body && this.body.setDimension({
+		
+			height:this.bodyHeight,
+			width:this.bodyWidth
+		
+		});
+	
+		return this.callParent();
+
+	},
+	
 	show : function () {
 
 		if (!this.element)
@@ -237,15 +109,15 @@ infestor.define('infestor.Window', {
 
 	}
 
-},function(cls){
+},function(Window){
 
 
-	var proto = cls.prototype;
+	var pInst = Window.prototype;
 
 	// 提醒
-	cls.alert = function(msg,parent){
+	Window.alert = function(msg,parent,winOpts){
 		
-		return infestor.create('infestor.Window',{
+		return infestor.create('infestor.Window',infestor.append({
 
 			dock:'center',
 			closable:true,
@@ -254,19 +126,19 @@ infestor.define('infestor.Window', {
 			items:{
 			
 				name:'monitor-msg',
-				cssClsElement:proto.cssClsElementText,
+				cssClsElement:pInst.cssClsElementText,
 				text:msg
 			
 			}
 			
-		}).renderTo(parent);
+		},winOpts)).renderTo(parent);
 		
 	}
 	
 	// 确认
-	cls.confirm = function(msg,confirmFn,parent,scope){
+	Window.confirm = function(msg,confirmFn,parent,scope,winOpts){
 			
-		return infestor.create('infestor.Window',{
+		return infestor.create('infestor.Window',infestor.append({
 
 			dock:'center',
 			modal:true,
@@ -275,7 +147,7 @@ infestor.define('infestor.Window', {
 			items:{
 			
 				name:'monitor-msg',
-				cssClsElement:proto.cssClsElementText,
+				cssClsElement:pInst.cssClsElementText,
 				text:msg
 			
 			},
@@ -284,7 +156,7 @@ infestor.define('infestor.Window', {
 				items:{
 				
 					name:'btn-confirm',
-					cssClsElement:proto.cssClsGlobalButton,
+					cssClsElement:pInst.cssClsGlobalButton,
 					boxShadow:true,
 					position:'absolute',
 					top:0,
@@ -305,14 +177,14 @@ infestor.define('infestor.Window', {
 			
 			}
 
-		}).renderTo(parent);
+		},winOpts)).renderTo(parent);
 		
 	}
 
 	// 抉择
-	cls.choice = function(msg,ayeFn,nayFn,parent,scope){
+	Window.choice = function(msg,ayeFn,nayFn,parent,scope,winOpts){
 		
-		return infestor.create('infestor.Window',{
+		return infestor.create('infestor.Window',infestor.append({
 
 			dock:'center',
 			modal:true,
@@ -321,7 +193,7 @@ infestor.define('infestor.Window', {
 			items:[{
 		
 				name:'msg-monitor',
-				cssClsElement:proto.cssClsElementText,
+				cssClsElement:pInst.cssClsElementText,
 				text:msg
 			
 			}],
@@ -336,7 +208,7 @@ infestor.define('infestor.Window', {
 					right:3,
 					itemsOpts:{
 				
-						cssClsElement:proto.cssClsGlobalButtonHorizon,
+						cssClsElement:pInst.cssClsGlobalButtonHorizon,
 						boxShadow:true
 				
 					},
@@ -355,11 +227,10 @@ infestor.define('infestor.Window', {
 				
 			},
 			initEvents:function(){
-			
-			
+					
 				this.delegate(this.rear.getItem('btn-group'),'click',true,function(inst,e){
 				
-					if(!inst || !inst.element || !inst.element.hasClass(proto.cssClsGlobalButtonHorizon))
+					if(!inst || !inst.element || !inst.element.hasClass(pInst.cssClsGlobalButtonHorizon))
 						return;
 						
 					switch(inst.name){
@@ -381,7 +252,7 @@ infestor.define('infestor.Window', {
 			
 			}
 
-		}).renderTo(parent);
+		},winOpts)).renderTo(parent);
 		
 	}
 

@@ -39,16 +39,18 @@ infestor.define('infestor.Panel', {
 
 		this.callParent();
 
-		var inner = this.elementInnerContainer,layout='block',layoutMap={
+		var inner = this.elementInnerContainer,
+			layout='block',
+			layoutMap={
 		
-			vertical:'block',
-			horizon:'inline-block',
-			table:'table',
-			block:'block',
-			'inline-block':'inline-block',
-			'float':'float'
-		
-		};
+				vertical:'block',
+				horizon:'inline-block',
+				table:'table',
+				block:'block',
+				'inline-block':'inline-block',
+				'float':'float'
+			
+			};
 		
 		// layout
 		
@@ -66,9 +68,13 @@ infestor.define('infestor.Panel', {
 		
 		this.isLayoutSet = true;
 			
-		this.createTitle().createHead().createBody().createRear().createSizeControl();
-		this.elementInnerContainer = this.body.elementInnerContainer;
+		this.createTitle();
+		this.createHead();
+		this.createBody();
+		this.createRear();
+		this.createSizeControl();
 		
+		this.elementInnerContainer = this.body.elementInnerContainer;
 		
 		if(layout == layoutMap['inline-block']){
 		
