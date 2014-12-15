@@ -9,33 +9,32 @@ infestor.namespace('infestor.cookie', {
 	//添加一个cookie主键 key,value
 	add : function (key, value, expires) {
 
-		var me = this,
-			innerAdd = function (opts) {
+		var innerAdd = function (opts) {
 
 				var obj = {};
 
 				obj[opts.key] = escape(opts.value);
-				obj.expires = me.$formatDate(opts.expires || me.expires);
-				obj.path = opts.path || me.path;
-				obj.domain = opts.domain || me.domain;
-				obj.secure = opts.secure || me.secure,
-				document.cookie = me.$concat(obj, '; ');
+				obj.expires = this.$formatDate(opts.expires || this.expires);
+				obj.path = opts.path || this.path;
+				obj.domain = opts.domain || this.domain;
+				obj.secure = opts.secure || this.secure,
+				document.cookie = this.$concat(obj, '; ');
 			};
 
 		if (infestor.isArray(key))
-			return infestor.each(key, function () {
-				innerAdd(this);
-			}), true;
+			return infestor.each(key, function (idx,opts) {
+				innerAdd.call(this,opts);
+			},this), true;
 
 		if (infestor.isString(key))
-			return innerAdd({
+			return innerAdd.call(this,{
 				key : key,
 				value : value,
 				expires : expires
 			}), true;
 
 		if (infestor.isObject(key))
-			return innerAdd(key), true;
+			return innerAdd.call(this,key), true;
 
 		return false;
 
@@ -47,11 +46,11 @@ infestor.namespace('infestor.cookie', {
 			return null;
 
 		var grp = document.cookie.split('; '),
-		idx = 0,
-		len = grp.length,
-		regx = /([^=]+)=(.+)/,
-		map = {},
-		cap;
+			idx = 0,
+			len = grp.length,
+			regx = /([^=]+)=(.+)/,
+			map = {},
+			cap;
 
 		for (; idx < len; idx++) {
 
@@ -72,7 +71,7 @@ infestor.namespace('infestor.cookie', {
 		this.add({
 
 			key : key,
-			value : this.$random(),
+			value : false,
 			expires : -1
 
 		});
@@ -81,8 +80,7 @@ infestor.namespace('infestor.cookie', {
 	//清空所有cookie
 	clear : function () {
 
-		var map = this.get(),
-		key;
+		var map = this.get(),key;
 
 		for (key in map)
 			this.remove(key);
@@ -92,8 +90,8 @@ infestor.namespace('infestor.cookie', {
 	$concat : function (obj, operator, filter) {
 
 		var name,
-		value,
-		arr = [];
+			value,
+			arr = [];
 
 		for (name in obj) {
 
@@ -136,12 +134,6 @@ infestor.namespace('infestor.cookie', {
 		}
 
 		return d.toUTCString();
-
-	},
-
-	$random : function () {
-
-		return Math.round(Math.random() * 10000);
 
 	}
 

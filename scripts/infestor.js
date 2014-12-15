@@ -561,8 +561,7 @@ infestor js
 
 		dateFormat : function (date, format) {
 
-			if (!global.isDate(date))
-				return date;
+			date = new Date(date);
 
 			var o = {
 				'M+' : date.getMonth() + 1, //month
@@ -676,59 +675,12 @@ infestor js
 
 		jsonEncode : function (obj, rules) {
 
+			var parse;
+		
 			if (window.JSON && !rules)
 				return window.JSON.stringify(obj);
 
-			var rules = global.append({
-
-					arrayParser : function (o) {
-
-						var str = [];
-
-						global.each(o, function (idx, item) {
-							str.push(parser(item));
-						});
-
-						return '[' + str.join(',') + ']';
-					},
-					objectParser : function (o) {
-
-						var str = [];
-
-						global.each(o, function (name, value) {
-							o.hasOwnProperty(name) && str.push('"' + name + '":' + parser(value));
-						});
-
-						return '{' + str.join(',') + '}';
-					},
-					booleanParser : function (o) {
-						return Boolean.prototype.toString.call(o);
-					},
-					dateParser : function (o) {
-						return '"' + global.dateFormat(o, 'yyyy-MM-ddTHH:mm:ss.SZ') + '"';
-					},
-					regExpParser : function (o) {
-						return '{}';
-					},
-					stringParser : function (o) {
-						return '"' + String(o) + '"';
-					},
-					numberParser : function (o) {
-						return Number(o);
-					},
-					functionParser : function (o) {
-						return '';
-					},
-					undefinedParser : function (o) {
-						return 'null'
-					},
-					nullParser : function (o) {
-						return 'null'
-					}
-
-				}, rules);
-
-			var parser = function (o) {
+			parse = function (o) {
 
 				if (global.isUndefined(o))
 					return rules.undefinedParser(o);
@@ -753,10 +705,59 @@ infestor js
 
 				return '';
 
-			}
-			
-			return parser(obj);
+			};
+				
+			rules = global.append({
 
+				arrayParser : function (o) {
+
+					var str = [];
+
+					global.each(o, function (idx, item) {
+						str.push(parse(item));
+					});
+
+					return '[' + str.join(',') + ']';
+				},
+				objectParser : function (o) {
+
+					var str = [];
+
+					global.each(o, function (name, value) {
+						o.hasOwnProperty(name) && str.push('"' + name + '":' + parse(value));
+					});
+
+					return '{' + str.join(',') + '}';
+				},
+				booleanParser : function (o) {
+					return Boolean.prototype.toString.call(o);
+				},
+				dateParser : function (o) {
+					return '"' + global.dateFormat(o, 'yyyy-MM-ddTHH:mm:ss.SZ') + '"';
+				},
+				regExpParser : function (o) {
+					return '{}';
+				},
+				stringParser : function (o) {
+					return '"' + String(o) + '"';
+				},
+				numberParser : function (o) {
+					return Number(o);
+				},
+				functionParser : function (o) {
+					return '';
+				},
+				undefinedParser : function (o) {
+					return 'null'
+				},
+				nullParser : function (o) {
+					return 'null'
+				}
+
+			}, rules);
+			
+			return parse(o);
+		
 		},
 
 		jsonDecode : function (str) {
