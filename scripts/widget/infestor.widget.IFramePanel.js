@@ -53,18 +53,26 @@ infestor.define('infestor.widget.IFramePanel', {
 				case 'reload':
 					!this.body.hidden && this.loadIFrame();
 					break;
-				case 'visible':
-					if(this.body.hidden){
+				case 'show':
+					this.body.show();
+					!this.iframeLoaded && this.loadIFrame();
+					this.head.eachItems(function(name,item){  
 					
-						this.body.show();
-						!this.iframeLoaded && this.loadIFrame();
-						inst.setText('隐藏');
-						
-					} else {
+						if(name == 'show')
+							item.hide();
+						if(name == 'hide' || name == 'reload')
+							item.show();
+					});
+					break;
+				case 'hide':
+					this.body.hide();
+					this.head.eachItems(function(name,item){  
 					
-						this.body.hide();
-						inst.setText('显示');					
-					}
+						if(name == 'show')
+							item.show();
+						if(name == 'hide' || name == 'reload')
+							item.hide();
+					});
 					break;
 				case 'open':
 					window.open(this.iframeSrc);
@@ -94,32 +102,46 @@ infestor.define('infestor.widget.IFramePanel', {
 	createHead : function () {
 	
 		this.head = this.createElement('head', this, {
+		
 			cssClsElement : this.cssClsHead,
 			itemLayout:'horizon',
 			items:[{
 			
 				cssClsElement : this.cssClsHeadItem,
-				name:'visible',
-				text:this.iframeHidden ? '显示':'隐藏'
-			
+				name:'show',
+				icon:'eyes',
+				hidden:!this.iframeHidden,
+				attr:{ title:'显示' }
+		
 			},{
 			
 				cssClsElement : this.cssClsHeadItem,
-				name:'open',
-				text:'在新窗口中打开'
+				name:'hide',
+				icon:'wrong',
+				hidden:this.iframeHidden,
+				attr:{ title:'隐藏' }
 			
 			},{
 			
 				cssClsElement : this.cssClsHeadItem,
 				name:'reload',
-				text:'刷新'
+				icon:'transfer',
+				hidden:this.iframeHidden,
+				attr:{ title:'刷新' }
+				
+			},{
+			
+				cssClsElement : this.cssClsHeadItem,
+				name:'open',
+				icon:'link',
+				attr:{ title:'在新窗口中打开' }
 			
 			},{
 			
 				cssClsElement : this.cssClsHeadItem,
 				name:'close',
-				text:'关闭'
-			
+				icon:'decline',
+				attr:{ title:'关闭' }				
 			}]
 		});
 

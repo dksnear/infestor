@@ -7,12 +7,12 @@ infestor js
 (function (window, libName, alias) {
 
 	var document = window.document,
-	navigator = window.navigator,
-	global = function (handle, scope) {
+		navigator = window.navigator,
+		global = function (handle, scope) {
 
-		global.loader.using(handle, scope || window);
+			global.loader.using(handle, scope || window);
 
-	};
+		};
 
 	global.$$libName = libName;
 
@@ -870,10 +870,7 @@ infestor js
 			if (window.top.location != window.self.location) 
 				window.top.location = window.self.location;
 		
-		}
-
-		
-		
+		}		
 	});
 
 	global.append({
@@ -1436,8 +1433,7 @@ infestor js
 			return global.parseNumeric(size) + ({
 				percent : '%',
 				inch : 'in'
-			}
-				[methodName] || methodName);
+			}[methodName] || methodName);
 		}
 	});
 
@@ -1447,7 +1443,7 @@ infestor js
 	global.bRouter = global.browser.router = function (option, greedy) {
 
 		var matched = false,
-		result;
+			result;
 
 		global.each(option, function (name, method) {
 
@@ -1473,13 +1469,13 @@ infestor js
 
 	// 根据配置中的浏览器类型选择生成相应的方法
 	// @option(obj) 匹配列表 {ie:fn,ie6:fn,chrome:fn....,otherwise:fn}
-	global.bRouterf = global.browser.routeFunc = function (option) {
+	global.bRouterf = global.browser.routerFunc = function (option) {
 
 		var fn = function () {
 
-			global.isFunction(option.otherwise) && option.otherwise.apply(this, arguments);
+				global.isFunction(option.otherwise) && option.otherwise.apply(this, arguments);
 
-		};
+			};
 
 		global.each(option, function (name, method) {
 

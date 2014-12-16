@@ -125,11 +125,8 @@ infestor.define('infestor.widget.CircularMenu', {
 		
 			if(!inst || !inst.element || !inst.element.hasClass(this.cssClsCMenuItem))
 				return;
-			
-			this.focusBtn && this.focusBtn.element.removeClass(this.cssClsGlobalIconFocus32);
-			
-			this.focusBtn = this.swapFloatData(inst);
-			this.focusBtn.element.addClass(this.cssClsGlobalIconFocus32);
+		
+			this.focus(this.swapFloatData(inst));
 			
 			switch(inst.name){
 			
@@ -225,6 +222,20 @@ infestor.define('infestor.widget.CircularMenu', {
 	
 	},
 	
+	focus : function(btn){
+	
+		this.focusBtn && this.focusBtn.element.removeClass(this.cssClsGlobalIconFocus32);		
+		this.focusBtn = btn || this.focusBtn;
+		this.focusBtn && this.focusBtn.element.addClass(this.cssClsGlobalIconFocus32);
+	
+	},
+	
+	blur : function(){
+	
+		this.focusBtn && this.focusBtn.element.removeClass(this.cssClsGlobalIconFocus32);
+	
+	},
+	
 	expand:function(){
 	
 		this.disableDraggable();
@@ -239,7 +250,7 @@ infestor.define('infestor.widget.CircularMenu', {
 		this.initDraggable();
 		this.initTip();
 		this.circularContainer && this.circularContainer.hide();
-		this.focusBtn && this.focusBtn.element.removeClass(this.cssClsGlobalIconFocus32);
+		this.blur();
 		infestor.clearSelection();
 	
 	},

@@ -113,9 +113,6 @@ infestor.define('infestor.Indicator',{
 	
 	changeIndicator:function(value){
 	
-		if (!infestor.Indicator.elementIndicator)
-			return;
-
 		infestor.isRawObject(value) ? infestor.Indicator.elementIndicator.css(value) : infestor.Indicator.elementIndicator.css('width', value + '%');
 	
 	},

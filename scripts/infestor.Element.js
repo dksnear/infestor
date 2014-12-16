@@ -74,7 +74,7 @@ infestor.define('infestor.Element', {
 	cssClsElementTableCell:'infestor-element-table-cell',
 	
 	cssClsElementBoxShadow : infestor.bRouter({ 
-		 ie9minus:'infestor-element-box-shadow-ie9minus',
+		 ie8minus:'infestor-element-box-shadow-ie8minus',
 		 otherwise: 'infestor-element-box-shadow'
 	}),
 	

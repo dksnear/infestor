@@ -72,7 +72,7 @@ infestor.define('infestor.Tip', {
 		
 		this.elementArrow = this.createDomElement(this.element,this.cssClsArrow,'s');
 		
-		this.elementArrowMask = infestor.isIE9Minus() && this.createDomElement(this.elementArrow,this.cssClsArrowMask,'i');
+		this.elementArrowMask = infestor.isIE8Minus() && this.createDomElement(this.elementArrow,this.cssClsArrowMask,'i');
 
 		this.elementContent = this.createDomElement(this.element, this.cssClsContent);
 
