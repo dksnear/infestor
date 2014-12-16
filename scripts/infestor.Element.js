@@ -955,8 +955,6 @@ infestor.define('infestor.Element', {
 	//@stopBubble 阻止事件冒泡
 	delegate : function (target, eventName, pradicate, handle, scope, stopBubble) {
 
-		var me = this;
-		
 		if(!target) return this;
 
 		if (target instanceof infestor.Element)

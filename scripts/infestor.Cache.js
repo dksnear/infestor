@@ -301,7 +301,7 @@ infestor.define('infestor.Cache', {
 		if(expires.getTime() < (new Date()).getTime())
 			return null;
 			
-		return window.localStorage.setItem(key,this.serialize({ $data:value, $expires:expires }));
+		return window.localStorage.setItem(key,this.serialize({ $data:value, $expires:expires })),true;
 	
 	},
 	
@@ -310,7 +310,7 @@ infestor.define('infestor.Cache', {
 		if(!this.statics.localStorageSupport())
 			return null;
 		
-		return window.localStorage.removeItem(key);
+		return window.localStorage.removeItem(key),true;
 	
 	},
 	

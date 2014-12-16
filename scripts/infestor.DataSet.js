@@ -3,7 +3,7 @@ infestor.define('infestor.DataSet', {
 
 	extend : 'infestor.Object',
 
-	uses : ['infestor.request','infestor.Indicator'],
+	uses : ['infestor.request','infestor.Indicator','infestor.Cache'],
 
 	// 数据模型映射
 	modelMap : null,

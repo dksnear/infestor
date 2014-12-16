@@ -3,14 +3,14 @@
 
 .infestor-widget-iframe-panel-head{
 
-	height:30px;
+	margin-bottom: 5px;
 
 }
 
 .infestor-widget-iframe-panel-title{
 
-	text-indent: 1em;
-	vertical-align:center;
+	/* text-indent: 1em; */
+	vertical-align:middle;
 	font-weight: bold;
 	line-height: 25px;
 

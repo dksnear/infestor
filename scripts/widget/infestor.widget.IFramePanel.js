@@ -3,7 +3,6 @@ infestor.define('infestor.widget.IFramePanel', {
 
 	alias : 'iframe',
 	extend : 'infestor.Panel',
-	uses : ['infestor.Indicator'],
 	
 	cssClsHead:'infestor-widget-iframe-panel-head',
 	cssClsTitle:'infestor-widget-iframe-panel-title',
@@ -91,17 +90,13 @@ infestor.define('infestor.widget.IFramePanel', {
 	
 	createTitle :function(){
 	
-		this.callParent();
-		
-		this.title && this.title.element.addClass(this.cssClsElementInlineBlock);
-		
 		return this;
 	
 	},
 	
 	createHead : function () {
 	
-		this.head = this.createElement('head', this, {
+		this.createElement('head', this, {
 		
 			cssClsElement : this.cssClsHead,
 			itemLayout:'horizon',
@@ -136,12 +131,18 @@ infestor.define('infestor.widget.IFramePanel', {
 				icon:'link',
 				attr:{ title:'在新窗口中打开' }
 			
-			},{
-			
+			},{		
 				cssClsElement : this.cssClsHeadItem,
 				name:'close',
 				icon:'decline',
-				attr:{ title:'关闭' }				
+				attr:{ title:'关闭' }		
+				
+			},{
+			
+				cssClsElement:this.cssClsTitle,
+				text:this.titleText,
+				hidden:!this.titleText
+			
 			}]
 		});
 
@@ -268,13 +269,19 @@ infestor.define('infestor.widget.IFramePanel', {
 		this.iframeLoading = true;
 		
 		this.delayId = infestor.delay(function(){
+			
+			!iframeLoaded && this.elementIFrame.attr({
+			
+				height:this.iframeHeight,
+				width:this.iframeWidth
+			
+			});
 		
 			this.iframeLoading = false;
 			this.iframeLoaded = true;
 			this.iFrameLoadIndicator.stop();
-			//this.elementIFrame.attr('src','#');
 			this.emit('timeout',[this.elementIFrame,this]);
-			//this.emit('error',[null,this.elementIFrame,this]);
+			this.emit('error',[null,this.elementIFrame,this]);
 			this.emit('complete',[false,null,this.elementIFrame,this]);
 			
 			
