@@ -42,7 +42,7 @@ infestor.define('infestor.widget.IFramePanel', {
 	
 	initEvents : function(){
 	
-		this.head && this.delegate(this.head,'click',true,function(inst,e){
+		this.delegate(this.head,'click',true,function(inst,e){
 		
 			if(!inst || !inst.element || !inst.element.hasClass(this.cssClsHeadItem))
 				return;
@@ -51,6 +51,7 @@ infestor.define('infestor.widget.IFramePanel', {
 				
 				case 'reload':
 					!this.body.hidden && this.loadIFrame();
+					this.head.getItem('stop').show();
 					break;
 				case 'show':
 					this.body.show();
@@ -59,9 +60,12 @@ infestor.define('infestor.widget.IFramePanel', {
 					
 						if(name == 'show')
 							item.hide();
-						if(name == 'hide' || name == 'reload')
+						if(/hide|reload/.test(name))
 							item.show();
-					});
+						if(name == 'stop' && !this.iframeLoaded)
+							item.show();
+							
+					},this);
 					break;
 				case 'hide':
 					this.body.hide();
@@ -69,12 +73,32 @@ infestor.define('infestor.widget.IFramePanel', {
 					
 						if(name == 'show')
 							item.show();
-						if(name == 'hide' || name == 'reload')
+						if(/hide|reload|stop/.test(name))
 							item.hide();
 					});
 					break;
 				case 'open':
 					window.open(this.iframeSrc);
+					break;
+				case 'load':
+					this.loadIFrame();
+					this.head.eachItems(function(name,item){  
+						
+						if(name == 'load')
+							item.hide();
+						if(/hide|reload|stop/.test(name))
+							item.show();
+					});
+					break;
+				case 'stop':
+					this.stopLoadIFrame();
+					this.head.eachItems(function(name,item){  
+						
+						if(name == 'load')
+							item.show();
+						if(/hide|reload|stop/.test(name))
+							item.hide();
+					});
 					break;
 				case 'close':
 					this.destroy();
@@ -86,6 +110,11 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 		},this);
 		
+		this.on('complete',function(){
+		
+			this.head && this.head.getItem('stop').hide();
+		
+		},this);
 	},
 	
 	createTitle :function(){
@@ -123,6 +152,22 @@ infestor.define('infestor.widget.IFramePanel', {
 				icon:'transfer',
 				hidden:this.iframeHidden,
 				attr:{ title:'刷新' }
+				
+			},{
+			
+				cssClsElement : this.cssClsHeadItem,
+				name:'load',
+				icon:'play',
+				hidden:true,
+				attr:{ title:'加载' }
+				
+			},{
+			
+				cssClsElement : this.cssClsHeadItem,
+				name:'stop',
+				icon:'pause',
+				hidden:this.iframeHidden,
+				attr:{ title:'停止' }
 				
 			},{
 			
@@ -180,7 +225,7 @@ infestor.define('infestor.widget.IFramePanel', {
 			this.iframeLoading = false;
 			this.iframeLoaded = true;
 			
-			this.elementIFrame.attr({
+			this.elementIFrame && this.elementIFrame.attr({
 			
 				height:this.iframeHeight,
 				width:this.iframeWidth
@@ -270,7 +315,7 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 		this.delayId = infestor.delay(function(){
 			
-			!iframeLoaded && this.elementIFrame.attr({
+			!iframeLoaded && this.elementIFrame && this.elementIFrame.attr({
 			
 				height:this.iframeHeight,
 				width:this.iframeWidth
@@ -288,6 +333,14 @@ infestor.define('infestor.widget.IFramePanel', {
 		},this.iframeTimeout,this);
 		
 		return this;
+	},
+	
+	stopLoadIFrame : function(){
+	
+		infestor.stopDelay(this.delayId);
+		this.iFrameLoadIndicator.stop();
+		this.elementIFrame = this.elementIFrame && this.elementIFrame.destroy();
+		
 	},
 	
 	uniqueSrc:function(src){
