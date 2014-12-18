@@ -275,6 +275,7 @@ input:focus{
 	background-color:transparent;
 	background-repeat:no-repeat;
 	background-image:url('../images/def-suit-16.png');
+	vertical-align:middle;
 
 }
 
@@ -321,7 +322,7 @@ input:focus{
 	background-color:transparent;
 	background-repeat:no-repeat;
 	background-image:url('../images/def-suit-32.png');
-
+	vertical-align:middle;
 }
 
 .infestor-global-icon-32:hover,
