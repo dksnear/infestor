@@ -108,14 +108,65 @@ infestor.define('infestor.Event', {
 		this.removeEventListener.apply(this, arguments);
 	},
 	
-	fire:function(){
+	fire : function(){
 	
 		this.emit.apply(this,arguments);
 	
 	},
 
+	// 长连接另一个对象 侦听它的某个行为
+	// @action 侦听动作
+	// @target 侦听目标对象
+	// @targetPortMethod 侦听目标的接口方法名 默认为null(可选)
+	// @interval 侦听间隔
+	// @listenerName 侦听器名称 用于关闭和设置侦听器 默认为侦听任务id (可选)
+	// #return 返回侦听任务id
+	listen : function(action,target,targetPortMethod,interval,listenerName){
+	
+		var taskId;
+	
+		if(!action || !target)
+			return false;
+		
+		targetPortMethod = infestor.isFunction(targetPortMethod) ? targetPortMethod 
+			: (infestor.isFunction(target[targetPortMethod]) ? target[targetPortMethod] : null);
+
+		this.$listenerMap = this.$listenerMap || {};
+		
+		this.$listenerMap[listenerName] && this.stopListen(listenerName);
+			
+		taskId = infestor.task(function(){
+		
+			action.call(this,targetPortMethod && targetPortMethod.call(target),target,this);	
+		
+		},interval,this);
+		
+		this.$listenerMap[listenerName || taskId] = taskId;
+		
+		return taskId;
+	
+	},
+	
+	// 移除侦听某个任务 无参数则移除所有侦听任务
+	stopListen:function(listenerName){
+	
+		if(!this.$listenerMap)
+			return false;
+	
+		if(arguments.length<1)
+			return this.each(this.$listenerMap,function(name,taskId){
+			
+				this.stopListen(name);
+				
+			},this) && (this.listenerMap = null),true;
+		
+		return infestor.stopTask(this.$listenerMap[listenerName]);
+		
+	},
+	
 	destroy : function () {
 
+		this.stopListen();
 		this.eventsMap = null;
 	}
 
