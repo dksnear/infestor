@@ -633,11 +633,7 @@ infestor.define('infestor.Element', {
 
 		// 判断该对象是否含有子元素
 		if (infestor.isUndefined(name))
-			return this.count > 0;
-
-		// 移除已经销毁的对象副本
-		if(this.itemsMap[name] && this.itemsMap[name].destroyed && delete this.itemsMap[name])
-			return false;
+			return this.itemCount() > 0;
 		
 		return this.hasItem() && this.itemsMap[name] instanceof infestor.Element;
 
@@ -645,6 +641,8 @@ infestor.define('infestor.Element', {
 
 	itemCount : function () {
 
+		this.cleanItems();
+	
 		return this.count;
 
 	},
@@ -749,35 +747,28 @@ infestor.define('infestor.Element', {
 	removeItem : function (name) {
 
 		// 删除所有子元素
-		if (infestor.isUndefined(name) && this.hasItem())	
-			return infestor.each(this.itemsMap, function (name) {
-				this.removeItem(name);
-			}, this),this;
+		if (infestor.isUndefined(name) && this.hasItem())
+			return this.cleanItems(true);
 			
-		if(!this.hasItem(name))
+		if(!this.itemsMap || !this.itemsMap[name])
 			return this;
 
 		// 删除一个子元素
 		this.itemsMap[name].destroy();
-		this.count--;	
-		delete this.itemsMap[name];
-
 		
-		// 重置子元素索引序列
-		!this.count && (this.itemsIndex = 0);
+		this.cleanItems();
 		
 		return this;
 
 	},
-	
+
 	getItem : function(name){
-	
+
 		if(arguments.length < 1)
 			return this.itemsMap;
+	
+		this.cleanItems();
 		
-		// 移除已经销毁的对象副本
-		this.itemsMap && this.itemsMap[name] && this.itemsMap[name].destroyed && delete this.itemsMap[name];
-			
 		return this.itemsMap && this.itemsMap[name] || null;
 	
 	},
@@ -815,6 +806,32 @@ infestor.define('infestor.Element', {
 	
 	},
 	
+	cleanItems : function(force){
+		
+		var count = 0;
+		
+		if(this.count < 1)
+			return this;
+	
+		this.itemsMap && infestor.each(this.itemsMap,function(mix,item){
+		
+			if(!item.destroyed && !force)
+				return true;
+				
+			delete this.itemsMap[mix];
+			count++;
+	
+		},this);
+		
+		this.count = force ? 0 : (this.count - count/2);
+		
+		// 重置子元素索引序列
+		!this.count && (this.itemsIndex = 0);
+		
+		return this;
+	
+	},
+
 	// 遍历所有子元素
 	// @fn(idx[索引],item[元素]) 委托方法
 	// @scope @fn的作用域

@@ -852,9 +852,12 @@ infestor.define('infestor.Dom', {
 		if(this.element && this.element.nodeName.toLowerCase() == 'iframe'){
 		
 			try {
-			
-				//this.element.contentWindow.document.write('');
+				
+				// this.element.src = location.href ; //'about:blank';
+				this.element.src = 'about:blank';
+				this.element.contentWindow.document.write('');
 				//this.element.contentWindow.document.close();
+				this.element.contentWindow.document.clear();
 				this.element.contentWindow.close();
 			
 			}catch(e){
@@ -864,6 +867,8 @@ infestor.define('infestor.Dom', {
 		}
 
 		this.element && this.element.parentNode && this.element.parentNode.removeChild(this.element);
+		
+		this.element = null;
 	},
 
 	destroy : function () {
