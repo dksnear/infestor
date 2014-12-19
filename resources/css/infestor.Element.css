@@ -745,12 +745,13 @@ input:focus{
 
 .infestor-checkbox-checked{
 
-	background:url(../images/check-16.png) no-repeat -1px 0;
+	background:url(../images/checkmark-blue-21.png) no-repeat -4px -2px;
+	
 }
 
 .infestor-checkbox-half-checked{
 
-	background:url(../images/half-check-16.png) no-repeat -1px 0;
+	background:url(../images/checkmark-gray-21.png) no-repeat -4px -2px;
 	
 }
 

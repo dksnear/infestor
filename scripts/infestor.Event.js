@@ -139,7 +139,7 @@ infestor.define('infestor.Event', {
 		
 			action.call(this,targetPortMethod && targetPortMethod.call(target),target,this);	
 		
-		},interval,this);
+		},interval || 1000,this);
 		
 		this.$listenerMap[listenerName || taskId] = taskId;
 		
@@ -153,7 +153,7 @@ infestor.define('infestor.Event', {
 		if(!this.$listenerMap)
 			return false;
 	
-		if(arguments.length<1)
+		if(arguments.length < 1)
 			return this.each(this.$listenerMap,function(name,taskId){
 			
 				this.stopListen(name);

@@ -10,8 +10,6 @@ infestor.define('infestor.Dom', {
 	statics : {
 
 		element : null,
-
-		zIndex : 100,
 	
 		get : function (id) {
 
@@ -66,9 +64,18 @@ infestor.define('infestor.Dom', {
 
 		},
 
+		initZIndex : function(){
+			
+			infestor.Dom.$zIndex = 100;
+		
+		},
+		
 		getZIndex : function () {
-
-			return infestor.Dom.zIndex++;
+		
+			if(!infestor.Dom.$zIndex || infestor.Dom.$zIndex > 100000)
+				infestor.Dom.initZIndex();
+				
+			return infestor.Dom.$zIndex++;
 		},
 
 		setZIndex : function (element) {
@@ -201,7 +208,6 @@ infestor.define('infestor.Dom', {
 	constructor : function (element) {
 
 		this.element = element;
-
 		this.id = infestor.getId();
 
 	},
@@ -227,11 +233,10 @@ infestor.define('infestor.Dom', {
 				//ie6-8
 
 				infestor.isUndefined(event.which) && !infestor.isUndefined(event.button) && (event.which = {
-						0 : 2,
-						1 : 1,
-						2 : 3
-					}
-					[event.button]);
+					0 : 2,
+					1 : 1,
+					2 : 3
+				}[event.button]);
 
 				infestor.isUndefined(event.preventDefault) && (event.preventDefault = function () {
 					event.returnValue = false;
@@ -842,6 +847,21 @@ infestor.define('infestor.Dom', {
 	},
 
 	remove : function () {
+	
+		// 处理iframe被销毁时产生的内存泄漏
+		if(this.element && this.element.nodeName.toLowerCase() == 'iframe'){
+		
+			try {
+			
+				//this.element.contentWindow.document.write('');
+				//this.element.contentWindow.document.close();
+				this.element.contentWindow.close();
+			
+			}catch(e){
+			
+			}
+			
+		}
 
 		this.element && this.element.parentNode && this.element.parentNode.removeChild(this.element);
 	},

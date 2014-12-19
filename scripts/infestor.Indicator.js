@@ -50,9 +50,10 @@ infestor.define('infestor.Indicator',{
 		},this);
 		
 		this.on('stop',function(){
-	
-			this.changeIndicator(100);
-			
+
+			this.startPos = 100;	
+			this.changeIndicator(this.startPos);
+				
 			infestor.delay(function () {
 
 				this.hideIndicator();			
@@ -133,6 +134,11 @@ infestor.define('infestor.Indicator',{
 		
 		infestor.cross.hideMask();
 	
+	},
+	
+	getCurrentProgress:function(){
+	
+		return this.startPos || 0;
 	}
 	
 });

@@ -538,9 +538,7 @@ infestor.define('infestor.Element', {
 				this.element.addClass(this.cssClsElementPositionSouthWest);
 			}
 
-		}
-			[this.dock] || infestor.emptyFn).call(this),
-		this;
+		}[this.dock] || infestor.emptyFn).call(this),this;
 
 	},
 
@@ -554,22 +552,18 @@ infestor.define('infestor.Element', {
 
 	clearDock : function () {
 
-		return this.element
-		 && this.element.removeClass([this.cssClsElementPositionAbsolute, this.cssClsElementPositionRelative, this.cssClsElementPositionFixed, this.cssClsElementPositionClear].join(' ')),
-		this;
+		return this.element && this.element.removeClass([this.cssClsElementPositionAbsolute, this.cssClsElementPositionRelative, this.cssClsElementPositionFixed, this.cssClsElementPositionClear].join(' ')),this;
 	},
 
 	hideContainer : function () {
 
-		return this.elementInnerContainer && this.elementInnerContainer.hide(),
-		this;
+		return this.elementInnerContainer && this.elementInnerContainer.hide(),this;
 
 	},
 
 	showContainer : function () {
 
-		return this.elementInnerContainer && this.elementInnerContainer.show(),
-		this;
+		return this.elementInnerContainer && this.elementInnerContainer.show(),this;
 	},
 
 	hide : function () {
@@ -583,7 +577,6 @@ infestor.define('infestor.Element', {
 	},
 
 	show : function (top) {
-	
 	
 		top && this.element.zIndex();
 	
@@ -779,7 +772,7 @@ infestor.define('infestor.Element', {
 	
 	getItem : function(name){
 	
-		if(arguments.length<1)
+		if(arguments.length < 1)
 			return this.itemsMap;
 		
 		// 移除已经销毁的对象副本
@@ -795,11 +788,39 @@ infestor.define('infestor.Element', {
 	
 	},
 	
+	getArrayItems : function(){
+	
+		var arr = [];
+		
+		this.eachItems(function(idx,item){
+		
+			arr.push(item);
+		
+		},this,'num');
+	
+		return arr;
+	},
+	
+	getMapItems : function(){
+	
+		var map = {};
+		
+		this.eachItems(function(name,item){
+		
+			map[name] = item;
+		
+		},this,'name');
+		
+		return map;
+	
+	},
+	
 	// 遍历所有子元素
 	// @fn(idx[索引],item[元素]) 委托方法
 	// @scope @fn的作用域
 	// @mode all(所有) num(数值索引) name(关联名索引)
-	eachItems : function(fn,scope,mode){
+	// @allowDestroyed 允许扫描已析构的对象
+	eachItems : function(fn,scope,mode,allowDestroyed){
 	
 		if(!fn) return this;
 		
@@ -807,7 +828,9 @@ infestor.define('infestor.Element', {
 		scope = scope || this;
 	
 		this.hasItem() && infestor.each(this.itemsMap,function(idx,item){
-		
+			
+			if(item.destroyed && !allowDestroyed)
+				return true;
 			
 			(mode == 'num')  &&  !isNaN(idx) && fn.call(scope,idx,item);
 			(mode == 'name') && isNaN(idx) && fn.call(scope,idx,item);
