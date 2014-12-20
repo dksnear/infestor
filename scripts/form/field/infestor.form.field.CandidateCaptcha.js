@@ -180,7 +180,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 		this.showValidateMonitor();
 		
 		this.captchaTip.autoPosition(this.element, 'right', '13');
-		this.captchaTip.show();
+		this.captchaTip.show(true);
 		
 		!this.isActive && this.refresh();
 		this.isActive = true;

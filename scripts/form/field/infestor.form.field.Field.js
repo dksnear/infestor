@@ -307,7 +307,7 @@ infestor.define('infestor.form.field.Field', {
 	
 	showValidateMonitor:function(){
 	
-		!this.checked && this.validateMonitor && this.validateMonitor.autoPosition(this.element, 'bottom', '10') && this.validateMonitor.show();
+		!this.checked && this.validateMonitor && this.validateMonitor.autoPosition(this.element, 'bottom', '10') && this.validateMonitor.show(true);
 		
 		return this;
 	},

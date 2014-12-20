@@ -109,7 +109,7 @@ infestor.define('infestor.form.field.Combo',{
 			e.preventDefault();
 			
 			if(this.dropDownPanel.hidden)
-				return this.dropDownPanel.show();
+				return this.dropDownPanel.show(true);
 						
 			if(!this.activeItem)
 				return this.active(0);
