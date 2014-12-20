@@ -47,67 +47,17 @@ infestor.define('infestor.widget.IFramePanel', {
 			if(!inst || !inst.element || !inst.element.hasClass(this.cssClsHeadItem))
 				return;
 			
-			switch(inst.name){
+			({		
+				reload:this.reloadHandle,
+				show:this.showHandle,
+				hide:this.hideHandle,
+				open:function(){  window.open(this.iframeSrc);   },
+				load:this.loadHandle,
+				stop:this.stopHandle,
+				close:this.destroy
 				
-				case 'reload':
-					!this.body.hidden && this.loadIFrame();
-					this.head.getItem('stop').show();
-					break;
-				case 'show':
-					this.body.show();
-					!this.iframeLoaded && this.loadIFrame();
-					this.head.eachItems(function(name,item){  
-					
-						if(name == 'show')
-							item.hide();
-						if(/hide|reload/.test(name))
-							item.show();
-						if(name == 'stop' && !this.iframeLoaded)
-							item.show();
-							
-					},this);
-					break;
-				case 'hide':
-					this.body.hide();
-					this.head.eachItems(function(name,item){  
-					
-						if(name == 'show')
-							item.show();
-						if(/hide|reload|stop/.test(name))
-							item.hide();
-					});
-					break;
-				case 'open':
-					window.open(this.iframeSrc);
-					break;
-				case 'load':
-					this.loadIFrame();
-					this.head.eachItems(function(name,item){  
-						
-						if(name == 'load')
-							item.hide();
-						if(/hide|reload|stop/.test(name))
-							item.show();
-					});
-					break;
-				case 'stop':
-					this.stopLoadIFrame();
-					this.head.eachItems(function(name,item){  
-						
-						if(name == 'load')
-							item.show();
-						if(/hide|reload|stop/.test(name))
-							item.hide();
-					});
-					break;
-				case 'close':
-					this.destroy();
-					break;
-				default:
-					break;
-			}
+			}[inst.name]||infestor.emptyFn).call(this);
 			
-		
 		},this);
 		
 		this.on('complete',function(){
@@ -115,6 +65,7 @@ infestor.define('infestor.widget.IFramePanel', {
 			this.head && this.head.getItem('stop').hide();
 		
 		},this);
+		
 	},
 	
 	createTitle :function(){
@@ -349,6 +300,67 @@ infestor.define('infestor.widget.IFramePanel', {
 			
 		return	/\?/.test(src) ? (src + '&' + this.getId()) : (src + '?' + this.getId());
 		
+	},
+
+	reloadHandle:function(){
+	
+		!this.body.hidden && this.loadIFrame();
+		this.head.getItem('stop').show();
+	
+	},
+	
+	loadHandle:function(){
+	
+		this.loadIFrame();
+		this.head.eachItems(function(name,item){  
+			
+			if(name == 'load')
+				item.hide();
+			if(/hide|reload|stop/.test(name))
+				item.show();
+		});
+	},
+	
+	stopHandle:function(){
+	
+		this.stopLoadIFrame();
+		this.head.eachItems(function(name,item){  
+			
+			if(name == 'load')
+				item.show();
+			if(/hide|reload|stop/.test(name))
+				item.hide();
+		});
+	},
+	
+	showHandle:function(){
+	
+		this.body.show();
+		!this.iframeLoaded && this.loadIFrame();
+		this.head.eachItems(function(name,item){  
+		
+			if(name == 'show')
+				item.hide();
+			if(/hide|reload/.test(name))
+				item.show();
+			if(name == 'stop' && !this.iframeLoaded)
+				item.show();
+				
+		},this);
+	
+	},
+	
+	hideHandle:function(){
+		
+		this.body.hide();
+		this.head.eachItems(function(name,item){  
+		
+			if(name == 'show')
+				item.show();
+			if(/hide|reload|stop/.test(name))
+				item.hide();
+		});
+	
 	},
 	
 	destroy:function(){
