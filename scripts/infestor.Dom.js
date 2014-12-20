@@ -59,8 +59,7 @@ infestor.define('infestor.Dom', {
 		ieif : function (content, range) {
 
 			return infestor.create('infestor.Dom', document.createComment(infestor.stringFormat('[if {0}]>{1}<![endif]',
-						range || 'IE',
-						(content instanceof infestor.Dom) ? content.outerHtml() : content)));
+				range || 'IE',(content instanceof infestor.Dom) ? content.outerHtml() : content)));
 
 		},
 
@@ -72,7 +71,7 @@ infestor.define('infestor.Dom', {
 		
 		getZIndex : function () {
 		
-			if(!infestor.Dom.$zIndex || infestor.Dom.$zIndex > 100000)
+			if(!infestor.Dom.$zIndex || infestor.Dom.$zIndex > 9999)
 				infestor.Dom.initZIndex();
 				
 			return infestor.Dom.$zIndex++;
@@ -829,10 +828,9 @@ infestor.define('infestor.Dom', {
 
 	zIndex : function (index) {
 
-		if (arguments.length < 1)
-			return infestor.Dom.setZIndex(this), this;
+		if (!index) return infestor.Dom.setZIndex(this), this;
 
-		return this.css('z-index', index);
+		return this.css('z-index', String(index));
 
 	},
 

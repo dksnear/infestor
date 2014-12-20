@@ -177,6 +177,9 @@ infestor.define('infestor.Element', {
 	
 	// 控制贴士指针位置
 	tipDrift:'head',
+	
+	// 固定贴士显示的z-index (默认为系统自增长)
+	tipZIndex: true,
 
 	// 元素尺寸属性(#styleFormat|auto)
 
@@ -578,7 +581,7 @@ infestor.define('infestor.Element', {
 
 	show : function (top) {
 	
-		top && this.element.zIndex();
+		top && this.element.zIndex(infestor.isNumber(top) && top || false);
 	
 		if(!this.hidden || !this.element)
 			return this;
@@ -1272,7 +1275,7 @@ infestor.define('infestor.Element', {
 		
 				this.$tip.setText(this.tip);
 				this.$tip.autoPosition(this.element, this.tipTrend, this.tipDrift);
-				this.$tip.show(true);
+				this.$tip.show(this.tipZIndex);
 
 			},150), this);
 			

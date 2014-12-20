@@ -162,16 +162,6 @@ infestor.define('infestor.Tip', {
 
 		return pos;
 
-	},
-	
-	show:function(){
-	
-		return this.callParent(true);
-	},
-	
-	destroy:function(){
-	
-		this.callParent();
 	}
 
 });
