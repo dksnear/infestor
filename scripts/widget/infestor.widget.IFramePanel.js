@@ -170,11 +170,12 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 		this.elementIFrame.on('load',function(e){
 			
-			if(!this.iframeLoading)
+			if(!this.isIFrameLoading)
 				return;
 			
-			this.iframeLoading = false;
-			this.iframeLoaded = true;
+			this.isIFrameLoading = false;
+			this.isIFrameLoaded = true;
+			this.isIFrameLoadComplete = true;
 			
 			this.elementIFrame && this.elementIFrame.attr({
 			
@@ -193,8 +194,9 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 		this.elementIFrame.on('error',function(e){
 		
-			this.iframeLoading = false;
-			this.iframeLoaded = true;
+			this.isIFrameLoading = false;
+			this.isIFrameLoadError = true;
+			this.isIFrameLoadComplete = true;
 			infestor.stopDelay(this.delayId);
 			this.iFrameLoadIndicator.stop();
 			this.emit('error',[e,this.elementIFrame,this]);
@@ -221,13 +223,13 @@ infestor.define('infestor.widget.IFramePanel', {
 					
 						position : 'absolute',
 						width : '0%',
-						height : '5px',
-						top: 0,
+						height : '2px',
+						bottom: 0,
 						left : 0,
 						'background-color' : 'orange'
 					
 					} 
-				}).renderTo(me.body); 
+				}).renderTo(me.head); 
 				
 				me.elementIFrameLoadIndicator.show(true);
 			},
@@ -262,20 +264,24 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 		this.elementIFrame.attr('src',this.uniqueSrc(this.iframeSrc));
 		
-		this.iframeLoaded = false;
-		this.iframeLoading = true;
+		this.isIFrameLoaded = false;
+		this.isIFrameLoading = true;
+		this.isIFrameTimeout = false;
+		this.isIFrameLoadError = false;
+		this.isIFrameLoadComplete = false;
 		
 		this.delayId = infestor.delay(function(){
 			
-			!this.iframeLoaded && this.elementIFrame && this.elementIFrame.attr({
+			!this.isIFrameLoaded && this.elementIFrame && this.elementIFrame.attr({
 			
 				height:this.iframeHeight,
 				width:this.iframeWidth
 			
 			});
 		
-			this.iframeLoading = false;
-			this.iframeLoaded = true;
+			this.isIFrameLoading = false;
+			this.isIFrameTimeout = true;
+			this.isIFrameLoadComplete = true;
 			this.iFrameLoadIndicator && this.iFrameLoadIndicator.stop();
 			this.emit('timeout',[this.elementIFrame,this]);
 			this.emit('error',[null,this.elementIFrame,this]);
@@ -292,8 +298,11 @@ infestor.define('infestor.widget.IFramePanel', {
 		infestor.stopDelay(this.delayId);
 		this.iFrameLoadIndicator.stop();
 		this.elementIFrame = this.elementIFrame && this.elementIFrame.destroy();
-		this.iframeLoading = false;
-		this.iframeLoaded = false;
+		this.isIFrameLoading = false;
+		this.isIFrameLoaded = false;
+		this.isIFrameTimeout = false;
+		this.isIFrameLoadError = false;
+		this.isIFrameLoadComplete = false;
 	},
 	
 	uniqueSrc:function(src){
@@ -336,14 +345,14 @@ infestor.define('infestor.widget.IFramePanel', {
 	showHandle:function(){
 	
 		this.body.show();
-		!this.iframeLoaded && this.loadIFrame();
+		!this.isIFrameLoadComplete && !this.isIFrameLoading && this.loadIFrame();
 		this.head.eachItems(function(name,item){  
 		
 			if(name == 'show')
 				item.hide();
 			if(/hide|reload/.test(name))
 				item.show();
-			if(name == 'stop' && !this.iframeLoaded)
+			if(name == 'stop' && !this.isIFrameLoaded)
 				item.show();
 				
 		},this);
