@@ -1821,20 +1821,20 @@ infestor js
 		// 延时加载已注册样式
 		delayWriteStyle : function (callback, scope) {
 
-			global.loader.loadedMap = global.loader.loadedMap || {};
+			global.Loader.loadedMap = global.Loader.loadedMap || {};
 
 			global.each(this.delayLoadStyleQueue, function () {
 
 				var path = String(this);
 			
-				if(global.loader.loadedMap[path])
+				if(global.Loader.loadedMap[path])
 					return true;
 			
 				global.loadStyle(path);
-				global.loader.loadedMap[path] = true;
+				global.Loader.loadedMap[path] = true;
 
 			});
-
+		
 			this.delayLoadStyleQueue = [];
 
 		},
