@@ -818,6 +818,8 @@ infestor.define('infestor.Element', {
 	
 		this.itemsMap && infestor.each(this.itemsMap,function(mix,item){
 		
+			!item.destroyed && force && item.destroy();
+		
 			if(!item.destroyed && !force)
 				return true;
 				

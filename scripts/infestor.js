@@ -22,7 +22,7 @@ infestor js
 
 	global.getId = function () {
 
-		global.$prefix = global.$prefix || (global.randomCode(4) + '-');
+		global.$prefix = global.$prefix || (global.randomCode(4,'word') + '-');
 
 		return global.$prefix + global.$globalId++;
 	},
@@ -659,12 +659,19 @@ infestor js
 
 		},
 
-		randomCode : function (len) {
+		// type:num|word|mix,default mix
+		randomCode : function (len,type) {
 
-			var dict = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-			len = len || 6,
-			i = 0,
-			rs = '';
+			var dict = {
+					mix:'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+					num:'0123456789',
+					word:'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+				}[type],
+				len = len || 6,
+				i = 0,
+				rs = '';
+			
+			dict = dict || dict.mix;
 
 			for (; i < len; i++)
 				rs += dict.charAt(Math.floor(Math.random() * 100000000) % dict.length);
