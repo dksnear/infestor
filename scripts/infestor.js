@@ -140,6 +140,18 @@ infestor js
 			}
 		},
 
+		print : function(o){
+		
+			if(global.isArray(o))
+				global.each(o,function(){ global.print(this); });
+			
+			if(!console || !console.log)
+				return o;
+			
+			console.log(String(o));
+			
+		},
+		
 		eval : function (statement) {
 
 			if (!/\S/.test(statement))
@@ -1042,8 +1054,11 @@ infestor js
 		//命名空间管理器
 		mgr : {
 
+			// 设定需要加载类的主机名
 			host : {},
+			// 设定需要加载类的脚本根目录路径
 			scriptsPath : {},
+			// 设定需要加载样式的样式表文件根目录路径
 			cssPath : {},
 
 			defaultHost : '',
@@ -1052,6 +1067,12 @@ infestor js
 
 			// 类管理器(已经创建完成的类映射表)
 			classMap : {},
+			
+			// 记录类的定义顺序
+			classDefineOrderQueue:[],
+			
+			// 按加载顺序记录已加载样式表的路径
+			styleSrcQueue:[],
 
 			// 实例映射表
 			instanceMap : {},
@@ -1063,8 +1084,11 @@ infestor js
 			aliasMap : {},
 
 			// 文件载入器映射表
-			loadedMap : {},
-
+			loaderMap : {},
+			
+			// 文件源映射表
+			srcMap:{},
+		
 			// 允许加载类中引用的css
 			allowLoadCss : true,
 
@@ -1108,8 +1132,8 @@ infestor js
 			using : function (clsName, type, loader) {
 
 				var defaultType = '.js',
-				type = type || defaultType,
-				isDefaultType = type == defaultType;
+					type = type || defaultType,
+					isDefaultType = type == defaultType;
 
 				loader = loader || global.loader;
 
@@ -1120,18 +1144,19 @@ infestor js
 
 				global.each(clsName, function (idx, name) {
 
-					var rawName = name,
-					path;
+					var rawName = name,path;
 
 					!isDefaultType && (name = name + type);
 
-					if (!!this.loadedMap[name])
+					if (!!this.loaderMap[name])
 						return true;
+					
+					path = this.convertToPath(rawName, type);
 
 					// 记录加该载文件所用的载入器
-					this.loadedMap[name] = loader;
-
-					path = this.convertToPath(rawName, type);
+					this.loaderMap[name] = loader;
+					// 记录载入文件路径
+					this.srcMap[name] = path;
 
 					isDefaultType && loader.using(path);
 
@@ -1146,22 +1171,22 @@ infestor js
 			require : function (clsName, handle, scope) {
 
 				var loader,
-				predicate = function () {
+					predicate = function () {
 
-					var lock = false;
+						var lock = false;
 
-					global.isString(clsName) && (clsName = [clsName]);
+						global.isString(clsName) && (clsName = [clsName]);
 
-					global.each(clsName, function () {
+						global.each(clsName, function () {
 
-						if (!global.mgr.classMap[clsName])
-							lock = true;
+							if (!global.mgr.classMap[clsName])
+								lock = true;
 
-					});
+						});
 
-					return !lock;
+						return !lock;
 
-				};
+					};
 
 				// 如果类已经加载则直接执行委托方法
 				if (predicate())
@@ -1171,9 +1196,7 @@ infestor js
 				loader = new global.Loader();
 
 				// 注册加载器
-				//global.loaders = global.loaders || {};
-
-				//global.loaders[loader.id] = loader;
+				global.loaders[loader.id] = loader;
 
 				this.using(clsName, null, loader);
 
@@ -1211,10 +1234,10 @@ infestor js
 				};
 
 				var pathFragments = clsName && clsName.split('.'),
-				defaultType = '.js',
-				type = type || defaultType,
-				isDefaultType = type == defaultType,
-				host = '';
+					defaultType = '.js',
+					type = type || defaultType,
+					isDefaultType = type == defaultType,
+					host = '';
 
 				if (!pathFragments)
 					return '';
@@ -1226,8 +1249,7 @@ infestor js
 				if (isDefaultType) {
 
 					pathFragments[0] = this.scriptsPath[pathFragments[0]] || this.defaultScriptsPath;
-
-					pathFragments[pathFragments.length - 1] = clsName;
+					pathFragments.length < 2 ? pathFragments.push(clsName) : (pathFragments[pathFragments.length - 1] = clsName);
 
 				}
 
@@ -1359,8 +1381,8 @@ infestor js
 			var extend = options.extend || Object;
 
 			// 等待所有类加载完成后 延时定义
-			if (global.mgr.loadedMap[clsNs] && global.mgr.loadedMap[clsNs].isDelay)
-				return global.mgr.loadedMap[clsNs].delayDefine.apply(global.mgr.loadedMap[clsNs], arguments);
+			if (global.mgr.loaderMap[clsNs] && global.mgr.loaderMap[clsNs].isDelay)
+				return global.mgr.loaderMap[clsNs].delayDefine.apply(global.mgr.loaderMap[clsNs], arguments);
 
 			options.constructor = options.constructor || function () {
 				this.callParent && this.callParent(arguments);
@@ -1384,7 +1406,7 @@ infestor js
 
 			extend.prototype.$ownerCls = extend;
 
-			extend.prototype.$loader = global.mgr.loadedMap[clsNs];
+			extend.prototype.$loader = global.mgr.loaderMap[clsNs];
 
 			// 添加类的静态方法
 			options.statics && global.append(extend, options.statics);
@@ -1410,9 +1432,6 @@ infestor js
 		create : function (clsNs, options) {
 
 			var cls = global.isString(clsNs) ? global.namespace(clsNs) : clsNs;
-
-			// if (!global.isFunction(cls))
-				// return cls;		
 			
 			if (!global.isFunction(cls))
 				global.error(global.stringFormat('"{0}" is not loaded',clsNs));
@@ -1424,7 +1443,7 @@ infestor js
 		createByAlias : function (alias, options) {
 
 			var clsName = global.mgr.aliasMap[alias];
-
+	
 			return clsName && this.create(clsName, options);
 		}
 
@@ -1694,7 +1713,7 @@ infestor js
 		delayDefineSet : {},
 
 		// 延时写入的样式队列
-		delayLoadStyleQueue : [],
+		delayLoadstyleSrcQueue : [],
 
 		// 须延时执行的方法执行环境队列
 		delayExecQueue : [],
@@ -1714,15 +1733,15 @@ infestor js
 		load : function (handle, scope) {
 
 			var me = this,
-			callback = function () {
+				callback = function () {
 
-				me.delayExec();
-				handle && handle.call(this);
-				me.blockFree();
-				me.delayWriteStyle();
-				me.complete = true;
+					me.delayExec();
+					handle && handle.call(this);
+					me.blockFree();
+					me.delayWriteStyle();
+					me.complete = true;
 
-			};
+				};
 			
 			this.loaded = true;
 
@@ -1805,10 +1824,10 @@ infestor js
 						item = defineSet[name];
 
 						// 创建类
-						item && !classMap[name] && (item.isDefined = true) && global.define(item.clsNs, item.options, item.callback)
+						item && !classMap[name] && (item.isDefined = true) && global.define(item.clsNs, item.options, item.callback) && global.mgr.classDefineOrderQueue.push(item.clsNs)
 
 						// 注册样式
-						 && global.mgr.allowLoadCss && item.options.cssUses && (this.delayLoadStyleQueue = this.delayLoadStyleQueue.concat(global.mgr.convertToPath(item.options.cssUses, '.css')));
+						 && global.mgr.allowLoadCss && item.options.cssUses && (this.delayLoadstyleSrcQueue = this.delayLoadstyleSrcQueue.concat(global.mgr.convertToPath(item.options.cssUses, '.css')));
 					}
 				}
 
@@ -1823,7 +1842,7 @@ infestor js
 
 			global.Loader.loadedMap = global.Loader.loadedMap || {};
 
-			global.each(this.delayLoadStyleQueue, function () {
+			global.each(this.delayLoadstyleSrcQueue, function () {
 
 				var path = String(this);
 			
@@ -1832,10 +1851,11 @@ infestor js
 			
 				global.loadStyle(path);
 				global.Loader.loadedMap[path] = true;
+				global.mgr.styleSrcQueue.push(path);
 
 			});
 		
-			this.delayLoadStyleQueue = [];
+			this.delayLoadstyleSrcQueue = [];
 
 		},
 
