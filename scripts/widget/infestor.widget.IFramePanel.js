@@ -48,12 +48,12 @@ infestor.define('infestor.widget.IFramePanel', {
 				return;
 			
 			({		
-				reload:this.reloadHandle,
-				show:this.showHandle,
-				hide:this.hideHandle,
+				reload:this.reloadHandler,
+				show:this.showHandler,
+				hide:this.hideHandler,
 				open:function(){  window.open(this.iframeSrc);   },
-				load:this.loadHandle,
-				stop:this.stopHandle,
+				load:this.loadHandler,
+				stop:this.stopHandler,
 				close:this.destroy
 				
 			}[inst.name]||infestor.emptyFn).call(this);
@@ -311,14 +311,14 @@ infestor.define('infestor.widget.IFramePanel', {
 		
 	},
 
-	reloadHandle:function(){
+	reloadHandler:function(){
 	
 		!this.body.hidden && this.loadIFrame();
 		this.head.getItem('stop').show();
 	
 	},
 	
-	loadHandle:function(){
+	loadHandler:function(){
 	
 		this.loadIFrame();
 		this.head.eachItems(function(name,item){  
@@ -330,7 +330,7 @@ infestor.define('infestor.widget.IFramePanel', {
 		});
 	},
 	
-	stopHandle:function(){
+	stopHandler:function(){
 	
 		this.stopLoadIFrame();
 		this.head.eachItems(function(name,item){  
@@ -342,7 +342,7 @@ infestor.define('infestor.widget.IFramePanel', {
 		});
 	},
 	
-	showHandle:function(){
+	showHandler:function(){
 	
 		this.body.show();
 		!this.isIFrameLoadComplete && !this.isIFrameLoading && this.loadIFrame();
@@ -359,7 +359,7 @@ infestor.define('infestor.widget.IFramePanel', {
 	
 	},
 	
-	hideHandle:function(){
+	hideHandler:function(){
 		
 		this.body.hide();
 		this.head.eachItems(function(name,item){  
