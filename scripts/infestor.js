@@ -24,8 +24,8 @@ infestor js
 
 		global.$prefix = global.$prefix || (global.randomCode(4,'word') + '-');
 
-		return global.$prefix + global.$globalId++;
-	},
+		return global.$prefix + global.$globalId ++;
+	};
 
 	global.append = function (des, src) {
 
@@ -37,7 +37,7 @@ infestor js
 				return s;
 
 			var isArray = d instanceof Array,
-			isObj = (typeof d === 'function' || typeof d === 'object') && !isArray;
+				isObj = (typeof d === 'function' || typeof d === 'object') && !isArray;
 
 			if (isArray)
 				for (var i = 0, ln = s.length; i < ln; i++)
@@ -143,12 +143,14 @@ infestor js
 		print : function(o){
 		
 			if(global.isArray(o))
-				global.each(o,function(){ global.print(this); });
+				return global.each(o,function(){ global.print(this); });
 			
 			if(!console || !console.log)
 				return o;
 			
 			console.log(String(o));
+			
+			return true;
 			
 		},
 		
