@@ -48,7 +48,7 @@ infestor js
 					d[item] = s[item];
 
 			return d;
-		}
+		};
 
 		if (typeof des === 'string') {
 
@@ -1090,6 +1090,9 @@ infestor js
 			
 			// 文件源映射表
 			srcMap:{},
+			
+			// 非类文件源映射表
+			nsSrcMap:{},
 		
 			// 允许加载类中引用的css
 			allowLoadCss : true,
@@ -1150,8 +1153,17 @@ infestor js
 
 					!isDefaultType && (name = name + type);
 
-					if (!!this.loaderMap[name])
+					if (this.loaderMap[name])
 						return true;
+					else {
+					
+						try {
+					
+							if(eval(name))
+								return true;
+					
+						}catch(e){}
+					}
 					
 					path = this.convertToPath(rawName, type);
 
@@ -1159,6 +1171,8 @@ infestor js
 					this.loaderMap[name] = loader;
 					// 记录载入文件路径
 					this.srcMap[name] = path;
+	
+					this.nsSrcMap[name] = path;
 
 					isDefaultType && loader.using(path);
 
@@ -1272,8 +1286,7 @@ infestor js
 		// 创建命名空间
 		namespace : function (ns, val, rewrite) {
 
-			var nsa = ns.split('.'),
-			pre;
+			var nsa = ns.split('.'),pre;
 
 			if (arguments.length < 2)
 				val = {};
@@ -1417,6 +1430,9 @@ infestor js
 
 			// 在管理器中注册类
 			global.mgr.classMap[clsNs] = extend;
+			
+			// 注册别名
+			options.alias && global.mgr.addAlias(options.alias, clsNs);
 
 			if (global.isString(clsNs)) {
 
@@ -1757,9 +1773,7 @@ infestor js
 		delayDefine : function (clsNs, options, callback) {
 
 			options.cssUses && global.isBoolean(options.cssUses) && (options.cssUses = clsNs);
-
-			options.alias && global.mgr.addAlias(options.alias, clsNs);
-
+			
 			options.uses && global.mgr.using(options.uses, null, this);
 
 			options.extend && global.isString(options.extend) && global.mgr.using(options.extend, null, this);
@@ -1776,6 +1790,8 @@ infestor js
 				isDefined : false
 			};
 
+			delete global.mgr.nsSrcMap[clsNs];
+			
 			return null;
 
 		},

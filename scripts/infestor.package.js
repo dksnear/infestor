@@ -26,15 +26,12 @@ infestor.namespace('infestor.package',{
 	getLoadedNsQueue:function(ignorePkg){
 	
 		var queue = [];
+				
+		infestor.each(infestor.mgr.nsSrcMap,function(name,src){
 		
-		infestor.each(infestor.Loader.loadedMap,function(idx,src){
-		
-			if(!/.js$/.test(src) || infestor.mgr.srcMap[src])
-				return true;
 			if(ignorePkg && /infestor.package.js/.test(src))
 				return true;
-			
-			queue.push(this.hostParse(src));
+			queue.push(this.hostParse(src));	
 		
 		},this);
 		
