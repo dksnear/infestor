@@ -135,6 +135,8 @@ infestor.define('infestor.tree.DataSet',{
 	
 		infestor.each(this.data,function(idx,row){
 		
+			if(row.$$depth)
+				delete row.$$depth;
 			if(row.$add)
 				delete row.$add;
 			if(row.$update)
