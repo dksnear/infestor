@@ -325,7 +325,7 @@ infestor.define('infestor.DataSet', {
 			
 			for(;i<this.count;){
 			
-				if(idx.call(this,idx,this.data[idx])){
+				if(idx.call(this,i,this.data[i])){
 				
 					removed.push(this.data.splice(i,1));
 					--this.count;

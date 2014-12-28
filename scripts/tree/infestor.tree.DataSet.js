@@ -135,10 +135,16 @@ infestor.define('infestor.tree.DataSet',{
 			}
 		
 		});
+		
+		this.removeData(function(idx,row){
+		
+			return row.$unusable;
+			
+		});
 	
 	},
 	
-	getSubmitParams : function(){
+	getSubmitParams : function(uncoded){
 	
 		var set = [];
 		
@@ -149,6 +155,8 @@ infestor.define('infestor.tree.DataSet',{
 				set.push(row);
 		
 		},this);
+		
+		if(uncoded) return set;
 		
 		return { data : infestor.jsonEncode(set) };
 	
