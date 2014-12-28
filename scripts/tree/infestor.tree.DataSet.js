@@ -48,9 +48,9 @@ infestor.define('infestor.tree.DataSet',{
 		if(this.type == 'tree')
 			data = this.object2array(data,true);
 		
-		if(this.data.length < 1)
-			this.data = data;
-		else this.data = this.data.concat(data);
+		if(this.remote || (this.loadConfig && this.loadConfig.remote))
+			this.data = this.data.concat(data);
+		else this.data = data;
 		
 		this.count = this.data.length;
 		
@@ -102,6 +102,16 @@ infestor.define('infestor.tree.DataSet',{
 		!rowData.$$clearTag && (rowData.$add = true);
 		
 		return rowData;
+	
+	},
+	
+	getData : function(){
+	
+		var data = this.callParent();
+		
+		if(!data) return data;
+		
+		return this.reverse(data);
 	
 	},
 	
