@@ -106,8 +106,8 @@ infestor.namespace('infestor.package',{
 				+ '-' 
 				// class name
 				+ parent.name
-				// class rel
-				+ (detail && parent.cls.prototype.uses ? [' | relCls:(',toArray(parent.cls.prototype.uses).join(','),')'].join('') : '')
+				// class rel (ns or cls)
+				+ (detail && parent.cls.prototype.uses ? [' | rel:(',toArray(parent.cls.prototype.uses).join(','),')'].join('') : '')
 				// class rel css
 				+ (detail && parent.cls.prototype.cssUses ? [' | relCss:(',toArray(parent.cls.prototype.cssUses).join(','),')'].join('') : '')
 			);
