@@ -44,8 +44,92 @@ infestor.namespace('infestor.package',{
 		return infestor.map(infestor.mgr.styleSrcQueue,function(idx,src){ return this.hostParse(src); },this);
 	},
 	
-	getRelationship:function(){
+	getClassTree:function(clsName){
 	
+		var cls,tree = {};
+		
+		clsName = (clsName || 'infestor.Event');
+		cls = infestor.mgr.classMap[clsName];
+		
+		if(!cls) return tree;
+		
+		tree.name = cls.$clsName;
+		tree.cls = cls;
+		
+		(function(parent){
+		
+			var caller = arguments.callee;
+			
+			if(!parent.cls.$extends || !parent.cls.$extends.length)
+				return;
+			
+			parent.children = parent.children || [];
+			
+			infestor.each(parent.cls.$extends,function(){
+			
+				var child = {
+				
+					cls :this,
+					name:this.$clsName
+				
+				};
+				
+				caller(child);
+			
+				parent.children.push(child);
+			
+			});
+			
+		
+		})(tree);
+		
+		return tree;
+	},
+	
+	printClassTree:function(clsName,detail){
+	
+		var tree = this.getClassTree(clsName);
+			log = function(text){ console.log(text);  };
+			toArray = function(o){ return infestor.isArray(o) ? o : [o];  };
+			offsetMark = '    ';
+			
+		(function(parent,depth){
+		
+			var caller = arguments.callee;
+			
+			log(
+				// offset mark
+				infestor.genArray(depth-1,function(){ return offsetMark; }).join('') 
+				// depth 
+				+ depth 
+				// title
+				+ '-' 
+				// class name
+				+ parent.name
+				// class rel
+				+ (detail && parent.cls.prototype.uses ? [' | relCls:(',toArray(parent.cls.prototype.uses).join(','),')'].join('') : '')
+				// class rel css
+				+ (detail && parent.cls.prototype.cssUses ? [' | relCss:(',toArray(parent.cls.prototype.cssUses).join(','),')'].join('') : '')
+			);
+		
+			if(!parent.children || !parent.children.length)
+				return;
+			
+			infestor.each(parent.children,function(){
+			
+				caller(this,depth + 1);
+			
+			});
+			
+	
+		})(tree,1);
+		
+	
+	},
+	
+	printLoadedQueue:function(){
+	
+		infestor.print(this.getLoadedQueue.apply(this,arguments));
 	
 	},
 	

@@ -1393,7 +1393,7 @@ infestor js
 		// @callback(fn):类定义完成后的委托句柄
 		define : function (clsNs, options, callback) {
 		
-			var extend = options.extend || Object;
+			var extend = options.extend || Object,parent;
 
 			// 等待所有类加载完成后 延时定义
 			if (global.mgr.loaderMap[clsNs] && global.mgr.loaderMap[clsNs].isDelay)
@@ -1414,8 +1414,17 @@ infestor js
 					global.error(global.stringFormat('"{0}" 定义失败, 父类"{1}"未定义!', options.$clsName, options.extend));
 				}
 			}
+			
+			parent = extend;
 
 			extend = global.extend(extend, options);
+			
+			if(parent != Object){
+			
+				parent.$extends = parent.$extends || [];
+				parent.$extends.push(extend);
+				
+			}
 
 			extend.$clsName = options.$clsName;
 
