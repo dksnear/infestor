@@ -289,6 +289,7 @@ infestor.define('infestor.Dom', {
 
 	},
 
+	// 非浏览器模拟指派事件
 	emit : function (eventName, eventArgs, scope) {
 
 		if (!this.element || !this.domEventsMap || !this.domEventsMap[eventName])
@@ -303,6 +304,21 @@ infestor.define('infestor.Dom', {
 
 		return this.emit.apply(this, arguments);
 
+	},
+	
+	// 浏览器模拟指派事件
+	dispatch : function(eventName,propagation,preventDefault){
+	
+		this.element && infestor.dispatchEvent(this.element, eventName, propagation, preventDefault);
+		
+		return this;
+	
+	},
+	
+	fire : function(){
+	
+		return this.dispatch.apply(this,arguments);
+		
 	},
 
 	bind : function () {

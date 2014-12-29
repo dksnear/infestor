@@ -86,10 +86,10 @@ infestor.namespace('infestor.package',{
 		return tree;
 	},
 	
-	printClassTree:function(clsName,detail){
+	printClassTree:function(clsName,detail,log){
 	
 		var tree = this.getClassTree(clsName);
-			log = function(text){ console.log(text);  };
+			log = log || function(text){ console.log(text);  };
 			toArray = function(o){ return infestor.isArray(o) ? o : [o];  };
 			offsetMark = '    ';
 			
@@ -130,6 +130,81 @@ infestor.namespace('infestor.package',{
 	printLoadedQueue:function(){
 	
 		infestor.print(this.getLoadedQueue.apply(this,arguments));
+	
+	},
+	
+	filePrintClassTree : function(fileName,clsName,detail){
+		
+		var content = '';
+	
+		this.printClassTree(clsName,detail,function(text){
+		
+			content = content + text + '\r\n';
+		
+		});
+		
+		this.filePrint(fileName,content);
+	
+	},
+	
+	filePrintLoadedQueue:function(fileName,opts){
+	
+		this.filePrint(fileName,this.getLoadedQueue(opts).join('\r\n'));
+	
+	},
+	
+	
+	browserPrintClassTree : function(clsName,detail){
+
+		var content = '';
+		
+		if(!this.isBlobSupport())
+			return;
+	
+		this.printClassTree(clsName,detail,function(text){
+		
+			content = content + text + '\r\n';
+		
+		});
+		
+		window.open(URL.createObjectURL(new Blob([content])));
+	
+	},
+	
+	browserPrintLoadedQueue : function(opts){
+	
+		if(!this.isBlobSupport())
+			return;
+		
+		window.open(URL.createObjectURL(new Blob([this.getLoadedQueue(opts).join('\r\n')])));
+		
+	},
+	
+	filePrint:function(fileName,content){
+	
+		if(!this.isBlobSupport())
+			return;
+	
+		infestor.mgr.require('infestor.Dom',function(){
+		
+			infestor.Dom.a().attr({
+			
+				href:URL.createObjectURL(new Blob([content])),
+				download:fileName
+			
+			}).fire('click');
+		
+		});
+	
+	},
+	
+	isBlobSupport:function(){
+	
+		var support = !!window.Blob
+	
+		if(!support) console.log('浏览器不支持blob对象!');
+	
+		return support;
 	
 	},
 	

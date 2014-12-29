@@ -986,7 +986,7 @@ infestor js
 
 			if (document.createEvent) {
 				event = document.createEvent('HTMLEvents');
-				event.initEvent(eventName, propagation, preventDefault);
+				event.initEvent(eventName, propagation || false, preventDefault || false);
 				event.eventType = 'message';
 				target.dispatchEvent(event);
 				return event;
