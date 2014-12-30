@@ -300,6 +300,14 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 
 	},
 	
+	reset : function(){
+	
+		this.callParent();
+		this.refresh();
+		
+		return this;
+	
+	},
 	
 	// #new methods
 

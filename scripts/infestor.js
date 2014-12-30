@@ -1560,22 +1560,19 @@ infestor js
 		if (browser == 'othersBrowser')
 			return global[name] = global.browser.$methods[browser] = function () {
 				return !global.browser.name;
-			},
-		true;
+			},true;
 
 		if (!version)
 			return global[name] = global.browser.$methods[browser] = function () {
 				return !!global.browser[(browser == 'ie') ? 'msie' : browser];
-			},
-		true
+			},true;
 
 		if (version && !range)
 			return global[name] = global.browser.$methods[browser + version] = function () {
 
 				return global.browser.msie && Math.floor(global.browser.version) == version;
 
-			},
-		true;
+			},true;
 
 		if (range == 'minus')
 			global[name] = global.browser.$methods[browser + version + range] = global.browser.$methods[browser + version + '-'] = function () {

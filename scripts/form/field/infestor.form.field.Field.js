@@ -387,6 +387,8 @@ infestor.define('infestor.form.field.Field', {
 	
 	reset:function(){
 	
+		this.isFocus = false;
+		this.checked = false;
 		this.clearValue();
 		this.check();
 		

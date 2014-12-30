@@ -214,11 +214,6 @@ infestor.define('infestor.Dom', {
 	getElement : function () {
 
 		return this.element;
-	},	
-	
-	fixEventName:function(eventName){
-		
-		return eventName;
 	},
 
 	addEventListener : function (eventName, eventHandle, scope) {
@@ -248,8 +243,6 @@ infestor.define('infestor.Dom', {
 		if (!this.element)
 			return this;
 		
-		//eventName = this.fixEventName(eventName);
-
 		scope = scope || this;
 		this.domEventsMap = this.domEventsMap || {};
 
@@ -271,8 +264,6 @@ infestor.define('infestor.Dom', {
 
 	removeEventListener : function (eventName, eventHandle) {
 	
-		//eventName = this.fixEventName(eventName);
-
 		if (!this.element || !this.domEventsMap || !this.domEventsMap[eventName])
 			return this;
 
@@ -375,42 +366,41 @@ infestor.define('infestor.Dom', {
 	attr : function (name, value) {
 
 		var element = this.element,
-		ieFix = function (name) {
+			ieFix = function (name) {
 
-			if (!infestor.browser.msie)
-				return name;
+				if (!infestor.browser.msie)
+					return name;
 
-			return {
+				return {
 
-				acceptcharset : 'acceptCharset',
-				accesskey : 'accessKey',
-				allowtransparency : 'allowTransparency',
-				bgcolor : 'bgColor',
-				cellpadding : 'cellPadding',
-				cellspacing : 'cellSpacing',
-				'class' : 'className',
-				colspan : 'colSpan',
-				checked : 'defaultChecked',
-				selected : 'defaultSelected',
-				'for' : 'htmlFor',
-				frameborder : 'frameBorder',
-				hspace : 'hSpace',
-				longdesc : 'longDesc',
-				maxlength : 'maxLength',
-				marginwidth : 'marginWidth',
-				marginheight : 'marginHeight',
-				noresize : 'noResize',
-				noshade : 'noShade',
-				readonly : 'readOnly',
-				rowspan : 'rowSpan',
-				tabindex : 'tabIndex',
-				valign : 'vAlign',
-				vspace : 'vSpace'
+					acceptcharset : 'acceptCharset',
+					accesskey : 'accessKey',
+					allowtransparency : 'allowTransparency',
+					bgcolor : 'bgColor',
+					cellpadding : 'cellPadding',
+					cellspacing : 'cellSpacing',
+					'class' : 'className',
+					colspan : 'colSpan',
+					checked : 'defaultChecked',
+					selected : 'defaultSelected',
+					'for' : 'htmlFor',
+					frameborder : 'frameBorder',
+					hspace : 'hSpace',
+					longdesc : 'longDesc',
+					maxlength : 'maxLength',
+					marginwidth : 'marginWidth',
+					marginheight : 'marginHeight',
+					noresize : 'noResize',
+					noshade : 'noShade',
+					readonly : 'readOnly',
+					rowspan : 'rowSpan',
+					tabindex : 'tabIndex',
+					valign : 'vAlign',
+					vspace : 'vSpace'
 
-			}
-			[name] || name;
+				}[name] || name;
 
-		};
+			};
 
 		if (infestor.isString(name) && infestor.isUndefined(value))
 			return element && element.getAttribute(ieFix(name));
@@ -477,8 +467,7 @@ infestor.define('infestor.Dom', {
 			//msie: '-ms-',
 			mozilla : '-moz-'
 
-		}
-		[infestor.browser.name] || '';
+		}[infestor.browser.name] || '';
 
 		infestor.isString(name) && this.css(prefix + name, value);
 

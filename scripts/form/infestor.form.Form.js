@@ -410,7 +410,6 @@ infestor.define('infestor.form.Form', {
 	
 	},
 	
-	
 	hide : function(){
 	
 		this.blurField();

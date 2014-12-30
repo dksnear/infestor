@@ -132,6 +132,15 @@ infestor.define('infestor.form.field.Captcha', {
 	
 	},
 	
+	reset : function(){
+	
+		this.callParent();
+		this.refresh();
+		
+		return this;
+	
+	},
+	
 	refresh : function () {
 
 		var me = this;

@@ -103,7 +103,7 @@ infestor.namespace('infestor.package',{
 				// depth 
 				+ depth 
 				// title
-				+ '-' 
+				+ (parent.children && parent.children.length ? '+' : '-')
 				// class name
 				+ parent.name
 				// class rel (ns or cls)
@@ -152,8 +152,7 @@ infestor.namespace('infestor.package',{
 		this.filePrint(fileName,this.getLoadedQueue(opts).join('\r\n'));
 	
 	},
-	
-	
+		
 	browserPrintClassTree : function(clsName,detail){
 
 		var content = '';
@@ -200,9 +199,9 @@ infestor.namespace('infestor.package',{
 	
 	isBlobSupport:function(){
 	
-		var support = !!window.Blob
+		var support = !!window.Blob && infestor.isWebkit();
 	
-		if(!support) console.log('浏览器不支持blob对象!');
+		if(!support) console.log('浏览器不支持blob对象或不支持blob对象的导出功能!');
 	
 		return support;
 	
