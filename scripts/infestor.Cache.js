@@ -1,6 +1,6 @@
 
 
-//基本对象类
+//缓存类
 
 infestor.define('infestor.Cache', {
 
@@ -329,7 +329,8 @@ infestor.define('infestor.Cache', {
 		
 		infestor.each(window.localStorage,function(keyIndex){
 		
-			var value = this.getStorage(window.localStorage.key(keyIndex),true);
+			var key = window.localStorage.key(keyIndex),
+				value = this.getStorage(key,true);
 			
 			if(!value || !value.$expires)
 				return true;
