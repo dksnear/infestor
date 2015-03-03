@@ -421,10 +421,8 @@ infestor.define('infestor.DataSet', {
 			method : config.method,
 			params : config.params,
 			success : function (data) {
-				
-				me.initData(data);
-							
-				me.emit('load', [me.getData(),opts.params],me);
+								
+				me.emit('load', [me.initData(data),opts.params],me);
 				
 				// 设置当前页面位置
 				me.pageSize && !me.hasData() && me.emit('pageout',[me.pageCurrent,opts.params],me);

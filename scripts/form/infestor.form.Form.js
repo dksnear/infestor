@@ -29,13 +29,14 @@ infestor.define('infestor.form.Form', {
 	// 字段深度
 	level : 1,
 	
-	checked : false,
-
 	fieldsMap : null,
 	
 	formName : null,
 	
 	autoLoad : false, 
+	
+	// 跳过字段验证
+	skipCheck : false,
 
 	itemsOpts : {
 
@@ -381,6 +382,8 @@ infestor.define('infestor.form.Form', {
 	
 		var checked = true;
 		
+		if(this.skipCheck) return checked;
+		
 		this.fieldsMap && infestor.each(this.fieldsMap,function(){
 		
 			if(!this.checked){
@@ -392,10 +395,8 @@ infestor.define('infestor.form.Form', {
 		
 		});
 			
-		this.checked = checked;
+		return checked;
 		
-		return this.checked;
-	
 	},
 
 	submit : function (opts,rewrite) {
