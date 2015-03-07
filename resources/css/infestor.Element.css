@@ -40,6 +40,7 @@ input:focus{
 .infestor-element-inline-block{
 
     display: inline-block;
+	vertical-align : middle;
 	
 }
 
@@ -47,6 +48,7 @@ input:focus{
 
 	display: inline;
 	zoom: 1;
+	vertical-align : middle;
 
 }
 
