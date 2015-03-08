@@ -268,6 +268,14 @@ infestor.define('infestor.Panel', {
 	restore:function(){
 	
 	
+	},
+	
+	destory:function(){
+		
+		this.head = this.head && this.head.destory();
+		this.rear = this.rear && this.rear.destory();
+		this.body = this.body && this.body.destory();
+		this.callParent();
 	}
 
 	

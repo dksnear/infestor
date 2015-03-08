@@ -1464,7 +1464,7 @@ infestor.define('infestor.Element', {
 	
 		var logicPos = {
 		
-			x : idx%15 + 1 || idx,
+			x : (idx%15 + 1) || idx,
 			y : Math.floor(idx/15) + 1,
 			name : name
 		

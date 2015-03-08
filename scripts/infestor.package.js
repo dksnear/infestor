@@ -129,7 +129,7 @@ infestor.namespace('infestor.package',{
 	
 	printLoadedQueue:function(){
 	
-		infestor.print(this.getLoadedQueue.apply(this,arguments));
+		infestor.consolePrint(this.getLoadedQueue.apply(this,arguments));
 	
 	},
 	

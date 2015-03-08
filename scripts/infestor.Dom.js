@@ -428,16 +428,13 @@ infestor.define('infestor.Dom', {
 	css : function (name, value) {
 
 		var element = this.element,
-			filter = function (name) {
-				return name.replace(/-\w?/g, function (s) { return s.substring(1).toUpperCase(); });
-			},
 			getStyle = function (name) {
-				return element && (window.getComputedStyle ? window.getComputedStyle(element, null) : element.currentStyle)[filter(name)];
+				return element && (window.getComputedStyle ? window.getComputedStyle(element, null) : element.currentStyle)[infestor.stdn(name)];
 			},
 			setStyle = function (name, value) {
 
 				try {
-					element && (element.style[filter(name)] = value);
+					element && (element.style[infestor.stdn(name)] = value);
 				} catch (err) {}
 			};
 

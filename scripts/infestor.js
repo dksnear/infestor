@@ -140,7 +140,7 @@ infestor js
 			}
 		},
 
-		print : function(o){
+		consolePrint : function(o){
 		
 			if(global.isArray(o))
 				return global.each(o,function(){ global.print(this); });
@@ -637,6 +637,17 @@ infestor js
 			return s;
 
 		},
+	
+		// 将连字符分隔的变量名改为标准驼峰名
+		stdn : function(name,sep){
+			
+			if(!name) return '';
+						
+			return name.replace(new RegExp('\\'+ (sep || '-') +'\\w','gm'), function (match) {
+				return match.substr(1).toUpperCase();
+			});
+			
+		},
 		
 		trim:function(str){
 		
@@ -704,25 +715,25 @@ infestor js
 			parse = function (o) {
 
 				if (global.isUndefined(o))
-					return rules.undefinedParser(o);
+					return rules.undefinedParser(o,parse);
 				if (global.isNull(o))
-					return rules.nullParser(o);
+					return rules.nullParser(o,parse);
 				if (global.isString(o))
-					return rules.stringParser(o);
+					return rules.stringParser(o,parse);
 				if (global.isArray(o))
-					return rules.arrayParser(o);
+					return rules.arrayParser(o,parse);
 				if (global.isBoolean(o))
-					return rules.booleanParser(o);
+					return rules.booleanParser(o,parse);
 				if (global.isDate(o))
-					return rules.dateParser(o);
+					return rules.dateParser(o,parse);
 				if (global.isNumber(o))
-					return rules.numberParser(o);
+					return rules.numberParser(o,parse);
 				if (global.isFunction(o))
-					return rules.functionParser(o);
+					return rules.functionParser(o,parse);
 				if (global.isRegExp(o))
-					return rules.regExpParser(o);
+					return rules.regExpParser(o,parse);
 				if (global.isRawObject(o))
-					return rules.objectParser(o);
+					return rules.objectParser(o,parse);
 
 				return '';
 
@@ -730,7 +741,7 @@ infestor js
 				
 			rules = global.append({
 
-				arrayParser : function (o) {
+				arrayParser : function (o,parse) {
 
 					var str = [];
 
@@ -740,7 +751,7 @@ infestor js
 
 					return '[' + str.join(',') + ']';
 				},
-				objectParser : function (o) {
+				objectParser : function (o,parse) {
 
 					var str = [];
 
@@ -750,34 +761,34 @@ infestor js
 
 					return '{' + str.join(',') + '}';
 				},
-				booleanParser : function (o) {
-					return Boolean.prototype.toString.call(o);
+				booleanParser : function (o,parse) {
+					return Boolean.prototype.toString.call(o,parse);
 				},
-				dateParser : function (o) {
+				dateParser : function (o,parse) {
 					return '"' + global.dateFormat(o, 'yyyy-MM-ddTHH:mm:ss.SZ') + '"';
 				},
-				regExpParser : function (o) {
+				regExpParser : function (o,parse) {
 					return '{}';
 				},
-				stringParser : function (o) {
+				stringParser : function (o,parse) {
 					return '"' + String(o) + '"';
 				},
-				numberParser : function (o) {
+				numberParser : function (o,parse) {
 					return Number(o);
 				},
-				functionParser : function (o) {
+				functionParser : function (o,parse) {
 					return '';
 				},
-				undefinedParser : function (o) {
+				undefinedParser : function (o,parse) {
 					return 'null'
 				},
-				nullParser : function (o) {
+				nullParser : function (o,parse) {
 					return 'null'
 				}
 
 			}, rules);
 			
-			return parse(o);
+			return parse(obj);
 		
 		},
 
@@ -788,7 +799,7 @@ infestor js
 
 			return eval('('+str+')');
 		},
-
+	
 		delay : function (fn, time, scope) {
 
 			return setTimeout(function () {
@@ -894,6 +905,7 @@ infestor js
 		}		
 	});
 
+	//事件
 	global.append({
 
 		//同步加载脚本
