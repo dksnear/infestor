@@ -15,15 +15,21 @@ infestor.define('infestor.tree.TreeColumn',{
 	
 		this.columnCells = this.columnCells || {};
 		
-		return this.columnCells[row.id] = infestor.create('infestor.tree.TreeNode',{
+		return this.columnCells[row.id] = infestor.create('infestor.Element',{
 	
 			tagName:'td',	
-			width : this.columnOptions.width || 60,
-			text : cellData && cellData[this.columnOptions.name] || rowData.$text,
-			nodeDepth : row.depth,
 			hidden : this.columnOptions.hidden,
-			nodeFloatSpace : floatSpace || 0
-			
+			items : {
+				
+				alias : 'treenode',
+				name : 'inner-cell',
+				width : this.columnOptions.width || 60,
+				text : cellData && cellData[this.columnOptions.name] || rowData.$text,
+				nodeDepth : row.depth,
+				//hidden : this.columnOptions.hidden,
+				nodeFloatSpace : floatSpace || 0
+			}
+				
 		}).renderTo(cellsCt);
 			
 	}

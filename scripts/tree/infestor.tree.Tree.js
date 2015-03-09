@@ -210,7 +210,7 @@ infestor.define('infestor.tree.Tree',{
 		
 		}
 			
-		row.treeNode = this.treeColumn.createColumnCell(rowData.rawData,rowData,row.container,row,this.rootVisible ? 0 : -1);
+		row.treeNode = this.treeColumn.createColumnCell(rowData.rawData,rowData,row.container,row,this.rootVisible ? 0 : -1).getItem('inner-cell');
 	
 		row.treeNode.nodeId = row.id;
 		row.treeNode.isRoot = isRoot;
