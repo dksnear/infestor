@@ -713,27 +713,29 @@ infestor js
 				return window.JSON.stringify(obj);
 
 			parse = function (o) {
+				
+				var args = [o,parse].concat(Array.prototype.slice.call(arguments,2));
 
 				if (global.isUndefined(o))
-					return rules.undefinedParser(o,parse);
+					return rules.undefinedParser.apply(rules,args);
 				if (global.isNull(o))
-					return rules.nullParser(o,parse);
+					return rules.nullParser.apply(rules,args);
 				if (global.isString(o))
-					return rules.stringParser(o,parse);
+					return rules.stringParser.apply(rules,args);
 				if (global.isArray(o))
-					return rules.arrayParser(o,parse);
+					return rules.arrayParser.apply(rules,args);
 				if (global.isBoolean(o))
-					return rules.booleanParser(o,parse);
+					return rules.booleanParser.apply(rules,args);
 				if (global.isDate(o))
-					return rules.dateParser(o,parse);
+					return rules.dateParser.apply(rules,args);
 				if (global.isNumber(o))
-					return rules.numberParser(o,parse);
+					return rules.numberParser.apply(rules,args);
 				if (global.isFunction(o))
-					return rules.functionParser(o,parse);
+					return rules.functionParser.apply(rules,args);
 				if (global.isRegExp(o))
-					return rules.regExpParser(o,parse);
+					return rules.regExpParser.apply(rules,args);
 				if (global.isRawObject(o))
-					return rules.objectParser(o,parse);
+					return rules.objectParser.apply(rules,args);
 
 				return '';
 
@@ -798,6 +800,81 @@ infestor js
 				return window.JSON.parse(str);
 
 			return eval('('+str+')');
+		},
+		
+		jsonEncodeTree : function(obj,action){
+			
+			var treeArray = [],
+				action = action || function(id,pid,type,key,value,depth){				
+					 treeArray.push({ id: id,pid : pid || '' ,type : type, key :key, value : value ,text : (depth === 1 ? 'root' : key) + ':' + value,depth : depth });					
+				};
+			
+			global.jsonEncode(obj,{
+							
+				arrayParser : function (o,parse,pid,key,depth) {
+					
+					var id = global.getId();
+					
+					depth = depth || 1;
+
+					action(id, pid,'array',key,'[array]',depth);
+				
+					global.each(o, function (idx, item) {
+						parse(item,parse,id,'[' + idx + ']',depth + 1);				
+					});
+				},
+				objectParser : function (o,parse,pid,key,depth) {
+					
+					var id = global.getId();
+					
+					depth = depth || 1;
+					
+					action(id,pid,'object',key,'[object]',depth);
+					
+					global.each(o, function (key, value) {
+						o.hasOwnProperty(key) && parse(value,parse,id,key,depth + 1);
+					});
+
+				},
+				booleanParser : function (o,parse,pid,key,depth) {	
+					action(global.getId(),pid,'bool',key,Boolean.prototype.toString.call(o,parse),depth);
+				},
+				dateParser : function (o,parse,pid,key,depth) {
+					action(global.getId(),pid,'date',key,global.dateFormat(o, 'yyyy-MM-ddTHH:mm:ss.SZ'),depth);
+				},
+				regExpParser : function (o,parse,pid,key,depth) {		
+					action(global.getId(),pid,'regexp',key,'[regexp]',depth);
+				},
+				stringParser : function (o,parse,pid,key,depth) {
+					action(global.getId(),pid,'string',key,String(o),depth);
+				},
+				numberParser : function (o,parse,pid,key,depth) {
+					action(global.getId(),pid,'number',key,Number(o),depth);
+				},
+				functionParser : function (o,parse,pid,key,depth) {
+					action(global.getId(),pid,'function',key,'[function]',depth);
+				},
+				undefinedParser : function (o,parse,pid,key,depth) {
+					action(global.getId(),pid,'function',key,'[undefined]',depth);
+				},
+				nullParser : function (o,parse,pid,key,depth) {
+					action(global.getId(),pid,'function',key,'[null]',depth);
+				}
+				
+			});
+			
+			return treeArray;
+			
+		},
+	
+		jsonEncodePrint : function(obj){
+			
+			global.jsonEncodeTree(obj,function(id,pid,type,key,value,depth){
+				
+				console.log(global.genArray(depth,function(){ return '    '; }).join('') + (depth === 1 ? 'root' : key) + ':' + value);
+				
+			});
+			
 		},
 	
 		delay : function (fn, time, scope) {
