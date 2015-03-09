@@ -26,7 +26,6 @@ infestor.define('infestor.tree.TreeColumn',{
 				width : this.columnOptions.width || 60,
 				text : cellData && cellData[this.columnOptions.name] || rowData.$text,
 				nodeDepth : row.depth,
-				//hidden : this.columnOptions.hidden,
 				nodeFloatSpace : floatSpace || 0
 			}
 				

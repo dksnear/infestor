@@ -42,14 +42,16 @@ infestor.define('infestor.grid.Column',{
 		return this.columnCells[row.id] = infestor.create('infestor.Element',{
 		
 			tagName:'td',	
-			//width : this.columnOptions.width || 60,
-			//text : cellData,
-			hidden : this.columnOptions.hidden,//,
+			hidden : this.columnOptions.hidden,
 			items :{
 			
 				name : 'inner-cell',
 				text : cellData,
 				width : this.columnOptions.width || 60,
+				css:{
+			
+					textAlign:this.columnOptions.textAlign || 'center'
+				}
 			
 			}
 			

@@ -805,60 +805,60 @@ infestor js
 		jsonEncodeTree : function(obj,action){
 			
 			var treeArray = [],
-				action = action || function(id,pid,type,key,value,depth){				
-					 treeArray.push({ id: id,pid : pid || '' ,type : type, key :key, value : value ,text : (depth === 1 ? 'root' : key) + ':' + value,depth : depth });					
+				action = action || function( id, pId, type, key, value, depth){				
+					 treeArray.push({ id: id,pId : pId || '0' ,type : type, key :key, value : value ,text : (depth === 1 ? 'root' : key) + ':' + value,depth : depth });					
 				};
 			
 			global.jsonEncode(obj,{
 							
-				arrayParser : function (o,parse,pid,key,depth) {
+				arrayParser : function (o,parse,pId,key,depth) {
 					
 					var id = global.getId();
 					
 					depth = depth || 1;
 
-					action(id, pid,'array',key,'[array]',depth);
+					action(id, pId,'array',key,'[array]',depth);
 				
 					global.each(o, function (idx, item) {
 						parse(item,parse,id,'[' + idx + ']',depth + 1);				
 					});
 				},
-				objectParser : function (o,parse,pid,key,depth) {
+				objectParser : function (o,parse,pId,key,depth) {
 					
 					var id = global.getId();
 					
 					depth = depth || 1;
 					
-					action(id,pid,'object',key,'[object]',depth);
+					action(id,pId,'object',key,'[object]',depth);
 					
 					global.each(o, function (key, value) {
 						o.hasOwnProperty(key) && parse(value,parse,id,key,depth + 1);
 					});
 
 				},
-				booleanParser : function (o,parse,pid,key,depth) {	
-					action(global.getId(),pid,'bool',key,Boolean.prototype.toString.call(o,parse),depth);
+				booleanParser : function (o,parse,pId,key,depth) {	
+					action(global.getId(),pId,'bool',key,Boolean.prototype.toString.call(o,parse),depth);
 				},
-				dateParser : function (o,parse,pid,key,depth) {
-					action(global.getId(),pid,'date',key,global.dateFormat(o, 'yyyy-MM-ddTHH:mm:ss.SZ'),depth);
+				dateParser : function (o,parse,pId,key,depth) {
+					action(global.getId(),pId,'date',key,global.dateFormat(o, 'yyyy-MM-ddTHH:mm:ss.SZ'),depth);
 				},
-				regExpParser : function (o,parse,pid,key,depth) {		
-					action(global.getId(),pid,'regexp',key,'[regexp]',depth);
+				regExpParser : function (o,parse,pId,key,depth) {		
+					action(global.getId(),pId,'regexp',key,'[regexp]',depth);
 				},
-				stringParser : function (o,parse,pid,key,depth) {
-					action(global.getId(),pid,'string',key,String(o),depth);
+				stringParser : function (o,parse,pId,key,depth) {
+					action(global.getId(),pId,'string',key,String(o),depth);
 				},
-				numberParser : function (o,parse,pid,key,depth) {
-					action(global.getId(),pid,'number',key,Number(o),depth);
+				numberParser : function (o,parse,pId,key,depth) {
+					action(global.getId(),pId,'number',key,Number(o),depth);
 				},
-				functionParser : function (o,parse,pid,key,depth) {
-					action(global.getId(),pid,'function',key,'[function]',depth);
+				functionParser : function (o,parse,pId,key,depth) {
+					action(global.getId(),pId,'function',key,'[function]',depth);
 				},
-				undefinedParser : function (o,parse,pid,key,depth) {
-					action(global.getId(),pid,'function',key,'[undefined]',depth);
+				undefinedParser : function (o,parse,pId,key,depth) {
+					action(global.getId(),pId,'function',key,'[undefined]',depth);
 				},
-				nullParser : function (o,parse,pid,key,depth) {
-					action(global.getId(),pid,'function',key,'[null]',depth);
+				nullParser : function (o,parse,pId,key,depth) {
+					action(global.getId(),pId,'function',key,'[null]',depth);
 				}
 				
 			});

@@ -114,7 +114,7 @@ infestor.define('infestor.tree.Tree',{
 	reload : function(){
 	
 		if(!this.loaded)
-			return this.load();
+			return this.load.apply(this,arguments);
 		
 		this.removeRow();
 		this.rootRow = null;
@@ -122,7 +122,7 @@ infestor.define('infestor.tree.Tree',{
 		
 		this.dataSet.clearData();
 		
-		return this.load();
+		return this.load.apply(this,arguments);
 	
 	},
 	
