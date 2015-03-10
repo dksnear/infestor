@@ -104,6 +104,8 @@ infestor.define('infestor.form.field.Field', {
 	label : false,
 
 	labelWidth : 50,
+	
+	inputStyle: {},
 
 	//(top|left|right)
 	labelPos : 'left',
@@ -245,7 +247,7 @@ infestor.define('infestor.form.field.Field', {
 			id : this.id,
 			name : this.fieldName
 			
-		});
+		}).css(this.inputStyle);
 		
 		// !this.allowNull && this.elementFieldInput.addClass(this.cssClsFieldStatusNotNull);
  		

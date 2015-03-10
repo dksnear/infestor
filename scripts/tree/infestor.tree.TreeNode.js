@@ -78,16 +78,16 @@ infestor.define('infestor.tree.TreeNode',{
 	lastChildNode : null,
 	
 	childNodes : null,
+	
+	itemLayout:'table',
 
 	// rewite
 	
-	initElement : function(){
-	
-		this.callParent();
+	initItems : function(){
 		
+		this.callParent();
 		this.createNodeSpaceCells().createNodeSwitchCell().createNodeCheckCell().createNodeIconCell().createNodeTextCell();
 		this.refreshIcon();
-	
 	},
 	
 	initEvents : function(){
@@ -136,14 +136,14 @@ infestor.define('infestor.tree.TreeNode',{
 		this.nodeSpaceCells = this.nodeSpaceCells || [];
 		
 		for(; i<len; i++)
-			this.nodeSpaceCells.push(infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeSpace].join(' ') }).renderTo(this));
+			this.nodeSpaceCells.push(this.addItem({ cssClsElement: [this.cssClsNodeCell,this.cssClsNodeSpace].join(' ') }));
 	
 		return this;
 	},
 	
 	createNodeSwitchCell : function(){
 	
-		this.nodeSwitchCell = infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeSwitch].join(' ') }).renderTo(this);
+		this.nodeSwitchCell = this.addItem({ cssClsElement: [this.cssClsNodeCell,this.cssClsNodeSwitch].join(' ') });
 		
 		return this;
 	
@@ -160,15 +160,15 @@ infestor.define('infestor.tree.TreeNode',{
 	
 		var cssCls = this.cssClsNodeExpandIcon;
 	
-		this.nodeIconCell = infestor.create('infestor.Element',{ cssClsElement: [this.cssClsElementInlineBlock,this.cssClsNodeCell,this.cssClsNodeIcon].join(' ') }).renderTo(this);
-		
+		this.nodeIconCell = this.addItem({ cssClsElement: [this.cssClsNodeCell,this.cssClsNodeIcon].join(' ') });
+			
 		return this;
 	
 	},
 	
 	createNodeTextCell : function(){
 	
-		this.nodeTextCell = infestor.create('infestor.Element',{ cssClsElement: this.cssClsElementInlineBlock  + ' ' + this.cssClsNodeText }).renderTo(this);
+		this.nodeTextCell = this.addItem({ cssClsElement: this.cssClsNodeText });
 		
 		return this;
 

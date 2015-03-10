@@ -9,6 +9,8 @@ infestor.define('infestor.grid.Column',{
 	
 	cssClsColumnHeadCell :'infestor-grid-column-head-cell',
 	
+	cssClsColumnInnerCell : 'infestor-grid-column-inner-cell',
+	
 	// { name : , title : , type : , hidden: , sort: , width: ,template : string|fn, }
 	columnOptions: null,
 	
@@ -18,10 +20,11 @@ infestor.define('infestor.grid.Column',{
 	
 	// 列表头单元格创建接口
 	createColumnHead : function(headCt){
-	
-		return this.columnHead = infestor.create('infestor.Element',{
-		
-			cssClsElement: this.cssClsElementInlineBlock  + ' ' + this.cssClsColumnHeadCell,
+			
+		return this.columnHead = headCt.addItem({
+			
+			name : this.columnOptions.name,
+			cssClsElement: this.cssClsColumnHeadCell,
 			width : this.columnOptions.width || 60,
 			text : this.columnOptions.title || '',
 			hidden : this.columnOptions.hidden,
@@ -29,8 +32,8 @@ infestor.define('infestor.grid.Column',{
 			
 				textAlign:this.columnOptions.textAlign || 'center'
 			}
-		
-		}).renderTo(headCt);
+
+		});
 	
 	},
 	
@@ -45,6 +48,7 @@ infestor.define('infestor.grid.Column',{
 			hidden : this.columnOptions.hidden,
 			items :{
 			
+				cssClsElement : this.cssClsColumnInnerCell,
 				name : 'inner-cell',
 				text : cellData,
 				width : this.columnOptions.width || 60,
@@ -78,7 +82,7 @@ infestor.define('infestor.grid.Column',{
 	
 	destroy : function(){
 	
-	
+		this.callParent();
 	
 	}
 	

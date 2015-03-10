@@ -89,7 +89,7 @@ infestor.define('infestor.grid.Grid',{
 	
 	createGridHead : function(){
 	
-		this.gridHead = this.gridHead || infestor.create('infestor.Element',{ cssClsElement:this.cssClsGridHead }).renderTo(this);
+		this.gridHead = this.gridHead || infestor.create('infestor.Element',{ cssClsElement:this.cssClsGridHead,itemLayout:'table' }).renderTo(this);
 			
 	},
 	

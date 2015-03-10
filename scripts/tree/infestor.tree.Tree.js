@@ -8,6 +8,8 @@ infestor.define('infestor.tree.Tree',{
 
 	cssUses : 'infestor.Grid',
 	
+	cssClsElement : 'infestor-tree',
+	
 	cssClsNodeEditor : 'infestor-tree-node-editor',
 	cssClsNodeEditorItem : 'infestor-tree-node-editor-item',
 	cssClsNodeEditorItemInput : 'infestor-tree-node-editor-item-input',
@@ -618,6 +620,19 @@ infestor.define('infestor.tree.Tree',{
 			
 		},this);
 	
+	},
+	
+	collapseNode : function(nodeId){
+		
+		var node = this.getNode(nodeId);
+		
+		if(!node) return;
+		
+		if(!this.rootVisible && this.rootRow && this.rootRow.treeNode == node)
+			return infestor.each(node.childNodes,function(idx,node){  this.collapseNode(node.nodeId);  },this);
+		
+		node.nodeCollapse();
+		
 	},
 	
 	destroy : function(){

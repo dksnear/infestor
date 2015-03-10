@@ -18,6 +18,14 @@
 	
 	text-align: center;
 	font-weight: bold;
+	padding:3px;
+
+}
+
+.infestor-grid-column-inner-cell{
+
+	padding: 3px;
+	line-height: 20px;
 
 }
 
@@ -41,9 +49,21 @@
 
 /* tree */
 
+.infestor-tree{
+
+	font-size: 12px;
+
+}
+
+.infestor-tree td{
+
+	vertical-align:top;
+}
+
 .infestor-tree-node{
 
 	text-align:left;
+	overflow: hidden;
 
 }
 
