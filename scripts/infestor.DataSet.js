@@ -43,6 +43,10 @@ infestor.define('infestor.DataSet', {
 		
 	// 拥有者对象
 	owner : null,
+	
+	isLoading : false,
+	
+	isSubmitting : false,
 
 	events : {
 
@@ -440,6 +444,7 @@ infestor.define('infestor.DataSet', {
 			complete : function () {
 
 				indicator && indicator.stop();
+				me.isLoading = false;
 				me.emit('loadComplete', [config.params].concat(infestor.argsToArray(arguments)), me);
 			}
 
@@ -448,6 +453,8 @@ infestor.define('infestor.DataSet', {
 		this.emit('beforeLoad',[opts],this);
 		
 		indicator && indicator.start();
+		
+		this.isLoading = true;
 	
 		infestor.request.ajax(opts);
 
@@ -505,6 +512,7 @@ infestor.define('infestor.DataSet', {
 			complete : function () {
 
 				indicator && indicator.stop();
+				me.isSubmitting = false;
 				me.emit('submitComplete', [config.params].concat(infestor.argsToArray(arguments)), me);
 			}
 
@@ -513,6 +521,8 @@ infestor.define('infestor.DataSet', {
 		this.emit('beforeSubmit',[opts],this);
 		
 		indicator && indicator.start();
+		
+		this.isSubmitting = true;
 	
 		infestor.request.ajax(opts);
 
