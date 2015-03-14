@@ -238,6 +238,12 @@ infestor.define('infestor.form.field.Combo',{
 		
 		return this;
 	},
+	
+	getText : function(){
+		
+		return this.elementFieldInput.val();
+		
+	},
 		
 	getValue :function(){
 	

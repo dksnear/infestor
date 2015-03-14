@@ -234,8 +234,13 @@ infestor.define('infestor.DataSet', {
 		
 		var cacheData = this.getCache();
 		
-		if(cacheData)
-			return this.data = cacheData;
+		if(cacheData){
+			
+			 this.data = cacheData;
+			 this.count = this.data.length;
+			 
+			 return this.data;
+		}
 		
 		if(!rawData)
 			return this.data = null;
@@ -302,13 +307,13 @@ infestor.define('infestor.DataSet', {
 		
 	},
 	
-	addData : function(rowData){
+	addData : function(rowData,head){
 	
 		this.data = this.data || [];
 	
 		rowData = this.mapData(rowData);
 	
-		this.data.push(rowData);
+		head ? this.data.unshift(rowData) : this.data.push(rowData);
 		
 		this.count++;
 		
@@ -344,7 +349,7 @@ infestor.define('infestor.DataSet', {
 		
 		this.current = idx;
 
-		return name ? infestor.append({},this.data[idx]) : this.data[idx][name];
+		return name ? this.data[idx][name] : infestor.append({},this.data[idx]);
 	},
 	
 	searchData : function (sKey,sValue,rKey){

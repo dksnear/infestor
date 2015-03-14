@@ -206,7 +206,6 @@
 
 }
 
-
 .infestor-candidate-captcha-control-panel-body{
 
 	width:210px;
@@ -280,7 +279,8 @@
 
 	background-color:#FFFFFF;
 	outline:0;
-
+	overflow:hidden;
+	
 }
 
 .infestor-combo-field-drop-down-item{

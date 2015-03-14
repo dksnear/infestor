@@ -13,6 +13,10 @@ infestor.define('infestor.Cache', {
 	// init:unit(day)
 	expires: 1,
 	
+	forbidCookie : false,
+	
+	cacheUsable : true,
+	
 	statics :{
 	
 		isStorageExpiresChecked : false,
@@ -42,11 +46,17 @@ infestor.define('infestor.Cache', {
 	
 		this.setCacheType();
 		this.cleanExpiresStorage();
+		
+		this.cacheUsable = !(this.cacheType == 'cookie' && this.forbidCookie);
+			
 	},
 	
 	// #public
 	
 	get:function(value){
+		
+		if(!this.cacheUsable)
+			return null;
 	
 		return (({
 		
@@ -59,6 +69,9 @@ infestor.define('infestor.Cache', {
 	},
 	
 	set:function(key,value){
+		
+		if(!this.cacheUsable)
+			return null;
 	
 		return (({
 		
@@ -71,6 +84,9 @@ infestor.define('infestor.Cache', {
 	},
 	
 	remove:function(key){
+		
+		if(!this.cacheUsable)
+			return null;
 	
 		return (({
 		
@@ -83,6 +99,9 @@ infestor.define('infestor.Cache', {
 	},
 	
 	clear:function(){
+		
+		if(!this.cacheUsable)
+			return null;
 	
 		return (({
 		
