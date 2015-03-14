@@ -44,6 +44,11 @@ infestor.define('infestor.DataSet', {
 	// 拥有者对象
 	owner : null,
 	
+	// 缓存
+	cache : null,
+	
+	cacheKey: null,
+	
 	isLoading : false,
 	
 	isSubmitting : false,
@@ -88,6 +93,8 @@ infestor.define('infestor.DataSet', {
 	},
 		
 	init : function(){
+		
+		this.initCache();
 	
 		this.pageConfig = infestor.isBoolean(this.pageConfig) && this.pageConfig && {
 			
@@ -131,8 +138,7 @@ infestor.define('infestor.DataSet', {
 			remote:true
 			
 		},this.submitConfig);
-		
-		
+			
 		this.loadIndicator =  this.loadIndicator ||  this.initIndicator(this.loadConfig.indicator);
 		
 		this.submitIndicator = this.submitIndicator ||  this.initIndicator(this.submitConfig.indicator);
@@ -154,9 +160,82 @@ infestor.define('infestor.DataSet', {
 	
 	},
 	
+	initCache : function(cache){
+		
+		this.cache = cache || this.cache;
+		
+		if(infestor.isBoolean(this.cache) && this.cache)
+			return this.cache = infestor.create('infestor.Cache',{
+				
+				// string:cookie|userData|localStorage
+				cacheType: 'localStorage',
+				// init:unit(day)
+				expires: 7,
+							
+			});
+			
+		if(infestor.isRawObject(this.cache))
+			return this.cache = infestor.create('infestor.Cache',this.cache);
+		
+		if(this.cache instanceof infestor.Cache)
+			return this.cache;
+		
+		return this.cache = null;
+		
+	},
+	
+	getCacheKey : function(){
+		
+		if(this.remote)
+			return this.cacheKey || this.loadConfig.url;
+		
+		return this.cacheKey;
+	},
+
+	getCache : function(key){
+		
+		if(!this.cache) return null;
+		
+		key = key || this.getCacheKey();
+		
+		if(!key) return null;
+		
+		return this.cache.get(key);
+		
+	},
+	
+	setCache : function(key,value){
+		
+		if(!this.cache) return null;
+		
+		key = key || this.getCacheKey();
+		
+		if(!key) return null;
+				
+		return this.cache.set(key,value || this.data);
+		
+	},
+	
+	removeCache : function(key){
+		
+		if(!this.cache) return null;
+		
+		key = key || this.getCacheKey();
+		
+		if(!key) return null;
+		
+		return this.cache.removeCache(key);
+		
+	},
+	
 	initData : function(rawData){
 	
 		this.current = 0;
+		
+		var cacheData = this.getCache();
+		
+		if(cacheData)
+			return this.data = cacheData;
 		
 		if(!rawData)
 			return this.data = null;
@@ -166,6 +245,8 @@ infestor.define('infestor.DataSet', {
 		this.data = this.mapData(this.data);
 		
 		this.count = this.data.length;
+		
+		this.setCache();
 		
 		return this.data;
 	
@@ -179,6 +260,8 @@ infestor.define('infestor.DataSet', {
 		if(!name) 
 			this.data[idx] = data;	
 		else this.data[idx][name] = data;
+		
+		this.setCache();
 
 		return data;
 
@@ -228,6 +311,8 @@ infestor.define('infestor.DataSet', {
 		this.data.push(rowData);
 		
 		this.count++;
+		
+		this.setCache();
 		
 		return rowData;
 	
@@ -339,14 +424,17 @@ infestor.define('infestor.DataSet', {
 				i++;
 			}
 			
+			this.setCache();
+			
 			return removed;
 		
 		}
-		
-		
+			
 		removed.push(this.data.splice(idx,1));
 		
 		this.count--;
+		
+		this.setCache();
 		
 		return removed;
 		
@@ -357,6 +445,8 @@ infestor.define('infestor.DataSet', {
 		this.count = 0;
 		this.current = 0;
 		this.data =[];
+		
+		this.setCache();
 		
 		return this.data;
 
