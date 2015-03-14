@@ -15,8 +15,11 @@ infestor.define('infestor.form.field.Combo',{
 	cssClsComboFieldDropDownMouseOver:'infestor-combo-field-drop-down-mouse-over',
 	
 	// 下拉按钮
-	dropDownTrigger:true,
-	dropDownPanel:true,
+	dropDownTrigger : true,
+	dropDownPanel : true,
+	
+	// vertical | horizon
+	dropDownLayout : 'vertical',
 	
 	group:false,
 
@@ -203,6 +206,13 @@ infestor.define('infestor.form.field.Combo',{
 	
 	},
 	
+	blur : function(){
+		
+		this.callParent();
+		this.dropDownPanel && this.dropDownPanel.hide();
+		
+	},
+	
 	active : function(index){
 	
 		this.activeItem && this.activeItem.element.removeClass(this.cssClsComboFieldDropDownActive) && (this.activeItem.actived = false);
@@ -231,7 +241,6 @@ infestor.define('infestor.form.field.Combo',{
 		
 	getValue :function(){
 	
-		var value;
 		
 		if(this.disabled) return null;
 		
@@ -305,16 +314,17 @@ infestor.define('infestor.form.field.Combo',{
 	
 		this.dropDownPanel = this.createElement('dropDownPanel', infestor.Dom.getBody(), {
 		
-			hidden:true,
-			hideWithResize:true,
-			hideWithBlur:true,
-			blockBubble:false,
-			itemsConstructMode:'method',
-			cssClsElement:this.cssClsComboFieldDropDownPanel,
-			boxShadow:true,
-			events:{
+			hidden : true,
+			hideWithResize : true,
+			hideWithBlur : true,
+			blockBubble : false,
+			itemsConstructMode : 'method',
+			cssClsElement : this.cssClsComboFieldDropDownPanel,
+			boxShadow : true,
+			itemLayout : this.dropDownLayout,
+			events : {
 			
-				afterhide:function(p,tag){
+				afterhide : function(p,tag){
 				
 					if(tag.hideWithBlur)
 						me.checkText();
@@ -322,7 +332,7 @@ infestor.define('infestor.form.field.Combo',{
 				}
 			
 			},
-			createItem:function(opts){
+			createItem : function(opts){
 			
 				return infestor.create('infestor.Element',infestor.append({
 				
@@ -345,7 +355,7 @@ infestor.define('infestor.form.field.Combo',{
 			contentWidth = this.elementFieldContent.width();
 			
 		if(dropWidth < contentWidth)
-			this.dropDownPanel.element.css('width',infestor.px(contentWidth));
+			this.dropDownPanel.element.css('width',infestor.px(contentWidth - this.dropDownPanel.element.width('bp')));
 		
 		this.dropDownPanel.autoPosition(this.elementFieldContent,'bottom','0 2');
 			
