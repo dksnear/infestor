@@ -257,6 +257,7 @@ infestor.define('infestor.form.field.Field', {
 		
 		},this).focus(function(){
 		
+			// for hide all field dropdown without this
 			infestor.Dom.getBody().fire('click');
 			this.emit('focus',arguments,this);
 		
@@ -274,6 +275,7 @@ infestor.define('infestor.form.field.Field', {
 		
 		},this).click(function(e){
 		
+			// for forbid hide this dropdown
 			infestor.stopPropagation(e);
 		
 		});

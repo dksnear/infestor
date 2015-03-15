@@ -85,6 +85,8 @@ infestor.define('infestor.Window', {
 
 		this.modal && infestor.Element.showMask();
 
+		this.setDock();
+		
 		this.element.zIndex().show();
 
 		return this;
