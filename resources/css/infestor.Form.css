@@ -40,6 +40,7 @@
 	cursor: pointer;
 	color: #333333;
 	text-align:left;
+	font-weight: bold;
 }
 
 .infestor-field-left{
@@ -277,7 +278,7 @@
 
 .infestor-combo-field-drop-down-panel{
 
-	background-color:#FFFFFF;
+	background-color:#F4F4F4;
 	outline:0;
 	overflow:hidden;
 	
@@ -300,7 +301,7 @@
 
 .infestor-combo-field-drop-down-mouse-over{
 
-	background-color:aqua;
+	background-color:#cccccc;
 }
 
 .infestor-combo-field-shadow-text{

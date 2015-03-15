@@ -572,9 +572,8 @@ infestor.define('infestor.Dom', {
 
 		if (!className || !cls)
 			return false;
-
-		return new RegExp('\\b' + cls + '\\b', 'i').test(className);
-
+		
+		return infestor.inArray(cls,className.split(' ')) != -1;
 	},
 
 	addClass : function (cls) {

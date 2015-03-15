@@ -459,7 +459,7 @@ infestor.define('infestor.Element', {
 	//mode (absolute|relative|fixed|clear)
 	setDock : function (dock, mode) {
 	
-		var wait = 800;
+		var wait = 10;
 
 		this.dock = dock || this.dock;
 		this.dockMode =  mode || this.dockMode;
@@ -782,7 +782,7 @@ infestor.define('infestor.Element', {
 	
 	},
 	
-	getArrayItems : function(){
+	getItemsArray : function(){
 	
 		var arr = [];
 		
@@ -795,7 +795,7 @@ infestor.define('infestor.Element', {
 		return arr;
 	},
 	
-	getMapItems : function(){
+	getItemsMap : function(){
 	
 		var map = {};
 		
@@ -828,7 +828,7 @@ infestor.define('infestor.Element', {
 	
 		},this);
 		
-		this.count = force ? 0 : (this.count - count/2);
+		this.count = force ? 0 : (this.count - Math.ceil(count/2));
 		
 		// 重置子元素索引序列
 		!this.count && (this.itemsIndex = 0);

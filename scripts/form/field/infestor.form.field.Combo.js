@@ -53,7 +53,7 @@ infestor.define('infestor.form.field.Combo',{
 		this.on('focus',function(){
 		
 			this.isFocus = true;
-
+			
 			if(this.autoComplete){
 				
 				this.dropDownPanel.initItems(this.dataSet.getData());
@@ -65,9 +65,10 @@ infestor.define('infestor.form.field.Combo',{
 
 		},this);
 		
-		this.on('blur',function(){
+		this.on('blur',function(e){
 		
 			this.checkText();
+			//this.dropDownPanel.hide();
 		
 		},this);
 		
@@ -163,7 +164,7 @@ infestor.define('infestor.form.field.Combo',{
 		},function(inst,e){
 		
 			this.active(inst.$index);
-			this.value = this.activeIndex.value;
+			this.value = this.activeItem.value;
 			this.elementFieldInput.val(this.activeItem.text);
 			this.dropDownPanel.hide();
 				

@@ -156,6 +156,11 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 			this.emit('click',arguments,this);
 			infestor.stopPropagation(e);
 			
+		},this).focus(function(){
+		
+			infestor.Dom.getBody().fire('click');
+			this.emit('focus',arguments,this);
+		
 		},this);
 		
 		return this;

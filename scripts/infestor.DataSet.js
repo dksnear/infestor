@@ -348,6 +348,9 @@ infestor.define('infestor.DataSet', {
 		idx = idx > this.count - 1 ? this.count - 1 : idx;
 		
 		this.current = idx;
+		
+		if(this.count < 1)
+			return null;
 
 		return name ? this.data[idx][name] : infestor.append({},this.data[idx]);
 	},

@@ -257,6 +257,7 @@ infestor.define('infestor.form.field.Field', {
 		
 		},this).focus(function(){
 		
+			infestor.Dom.getBody().fire('click');
 			this.emit('focus',arguments,this);
 		
 		},this).blur(function(){
