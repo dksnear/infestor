@@ -54,7 +54,7 @@ infestor.define('infestor.tree.DataSet',{
 		
 		this.count = this.data.length;
 		
-		return this.data;
+		return data;
 	
 	},
 	
@@ -299,6 +299,50 @@ infestor.define('infestor.tree.DataSet',{
 		
 		return data;
 	
+	},
+	
+	// simulate remote load
+	simulateLoad:function(opts){
+		
+		var data,params;
+		
+		if(this.remote || this.loadConfig.remote)
+			return false;
+		
+		this.emit('beforeLoad',[opts],this);
+		
+		if(!opts.params || !this.data)
+			return this.emit('load',[this.data || [],{}],this);
+		
+		params = infestor.appendIf({},opts.params,function(name){ return !/^\$/.test(name);  });
+		
+		params = this.mapData(params,true);
+		
+		data = infestor.filter(this.data,function(idx,obj){
+			
+			var match = true;
+			
+			infestor.each(params,function(name,value){
+				
+				if(obj[name] != value)
+					return match = false;
+				
+			},this);
+			
+			return match;
+			
+		},this);
+		
+		infestor.delay(function(){
+			
+			this.emit('load',[data,opts.params],this);
+			
+		},200,this);
+		
+		// this.emit('load',[data,opts.params],this);
+		
+		return true;
+		
 	}
 	
 

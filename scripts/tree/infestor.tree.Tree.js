@@ -60,11 +60,13 @@ infestor.define('infestor.tree.Tree',{
 	
 			if(!this.async) return !this.rootRow && this.createTree(data);
 
-			currentLoadingNode = this.getNode(params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId']);
+			currentLoadingNode = this.getNode(params && params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId']);
 			currentLoadingNode.isLoading = false;		
 			currentLoadingNode.changeNodeSwitchIcon();
 			
-			if(!data || data.length < 1) return;
+			if(!data || data.length < 1)
+				return;
+			
 
 			this.addRow(data);
 			
@@ -77,11 +79,12 @@ infestor.define('infestor.tree.Tree',{
 				},this);
 									
 			}	
-	
+			
 			if(this.expandDepth === true || this.expandDepth === 0 || currentLoadingNode.nodeDepth < this.expandDepth){
 			
 				infestor.each(currentLoadingNode.childNodes,function(idx,node){ 
-					this.asyncStrict ? this.asyncLoadNode(node.nodeId) : this.asyncLoadNode(node.nodeId,(currentLoadingNode.nodeDepth + 1 == this.expandDepth) && !this.asyncStrict ? 1 : 0);
+					this.asyncStrict ? this.asyncLoadNode(node.nodeId) 
+						: this.asyncLoadNode(node.nodeId,(currentLoadingNode.nodeDepth + 1 == this.expandDepth) && !this.asyncStrict ? 1 : 0);
 					node.isLoaded = true;
 				},this);
 				
@@ -89,6 +92,11 @@ infestor.define('infestor.tree.Tree',{
 	
 			if(!params.$$preLoadDepth && needPreload)
 				return;	
+			
+			// fix node status
+			currentLoadingNode.isLoaded = true;
+			currentLoadingNode.isExpand = false;
+			currentLoadingNode.isCollapse = true;
 						
 			currentLoadingNode.nodeExpand();
 			
@@ -245,20 +253,12 @@ infestor.define('infestor.tree.Tree',{
 			nodeExpand : function(){
 			
 				// async expand
-				if(tree.async && this.hasChild && !this.isLoaded){
-									
-					tree.asyncStrict ? tree.asyncLoadNode(this.nodeId) 
-						: tree.asyncLoadNode(this.nodeId , (tree.expandDepth!==0 && tree.expandDepth !==true && (tree.expandDepth === false || this.nodeDepth >= tree.expandDepth)) ? 1 : 0) ;
-					
-					this.isLoaded = true;
-					
-					// fix expand tag
-					this.isExpand = false;
-					this.isCollapse = true;
-					
-					return;
-				}
-			
+				if(tree.async && this.hasChild && !this.isLoaded)
+					return tree.asyncStrict ? tree.asyncLoadNode(this.nodeId) 
+						: tree.asyncLoadNode(this.nodeId, 
+							(tree.expandDepth !==0 && tree.expandDepth !==true && (tree.expandDepth === false || this.nodeDepth >= tree.expandDepth)) ? 1 : 0);
+												
+
 				infestor.each(this.childNodes,function(idx,node){
 				
 				    var row = tree.gridRows[node.nodeId];
@@ -499,7 +499,7 @@ infestor.define('infestor.tree.Tree',{
 	// @depth 加载深度 (用于一次加载多层节点)
 	asyncLoadNode : function(nodeId,depth){
 	
-		var	params = {
+		var	opts = {
 					
 			params : {
 			
@@ -507,9 +507,10 @@ infestor.define('infestor.tree.Tree',{
 			}
 		};
 		
-		params.params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId'] = nodeId;
+		opts.params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId'] = nodeId;
 		
-		this.dataSet.load(params);
+		this.dataSet.remote ? this.dataSet.load(opts) : this.dataSet.simulateLoad(opts);
+		
 	
 	},
 	
@@ -605,12 +606,19 @@ infestor.define('infestor.tree.Tree',{
 	
 	// 展开一个节点到根节点的@depth深度
 	// @depth 为0则展开到根节点的最大深度
-	// 非异步加载有效(async=false)
 	expandNodeToDepth : function(nodeId,depth){
 	
 		var node = this.getNode(nodeId);
 		
-		if(this.async || !node || !node.hasChild || (depth && node.nodeDepth > depth)) return;
+		if(!node || !node.hasChild || (depth && node.nodeDepth > depth)) return;
+		
+		if(this.async && !node.isLoaded){
+
+			node.$asyncExpandDepth = depth || 0;
+			node.nodeExpand();
+			
+			return;
+		}
 		
 		node.nodeExpand();
 		
@@ -632,6 +640,16 @@ infestor.define('infestor.tree.Tree',{
 			return infestor.each(node.childNodes,function(idx,node){  this.collapseNode(node.nodeId);  },this);
 		
 		node.nodeCollapse();
+		
+	},
+	
+	reset : function(){
+		
+		this.removeRow();
+		this.rootRow = null;
+		this.activedNode = null;
+		this.loaded = false;
+		this.dataSet.clearData();
 		
 	},
 	
