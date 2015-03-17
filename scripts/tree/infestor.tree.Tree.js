@@ -136,6 +136,7 @@ infestor.define('infestor.tree.Tree',{
 		this.activedNode = null;
 		this.loaded = false;
 		
+		clear && this.searchClear();
 		clear && this.dataSet.clearData();
 		
 		return this.load.apply(this,arguments);
@@ -304,12 +305,12 @@ infestor.define('infestor.tree.Tree',{
 		
 		!isRoot && parentRow.treeNode.addChildNode(row.treeNode);
 		
-		this.isSearching && row.treeNode.setSearchText(this.treeSearchText);
+		this.isSearching && (!this.treeSearchRange || infestor.inArray(this.treeColumn.columnOptions.name,this.treeSearchRange) != -1) && row.treeNode.setSearchText(this.treeSearchText);
 		
 		this.multiColumn && infestor.each(this.gridColumns,function(name,column){
 		
 			row.cells[name] = column.createColumnCell(rowData.rawData && rowData.rawData[name],rowData.rawData,row.container,row);
-			this.isSearching && row.cells[name].getItem('inner-cell').setSearchText(this.treeSearchText);
+			this.isSearching && this.treeSearchRange && (infestor.inArray(name,this.treeSearchRange) != -1) && row.cells[name].getItem('inner-cell').setSearchText(this.treeSearchText);
 		
 		},this);
 		
@@ -652,26 +653,43 @@ infestor.define('infestor.tree.Tree',{
 		
 	},
 
+	search : function(keyword,range){
+		
+		range = range && (infestor.isArray(range) ? range : [range]);
+		
+		if(!keyword && !this.isSearching)
+			return true;
+		
+		if(!keyword && this.isSearching)
+			return this.searchStop();
+		
+		if(this.isSearching && this.treeSearchText == keyword && ((!range && !this.treeSearchRange) || (range && range.join(',') == this.treeSearchRange.join(','))))
+			return true;
+		
+		return this.searchClear() && this.searchOn(keyword,range);
+				
+	},
+	
 	searchOn : function(keyword,range){
 		
-		var searchDataSet;
+		var searchDataSet,len = 0;
 	
 		if(!this.loaded || this.dataSet.remote || this.isSearching) return false;
-		
+				
 		searchDataSet = infestor.create('infestor.tree.DataSet',this.dataConfig);
 		
 		searchDataSet = infestor.append(searchDataSet,this.dataSet);
 		
-		searchDataSet.filterData(keyword,range,true);
+		len = searchDataSet.filterData(keyword,range,true).length;
 		
 		this.$dataSet = this.dataSet;		
 		this.dataSet = searchDataSet;
 		this.treeSearchText = keyword;
+		this.treeSearchRange = range && (infestor.isArray(range) ? range : [range]);
 		this.isSearching = true;
 		this.reload();
 
-		
-		return true;
+		return len;
 		
 	},
 	
@@ -680,12 +698,20 @@ infestor.define('infestor.tree.Tree',{
 		if(!this.isSearching) return false;
 		
 		this.dataSet = this.$dataSet;
-		this.treeSearchText = '';
-		this.isSearching = false;
+		this.searchClear();
 		this.reload();
 		
 		return true;
 		
+	},
+	
+	searchClear : function(){
+		
+		this.treeSearchText = '';
+		this.treeSearchRange = [];
+		this.isSearching = false;
+		
+		return true;
 	},
 	
 	reset : function(){

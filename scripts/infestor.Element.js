@@ -564,6 +564,8 @@ infestor.define('infestor.Element', {
 		
 		this.searchText = searchText || this.searchText;
 		
+		if(!this.searchText) return this;
+		
 		this.elementInnerContainer.html('').html(String(this.text).replace(new RegExp('(' + String(this.searchText).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!)/g,'\\$1') + ')','ig'),
 			infestor.stringFormat('<fonts class = "{0}">$1</fonts>',this.cssClsElementSearchText)));
 		

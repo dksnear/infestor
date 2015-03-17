@@ -180,8 +180,6 @@ infestor.define('infestor.tree.DataSet',{
 				if(!infestor.isString(obj.rawData[name]))
 					return true;
 				
-				// if(kwfr.test(String(obj.rawData[name])))
-					// return matched = true,false;	
 				if(obj.rawData[name].match(kwfr))
 					return matched = true,false;
 				
@@ -191,7 +189,16 @@ infestor.define('infestor.tree.DataSet',{
 			
 		},this);
 		
-		if(matchedData.length < 1) return [];
+		if(matchedData.length < 1){
+			
+			if(persistent){
+				
+				this.data = [];
+				this.count = 0;
+			}
+			
+			return [];
+		}
 			
 		infestor.each(matchedData,function(idx,row){
 						
