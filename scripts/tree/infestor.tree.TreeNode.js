@@ -126,6 +126,11 @@ infestor.define('infestor.tree.TreeNode',{
 		return this;
 	},
 	
+	setSearchText : function(searchText){
+	
+	  	return this.nodeTextCell.setSearchText(searchText);
+	},
+	
 	// ui construct
 	
 	

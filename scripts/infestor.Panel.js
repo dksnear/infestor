@@ -93,7 +93,7 @@ infestor.define('infestor.Panel', {
 		}
 
 	},
-
+	
 	createHead : function () {
 	
 		var container = this.element;

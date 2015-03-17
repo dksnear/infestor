@@ -104,16 +104,21 @@ infestor.define('infestor.tree.Tree',{
 		
 	},
 		
-	load : function(){
+	load : function(data,init){
 	
 		if(!this.dataSet)
 			return this;
 	
 		this.rootPId = this.rootPId || this.dataSet.rootPId;
 	
+		if(this.async && !this.dataSet.remote)
+			init && this.dataSet.initData(data);
+	
 		if(this.async)
 			this.createTree();
-		else this.callParent();
+		
+		if(!this.async)
+			this.callParent();
 		
 		this.loaded = true;
 		
@@ -121,7 +126,7 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
-	reload : function(){
+	reload : function(data,clear){
 	
 		if(!this.loaded)
 			return this.load.apply(this,arguments);
@@ -129,8 +134,9 @@ infestor.define('infestor.tree.Tree',{
 		this.removeRow();
 		this.rootRow = null;
 		this.activedNode = null;
+		this.loaded = false;
 		
-		this.dataSet.clearData();
+		clear && this.dataSet.clearData();
 		
 		return this.load.apply(this,arguments);
 	
@@ -221,7 +227,7 @@ infestor.define('infestor.tree.Tree',{
 		}
 			
 		row.treeNode = this.treeColumn.createColumnCell(rowData.rawData,rowData,row.container,row,this.rootVisible ? 0 : -1).getItem('inner-cell');
-	
+		
 		row.treeNode.nodeId = row.id;
 		row.treeNode.isRoot = isRoot;
 		row.treeNode.isLeaf = isLeaf || !isRoot;
@@ -298,9 +304,12 @@ infestor.define('infestor.tree.Tree',{
 		
 		!isRoot && parentRow.treeNode.addChildNode(row.treeNode);
 		
+		this.isSearching && row.treeNode.setSearchText(this.treeSearchText);
+		
 		this.multiColumn && infestor.each(this.gridColumns,function(name,column){
 		
 			row.cells[name] = column.createColumnCell(rowData.rawData && rowData.rawData[name],rowData.rawData,row.container,row);
+			this.isSearching && row.cells[name].getItem('inner-cell').setSearchText(this.treeSearchText);
 		
 		},this);
 		
@@ -642,6 +651,42 @@ infestor.define('infestor.tree.Tree',{
 		node.nodeCollapse();
 		
 	},
+
+	searchOn : function(keyword,range){
+		
+		var searchDataSet;
+	
+		if(!this.loaded || this.dataSet.remote || this.isSearching) return false;
+		
+		searchDataSet = infestor.create('infestor.tree.DataSet',this.dataConfig);
+		
+		searchDataSet = infestor.append(searchDataSet,this.dataSet);
+		
+		searchDataSet.filterData(keyword,range,true);
+		
+		this.$dataSet = this.dataSet;		
+		this.dataSet = searchDataSet;
+		this.treeSearchText = keyword;
+		this.isSearching = true;
+		this.reload();
+
+		
+		return true;
+		
+	},
+	
+	searchStop : function(){
+		
+		if(!this.isSearching) return false;
+		
+		this.dataSet = this.$dataSet;
+		this.treeSearchText = '';
+		this.isSearching = false;
+		this.reload();
+		
+		return true;
+		
+	},
 	
 	reset : function(){
 		
@@ -649,8 +694,7 @@ infestor.define('infestor.tree.Tree',{
 		this.rootRow = null;
 		this.activedNode = null;
 		this.loaded = false;
-		this.dataSet.clearData();
-		
+	
 	},
 	
 	destroy : function(){

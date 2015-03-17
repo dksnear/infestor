@@ -79,6 +79,7 @@ infestor.define('infestor.Element', {
 	}),
 	
 	cssClsElementText:'infestor-element-text',
+	cssClsElementSearchText:'infestor-element-search-text',
 	cssClsElementBorder : 'infestor-element-border',
 	
 	cssClsElementPositionAbsolute : 'infestor-element-position-absolute',
@@ -158,6 +159,9 @@ infestor.define('infestor.Element', {
 
 	// 文本内容
 	text : null,
+	
+	// 需要特殊标记的文本
+	searchText : null,
 
 	// tip
 	tip : null,
@@ -281,6 +285,7 @@ infestor.define('infestor.Element', {
 		
 		// 设置 内容/位置/尺寸 
 		this.setText();
+		this.setSearchText();
 		this.setPosition();
 		this.setDimension();
 	
@@ -551,6 +556,19 @@ infestor.define('infestor.Element', {
 		!infestor.isUndefined(this.text) && !infestor.isNull(this.text) && this.elementInnerContainer.text(this.text);
 
 		return this;
+	},
+	
+	setSearchText : function(searchText){
+		
+		if(!this.text) return this;
+		
+		this.searchText = searchText || this.searchText;
+		
+		this.elementInnerContainer.html('').html(String(this.text).replace(new RegExp('(' + String(this.searchText).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!)/g,'\\$1') + ')','ig'),
+			infestor.stringFormat('<fonts class = "{0}">$1</fonts>',this.cssClsElementSearchText)));
+		
+		return this;
+		
 	},
 
 	clearDock : function () {

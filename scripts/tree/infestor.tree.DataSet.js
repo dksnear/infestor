@@ -1,8 +1,7 @@
 
 
 infestor.define('infestor.tree.DataSet',{
-
-
+	
 	extend : 'infestor.DataSet',
 	
 	indicator : false,
@@ -27,6 +26,8 @@ infestor.define('infestor.tree.DataSet',{
 		$hasChild:'hasChild'
 	
 	},
+	
+	// #rewrite
 	
 	init : function(){
 	
@@ -115,6 +116,121 @@ infestor.define('infestor.tree.DataSet',{
 	
 	},
 	
+	// 按照数据模型格式化一个数据行
+	mapData : function(rawData,strict) {
+		
+		var set = [],rowData = strict ? {} : {
+		
+			rawData : rawData
+		
+		};
+	
+		if(infestor.isArray(rawData))
+			return infestor.each(rawData,function(idx,rawData){
+				
+				set.push(this.mapData(rawData));
+			
+			},this),set;
+			
+		this.reverseModelMap = this.reverseModeMap || infestor.kvSwap(this.modelMap);
+			
+		return infestor.each(rawData,function(name,data){
+		
+			if(this.reverseModelMap.hasOwnProperty(name))
+				return rowData[this.reverseModelMap[name]] = data,true;
+			
+			rowData[name] = data;
+		
+		},this),rowData;
+	
+	},
+	
+	// #new
+	
+	filterData : function(keyword,range,persistent){
+		
+		var data = this.data,
+			matchedData,
+			rangeMap,
+			parentNodesMap = {},
+			parentNodesData = [],
+			kwfr;
+		
+		if(!data || data.length < 1) return [];
+		
+		kwfr = keyword && new RegExp(String(keyword).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!)/g,'\\$1'),'ig');
+		
+		if(!kwfr) return [];
+			
+		range = range && (infestor.isArray(range) ? range : [range]);
+		
+		if(range) (rangeMap = {}) && infestor.each(range,function(){ rangeMap[String(this)] = true ; });
+		
+		if(!range) rangeMap = { $text: true };
+		
+		matchedData = infestor.filter(data,function(idx,obj){
+			
+			var matched = false;
+			
+			if(!obj.rawData)
+				return false;
+			
+			infestor.each(rangeMap,function(name){
+																
+				if(!infestor.isString(obj.rawData[name]))
+					return true;
+				
+				// if(kwfr.test(String(obj.rawData[name])))
+					// return matched = true,false;	
+				if(obj.rawData[name].match(kwfr))
+					return matched = true,false;
+				
+			},this);
+			
+			return matched;
+			
+		},this);
+		
+		if(matchedData.length < 1) return [];
+			
+		infestor.each(matchedData,function(idx,row){
+						
+			(function(row){
+
+				var caller = arguments.callee;
+			
+				infestor.each(data,function(idx,obj){ 
+			
+					 if(obj.$nodeId == row.$parentNodeId){
+						 
+						if(parentNodesMap[obj.$nodeId])
+							 return false;
+						 
+						parentNodesMap[obj.$nodeId] = true;
+						parentNodesData.push(obj);
+						caller(obj);
+						return false
+					
+					 }
+						 
+				});
+				
+			})(row);
+				
+		});
+		
+		data = matchedData.concat(parentNodesData);
+		
+		if(persistent){
+			
+			this.data = data;
+			this.count = this.data.length;
+		}
+		
+		return data;
+		
+	},
+	
 	deleteData : function(id,force){
 	
 		var rowData = this.searchData('$nodeId',id);
@@ -171,35 +287,6 @@ infestor.define('infestor.tree.DataSet',{
 		if(uncoded) return set;
 		
 		return { data : infestor.jsonEncode(set) };
-	
-	},
-	
-	// 按照数据模型格式化一个数据行
-	mapData : function(rawData,strict) {
-		
-		var set = [],rowData = strict ? {} : {
-		
-			rawData : rawData
-		
-		};
-	
-		if(infestor.isArray(rawData))
-			return infestor.each(rawData,function(idx,rawData){
-				
-				set.push(this.mapData(rawData));
-			
-			},this),set;
-			
-		this.reverseModelMap = this.reverseModeMap || infestor.kvSwap(this.modelMap);
-			
-		return infestor.each(rawData,function(name,data){
-		
-			if(this.reverseModelMap.hasOwnProperty(name))
-				return rowData[this.reverseModelMap[name]] = data,true;
-			
-			rowData[name] = data;
-		
-		},this),rowData;
 	
 	},
 	
@@ -320,16 +407,16 @@ infestor.define('infestor.tree.DataSet',{
 		
 		data = infestor.filter(this.data,function(idx,obj){
 			
-			var match = true;
+			var matched = true;
 			
 			infestor.each(params,function(name,value){
 				
 				if(obj[name] != value)
-					return match = false;
+					return matched = false;
 				
 			},this);
 			
-			return match;
+			return matched;
 			
 		},this);
 		
