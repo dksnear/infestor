@@ -566,7 +566,7 @@ infestor.define('infestor.Element', {
 		
 		if(!this.searchText) return this;
 		
-		this.elementInnerContainer.html('').html(String(this.text).replace(new RegExp('(' + String(this.searchText).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!)/g,'\\$1') + ')','ig'),
+		this.elementInnerContainer.html('').html(String(this.text).replace(new RegExp('(' + String(this.searchText).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\})/g,'\\$1') + ')','ig'),
 			infestor.stringFormat('<fonts class = "{0}">$1</fonts>',this.cssClsElementSearchText)));
 		
 		return this;
@@ -671,7 +671,10 @@ infestor.define('infestor.Element', {
 	},
 
 	// 添加子元素
-	addItem : function (opts) {
+	// @opts 子元素配置或子元素实例或其集合(数组)
+	// @target 可选 用于将当前添加的子元素插入另一个已经存在的子元素(@target)前方|后方
+	// @method(before|after) 可选 用于指明当前添加元素相对@target的位置
+	addItem : function (opts,target,method) {
 
 		var item,
 			container = this,
@@ -689,7 +692,27 @@ infestor.define('infestor.Element', {
 			};
 
 		if (!this.items || !opts)
-			return null;
+			return false;
+		
+		// method check
+		if(method && !/before|after/.test(method))	
+			return false;
+			
+		// target check
+		if(target){
+			
+			if(infestor.isString(target))
+				target = this.getItem(target);
+			
+			if(!target || !(target instanceof infestor.Element)) return false;
+			
+			if(!this.hasItem(target.name) || !target.isRendered)
+				return false;
+					
+		}
+		
+		if(infestor.isArray(opts))
+			return infestor.each(opts,function(idx,opts){  this.addItem(opts,target,method);  },this),true;
 
 		this.itemsMap = this.itemsMap || {};
 
@@ -759,8 +782,23 @@ infestor.define('infestor.Element', {
 		
 		this.itemsMap[item.name] = item;
 		this.itemsMap[item.$index] = item;
+		
+		this.count ++;
+		
+		if(method && target){
+			
+			item.parent = target.parent;
+			
+			if(method == 'before')
+				item.element.before(target.element);
+			if(method == 'after')
+				item.element.after(target.element);
+			
+			return target; 
+		}
+		
 	
-		return ++this.count && item.renderTo(container,this);
+		return item.renderTo(container,this);
 
 	},
 

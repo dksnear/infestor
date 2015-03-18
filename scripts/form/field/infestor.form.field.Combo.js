@@ -380,7 +380,7 @@ infestor.define('infestor.form.field.Combo',{
 		
 		if(!keyword) return match;
 		
-		keyword = String(keyword).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!)/g,'\\$1');
+		keyword = String(keyword).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\})/g,'\\$1');
 		
 		reg = new RegExp('^'+keyword,'ig');
 		
