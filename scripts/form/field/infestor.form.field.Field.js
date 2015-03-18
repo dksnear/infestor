@@ -146,6 +146,8 @@ infestor.define('infestor.form.field.Field', {
 	
 	inputType:'text',
 	
+	hideOtherDropdownWithFocus : false,
+	
 	init:function(){
 	
 		this.fieldName = this.fieldName || this.getId();
@@ -258,7 +260,7 @@ infestor.define('infestor.form.field.Field', {
 		},this).focus(function(){
 		
 			// for hide all field dropdown without this
-			infestor.Dom.getBody().fire('click');
+			this.hideOtherDropdownWithFocus && infestor.Dom.getBody().fire('click');
 			this.emit('focus',arguments,this);
 		
 		},this).blur(function(){

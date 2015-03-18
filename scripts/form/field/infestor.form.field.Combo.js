@@ -27,6 +27,8 @@ infestor.define('infestor.form.field.Combo',{
 	
 	autoLoad:true,
 	
+	hideOtherDropdownWithFocus:true,
+	
 	dataConfig:{
 	
 		remote:false,

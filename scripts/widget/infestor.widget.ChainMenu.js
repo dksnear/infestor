@@ -57,8 +57,8 @@ infestor.define('infestor.widget.ChainMenu', {
 					icon:opts.icon || 'list',
 					iconSize:32,
 					tip: opts.tip,
-					tipTrend:this.orientation == 'vertical' ? 'left' : 'bottom',
-					tipDrift:this.orientation == 'vertical' ? 'head' : '15'
+					tipPos:this.orientation == 'vertical' ? 'left' : 'bottom',
+					tipOffset:this.orientation == 'vertical' ? '8 9 4' : '15'
 				}]
 
 			},opts,['tip','icon'],null,true));
@@ -80,8 +80,8 @@ infestor.define('infestor.widget.ChainMenu', {
 				icon:opts.icon || 'list',
 				iconSize:32,
 				tip: opts.tip,
-				tipTrend:this.orientation == 'vertical' ? 'left' : 'bottom',
-				tipDrift:this.orientation == 'vertical' ? 'head' : '15'
+				tipPos:this.orientation == 'vertical' ? 'left' : 'bottom',
+				tipOffset:this.orientation == 'vertical' ? '8 9 4' : '15'
 			}]
 
 		},opts,['tip','icon'],null,true));

@@ -177,10 +177,10 @@ infestor.define('infestor.Element', {
 	iconSize : 16,
 	
 	// 贴士出现位置 (top|left|bottom|right)
-	tipTrend:'left',
+	tipPos:'left',
 	
 	// 控制贴士指针位置
-	tipDrift:'head',
+	tipOffset:'head',
 	
 	// 固定贴士显示的z-index (默认为系统自增长)
 	tipZIndex: true,
@@ -719,10 +719,8 @@ infestor.define('infestor.Element', {
 		
 		}
 	
-		
 		this.isItemsLayoutSet = true;
-		
-			
+				
 		// 是类的实例 直接添加子元素
 		if (opts instanceof infestor.Element)		
 			item = opts;
@@ -1049,7 +1047,7 @@ infestor.define('infestor.Element', {
 	// 使当前元素定位在目标元素附近
 	// @target 目标元素或坐标({ top:0,left:0,height:0,width:0})
 	// @pos 默认位置 (top|left|right|bottom)
-	// @offset  ({ drift:(0|head|middle|rear),depart:0}) 偏移量 drift决定了目标元素上的指示器出现的位置(如Tip的指示标签) , depart为当前元素和目标元素之间的分开距离
+	// @offset  ({ drift:(0|head|middle|rear),depart:0,pitch:0}) 偏移量 drift决定了目标元素上的指示器出现的位置(如Tip的指示标签) , depart为当前元素和目标元素之间的分开距离 ,pitch为当前元素相对目标元素的前置距离
 	// @strict 按照默认位置定位 不自动左右/上下切换 (true|false)
 	// @mode 定位模式 (fixed|absolute|relative|static)
 	// #return 返回最终出现位置 @pos (top|left|right|bottom|false)
@@ -1103,74 +1101,62 @@ infestor.define('infestor.Element', {
 			pos = target.topTrend ? 'top' : 'bottom';
 			
 		//处理offset参数
-		if (infestor.isString(offset))
+		if (infestor.isString(offset)){
+			
+			offset = offset.split(' ');
 			offset = {
-				drift : offset.split(' ')[0],
-				depart : offset.split(' ')[1] || defaultDepart
+				drift : offset[0] || 0,
+				depart : Number(offset[1]) || defaultDepart,
+				pitch : Number(offset[2]) || 0
 			};
-		
-		offset.depart = offset.depart || defaultDepart;
-		
+		}
+				
 		if (pos == 'right' && target.topTrend)
 			this.element.css(infestor.append(css, {
-
-				bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height)),
+				bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height) + parseFloat(offset.pitch)),
 				left : infestor.px(parseFloat(target.left) + parseFloat(target.width) + parseFloat(offset.depart))
 
 			}));
 				
 		if (pos == 'right' && !target.topTrend)
 			this.element.css(infestor.append(css, {
-
-				top : infestor.px(parseFloat(target.top)),
+				top : infestor.px(parseFloat(target.top) + parseFloat(offset.pitch)),
 				left : infestor.px(parseFloat(target.left) + parseFloat(target.width) + parseFloat(offset.depart))
-
 			}));
 		
 		if (pos == 'left' && target.topTrend)
 			this.element.css(infestor.append(css, {
-
-				bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height)),
+				bottom : infestor.px(clientHeight - parseFloat(target.top) - parseFloat(target.height) + parseFloat(offset.pitch)),
 				right : infestor.px(parseFloat(target.right) + parseFloat(offset.depart))
 			}));
 		
-
 		if (pos == 'left' && !target.topTrend)
 			this.element.css(infestor.append(css, {
-
-				top : infestor.px(parseFloat(target.top)),
+				top : infestor.px(parseFloat(target.top) + parseFloat(offset.pitch)),
 				right : infestor.px(parseFloat(target.right) + parseFloat(offset.depart))
 			}));
-				
-				
+								
 		if(pos == 'top' && target.leftTrend)
 			this.element.css(infestor.append(css, {
-
-				right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width)),
+				right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width) + + parseFloat(offset.pitch)),
 				bottom : infestor.px(parseFloat(target.bottom) + parseFloat(offset.depart))
-
 			}));
 
 		if (pos == 'top' && !target.leftTrend)
 			this.element.css(infestor.append(css, {
-
-				left : infestor.px(parseFloat(target.left)),
+				left : infestor.px(parseFloat(target.left) + parseFloat(offset.pitch)),
 				bottom : infestor.px(parseFloat(target.bottom) + parseFloat(offset.depart))
-
 			}));
 				
 		if (pos == 'bottom' && target.leftTrend)
 			this.element.css(infestor.append(css, {
-
-				right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width)),
+				right : infestor.px(clientWidth - parseFloat(target.left) - parseFloat(target.width) + parseFloat(offset.pitch)),
 				top : infestor.px(parseFloat(target.top) + parseFloat(target.height) + parseFloat(offset.depart))
-
 			}));
 
 		if (pos == 'bottom' && !target.leftTrend)
 			this.element.css(infestor.append(css, {
-
-				left : infestor.px(parseFloat(target.left)),
+				left : infestor.px(parseFloat(target.left) + parseFloat(offset.pitch)),
 				top : infestor.px(parseFloat(target.top) + parseFloat(target.height) + parseFloat(offset.depart))
 			}));
 				
@@ -1296,7 +1282,7 @@ infestor.define('infestor.Element', {
 					return;
 		
 				this.$tip.setText(this.tip);
-				this.$tip.autoPosition(this.element, this.tipTrend, this.tipDrift);
+				this.$tip.autoPosition(this.element, this.tipPos, this.tipOffset);
 				this.$tip.show(this.tipZIndex);
 
 			},150), this);

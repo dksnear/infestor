@@ -37,6 +37,8 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 	
 	tabIndex : -1,
 	
+	hideOtherDropdownWithFocus:true,
+	
 	// #rewite methods
 	
 	init : function () {
@@ -158,7 +160,7 @@ infestor.define('infestor.form.field.CandidateCaptcha', {
 			
 		},this).focus(function(){
 		
-			infestor.Dom.getBody().fire('click');
+			this.hideOtherDropdownWithFocus && infestor.Dom.getBody().fire('click');
 			this.emit('focus',arguments,this);
 		
 		},this);

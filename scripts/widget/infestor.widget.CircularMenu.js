@@ -42,8 +42,8 @@ infestor.define('infestor.widget.CircularMenu', {
 	
 	draggable : true,
 	
-	tipTrend:'bottom',
-	tipDrift:'14',
+	tipPos:'bottom',
+	tipOffset:'14',
 	tip:'菜单',
 	
 	// direction:{ name:(必须),prompt:(可选),icon:(可选),cssClsIcon:(可选) }	
@@ -169,8 +169,8 @@ infestor.define('infestor.widget.CircularMenu', {
 					name:name,
 					iconSize:32,
 					icon:config.icon,
-					tipTrend:'bottom',
-					tipDrift:'14',
+					tipPos:'bottom',
+					tipOffset:'14',
 					tipZIndex:this.tipZIndex,
 					tip:config.prompt || false,
 					floatData : config
