@@ -187,7 +187,7 @@ infestor.define('infestor.form.field.Combo',{
 					
 			text = this.elementFieldInput.val();
 								
-			this.dropDownPanel.initItems(!text ? this.dataSet.getData() : this.autoSearch(text,this.dataSet.getData(),function(idx,obj){ return obj.text;  }));
+			this.dropDownPanel.initItems(!text ? this.dataSet.getData() : infestor.map(this.autoSearch(text,this.dataSet.getData(),function(idx,obj){ return obj.text;  }),function(){ return infestor.append({ searchText:text },this);  }));
 			
 			if(!this.dropDownPanel.hasItem())
 				return this.dropDownPanel.hide();
@@ -245,6 +245,15 @@ infestor.define('infestor.form.field.Combo',{
 	getText : function(){
 		
 		return this.elementFieldInput.val();
+		
+	},
+	
+	clearValue : function(){
+		
+		this.value = '';
+		this.elementFieldInput.val('');
+		
+		return this;
 		
 	},
 		
@@ -383,6 +392,8 @@ infestor.define('infestor.form.field.Combo',{
 		keyword = String(keyword).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\})/g,'\\$1');
 		
 		reg = new RegExp('^'+keyword,'ig');
+		
+		// reg = new RegExp(keyword,'ig');
 		
 		infestor.each(set,function(idx,content){
 			

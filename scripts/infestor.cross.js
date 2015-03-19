@@ -50,7 +50,7 @@ infestor.namespace('infestor.cross',{
 	
 		infestor.mgr.require('infestor.Window',function(){
 		
-			infestor.Window.alert(msg).show().initAutoHide(3,true);
+			infestor.Window.alert(msg).show().initAutoHide(3,false);
 		
 		});
 	

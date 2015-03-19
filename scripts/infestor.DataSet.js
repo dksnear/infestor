@@ -170,7 +170,7 @@ infestor.define('infestor.DataSet', {
 				// string:cookie|userData|localStorage
 				cacheType: 'localStorage',
 				// init:unit(day)
-				expires: 7,
+				expires: 30
 							
 			});
 			
@@ -543,6 +543,7 @@ infestor.define('infestor.DataSet', {
 
 				indicator && indicator.stop();
 				me.isLoading = false;
+				me.loadingOptions = null;
 				me.emit('loadComplete', [config.params].concat(infestor.argsToArray(arguments)), me);
 			}
 
@@ -553,6 +554,7 @@ infestor.define('infestor.DataSet', {
 		indicator && indicator.start();
 		
 		this.isLoading = true;
+		this.loadingOptions = opts;
 	
 		infestor.request.ajax(opts);
 
@@ -611,6 +613,7 @@ infestor.define('infestor.DataSet', {
 
 				indicator && indicator.stop();
 				me.isSubmitting = false;
+				me.submittingOptions = null;
 				me.emit('submitComplete', [config.params].concat(infestor.argsToArray(arguments)), me);
 			}
 
@@ -621,6 +624,7 @@ infestor.define('infestor.DataSet', {
 		indicator && indicator.start();
 		
 		this.isSubmitting = true;
+		this.submittingOptions = opts;
 	
 		infestor.request.ajax(opts);
 

@@ -5,6 +5,11 @@
 	font: 12px/1.5 'Microsoft YaHei',tahoma,arial,'Hiragino Sans GB',\5b8b\4f53,'宋体',sans-serif;
 }
 
+/* body{
+
+	min-height: 300px;
+} */
+
 table,td{
 
 	border-collapse:collapse;
@@ -255,7 +260,8 @@ input:focus{
 
 .infestor-element-search-text{
 
-	color:red;
+	color: #ED2D2D;
+	font-weight: bold;
 
 }
 

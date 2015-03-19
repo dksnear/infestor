@@ -561,7 +561,7 @@ infestor.define('infestor.Element', {
 	setSearchText : function(searchText){
 		
 		if(!this.text) return this;
-		
+				
 		this.searchText = searchText || this.searchText;
 		
 		if(!this.searchText) return this;
