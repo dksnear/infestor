@@ -16,6 +16,8 @@ infestor.define('infestor.tree.TreeNode',{
 		
 	cssClsNodeLoadingSwitch : 'infestor-tree-node-loading-switch',
 	
+	cssClsNodeNonSwitchIcon : 'infestor-tree-node-non-switch-icon',
+	
 	cssClsNodeCheck : 'infestor-tree-node-check',
 	
 	cssClsNodeIcon :'infestor-tree-node-icon',
@@ -126,13 +128,12 @@ infestor.define('infestor.tree.TreeNode',{
 		return this;
 	},
 	
-	setSearchText : function(searchText){
+	setSearchText : function(searchText,searchTextMode){
 	
-	  	return this.nodeTextCell.setSearchText(searchText);
+	  	return this.nodeTextCell.setSearchText(searchText,searchTextMode);
 	},
 	
 	// ui construct
-	
 	
 	createNodeSpaceCells : function(){
 	
@@ -204,16 +205,16 @@ infestor.define('infestor.tree.TreeNode',{
 		!this.isLoading && this.nodeSwitchCell.element.removeClass(this.cssClsNodeLoadingSwitch);
 		
 		// normal
-		!this.hasChild && this.nodeSwitchCell.element.addClass(this.cssClsNodeNonSwitch);
+		!(this.hasChild || this.isBranch) && this.nodeSwitchCell.element.addClass(this.cssClsNodeNonSwitchIcon);
 		
 		// expand
-		this.hasChild && this.isExpand && this.nodeSwitchCell.setIcon('down');
+		(this.hasChild || this.isBranch) && this.isExpand && this.nodeSwitchCell.element.removeClass(this.cssClsNodeNonSwitchIcon) && this.nodeSwitchCell.setIcon('down');
 		 
 		// collapse
-		this.hasChild && this.isCollapse && this.nodeSwitchCell.setIcon('front');
+		(this.hasChild || this.isBranch) && this.isCollapse && this.nodeSwitchCell.element.removeClass(this.cssClsNodeNonSwitchIcon) && this.nodeSwitchCell.setIcon('front');
 		
 		// loading
-		this.isLoading && !this.isRoot && this.nodeSwitchCell.element.cssClear('background-position').removeClass(this.cssClsNodeNonSwitch).addClass(this.cssClsNodeLoadingSwitch);
+		this.isLoading && !this.isRoot && this.nodeSwitchCell.element.cssClear('background-position').removeClass(this.cssClsNodeNonSwitchIcon).addClass(this.cssClsNodeLoadingSwitch);
 		
 		
 		return this;
@@ -390,7 +391,7 @@ infestor.define('infestor.tree.TreeNode',{
 	
 	nodeExpand : function(){
 	
-		if(this.isExpand || !this.hasChild || this.isLoading) return;
+		if(this.isExpand || !(this.hasChild || this.isBranch) || this.isLoading) return;
 	
 		this.isExpand = true;
 		this.isCollapse = false;
@@ -404,7 +405,7 @@ infestor.define('infestor.tree.TreeNode',{
 		
 	nodeCollapse : function(){
 	
-		if(this.isCollapse || !this.hasChild || this.isLoading) return;
+		if(this.isCollapse || !(this.hasChild || this.isBranch) || this.isLoading) return;
 	
 		this.isCollapse = true;
 		this.isExpand = false;

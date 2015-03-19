@@ -49,6 +49,7 @@ infestor.define('infestor.tree.Tree',{
 		
 			var currentLoadingNode = this.getNode(opts.params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId']);
 			
+			// 设置加载中等待样式
 			currentLoadingNode.isLoading = true;
 			currentLoadingNode.changeNodeSwitchIcon();
 		
@@ -61,13 +62,13 @@ infestor.define('infestor.tree.Tree',{
 			if(!this.async) return !this.rootRow && this.createTree(data);
 
 			currentLoadingNode = this.getNode(params && params[this.asyncParamName || this.dataSet.modelMap.$parentNodeId || 'pId']);
-			currentLoadingNode.isLoading = false;		
-			currentLoadingNode.changeNodeSwitchIcon();
+			currentLoadingNode.isLoading = false;	
+			currentLoadingNode.isBranch && !currentLoadingNode.hasChild && (currentLoadingNode.isBranch = false) && (currentLoadingNode.isLeaf = true);
+			currentLoadingNode.refreshIcon();
 			
 			if(!data || data.length < 1)
 				return;
 			
-
 			this.addRow(data);
 			
 			expandDepth = (currentLoadingNode.$asyncExpandDepth===0 || this.expandDepth===0) ? 0 : undefined;
@@ -269,7 +270,7 @@ infestor.define('infestor.tree.Tree',{
 			nodeExpand : function(){
 				
 				// async expand
-				if(tree.async && this.hasChild && !this.isLoaded){
+				if(tree.async && (this.hasChild || this.isBranch) && !this.isLoaded){
 					
 					var expandDepth = (this.$asyncExpandDepth ===0 || tree.expandDepth ===0 ) ? 0 : undefined;
 					
@@ -321,12 +322,12 @@ infestor.define('infestor.tree.Tree',{
 		
 		!isRoot && parentRow.treeNode.addChildNode(row.treeNode);
 		
-		this.isSearching && (!this.treeSearchRange || infestor.inArray(this.treeColumn.columnOptions.name,this.treeSearchRange) != -1) && row.treeNode.setSearchText(this.treeSearchText);
+		this.isSearching && (!this.treeSearchRange || infestor.inArray(this.treeColumn.columnOptions.name,this.treeSearchRange) != -1) && row.treeNode.setSearchText(this.treeSearchText,this.treeSearchMode);
 		
 		this.multiColumn && infestor.each(this.gridColumns,function(name,column){
 		
 			row.cells[name] = column.createColumnCell(rowData.rawData && rowData.rawData[name],rowData.rawData,row.container,row);
-			this.isSearching && this.treeSearchRange && (infestor.inArray(name,this.treeSearchRange) != -1) && row.cells[name].getItem('inner-cell').setSearchText(this.treeSearchText);
+			this.isSearching && this.treeSearchRange && (infestor.inArray(name,this.treeSearchRange) != -1) && row.cells[name].getItem('inner-cell').setSearchText(this.treeSearchText,this.treeSearchMode);
 		
 		},this);
 		
@@ -635,7 +636,7 @@ infestor.define('infestor.tree.Tree',{
 	
 		var node = this.getNode(nodeId);
 		
-		if(!node || !node.hasChild || (depth && node.nodeDepth > depth)) return;
+		if(!node || !(node.hasChild || node.isBranch) || (depth && node.nodeDepth > depth)) return;
 		
 		if(this.async && !node.isLoaded){
 
@@ -668,7 +669,7 @@ infestor.define('infestor.tree.Tree',{
 		
 	},
 
-	search : function(keyword,range,allowEmpty){
+	search : function(keyword,range,mode,allowEmpty){
 		
 		range = range && (infestor.isArray(range) ? range : [range]);
 		
@@ -681,12 +682,12 @@ infestor.define('infestor.tree.Tree',{
 		if(this.isSearching && this.treeSearchText == keyword && ((!range && !this.treeSearchRange) || (range && range.join(',') == this.treeSearchRange.join(','))))
 			return false;
 		
-		return this.searchClear() && this.searchOn(keyword,range,allowEmpty);
+		return this.searchClear() && this.searchOn(keyword,range,mode,allowEmpty);
 				
 	},
 	
 	// @allowEmpty 无搜寻结果仍然重新加载树
-	searchOn : function(keyword,range,allowEmpty){
+	searchOn : function(keyword,range,mode,allowEmpty){
 		
 		var searchDataSet,len = 0;
 	
@@ -694,7 +695,7 @@ infestor.define('infestor.tree.Tree',{
 				
 		searchDataSet = infestor.create('infestor.tree.DataSet',this.dataConfig);
 		searchDataSet = infestor.append(searchDataSet,this.dataSet);		
-		len = searchDataSet.filterData(keyword,range,true).length;
+		len = searchDataSet.filterData(keyword,range,mode,true).length;
 		
 		if(!allowEmpty && !len)
 			return len;
@@ -703,6 +704,7 @@ infestor.define('infestor.tree.Tree',{
 		this.dataSet = searchDataSet;
 		this.treeSearchText = keyword;
 		this.treeSearchRange = range && (infestor.isArray(range) ? range : [range]);
+		this.treeSearchMode = mode;
 		this.isSearching = true;
 		this.reload();
 
@@ -726,6 +728,7 @@ infestor.define('infestor.tree.Tree',{
 		this.$dataSet && (this.dataSet = this.$dataSet);
 		this.treeSearchText = '';
 		this.treeSearchRange = [];
+		this.treeSearchMode = '';
 		this.isSearching = false;
 		
 		return true;

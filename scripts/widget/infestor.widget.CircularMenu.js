@@ -170,7 +170,7 @@ infestor.define('infestor.widget.CircularMenu', {
 					iconSize:32,
 					icon:config.icon,
 					tipPos:'bottom',
-					tipOffset:'14',
+					tipOffset:'14 9 2',
 					tipZIndex:this.tipZIndex,
 					tip:config.prompt || false,
 					floatData : config

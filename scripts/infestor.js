@@ -805,8 +805,21 @@ infestor js
 		jsonEncodeTree : function(obj,action){
 			
 			var treeArray = [],
-				action = action || function( id, pId, type, key, value, depth){				
-					 treeArray.push({ id: id,pId : pId || '0' ,type : type, key :key, value : value ,text : (depth === 1 ? 'root' : key) + ':' + value,depth : depth });					
+				action = action || function( id, pId, type, key, value, depth){		
+				
+					 treeArray.push({ 
+					 
+						id: id,
+						pId : pId || '0' ,
+						type : type, 
+						key : depth === 1 ? 'root' : key, 
+						value : value,
+						text : (depth === 1 ? 'root' : key) + ':' + value,
+						depth : depth, 
+						leaf : type != 'array' && type !='object',
+						branch : type == 'array' || type == 'object' 
+						
+					});					
 				};
 			
 			global.jsonEncode(obj,{

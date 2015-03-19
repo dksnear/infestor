@@ -160,8 +160,11 @@ infestor.define('infestor.Element', {
 	// 文本内容
 	text : null,
 	
-	// 需要特殊标记的文本
+	// 文本需要特殊标记的字符串
 	searchText : null,
+	
+	// 需要特殊标记的字符串识别模式(regexp|*)
+	searchTextMode : null,
 
 	// tip
 	tip : null,
@@ -558,15 +561,16 @@ infestor.define('infestor.Element', {
 		return this;
 	},
 	
-	setSearchText : function(searchText){
+	setSearchText : function(searchText,searchTextMode){
 		
 		if(!this.text) return this;
 				
 		this.searchText = searchText || this.searchText;
+		this.searchTextMode = searchTextMode;
 		
 		if(!this.searchText) return this;
 		
-		this.elementInnerContainer.html('').html(String(this.text).replace(new RegExp('(' + String(this.searchText).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\})/g,'\\$1') + ')','ig'),
+		this.elementInnerContainer.html('').html(String(this.text).replace(new RegExp('(' + (this.searchTextMode =='regexp' ? this.searchText : String(this.searchText).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\})/g,'\\$1')) + ')','ig'),
 			infestor.stringFormat('<fonts class = "{0}">$1</fonts>',this.cssClsElementSearchText)));
 		
 		return this;

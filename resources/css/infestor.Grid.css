@@ -79,12 +79,6 @@
 	background-image:none;
 }
 
-.infestor-tree-node-space:hover{
-
-	background-image:none;
-
-}
-
 .infestor-tree-node-switch{
 
 }
@@ -97,13 +91,10 @@
 
 }
 
-.infestor-tree-node-non-switch{
-
-	background-image:none;
-
-}
-
-.infestor-tree-node-non-switch:hover{
+.infestor-tree-node-space:hover,
+.infestor-tree-node-loading-switch:hover,
+.infestor-tree-node-non-switch-icon,
+.infestor-tree-node-non-switch-icon:hover{
 
 	background-image:none;
 

@@ -147,7 +147,11 @@ infestor.define('infestor.tree.DataSet',{
 	
 	// #new
 	
-	filterData : function(keyword,range,persistent){
+	// @keyword 关键字
+	// @range 搜寻字段数据对象中数据元素的有效键名数组
+	// @persistent(bool) 将搜寻结果持久化为当前数据集中的数据对象
+	// @mode(regexp|*) regexp 关键字识别为正则表达式字符串 * 关键字识别为一般字符串
+	filterData : function(keyword,range,mode,persistent){
 		
 		var data = this.data,
 			matchedData,
@@ -158,7 +162,8 @@ infestor.define('infestor.tree.DataSet',{
 		
 		if(!data || data.length < 1) return [];
 		
-		kwfr = keyword && new RegExp(String(keyword).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\})/g,'\\$1'),'ig');
+		kwfr = keyword && (mode == 'regexp' ? new RegExp(keyword,'ig')
+			: new RegExp(String(keyword).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\})/g,'\\$1'),'ig'));
 		
 		if(!kwfr) return [];
 			
