@@ -26,10 +26,10 @@ infestor.define('infestor.tree.Tree',{
 	// 异步构造非严格模式 (每次异步加载请求加载两层节点 第2层为预加载 用于判定第一层是否有子节点)
  	asyncStrict : false,
 	
-	// 自动展开深度(int|bool)
-	// (int 0 | true) 展开所有节点
+	// 初始化时自动展开深度(int|bool)
+	// (int 0) 展开所有节点
 	// (int x) 展开深度小于等于x的所有节点
-	// (false) 不展开任何节点
+	// (bool false) 不展开任何节点
 	expandDepth : 1,
 	
 	// 表格树 
@@ -363,7 +363,7 @@ infestor.define('infestor.tree.Tree',{
 		},this.rootVisible);
 		
 		if(this.async)				
-			return this.rootRow.treeNode.nodeExpand();
+			return (this.expandDepth !== false) && this.rootRow.treeNode.nodeExpand();
 	
 		data = data && infestor.map(data,function(){ return this; });
 		getChildNode = function(pId){
@@ -394,7 +394,6 @@ infestor.define('infestor.tree.Tree',{
 		}).call(this,this.rootRow.id);
 	
 		// 展开根节点		
-		this.expandDepth = this.expandDepth === true ? 0 : this.expandDepth;
 		
 		if(this.expandDepth !== false)
 			this.expandNodeToDepth(this.rootRow.treeNode.nodeId,this.expandDepth);
