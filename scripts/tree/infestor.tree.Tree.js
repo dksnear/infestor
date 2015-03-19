@@ -109,7 +109,8 @@ infestor.define('infestor.tree.Tree',{
 		},this);
 		
 	},
-		
+	
+	// @init 当树异步本地加载时 自动初始化dataSet中的数据 用于模拟远程异步 
 	load : function(data,init){
 	
 		if(!this.dataSet)
@@ -132,6 +133,8 @@ infestor.define('infestor.tree.Tree',{
 	
 	},
 	
+	
+	// @clear 清理数据集中的数据 清理搜寻状态
 	reload : function(data,clear){
 	
 		if(!this.loaded)
