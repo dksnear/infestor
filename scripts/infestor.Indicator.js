@@ -6,7 +6,9 @@ infestor.define('infestor.Indicator',{
 
 	extend:'infestor.Task',
 	
-	uses:['infestor.cross','infestor.Dom'],
+	uses:'infestor.Dom',
+	
+	cssUses:'infestor.Element',
 	
 	interval:100,
 	
@@ -90,24 +92,31 @@ infestor.define('infestor.Indicator',{
 	},
 	
 	createIndicator:function(opts){
+		
+		var indicator = infestor.Dom.div(); 
 	
-		return infestor.Dom.div().css(infestor.append({
+		
+		if(infestor.isRawObject(opts)) {
+			
+			return indicator.css(infestor.append({
 
-			position : 'fixed',
-			width : '0%',
-			height : '5px',
-			top : 0,
-			left : 0,
-			'background-color' : 'orange'
+				position : 'fixed',
+				width : '0%',
+				height : '5px',
+				top : 0,
+				left : 0,
+				'background-color' : 'orange'
 
-		},opts));
+			},opts));
+		}
+		
+		return indicator.addClass(opts || 'infestor-element-global-indicator');
 	
 	},
 	
 	showIndicator:function(){
 		
 		infestor.Indicator.elementIndicator = infestor.Indicator.elementIndicator || this.createIndicator().appendTo(infestor.Dom.getBody());
-
 		infestor.Indicator.elementIndicator.zIndex().show();
 	
 	},
@@ -126,13 +135,20 @@ infestor.define('infestor.Indicator',{
 	
 	showMask:function(){
 	
-		infestor.cross.showMask();
-	
+		infestor.Indicator.elementMask =  infestor.Indicator.elementMask || infestor.Dom.div().addClass(infestor.bRouter({ 
+		
+			 ie7minus : 'infestor-element-global-mask-ie7minus',
+			 otherwise : 'infestor-element-global-mask'
+			 
+		})).appendTo(infestor.Dom.getBody());
+		
+		infestor.Indicator.elementMask.zIndex().show();
+
 	},
 	
 	hideMask:function(){
 		
-		infestor.cross.hideMask();
+		infestor.Indicator.elementMask && infestor.Indicator.elementMask.hide();
 	
 	},
 	

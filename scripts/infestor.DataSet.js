@@ -535,8 +535,8 @@ infestor.define('infestor.DataSet', {
 			},
 			error : function () {
 				
-				me.emit('loadError', [config.params].concat(infestor.argsToArray(arguments)),me);
-				me.emit('error',[config.params].concat(infestor.argsToArray(arguments)),me);
+				me.emit('loadError', [opts.params].concat(infestor.argsToArray(arguments)),me);
+				me.emit('error',[opts.params].concat(infestor.argsToArray(arguments)),me);
 				
 			},
 			complete : function () {
@@ -544,7 +544,7 @@ infestor.define('infestor.DataSet', {
 				indicator && indicator.stop();
 				me.isLoading = false;
 				me.loadingOptions = null;
-				me.emit('loadComplete', [config.params].concat(infestor.argsToArray(arguments)), me);
+				me.emit('loadComplete', [opts.params].concat(infestor.argsToArray(arguments)), me);
 			}
 
 		}, opts);
@@ -558,14 +558,8 @@ infestor.define('infestor.DataSet', {
 	
 		infestor.request.ajax(opts);
 
-		if (rewrite) {
-
-			config.params = opts.params;
-			config.method = opts.method;
-			config.url = opts.url;
-			
-			this.loadConfig = config;
-		}
+		if (rewrite)
+			this.loadConfig = infestor.append({},config,opts);
 
 	},
 
@@ -605,8 +599,8 @@ infestor.define('infestor.DataSet', {
 			},
 			error : function () {
 				
-				me.emit('submitError', [config.params].concat(infestor.argsToArray(arguments)),me);
-				me.emit('error',[config.params].concat(infestor.argsToArray(arguments)),me);
+				me.emit('submitError', [opts.params].concat(infestor.argsToArray(arguments)),me);
+				me.emit('error',[opts.params].concat(infestor.argsToArray(arguments)),me);
 				
 			},
 			complete : function () {
@@ -614,7 +608,7 @@ infestor.define('infestor.DataSet', {
 				indicator && indicator.stop();
 				me.isSubmitting = false;
 				me.submittingOptions = null;
-				me.emit('submitComplete', [config.params].concat(infestor.argsToArray(arguments)), me);
+				me.emit('submitComplete', [opts.params].concat(infestor.argsToArray(arguments)), me);
 			}
 
 		}, opts);
@@ -628,15 +622,8 @@ infestor.define('infestor.DataSet', {
 	
 		infestor.request.ajax(opts);
 
-		if (rewrite) {
-
-			config.params = opts.params;
-			config.method = opts.method;
-			config.url = opts.url;
-			
-			this.submitConfig = config;
-		}
-	
+		if (rewrite) 	
+			this.submitConfig = infestor.append({},config,opts);	
 	
 	},
 	

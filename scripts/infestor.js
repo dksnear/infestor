@@ -446,13 +446,13 @@ infestor js
 
 		},
 
-		param : function (obj) {
+		param : function (obj,esc) {
 
 			if (!obj || global.isString(obj)) {
 
 				var url = obj || document.location.search,
 					url = url.replace(/&amp;/gi, '&'),
-					reg = /(?:^\?|&)(.*?)=(.*?)(?=&|$)/g,
+					reg = /(?:\?|&)(.*?)=(.*?)(?=&|$)/g,
 					temp,
 					args = {};
 					
@@ -474,7 +474,8 @@ infestor js
 
 				if (!obj.hasOwnProperty(name))
 					return true;
-				paramArr.push(name + '=' + val);
+				
+				esc ? paramArr.push(escape(name) + '=' + escape(val)) : paramArr.push(name + '=' + val);
 
 			});
 

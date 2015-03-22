@@ -79,7 +79,7 @@ infestor.define('infestor.form.field.Combo',{
 			if(!this.dropDownPanel.hasItem())
 				return;
 			
-			if(e.keyCode == infestor.keyCode.enter || e.keyCode == infestor.keyCode.right){
+			if(e.keyCode == infestor.keyCode.enter){
 			
 				e.preventDefault();
 			
@@ -96,7 +96,7 @@ infestor.define('infestor.form.field.Combo',{
 				return;
 			}
 			
-			if(e.keyCode == infestor.keyCode.esc || e.keyCode == infestor.keyCode.left){
+			if(e.keyCode == infestor.keyCode.esc){
 			
 				e.preventDefault();
 		
@@ -389,7 +389,7 @@ infestor.define('infestor.form.field.Combo',{
 		
 		if(!keyword) return match;
 		
-		keyword = String(keyword).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\})/g,'\\$1');
+		keyword = String(keyword).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\}|\,)/g,'\\$1');
 		
 		reg = new RegExp('^'+keyword,'ig');
 		

@@ -163,7 +163,7 @@ infestor.define('infestor.tree.DataSet',{
 		if(!data || data.length < 1) return [];
 		
 		kwfr = keyword && (mode == 'regexp' ? new RegExp(keyword,'ig')
-			: new RegExp(String(keyword).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\})/g,'\\$1'),'ig'));
+			: new RegExp(String(keyword).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\}|\,)/g,'\\$1'),'ig'));
 		
 		if(!kwfr) return [];
 			

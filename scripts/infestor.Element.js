@@ -40,19 +40,15 @@ infestor.define('infestor.Element', {
 		// 全局遮罩
 		showMask : function () {
 		
-			this.elementGlobalMask =  this.elementGlobalMask || infestor.Dom.div().addClass(this.cssClsElementGlobalMask).appendTo(infestor.Dom.getBody());
-			this.elementGlobalMask.zIndex().show();
-			
-			return this;
+			infestor.Element.elementGlobalMask =  infestor.Element.elementGlobalMask || infestor.Dom.div().addClass(infestor.Element.cssClsElementGlobalMask).appendTo(infestor.Dom.getBody());
+			infestor.Element.elementGlobalMask.zIndex().show();
 			
 		},
 		
 		hideMask:function(){
 		
-			this.elementGlobalMask && this.elementGlobalMask.hide();
-			
-			return this;
-		
+			infestor.Element.elementGlobalMask && infestor.Element.elementGlobalMask.hide();
+					
 		}
 
 	},
@@ -570,7 +566,7 @@ infestor.define('infestor.Element', {
 		
 		if(!this.searchText) return this;
 		
-		this.elementInnerContainer.html('').html(String(this.text).replace(new RegExp('(' + (this.searchTextMode =='regexp' ? this.searchText : String(this.searchText).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\})/g,'\\$1')) + ')','ig'),
+		this.elementInnerContainer.html('').html(String(this.text).replace(new RegExp('(' + (this.searchTextMode =='regexp' ? this.searchText : String(this.searchText).replace(/(\[|\]|\(|\)|\$|\^|\?|\*|\+|\.|\||\:|\=|\\|\!|\{|\}|\,)/g,'\\$1')) + ')','ig'),
 			infestor.stringFormat('<fonts class = "{0}">$1</fonts>',this.cssClsElementSearchText)));
 		
 		return this;

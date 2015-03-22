@@ -83,7 +83,13 @@ infestor.define('infestor.Window', {
 		if (!this.element)
 			return this;
 
-		this.modal && infestor.Element.showMask();
+		// show window global mask
+		if(this.modal){
+			
+			infestor.Window.elementGlobalMask =  infestor.Window.elementGlobalMask || infestor.Dom.div().addClass(infestor.Element.cssClsElementGlobalMask).appendTo(infestor.Dom.getBody());
+			infestor.Window.elementGlobalMask.zIndex().show();
+			
+		}
 
 		this.setDock();
 		
@@ -97,8 +103,9 @@ infestor.define('infestor.Window', {
 
 		if (!this.element)
 			return this;
-
-		this.modal && infestor.Element.hideMask();
+		
+		// hide window global mask
+		this.modal && infestor.Window.elementGlobalMask && infestor.Window.elementGlobalMask.hide();
 
 		this.element.hide();
 

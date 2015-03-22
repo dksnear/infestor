@@ -249,6 +249,17 @@ input:focus{
 
 }
 
+.infestor-element-global-indicator{
+
+	position : fixed;
+	width : 0%;
+	height : 5px;
+	top : 0;
+	left : 0;
+	background-color : orange;
+
+}
+
 .infestor-element-text{
 
 	text-indent: 2em;
