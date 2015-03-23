@@ -44,8 +44,8 @@ infestor.define('infestor.Checkbox',{
 	
 		this.delegate(this,'click',true,function(inst,e){
 		
-			this.emit('click',[this.checked,inst,e],this);
 			this.checked ? this.unCheck() : this.check();
+			this.emit('click',[this.checked,inst,e],this);
 			infestor.clearSelection();
 		
 		},this);

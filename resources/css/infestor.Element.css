@@ -261,12 +261,13 @@ input:focus{
 }
 
 .infestor-element-text{
-
+	
 	text-indent: 2em;
 	line-height: 2em;
-	word-wrap: break-word;
-	white-space: normal;
-
+	/* word-wrap: break-word; */
+	/* white-space: normal; */
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .infestor-element-search-text{

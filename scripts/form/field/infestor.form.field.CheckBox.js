@@ -26,7 +26,11 @@ infestor.define('infestor.form.field.Checkbox', {
 	
 	initEvents : function(){
 	
-		return this;
+		this.fieldInput.on('click',function(){
+			
+			this.value = this.fieldInput.checked ? 1 : 0;
+					
+		},this);
 	
 	},
 	
