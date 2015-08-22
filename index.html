@@ -22,6 +22,55 @@
 				itemsConstructMode:'method',
 				createItem:function(opts){
 				
+					var items = [{ text: String.fromCharCode(8756) },{
+						
+						css:{
+							fontSize:'14px',
+							padding:'0 5px',
+							display:'table-cell',
+							textDecoration:'underline'
+						},
+						text:opts.port+':'
+						
+					},{
+					
+						tagName:'a',
+						css:{
+							
+							fontSize:'14px',
+							padding:'0 5px',
+							color:!opts.isServer? 'black':'red'
+						
+						},
+						text:opts.name,
+						attr:{
+							target:'_blank',
+							href:!opts.isServer ? infestor.stringFormat('{0}{1}:{2}{3}',opts.protocol,opts.host,opts.port,opts.index || ''):'#'
+						}
+						
+					}];
+					
+					infestor.each(opts.extPaths,function(){
+					
+						items.push({
+						
+							tagName:'a',
+							css:{
+								fontSize:'14px',
+								padding:'0 5px',
+								color:'black'
+							},
+							text:this.name,
+							attr:{
+								target:'_blank',
+								href:infestor.stringFormat('{0}{1}:{2}{3}',this.protocol || opts.protocol,this.host || opts.host,this.port || opts.port,this.path || '')
+							}
+						
+						});
+					
+					});
+				
+				
 					return infestor.create('infestor.Element',{
 					
 						css:{
@@ -31,34 +80,7 @@
 						
 						},
 						
-						items:[{
-						
-							alias:'element',
-							css:{
-								'font-size':'14px',
-								padding:'0 5px',
-								display:'table-cell',
-							    'text-decoration':'underline'
-							},
-							text:opts.port+':'
-							
-						},{
-						
-							tagName:'a',
-							alias:'element',
-							css:{
-								
-								'font-size':'14px',
-								color:!opts.isServer? 'black':'red'
-							
-							},
-							text:opts.name,
-							attr:{
-							
-								href:!opts.isServer ? infestor.stringFormat('{0}:{1}',opts.host,opts.port):'#'
-							}
-							
-						}]
+						items:items
 					
 					});
 				
@@ -71,75 +93,170 @@
 						
 				itemsOpts:{
 				
-					host:'http://192.168.39.251'
+					protocol:'http://',
+					host:'127.0.0.1'
 				},
 				items:[{
 				
-					name:'extjs',
-					port:'2086'
+					host:'local-server-1',
+					name:'local-server-1',
+					port:'30101',
+					isServer:false
 					
 				},{
-				
+					host:'local-server-2',
+					name:'local-server-2',
+					port:'30102',
+					isServer:false
+					
+				},{
+					host:'local-server-3',
+					name:'local-server-3',
+					port:'30103',
+					isServer:false
+					
+				},{
+					host:'local-server-4',
+					name:'local-server-4',
+					port:'30104',
+					isServer:false
+					
+				},{
+					host:'local-mix',
+					name:'local-mix',
+					port:'30105',
+					index:'/demo.html',
+					isServer:false
+			
+				},{
+					host:'local-extjs2',
+					name:'extjs2.2',
+					port:'30112',
+					index:'/examples/samples.html',
+					extPaths:[{					
+						name:'custom_demo',
+						path:'/_demo/demo.html'
+					}]
+					
+				},{
+					host:'local-extjs3',
+					name:'extjs3.4',
+					port:'30113',
+					index:'/examples/index.html',
+					extPaths:[{					
+						name:'custom_demo',
+						path:'/_demo/demo.html'
+					}]
+					
+				},{
+					host:'local-extjs4',
+					name:'extjs4.2',
+					port:'30114',
+					extPaths:[{
+						name:'examples',
+						path:'/examples/index.html'
+					},{				
+						name:'docs',
+						path:'/docs/index.html'
+					},{					
+						name:'custom_demo',
+						path:'/_demo/demo.html'
+					}]
+					
+				},{
+					host:'local-extjs5',
+					name:'extjs5.1',
+					port:'30115',
+					extPaths:[{
+						host:'local-extjs5doc',
+						name:'docs',
+						port:'30116'
+					}]
+					
+				},{
+					host:'local-jq',
+					name:'jQuery-Versions',
+					port:'30121'
+					
+				},{
+					host:'local-jqeditor',
+					name:'JQ-Editor',
+					port:'30122',
+					index:'/examples/index.html'
+					
+				},{
+					host:'local-jqdatatables',
+					name:'JQ-DataTables',
+					port:'30123',
+					index:'/examples/index.html'
+					
+				},{
+					host:'local-jqwidgets',
+					name:'JQ-Widgets',
+					port:'30124',
+					index:'/index.htm'
+					
+				},{
+					host:'local-mixjs',
+					name:'local-mixjs',
+					port:'30131',
+					index:'/index.html'
+					
+				},{
+					host:'local-infestor',
 					name:'infestor',
 					port:'3010'
 					
 				},{
-				
+					host:'local-slide',
 					name:'slide',
 					port:'3011'
 				
 				},{
-				
+					host:'local-ac',
 					name:'server-comic',
 					port:'3012',
 					isServer:true
 				
 				},{
-				
+					host:'local-demo',
 					name:'demo',
 					port:'3013'
 				
 				},{
-				
+					host:'local-ysera',
 					name:'ysera',
 					port:'3014'
 				
 				},{
-				
+					host:'local-iconfix',
 					name:'iconfix',
 					port:'3015'
 					
 				},{
-				
+					host:'local-aisle',
 					name:'aisle',
 					port:'3016',
 					isServer:true
 					
 				},{			
-				
+					host:'local-poker',
 					name:'poker',
 					port:'3017'
 					
 				},{			
-				
-					name:'lib-sand-box',
-					port:'3018'
-					
-				},{			
-				
+					host:'local-asc',
 					name:'aisle-sys-client',
 					port:'3019'
 					
 				},{
-				
+					host:'local-accurate',
 					name:'accurate',
 					port:'3020'
 				}]
 			
 			});
 			
-		
-		
 		});
 	</script>
 </head>

@@ -452,17 +452,16 @@ infestor js
 
 				var url = obj || document.location.search,
 					url = url.replace(/&amp;/gi, '&'),
-					reg = /(?:\?|&)(.*?)=(.*?)(?=&|$)/g,
-					temp,
 					args = {};
+									
+				url.replace(/(?:\?|&)(.*?)=(.*?)(?=&|$)/g,function(m,g1,g2){
 					
-				while ((temp = reg.exec(url)) != null) {
 					try {
-						args[decodeURIComponent(temp[1])] = decodeURIComponent(temp[2]);
+						args[decodeURIComponent(g1)] = decodeURIComponent(g2);
 					} catch (e) {
-						args[unescape(temp[1])] = unescape(temp[2]);
+						args[unescape(g1)] = unescape(g2);
 					}
-				}
+				});
 
 				return args;
 
@@ -481,18 +480,6 @@ infestor js
 
 			return paramArr.join('&');
 
-		},
-
-		// uri/#/?key1=value1&key2=value2
-		hash : function(key){
-		
-			var hash = document.location.hash && /\#\/(.+)/.exec(location.hash),
-				hashArgs = hash && infestor.param(hash[1]);
-			
-			if(key)
-				return hashArgs && hashArgs[key];
-			
-			return hashArgs;
 		},
 		
 		browser : (function () {
@@ -603,7 +590,7 @@ infestor js
 			if (arguments.length < 1)
 				return '';
 			var i = 1,
-			len = arguments.length;
+				len = arguments.length;
 			for (; i < len; i++)
 				str = str.replace(new RegExp('\\{' + (i - 1) + '\\}', 'gm'), arguments[i]);
 			return str;
@@ -692,7 +679,7 @@ infestor js
 					mix:'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
 					num:'0123456789',
 					word:'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-				}[type],
+				}[type] || type,
 				len = len || 6,
 				i = 0,
 				rs = '';
@@ -995,10 +982,10 @@ infestor js
 		
 		}		
 	});
-
-	//事件
+	
+	// 脚本和样式
 	global.append({
-
+		
 		//同步加载脚本
 		writeScript : function (path, raw) {
 
@@ -1063,6 +1050,51 @@ infestor js
 			return link;
 
 		},
+		
+		//读取样式表样式
+		//unsafe 
+		//uncompatible
+		getStyleSheet:function(index){
+			
+			if(arguments.length == 0){
+				
+				return global.map(document.styleSheets,function(idx,val){
+					
+					return global.getStyleSheet(idx);
+					
+				});
+				
+			};
+			
+			var sheet = document.styleSheets[index],rawRules,rules=[];
+			
+			if(!sheet) return rules;
+			
+			rawRules = sheet.rules || sheet.cssRules;
+						
+			global.each(rawRules,function(){
+					
+				var rule = {};
+				rule.selector = this.selectorText;
+				rule.rules = {};
+				global.each(this.style.cssText.replace(/^\s*|\s*$/g,'').split(';'),function(){
+				
+					var statement = this.split(':');
+					statement[0] && (rule.rules[statement[0].replace(/^\s*|\s*$/g,'')] = statement[1].replace(/^\s*|\s*$/g,''));
+					
+				});
+				rules.push(rule);
+						
+			});
+			
+			return rules;
+				
+		}
+
+	});
+
+	//事件
+	global.append({
 
 		addEventListener : function (target, eventName, eventHandler, capture) {
 
@@ -1313,9 +1345,6 @@ infestor js
 
 				// 类未加载则创建加载器
 				loader = new global.Loader();
-
-				// 注册加载器
-				global.loaders[loader.id] = loader;
 
 				this.using(clsName, null, loader);
 
@@ -1851,6 +1880,7 @@ infestor js
 		constructor : function (id) {
 
 			this.id = id || global.getId();
+			global.Loader.$loaders[this.id] = this;
 
 		},
 
@@ -2162,14 +2192,22 @@ infestor js
 		}
 
 	});
+	
+	// 载入管理器
+	global.Loader.$loaders = {};
+	
+	// 加载单个类
+	global.Loader.loadClass = function(className,callback,loaderName,loader){
+		
+		loader = loader || new global.Loader(loaderName || className);
+		
+		global.mgr.using(className,null,loader);
+		
+		loader.using(callback);
+	};
 
 	// 默认载入器
 	global.loader = new global.Loader('defaultLoader');
-
-	// 载入器管理器
-	global.loaders = {};
-
-	global.loaders[global.loader.id] = global.loader;
 
 	global.mgr.classMap[global.loader.$clsName] = global.Loader;
 

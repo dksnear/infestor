@@ -366,30 +366,25 @@ infestor.define('infestor.Cache', {
 	// private #cookie
 	
 	getCookie:function(key,raw){
-	
+		
 		if (!document.cookie)
 			return null;
-
-		var grp = document.cookie.split('; '),
-			idx = 0,
-			len = grp.length,
-			regx = /([^=]+)=(.+)/,
-			map = {},
-			cap;
-
-		for (; idx < len; idx++) {
-
-			cap = regx.exec(grp[idx]);
-
-			map[cap[1]] = raw ? cap[2] : this.deserialize(cap[2]);
-		}
-
+		
+		var map = {},
+			self = this;
+		
+		document.cookie.replace(/(?:^|(?:;\s))(.*?)=(.*?)(?=(?:;\s)|$)/g,function(m,g1,g2){
+			
+			map[g1] = raw ? g2 : self.deserialize(g2);
+			
+		});
+		
 		if (!key) return map;
 
 		return map[key];
-	
+		
 	},
-	
+		
 	setCookie:function(key,value,expires,path,domain,secure){
 	
 		var token = [key + '=' + this.serialize(value)],

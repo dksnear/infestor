@@ -1,7 +1,7 @@
 
 
 infestor.ns('infestor.xdebug', false);
-infestor.ns('infestor.mgr.host.infestor', 'http://192.168.39.251:3010');
+infestor.ns('infestor.mgr.host.infestor', 'http://127.0.0.1:3010');
 
 infestor.mgr.using('viewport');
 

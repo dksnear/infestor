@@ -335,6 +335,14 @@ infestor.define('infestor.form.Form', {
 	
 	},
 	
+	clearField:function(fieldName){
+		
+		if(!fieldName)
+			return infestor.each(this.fieldsMap,function(name,field){ this.clearField(fieldName);  },this),true;
+		
+		return this.setField(fieldName,'');
+	},
+	
 	// 抽取有效字段
 	feed : function(){
 	
