@@ -38,8 +38,8 @@ infestor.define('infestor.HashManager', {
 			
 			if(!hash){
 				
+				me.emit('hashchange',[null,null],me);
 				me.redirect(me.mainPageName);
-				me.emit('hashchange',[huri,hargs],me);
 				return;
 			}
 			
@@ -49,8 +49,7 @@ infestor.define('infestor.HashManager', {
 			var	hargs = hargs && infestor.param(hargs);
 			var	name = huri.replace(/\//g,'.').substr(1);
 			
-			me.emit('hashchange',[huri,hargs],me);
-			
+			me.emit('hashchange',[huri,hargs],me);		
 			me.redirect(name,hargs);
 			
 		});
