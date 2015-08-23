@@ -3,31 +3,21 @@
 infestor.define('infestor.mobile.Menu',{
 
 	alias:'mobile-menu',
-	extend:'infestor.Element',
+	extend:'infestor.Panel',
 	cssUses:'infestor.mobile',
 	
 	cssClsElement:'infestor-mobile-menu',
 	cssClsHorizon:'infestor-mobile-menu-h',
 	cssClsVertical:'infestor-mobile-menu-v',
 	cssClsTrigger:'infestor-mobile-menu-trigger',
-	cssClsBody:'infestor-mobile-menu-body',
 	cssClsActive:'infestor-mobile-menu-active',
 	
 	// horizon|vertical
-	layout:'horizon',
-	// layout:'vertical',
-	
-	collapseSize:40,
+	orient:'horizon',	
+	collapseSize:45,
 	isCollapse:true,
 	
-	events:{
-	
-		// @params target,eventArgs 
-		// @this button
-		click:null
-	
-	},
-	
+	// @private #rewrite
 	initEvents:function(){
 			
 		this.adjHandler = infestor.throttle(function(){
@@ -48,33 +38,31 @@ infestor.define('infestor.mobile.Menu',{
 	
 	},
 	
+	// @private #rewrite
 	initElement:function(){
 		
 		this.callParent();
 				
-		this.element.addClass(this.layout == 'vertical' ? this.cssClsVertical : this.cssClsHorizon);
+		this.element.addClass(this.orient == 'vertical' ? this.cssClsVertical : this.cssClsHorizon);
 		
-		this.bodyElement = this.createDomElement(this,this.cssClsBody);
-	
 		this.triggerEl = infestor.create('infestor.Element',{
 			
 			cssClsElement:this.cssClsTrigger,
 			icon:'list',
 			iconSize:32,
 			
-		}).renderTo(this);
+		}).renderTo(this.element);
 		
 		this.adjustCollapse();
-		
-		this.renderTo();
-
+	
 	},
 	
+	// @private
 	adjustCollapse : function(){
 		
 		if(!this.isCollapse) return;
 		
-		if(this.layout == 'vertical'){
+		if(this.orient == 'vertical'){
 			
 			this.element.css('margin-top',infestor.px(this.collapseSize-infestor.Dom.clientHeight()));
 			
@@ -85,36 +73,33 @@ infestor.define('infestor.mobile.Menu',{
 		
 	},
 	
+	// @public 
 	expand:function(){
 		
 		if(!this.isCollapse) 
 			return;
 		
+		this.element.zIndex();
 		this.element.addClass(this.cssClsActive);
-		
-		if(this.layout == 'vertical'){
-			
-			this.element.css('margin-top',0);
-			
-		}else{
-			
-			this.element.css('margin-left',0);
-		}
-				
+		this.triggerEl.element.addClass(this.cssClsGlobalIconFocus32);
+		this.element.css(this.orient == 'vertical' ? 'margin-top' : 'margin-left',0);				
 		this.isCollapse = false;
 	},
 	
+	// @public
 	collapse:function(){
 		
 		if(this.isCollapse)
 			return;
 		
 		this.element.removeClass(this.cssClsActive);
+		this.triggerEl.element.removeClass(this.cssClsGlobalIconFocus32);
 		this.isCollapse = true;
 		this.adjustCollapse();
 	
 	},
 	
+	// @public #rewrite
 	destroy : function(){
 		
 		this.titleElement = this.titleElement && this.titleElement.destroy();

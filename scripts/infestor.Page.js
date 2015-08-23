@@ -32,9 +32,9 @@ infestor.define('infestor.Page', {
 		this.hashManager && this.hashManager.redirect.apply(this.hashManager,arguments);
 	},
 	
-	hashRedirect : function(name){
+	hashRedirect : function(){
 		
-		location.hash = '#/'+name.replace(/\./g,'/');
+		this.hashManager && this.hashManager.redirect.apply(this.hashManager,arguments);
 	}
 	
 });

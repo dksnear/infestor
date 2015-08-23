@@ -21,7 +21,7 @@ infestor.define('infestor.HashManager', {
 		hashchange:null
 	},
 
-	// @private
+	// @private #rewrite
 	init : function(){
 		
 		this.pages = {};
@@ -29,7 +29,7 @@ infestor.define('infestor.HashManager', {
 		
 	},
 	
-	// @private
+	// @private #rewrite
 	initEvents : function(){
 		
 		var me = this;
@@ -57,7 +57,7 @@ infestor.define('infestor.HashManager', {
 		});
 	},
 	
-	// @private
+	// @private 
 	loadPage : function(name,opts,callback){
 		
 		var me = this;
@@ -101,6 +101,20 @@ infestor.define('infestor.HashManager', {
 			
 		});
 		
+	},
+	
+	// @public
+	hashRedirect : function(name){
+		
+		location.hash = '#/'+name.replace(/\./g,'/');
+	},
+	
+	// @public #rewrite
+	destroy:function(){
+	
+		infestor.each(this.pages,function(){ this.destroy(); });
+		this.pages = null;
+		return this.callParent();
 	}
 
 });
