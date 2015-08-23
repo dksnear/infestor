@@ -5,7 +5,7 @@ infestor.define('infestor.form.field.Captcha', {
 
 	extend : 'infestor.form.field.Field',
 
-	cssUses : ['infestor.Form'],
+	cssUses : ['infestor.form'],
 
 	cssClsElement : 'infestor-field infestor-captcha-field',
 

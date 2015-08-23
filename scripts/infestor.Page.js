@@ -1,6 +1,6 @@
 
 
-// 页面接口
+// 页面抽象类
 
 infestor.define('infestor.Page', {
 

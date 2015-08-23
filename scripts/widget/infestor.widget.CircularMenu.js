@@ -3,7 +3,7 @@ infestor.define('infestor.widget.CircularMenu', {
 
 	alias : 'circularmenu',
 	extend : 'infestor.Element',
-	cssUses : 'infestor.Widget',
+	cssUses : 'infestor.widget',
 
 	cssClsElement : 'infestor-widget-circular-menu',
 	cssClsCMenuContainer : 'infestor-widget-circular-menu-container',

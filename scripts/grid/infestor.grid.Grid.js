@@ -8,7 +8,7 @@ infestor.define('infestor.grid.Grid',{
 
 	uses : ['infestor.grid.Column'],
 	
-	cssUses : 'infestor.Grid',
+	cssUses : 'infestor.grid',
 	
 	statics : {
 	

@@ -2221,8 +2221,6 @@ infestor js
 
 	global.alias(global.mgr, 'getInstance', global.$$libName + '.getInst');
 
-	global.alias(global.mgr, 'getInstance', global.$$libName + '.getInstance');
-
 	global.alias(global, 'namespace', global.$$libName + '.ns');
 
-})(window, 'infestor', 'inf');
+})(window, 'infestor');

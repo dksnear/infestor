@@ -5,7 +5,7 @@ infestor.define('infestor.grid.Column',{
 
 	extend : 'infestor.Element',
 
-	cssUses : 'infestor.Grid',
+	cssUses : 'infestor.grid',
 	
 	cssClsColumnHeadCell :'infestor-grid-column-head-cell',
 	

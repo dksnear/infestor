@@ -1,0 +1,68 @@
+
+* {
+	font-size:15px;
+}
+
+.infestor-mobile-menu{
+	
+	position:fixed;
+	top:0px;
+	left:0px;
+	opacity:0.5;
+	overflow:auto;
+	width:100%;
+	transition:all 0.5s cubic-bezier(0,0,0.25,1),background-color 0.5s cubic-bezier(0,0,0.25,1);
+}
+
+.infestor-mobile-menu-h{
+
+	height:40px;
+
+}
+
+.infestor-mobile-menu-v{
+	
+	height:100%;
+	
+}
+
+
+.infestor-mobile-menu-trigger{
+
+	position: absolute;
+	height:40px;
+	width:40px;
+
+}
+
+.infestor-mobile-menu-h .infestor-mobile-menu-trigger{
+	
+	top: -2px;
+    right: 3px;
+}
+
+.infestor-mobile-menu-v .infestor-mobile-menu-trigger{
+	
+	bottom:2px;
+	right:3px;
+}
+
+
+.infestor-mobile-menu-body{
+	
+	display:none;
+	
+}
+
+.infestor-mobile-menu-active .infestor-mobile-menu-body{
+	
+	display:block;
+}
+
+.infestor-mobile-menu-active{
+	
+	height:100%;
+	background-color:green;
+
+}
+

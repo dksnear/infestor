@@ -5,7 +5,7 @@ infestor.define('infestor.form.field.Combo',{
 
 	extend:'infestor.form.field.Field',
 	
-	cssUses:'infestor.Form',
+	cssUses:'infestor.form',
 		
 	cssClsElement:'infestor-field infestor-combo-field',
 	cssClsComboFieldDropDownTrigger:'infestor-combo-field-drop-down-trigger',

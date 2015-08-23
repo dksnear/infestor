@@ -6,7 +6,7 @@ infestor.define('infestor.tree.Tree',{
 	
 	uses : ['infestor.tree.DataSet','infestor.tree.TreeColumn','infestor.Tip'],
 
-	cssUses : 'infestor.Grid',
+	cssUses : 'infestor.grid',
 	
 	cssClsElement : 'infestor-tree',
 	

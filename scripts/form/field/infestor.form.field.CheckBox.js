@@ -7,7 +7,7 @@ infestor.define('infestor.form.field.Checkbox', {
 
 	uses : ['infestor.Checkbox'],
 	
-	cssUses : ['infestor.Form'],
+	cssUses : ['infestor.form'],
 
 	cssClsElement : 'infestor-field',
 

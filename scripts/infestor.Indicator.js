@@ -8,7 +8,7 @@ infestor.define('infestor.Indicator',{
 	
 	uses:'infestor.Dom',
 	
-	cssUses:'infestor.Element',
+	cssUses:'infestor.element',
 	
 	interval:100,
 	

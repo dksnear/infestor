@@ -7,7 +7,7 @@ infestor.define('infestor.form.field.Field', {
 	
 	uses:['infestor.Tip','infestor.form.ValidatePanel','infestor.form.validator','infestor.request'],
 
-	cssUses : ['infestor.Form'],
+	cssUses : ['infestor.form'],
 	
 	statics:{
 		

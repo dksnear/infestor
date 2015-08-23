@@ -21,6 +21,7 @@ infestor.define('infestor.HashManager', {
 		hashchange:null
 	},
 
+	// @private
 	init : function(){
 		
 		this.pages = {};
@@ -28,6 +29,7 @@ infestor.define('infestor.HashManager', {
 		
 	},
 	
+	// @private
 	initEvents : function(){
 		
 		var me = this;
@@ -55,6 +57,7 @@ infestor.define('infestor.HashManager', {
 		});
 	},
 	
+	// @private
 	loadPage : function(name,opts,callback){
 		
 		var me = this;
@@ -67,6 +70,7 @@ infestor.define('infestor.HashManager', {
 		
 	},
 	
+	// @public
 	redirect : function(name,args,opts,callback,isMain){
 		
 		var page,cpage,show = function(){
