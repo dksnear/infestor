@@ -84,12 +84,12 @@ infestor.define('infestor.Dom', {
 
 		clientWidth : function () {
 
-			return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+			return document.documentElement.clientWidth || document.body.clientWidth;
 		},
 
 		clientHeight : function () {
 
-			return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+			return document.documentElement.clientHeight || document.body.clientHeight;
 		},
 		
 		autoScroll:function(opts){

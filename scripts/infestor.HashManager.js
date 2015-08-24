@@ -18,7 +18,8 @@ infestor.define('infestor.HashManager', {
 	
 	events : {
 
-		hashchange:null
+		beforehashchange: null,
+		afterhashchange: null
 	},
 
 	// @private #rewrite
@@ -38,12 +39,12 @@ infestor.define('infestor.HashManager', {
 			
 			var hash = location.hash;
 			
-			if(!hash){
-				
-				me.emit('hashchange',[null,null],me);
-				me.redirect(me.mainPageName);
-				return;
-			}
+			me.emit('beforehashchange',[null,null],me);
+			
+			if(!hash)
+				return me.redirect(name,hargs,null,function(page){			
+					me.emit('afterhashchange',[page],me);	
+				});
 			
 			var	match = hash.match(/^#(.*?)(\?.*)$/);
 			var	huri = match && match[1] || hash.match(/#(.*)/)[1];
@@ -51,8 +52,10 @@ infestor.define('infestor.HashManager', {
 			var	hargs = hargs && infestor.param(hargs);
 			var	name = huri.replace(/\//g,'.').substr(1);
 			
-			me.emit('hashchange',[huri,hargs],me);		
-			me.redirect(name,hargs);
+			me.redirect(name,hargs,null,function(page){			
+				me.emit('afterhashchange',[page,huri,hargs],me);	
+			});
+			
 			
 		});
 	},

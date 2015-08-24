@@ -32,7 +32,10 @@ infestor.define('infestor.mobile.Menu',{
 				
 			if(this.isCollapse)
 				this.expand();
-			else this.collapse();
+			else {
+				this.collapse();
+				this.adjustCollapse();
+			}
 			
 		},this);
 	
@@ -57,11 +60,9 @@ infestor.define('infestor.mobile.Menu',{
 	
 	},
 	
-	// @private
-	adjustCollapse : function(){
-		
-		if(!this.isCollapse) return;
-		
+	// @public
+	adjustCollapse : function(force){
+				
 		if(this.orient == 'vertical'){
 			
 			this.element.css('margin-top',infestor.px(this.collapseSize-infestor.Dom.clientHeight()));
@@ -70,6 +71,8 @@ infestor.define('infestor.mobile.Menu',{
 			
 			this.element.css('margin-left',infestor.px(this.collapseSize-infestor.Dom.clientWidth()));
 		}
+		
+		this.element.zIndex();
 		
 	},
 	
@@ -95,7 +98,6 @@ infestor.define('infestor.mobile.Menu',{
 		this.element.removeClass(this.cssClsActive);
 		this.triggerEl.element.removeClass(this.cssClsGlobalIconFocus32);
 		this.isCollapse = true;
-		this.adjustCollapse();
 	
 	},
 	
