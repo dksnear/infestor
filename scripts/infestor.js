@@ -5,6 +5,9 @@ infestor js
  ********************************/
 
 (function (window, libName, alias) {
+	
+	if(!!window[libName])
+		return;
 
 	var document = window.document,
 		navigator = window.navigator,

@@ -57,4 +57,4 @@ infestor.namespace('infestor.cross',{
 	}
 
 
-})
+});

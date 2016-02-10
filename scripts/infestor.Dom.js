@@ -763,7 +763,7 @@ infestor.define('infestor.Dom', {
 	},
 	
 	appendTo : function (parent) {
-
+		
 		parent.append(this);
 		return this;
 	},
