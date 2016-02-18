@@ -790,9 +790,9 @@ infestor.define('infestor.Element', {
 			item.parent = target.parent;
 			
 			if(method == 'before')
-				item.element.before(target.element);
+				item.element.insertBefore(target.element);
 			if(method == 'after')
-				item.element.after(target.element);
+				item.element.insertAfter(target.element);
 			
 			return target; 
 		}
@@ -1069,7 +1069,7 @@ infestor.define('infestor.Element', {
 
 			e.target = e.target || e.srcElement;
 		
-			var args = [e.target.$infestor].concat(infestor.argsToArray(arguments));
+			var args = [e.target.$infestor].concat(infestor.toArray(arguments));
 
 			if (infestor.isFunction(pradicate))
 			 	return pradicate.apply(scope, args) && handle.apply(scope, args);

@@ -535,8 +535,8 @@ infestor.define('infestor.DataSet', {
 			},
 			error : function () {
 				
-				me.emit('loadError', [opts.params].concat(infestor.argsToArray(arguments)),me);
-				me.emit('error',[opts.params].concat(infestor.argsToArray(arguments)),me);
+				me.emit('loadError', [opts.params].concat(infestor.toArray(arguments)),me);
+				me.emit('error',[opts.params].concat(infestor.toArray(arguments)),me);
 				
 			},
 			complete : function () {
@@ -544,7 +544,7 @@ infestor.define('infestor.DataSet', {
 				indicator && indicator.stop();
 				me.isLoading = false;
 				me.loadingOptions = null;
-				me.emit('loadComplete', [opts.params].concat(infestor.argsToArray(arguments)), me);
+				me.emit('loadComplete', [opts.params].concat(infestor.toArray(arguments)), me);
 			}
 
 		}, opts);
@@ -599,8 +599,8 @@ infestor.define('infestor.DataSet', {
 			},
 			error : function () {
 				
-				me.emit('submitError', [opts.params].concat(infestor.argsToArray(arguments)),me);
-				me.emit('error',[opts.params].concat(infestor.argsToArray(arguments)),me);
+				me.emit('submitError', [opts.params].concat(infestor.toArray(arguments)),me);
+				me.emit('error',[opts.params].concat(infestor.toArray(arguments)),me);
 				
 			},
 			complete : function () {
@@ -608,7 +608,7 @@ infestor.define('infestor.DataSet', {
 				indicator && indicator.stop();
 				me.isSubmitting = false;
 				me.submittingOptions = null;
-				me.emit('submitComplete', [opts.params].concat(infestor.argsToArray(arguments)), me);
+				me.emit('submitComplete', [opts.params].concat(infestor.toArray(arguments)), me);
 			}
 
 		}, opts);

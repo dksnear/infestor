@@ -232,8 +232,8 @@ infestor.define('infestor.tree.Tree',{
 			finalNode = parentRow.treeNode.getFinalNode();
 			
 			if(finalNode)
-				row.container.element.after(this.gridRows[finalNode.nodeId].container.element);
-			else row.container.element.after(parentRow.container.element);
+				row.container.element.insertAfter(this.gridRows[finalNode.nodeId].container.element);
+			else row.container.element.insertAfter(parentRow.container.element);
 		
 		}
 			

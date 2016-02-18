@@ -10,6 +10,14 @@ infestor.define('infestor.Dom', {
 	statics : {
 
 		element : null,
+		
+		query : function(selector){
+			
+			if(!document.querySelectorAll)
+				return console.log('your browser not support query selector');
+			
+			return infestor.toArray(document.querySelectorAll(selector));
+		},
 	
 		get : function (id) {
 
@@ -54,6 +62,18 @@ infestor.define('infestor.Dom', {
 		
 		},
 
+		// isElement : 1,
+		// isAttribute : 2,
+		// isText : 3,
+		// isComment : 8,
+		// isDocument : 9
+		typeMatch:function(nodetype,el){
+			
+			el = el instanceof infestor.Dom ? el.element : el;
+			
+			return (nodetype == 1 && el.nodeType == nodetype) || (nodetype != 1 && el.nodeType & nodetype == el.nodeType);
+		},
+		
 		// ie条件注释
 		// 只在在文档加载前有效
 		ieif : function (content, range) {
@@ -337,30 +357,60 @@ infestor.define('infestor.Dom', {
 		return new infestor.Dom(this.getElement().parentNode);
 	},
 
-	children : function () {
+	children : function (nodetype) {
 
 		if (!this.element.hasChildNodes())
 			return [];
-
+	
 		var children = [];
+		
+		nodetype = nodetype || 1;
 
 		infestor.each(this.element.childNodes, function () {
 
-			infestor.Dom.isElement(this) && children.push(infestor.Dom.get(this));
+			if(infestor.Dom.typeMatch(nodetype,this))
+				return true;
+			
+			children.push(infestor.Dom.get(this));
 		});
 
 		return children;
 
 	},
 
-	previous : function () {
+	previous : function (nodetype) {
 
-		return this.element && infestor.Dom.get(this.element.previousSibling);
+		if(!this.element) return this;
+	
+		if(!nodetype)
+			return infestor.Dom.get(this.element.previousSibling);
+		
+		var prev = this.element.previousSibling;
+		
+		while(prev && !infestor.Dom.typeMatch(nodetype,prev)){
+			
+			prev = prev.previousSibling;
+		}
+				
+		return prev ? infestor.Dom.get(prev) : this;
 	},
 
-	next : function () {
+	next : function (nodetype) {
 
-		return this.element && infestor.Dom.get(this.element.nextSibling);
+		if(!this.element) return this;
+	
+		if(!nodetype)
+			return infestor.Dom.get(this.element.nextSibling);
+		
+		var next = this.element.nextSibling;
+		
+		while(next && !infestor.Dom.typeMatch(nodetype,next)){
+			
+			next = next.nextSibling;
+		}
+				
+		return next ? infestor.Dom.get(next) : this;
+		
 	},
 
 	attr : function (name, value) {
@@ -510,14 +560,15 @@ infestor.define('infestor.Dom', {
 			ph = (h || p) && (infestor.parseNumeric(this.css('padding-top')) + infestor.parseNumeric(this.css('padding-bottom'))) || 0,
 			bh = (h || b) && (infestor.parseNumeric(this.css('border-top-width')) + infestor.parseNumeric(this.css('border-bottom-width'))) || 0,
 			mh = m && (infestor.parseNumeric(this.css('margin-top')) + infestor.parseNumeric(this.css('margin-bottom'))) || 0,
-			hh = oh - ph - bh;
+			hh = oh - ph - bh,
+			fh = 0;
 
-		m && (h += mh);
-		b && (h += bh);
-		p && (h += ph);
-		h && (h += hh);
+		m && (fh += mh);
+		b && (fh += bh);
+		p && (fh += ph);
+		h && (fh += hh);
 
-		return h < 0 ? 0 : h;
+		return fh < 0 ? 0 : fh;
 
 	},
 
@@ -536,14 +587,14 @@ infestor.define('infestor.Dom', {
 			bw = (w || b) && (infestor.parseNumeric(this.css('border-left')) + infestor.parseNumeric(this.css('border-right'))) || 0,
 			mw = m && (infestor.parseNumeric(this.css('margin-left')) + infestor.parseNumeric(this.css('margin-right'))) || 0,
 			ww = ow - pw - bw,
-			cw = 0;
+			fw = 0;
 
-		m && (cw += mw);
-		b && (cw += bw);
-		p && (cw += pw);
-		w && (cw += ww);
+		m && (fw += mw);
+		b && (fw += bw);
+		p && (fw += pw);
+		w && (fw += ww);
 		
-		return w < 0 ? 0 : w;
+		return fw < 0 ? 0 : fw;
 
 	},
 
@@ -783,18 +834,18 @@ infestor.define('infestor.Dom', {
 		return parentElement.appendChild(childElement),this;
 	},
 	
-	before : function(afterSibling){
+	insertBefore : function(afterSibling){
 	
-		return afterSibling.insertBefore(this);
+		return afterSibling.before(this);
 	
 	},
 	
-	after : function(beforeSibling){
+	insertAfter : function(beforeSibling){
 	
-		return beforeSibling.insertAfter(this);
+		return beforeSibling.after(this);
 	},
 	
-	insertBefore : function(beforeSibling) {
+	before : function(beforeSibling) {
 	
 		if(!this.element.parentNode) return this;
 	
@@ -802,22 +853,24 @@ infestor.define('infestor.Dom', {
 	
 	},
 	
-	insertAfter : function(afterSibling) {
+	after : function(afterSibling) {
 	
 		if(!this.element.parentNode) return this;
 	
 		if(!this.element.nextSibling)
 			return infestor.Dom.get(this.element.parentNode).append(afterSibling);
 	
-		return infestor.Dom.get(this.element.nextSibling).insertBefore(afterSibling);		
+		return infestor.Dom.get(this.element.nextSibling).before(afterSibling);		
 	},
 
 	text : function (text) {
 
 		if (infestor.isUndefined(text))
-			return this.textNode && this.textNode.textContent || '';
+			return this.textNode ? this.textNode.textContent || '' : infestor.map(this.children(3),function(){ return this.textContent || ''; }).join('');
 
-		this.textNode && this.element.removeChild(this.textNode);
+		this.textNode ?
+			this.element.removeChild(this.textNode) :
+			infestor.each(this.children(3),function(idx,child){ this.remove(child);  },this);
 
 		this.textNode = document.createTextNode(text);
 

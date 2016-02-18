@@ -443,7 +443,7 @@ infestor js
 
 		},
 
-		argsToArray : function (args) {
+		toArray : function (args) {
 
 			return Array.prototype.slice.call(args);
 
