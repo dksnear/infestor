@@ -5,7 +5,7 @@ infestor.define('infestor.form.field.Field', {
 
 	extend : 'infestor.Panel',
 	
-	uses:['infestor.Tip','infestor.form.ValidatePanel','infestor.form.validator','infestor.request'],
+	uses:['infestor.Tip','infestor.form.ValidatePanel','infestor.form.validator','infestor.Request'],
 
 	cssUses : ['infestor.form'],
 	
@@ -653,7 +653,7 @@ infestor.define('infestor.form.field.Field', {
 			
 			// 只接受一个远程验证器
 			if(idx == 'remote')
-				return !remote && infestor.request.ajax(validator.handle) && (remote = true),false;
+				return !remote && infestor.Request.ajax(validator.handle) && (remote = true),false;
 				
 			if(!checked){
 			

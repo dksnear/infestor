@@ -268,8 +268,7 @@ infestor js
 			if (!global.isArray(arr))
 				return;
 
-			var newArr = [],
-			uniqueMap = {};
+			var newArr = [],uniqueMap = {};
 
 			global.each(arr, function () {
 				global.uniquePush(newArr, this, uniqueMap);
@@ -421,7 +420,7 @@ infestor js
 		// from jQuery isWindow
 		isWindow : function (obj) {
 
-			return obj && typeof obj === "object" && "setInterval" in obj;
+			return obj && typeof obj === 'object' && 'setInterval' in obj;
 		},
 
 		isEmptyObject : function (obj) {
@@ -642,19 +641,19 @@ infestor js
 		
 		trim:function(str){
 		
-			return String(str).replace(/(^\s*)|(\s*$)/,'');
+			return String(str).replace(/(^\s*)|(\s*$)/g,'');
 		
 		},
 		
 		triml:function(str){
 		
-			return String(str).replace(/^\s*/,'');
+			return String(str).replace(/^\s*/g,'');
 		
 		},
 		
 		trimr:function(str){
 		
-			return String(str).replace(/\s*$/,'');
+			return String(str).replace(/\s*$/g,'');
 		
 		},
 
@@ -793,7 +792,7 @@ infestor js
 			return eval('('+str+')');
 		},
 		
-		jsonEncodeTree : function(obj,action){
+		jsonTreeEncode : function(obj,action){
 			
 			var treeArray = [],
 				action = action || function( id, pId, type, key, value, depth){		
@@ -871,9 +870,9 @@ infestor js
 			
 		},
 	
-		jsonEncodePrint : function(obj){
+		jsonPrintEncode : function(obj){
 			
-			global.jsonEncodeTree(obj,function(id,pid,type,key,value,depth){
+			global.jsonTreeEncode(obj,function(id,pid,type,key,value,depth){
 				
 				console.log(global.genArray(depth,function(){ return '    '; }).join('') + (depth === 1 ? 'root' : key) + ':' + value);
 				
@@ -1005,10 +1004,10 @@ infestor js
 		},
 
 		//异步加载脚本(.js)
-		loadScript : function (src, load, error) {
+		loadScript : function (src, load, error, quiet) {
 
 			var script = document.createElement('script'),
-			head = document.head || document.getElementsByTagName('head')[0];
+				head = document.head || document.getElementsByTagName('head')[0];
 
 			head.appendChild(script);
 			script.setAttribute('type', 'text/javascript');
@@ -1016,11 +1015,24 @@ infestor js
 		
 			if (!global.isIE8Minus()){
 			
-				script.onerror = error;
-				return script.onload = !!load ? load : script.onload, script;
+				script.onerror = function(){
+					
+					error && global.isFunction(error) && error();
+					script.onerror = null;
+					quiet && head.removeChild(script);
+				};
+				
+				script.onload = function(){
+					
+					load && global.isFunction(load) && load();
+					script.onload = null;
+					quiet && head.removeChild(script);
+				};
+				
+				return script;
 			}
 
-			return script.onreadystatechange = function () {
+			script.onreadystatechange = function () {
 
 				// if (script.readyState === 'loaded' || script.readyState === 'complete') {
 					// script.onreadystatechange = null;
@@ -1030,10 +1042,12 @@ infestor js
 				if (script.readyState === 'loaded') {
 					script.onreadystatechange = null;
 					load && load();
+					quiet && head.removeChild(script);
 				}
 
-			},
-			script;
+			};
+			
+			return script;
 
 		},
 
@@ -1041,14 +1055,18 @@ infestor js
 		loadStyle : function (href, load) {
 
 			var link = document.createElement('link'),
-			head = document.head || document.getElementsByTagName('head')[0];
-			head.appendChild(link);
+				head = document.head || document.getElementsByTagName('head')[0];
+				head.appendChild(link);
 
 			link.setAttribute('rel', 'stylesheet');
 			link.setAttribute('type', 'text/css');
 			link.setAttribute('href', href);
 
-			link.onload = load || null;
+			link.onload = function(){ 
+			
+				load && load();
+				link.onload = null;
+			}
 
 			return link;
 
@@ -1181,8 +1199,9 @@ infestor js
 				return window.getSelection().removeAllRanges();
 			
 			if(global.isFunction(document.selection.empty))
-				document.selection.empty();
+				return document.selection.empty();
 			
+			return;
 			// window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
 		}
 
@@ -1204,6 +1223,9 @@ infestor js
 			defaultHost : '',
 			defaultCssPath : 'resources/css',
 			defaultScriptsPath : 'scripts',
+			
+			// 清除页面脚本引用
+			quietLoad : false,
 
 			// 类管理器(已经创建完成的类映射表)
 			classMap : {},
@@ -1230,7 +1252,7 @@ infestor js
 			srcMap:{},
 			
 			// 非类文件源映射表
-			nsSrcMap:{},
+			// nsSrcMap:{},
 		
 			// 允许加载类中引用的css
 			allowLoadCss : true,
@@ -1310,7 +1332,7 @@ infestor js
 					// 记录载入文件路径
 					this.srcMap[name] = path;
 	
-					this.nsSrcMap[name] = path;
+					// this.nsSrcMap[name] = path;
 
 					isDefaultType && loader.using(path);
 
@@ -1352,7 +1374,7 @@ infestor js
 				this.using(clsName, null, loader);
 
 				// 阻塞委托方法 直到所有依赖类加载完毕再执行
-				loader.block(handle, predicate, null, scope);
+				handle && loader.block(handle, predicate, null, scope);
 
 				// 执行加载器
 				loader.using();
@@ -1361,6 +1383,35 @@ infestor js
 
 			},
 
+			clearScriptRef : function(){
+				
+				var head = document.head || document.getElementsByTagName('head')[0];
+				var quietLoad = this.quietLoad;
+				
+				if(!quietLoad) return;
+				
+				quietLoad = global.isString(quietLoad) ? [quietLoad] : quietLoad;
+					
+				global.each(head.childNodes,function(){
+					
+					if(!/^script$/i.test(this.tagName))
+						return true;
+					var src = this.getAttribute('src');
+					if(/\/infestor\.js$/i.test(src))
+						head.removeChild(this);
+					if(global.isArray(quietLoad)){
+						global.each(quietLoad,function(idx,item){
+							
+							if((new RegExp(item,'i')).test(src))
+								return head.removeChild(this),false;
+							
+						},this);
+					}
+					
+				});
+				
+			},
+			
 			// 注册载入完成后执行的环境
 			delayReg : function (loader, method, args, scope) {
 
@@ -1528,9 +1579,9 @@ infestor js
 		// @callback(fn):类定义完成后的委托句柄
 		define : function (clsNs, options, callback) {
 		
-			var extend = options.extend || Object,parent;
+			var extend = options.extend || global.Event || Object,parent;
 
-			// 等待所有类加载完成后 延时定义
+			// 等待所有类文件加载完成后 延时定义
 			if (global.mgr.loaderMap[clsNs] && global.mgr.loaderMap[clsNs].isDelay)
 				return global.mgr.loaderMap[clsNs].delayDefine.apply(global.mgr.loaderMap[clsNs], arguments);
 
@@ -1899,6 +1950,7 @@ infestor js
 					handle && handle.call(this);
 					me.blockFree();
 					me.delayWriteStyle();
+					global.mgr.clearScriptRef();
 					me.complete = true;
 
 				};
@@ -1932,7 +1984,7 @@ infestor js
 				isDefined : false
 			};
 
-			delete global.mgr.nsSrcMap[clsNs];
+			// delete global.mgr.nsSrcMap[clsNs];
 			
 			return null;
 
@@ -2125,7 +2177,7 @@ infestor js
 			if (arguments.length < 1)
 				return;
 			if (arguments.length < 2)
-				arguments[0].call(window);
+				return global.isFunction(arguments[0]) && arguments[0].call(window);
 
 			var me = this,
 				argLen = arguments.length,
@@ -2166,7 +2218,7 @@ infestor js
 				global.Loader.loadedMap[path] = true;
 
 			if (isJs)
-				global.loadScript(path, load);
+				global.loadScript(path, load, null, global.mgr.quietLoad);
 
 			if (isCss)
 				global.loadStyle(path, load);

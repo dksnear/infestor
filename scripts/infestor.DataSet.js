@@ -3,7 +3,7 @@ infestor.define('infestor.DataSet', {
 
 	extend : 'infestor.Object',
 
-	uses : ['infestor.request','infestor.Indicator','infestor.Cache'],
+	uses : ['infestor.Request','infestor.Indicator','infestor.Cache'],
 
 	// 数据模型映射
 	modelMap : null,
@@ -556,7 +556,7 @@ infestor.define('infestor.DataSet', {
 		this.isLoading = true;
 		this.loadingOptions = opts;
 	
-		infestor.request.ajax(opts);
+		infestor.Request.ajax(opts);
 
 		if (rewrite)
 			this.loadConfig = infestor.append({},config,opts);
@@ -620,7 +620,7 @@ infestor.define('infestor.DataSet', {
 		this.isSubmitting = true;
 		this.submittingOptions = opts;
 	
-		infestor.request.ajax(opts);
+		infestor.Request.ajax(opts);
 
 		if (rewrite) 	
 			this.submitConfig = infestor.append({},config,opts);	

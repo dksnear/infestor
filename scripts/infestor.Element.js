@@ -11,7 +11,7 @@ infestor.define('infestor.Element', {
 	extend : 'infestor.Object',
 
 	// 关联类引用
-	uses : ['infestor.DataSet', 'infestor.Dom','infestor.cross'],
+	uses : ['infestor.DataSet', 'infestor.Dom'],
 
 	// css 文件引用
 	cssUses : ['infestor.element'],

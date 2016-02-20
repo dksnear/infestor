@@ -9,7 +9,7 @@ infestor.define('infestor.form.Form', {
 
 	uses : [
 		'infestor.Indicator',
-		'infestor.request', 
+		'infestor.Request', 
 		'infestor.form.DataSet',
 		'infestor.form.field.Field',
 		'infestor.form.field.Captcha',
