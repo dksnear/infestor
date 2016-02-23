@@ -111,6 +111,14 @@ infestor.define('infestor.Request', {
 
 			if (!xhr)
 				return false;
+			
+			xhr.onerror = function(){
+				
+				error && error.call(scope,xhr);
+
+				complete && complete.call(scope,false,xhr);
+				
+			};
 
 			xhr.onreadystatechange = function () {
 			
@@ -150,7 +158,8 @@ infestor.define('infestor.Request', {
 				method : 'get',
 				success : success,
 				error : error,
-				complete : complete
+				complete : complete,
+				scope : scope
 			});
 		},
 
@@ -162,7 +171,8 @@ infestor.define('infestor.Request', {
 				method : 'post',
 				success : success,
 				error : error,
-				complete : complete
+				complete : complete,
+				scope : scope
 			});
 		},
 		
@@ -174,7 +184,8 @@ infestor.define('infestor.Request', {
 				method : 'jsonp',
 				success : success,
 				error : error,
-				complete : complete
+				complete : complete,
+				scope : scope
 			});
 		},
 
