@@ -453,10 +453,10 @@ infestor js
 			if (!obj || global.isString(obj)) {
 
 				var url = obj || document.location.search,
-					url = url.replace(/&amp;/gi, '&'),
+					url = url.replace(/&amp;/gi, '&').replace(/^\?/,''),
 					args = {};
 									
-				url.replace(/(?:\?|&)(.*?)=(.*?)(?=&|$)/g,function(m,g1,g2){
+				url.replace(/(?:^|&)(.*?)=(.*?)(?=&|$)/g,function(m,g1,g2){
 					
 					try {
 						args[decodeURIComponent(g1)] = decodeURIComponent(g2);
