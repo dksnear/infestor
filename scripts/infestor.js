@@ -3,7 +3,7 @@
 infestor js
 
  ********************************/
-
+ 
 (function (window, libName, alias) {
 	
 	if(!!window[libName])
@@ -673,8 +673,28 @@ infestor js
 			return Math.floor(Math.random() * (upper - lower + 1) + lower);
 
 		},
+		
+		// 随机命中 @rate 命中概率 @p 精确位数
+		randomHit : function (rate,p) {
+		
+			if(rate >= 100)
+				return true;
+			
+			p = parseInt(p) || 0;
+			p = p > 5 || p < 0 ? 0 : p;
+			
+			if(p == 0 && rate < 1)
+				return false;
+			if(p > 0 && rate <= 0)
+				return false;
+				
+			p = Math.pow(10,p);
+			
+			return global.random(1,100 * p) <= rate * p;
+			
+		},
 
-		// type:num|word|mix,default mix
+		// @type:num|word|mix,default mix
 		randomCode : function (len,type) {
 
 			var dict = {
@@ -1506,29 +1526,32 @@ infestor js
 				superClass = Object;
 			}
 			
-			var $class = function () {},
-				$instance = options.constructor != Object.prototype.constructor ? options.constructor : function () {
+			var $superClass = function () {},
+				$class = options.constructor || function () {
 					superClass.apply(this, arguments);
 				};
+				// $class = options.constructor != Object.prototype.constructor ? options.constructor : function () {
+					// superClass.apply(this, arguments);
+				// };
 
-			$class.prototype = $instance.$superClass = superClass.prototype;
+			$superClass.prototype = $class.$superClass = superClass.prototype;
 
-			$instance.prototype = new $class();
+			$class.prototype = new $superClass();
 
-			$instance.prototype.constructor = $instance;
+			$class.prototype.constructor = $class;
 
-			$instance.override = function (options) {
+			$class.override = function (options) {
 
 				global.override(this, options);
 			};
 
-			$instance.extend = function (options) {
+			$class.extend = function (options) {
 				global.extend(this, options);
 			};
 
-			global.override($instance, options);
+			global.override($class, options);
 
-			return $instance;
+			return $class;
 		},
 
 		// 重写类中的方法
@@ -2279,3 +2302,5 @@ infestor js
 	global.alias(global, 'namespace', global.$$libName + '.ns');
 
 })(window, 'infestor');
+
+
